@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}CPC New Haven - Everyone is truly welcomed{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Dynamic Background -->
+<section id="home-image" class="splash-image">
+    <div class="splash-content">
+        <h1>Christ Presbyterian Church</h1>
+        <h2>New Haven, CT</h2>
+        <p>Everyone is truly welcomed into God's presence because there is no limit to God's grace as accomplished for us by Christ.</p>
+        <div class="splash-buttons">
+            <a href="{{ url_for('about') }}" class="btn btn-primary">Learn More</a>
+            <a href="{{ url_for('live') }}" class="btn btn-secondary">Watch Live</a>
+        </div>
+    </div>
+</section>
+
+<!-- Service Info Section -->
+<section class="service-info">
+    <div class="container">
+        <div class="service-times">
+            <h2>Sunday Service Information</h2>
+            <div class="service-schedule">
+                <div class="time-slot">
+                    <h3>8:30am</h3>
+                    <p>Prayer in the Parlor</p>
+                </div>
+                <div class="time-slot">
+                    <h3>9:30am</h3>
+                    <p>Children's Sunday School & Adult Sunday Studies</p>
+                </div>
+                <div class="time-slot featured">
+                    <h3>10:30am</h3>
+                    <p>Sunday Worship Service</p>
+                </div>
+                <div class="time-slot">
+                    <h3>12:00pm</h3>
+                    <p>Fellowship Lunch</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Highlights Section -->
+<section class="highlights-section">
+    <div class="container">
+        <h2>Announcements & Highlights</h2>
+        <div id="highlights" class="highlights-container">
+            <!-- Highlights will be populated by JavaScript -->
+        </div>
+    </div>
+</section>
+
+<!-- Mid-Image Section -->
+<section id="mid-image" class="mid-image">
+    <div class="mid-image-content">
+        <h2>Come as you are</h2>
+        <p>Though we may be more sinful than we're even willing to imagine, we are more loved in Christ than we can ever dare to hope.</p>
+    </div>
+</section>
+
+<!-- Recent Podcasts Section -->
+<section class="recent-podcasts">
+    <div class="container">
+        <h2>Recent Sermons & Podcasts</h2>
+        <div class="podcast-preview">
+            <table id="podcasts">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Series</th>
+                        <th>Scripture</th>
+                        <th>Title</th>
+                        <th>Spotify</th>
+                        <th>Apple</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <div class="podcast-links">
+            <a href="{{ url_for('sermons') }}" class="btn btn-primary">All Sermons</a>
+            <a href="{{ url_for('podcasts') }}" class="btn btn-secondary">All Podcasts</a>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h3>Visit Us</h3>
+                <p>135 Whitney Ave<br>New Haven, CT 06510</p>
+                <p>Sunday Worship: 10:30am</p>
+            </div>
+            <div class="contact-info">
+                <h3>Contact Us</h3>
+                <p>Email: admin@cpcnewhaven.org</p>
+                <p>Phone: (203) 555-0123</p>
+            </div>
+            <div class="contact-info">
+                <h3>Follow Our Media</h3>
+                <p><a href="https://youtube.com/c/CPCNewHaven" target="_blank">YouTube Channel</a></p>
+                <p><a href="https://open.spotify.com/show/your-show-id" target="_blank">Spotify Podcasts</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- Your existing JavaScript with modified fetch URLs -->
+<script>
+// Modified fetch-highlights-display-homepage.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Use the new API endpoint
+    fetch('/api/announcements')
+        .then(response => response.json())
+        .then(data => {
+            const highlightsContainer = document.getElementById('highlights');
+            
+            // Separate superFeatured announcements that are active
+            const superFeaturedAnnouncements = data.announcements.filter(
+                announcement => announcement.superfeatured && announcement.active === "true"
+            );
+            
+            // Separate other announcements that are active
+            const otherAnnouncements = data.announcements.filter(
+                announcement => !announcement.superfeatured && announcement.active === "true"
+            );
+
+            // Function to create announcement elements
+            const createAnnouncementElement = (announcement) => {
+                const highlightElement = document.createElement('div');
+                highlightElement.classList.add('announcement');
+                
+                // Add class based on type
+                if (announcement.type === "highlight") {
+                    highlightElement.classList.add('highlight');
+                } else if (announcement.type === "ongoing") {
+                    highlightElement.classList.add('ongoing');
+                } else if (announcement.type === "upcoming") {
+                    highlightElement.classList.add('upcoming');
+                }
+
+                // Add special styling for superFeatured
+                if (announcement.superfeatured) {
+                    highlightElement.classList.add('super-featured');
+                }
+
+                // Handle featured image if available
+                if (announcement.featuredImage) {
+                    const featuredImage = document.createElement('img');
+                    featuredImage.src = announcement.featuredImage;
+                    featuredImage.classList.add('featured-image');
+                    featuredImage.style.width = '100%';
+                    featuredImage.style.height = 'auto';
+                    featuredImage.style.maxHeight = '400px';
+                    featuredImage.style.objectFit = 'cover';
+                    featuredImage.style.marginBottom = '1rem';
+                    highlightElement.appendChild(featuredImage);
+                }
+
+                const titleElement = document.createElement('h2');
+                titleElement.textContent = announcement.title;
+                titleElement.classList.add('announcement-title');
+                highlightElement.appendChild(titleElement);
+
+                // Add date and time as subheader
+                if (announcement.date || announcement.time) {
+                    const subheaderElement = document.createElement('h3');
+                    subheaderElement.textContent = `${announcement.date || ''} ${announcement.time || ''}`.trim();
+                    subheaderElement.classList.add('announcement-subheader');
+                    highlightElement.appendChild(subheaderElement);
+                }
+
+                const descriptionElement = document.createElement('p');
+                descriptionElement.innerHTML = announcement.description;
+                highlightElement.appendChild(descriptionElement);
+
+                return highlightElement;
+            };
+
+            // Display superFeatured announcements first
+            superFeaturedAnnouncements.forEach(announcement => {
+                const element = createAnnouncementElement(announcement);
+                highlightsContainer.appendChild(element);
+            });
+
+            // Display other announcements
+            otherAnnouncements.forEach(announcement => {
+                const element = createAnnouncementElement(announcement);
+                highlightsContainer.appendChild(element);
+            });
+        })
+        .catch(error => console.error('Error loading highlights:', error));
+});
+
+// Background image randomization
+document.addEventListener("DOMContentLoaded", function() {
+    const splashImageSection = document.getElementById('home-image');
+    const midImageSection = document.getElementById('mid-image');
+    const totalImages = 50; // Total number of images in your assets folder
+
+    function getRandomImageUrl() {
+        const randomIndex = Math.floor(Math.random() * totalImages) + 1;
+        return `{{ url_for('static', filename='assets/websiteBG/') }}${randomIndex}.jpg`;
+    }
+
+    function updateImages() {
+        const homeImageUrl = getRandomImageUrl();
+        const midImageUrl = getRandomImageUrl();
+
+        // Set background images
+        if (splashImageSection) {
+            splashImageSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${homeImageUrl})`;
+            splashImageSection.style.backgroundSize = 'cover';
+            splashImageSection.style.backgroundPosition = 'center';
+        }
+
+        if (midImageSection) {
+            midImageSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${midImageUrl})`;
+            midImageSection.style.backgroundSize = 'cover';
+            midImageSection.style.backgroundPosition = 'center';
+        }
+    }
+
+    // Initial image update
+    updateImages();
+});
+</script>
+
+<!-- Dynamic banner -->
+<script src="{{ url_for('static', filename='js/dynamic-banner.js') }}"></script>
+
+<!-- Background image fetching -->
+<script src="{{ url_for('static', filename='js/background-fetch-splash-image.js') }}"></script>
+{% endblock %}

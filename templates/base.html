@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CPC New Haven{% endblock %}</title>
+    
+    <!-- Keep your existing CSS files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Alpine.js for reactive components -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <!-- Papa Parse for CSV parsing if needed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Warning Banner -->
+    <div id="warningBanner" class="warning-banner" style="display: none;"></div>
+    
+    <!-- Navigation -->
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="{{ url_for('index') }}">CPC New Haven</a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('sermons') }}">Sermons</a></li>
+                <li><a href="{{ url_for('podcasts') }}">Podcasts</a></li>
+                <li><a href="{{ url_for('events') }}">Events</a></li>
+                <li><a href="{{ url_for('announcements') }}">Announcements</a></li>
+                <li><a href="{{ url_for('community') }}">Community</a></li>
+                <li><a href="{{ url_for('live') }}">Live</a></li>
+                <li><a href="{{ url_for('resources') }}">Resources</a></li>
+                <li><a href="{{ url_for('give') }}">Give</a></li>
+            </ul>
+            
+            <!-- Hamburger Menu for Mobile -->
+            <button id="hamburgerMenu" class="hamburger-menu">☰</button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Navigation -->
+    <div id="mobileNavigation" class="mobile-navigation">
+        <button id="closeMenuButton" class="close-menu">✕</button>
+        <ul class="mobile-nav-links">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('sermons') }}">Sermons</a></li>
+            <li><a href="{{ url_for('podcasts') }}">Podcasts</a></li>
+            <li><a href="{{ url_for('events') }}">Events</a></li>
+            <li><a href="{{ url_for('announcements') }}">Announcements</a></li>
+            <li><a href="{{ url_for('community') }}">Community</a></li>
+            <li><a href="{{ url_for('live') }}">Live</a></li>
+            <li><a href="{{ url_for('resources') }}">Resources</a></li>
+            <li><a href="{{ url_for('give') }}">Give</a></li>
+        </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Christ Presbyterian Church</h3>
+                <p>135 Whitney Ave, New Haven, CT</p>
+                <p>Sunday Worship: 10:30am</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: admin@cpcnewhaven.org</p>
+                <p>Phone: (203) 555-0123</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <p>YouTube: CPC New Haven</p>
+                <p>Spotify: CPC New Haven Podcasts</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Keep all your existing JavaScript files -->
+    <script src="{{ url_for('static', filename='js/function_toggle_mobileMenu.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dynamic-banner.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/background-parallax-magic.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

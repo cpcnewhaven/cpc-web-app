@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Events - CPC New Haven{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <h1>Events</h1>
+        <p>Upcoming events and ongoing activities at CPC New Haven</p>
+    </div>
+</section>
+
+<!-- Events Section -->
+<section class="events-section">
+    <div class="container">
+        <div id="events-container">
+            <!-- Events will be populated by JavaScript -->
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load ongoing events
+    fetch('/api/ongoing-events')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('events-container');
+            
+            if (data.ongoingEvents && data.ongoingEvents.length > 0) {
+                data.ongoingEvents.forEach(event => {
+                    const eventElement = document.createElement('div');
+                    eventElement.classList.add('event-card');
+                    eventElement.innerHTML = `
+                        <h3>${event.title}</h3>
+                        <p>${event.description}</p>
+                        <div class="event-meta">
+                            <span class="event-type">${event.type}</span>
+                            <span class="event-category">${event.category}</span>
+                        </div>
+                    `;
+                    container.appendChild(eventElement);
+                });
+            } else {
+                container.innerHTML = '<p>No events scheduled at this time.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading events:', error);
+            document.getElementById('events-container').innerHTML = '<p>Error loading events.</p>';
+        });
+});
+</script>
+{% endblock %}

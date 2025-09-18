@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Podcasts - CPC New Haven{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <h1>Podcasts</h1>
+        <p>Listen to our various podcast series</p>
+    </div>
+</section>
+
+<!-- Podcasts Section -->
+<section class="podcasts-section">
+    <div class="container">
+        <div class="podcast-series">
+            <h2>Beyond the Sunday Sermon</h2>
+            <p>Extended conversations and deeper dives into biblical topics</p>
+            <div id="beyond-podcast" class="podcast-episodes">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="podcast-series">
+            <h2>Biblical Interpretation</h2>
+            <p>Teaching series on how to read and understand Scripture</p>
+            <div id="biblical-interpretation" class="podcast-episodes">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="podcast-series">
+            <h2>Confessional Theology</h2>
+            <p>Exploring Reformed theology and doctrine</p>
+            <div id="confessional-theology" class="podcast-episodes">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="podcast-series">
+            <h2>Membership Seminar</h2>
+            <p>Understanding church membership and Christian life</p>
+            <div id="membership-seminar" class="podcast-episodes">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load podcast data for each series
+document.addEventListener('DOMContentLoaded', function() {
+    const series = [
+        'beyond-podcast',
+        'biblical-interpretation', 
+        'confessional-theology',
+        'membership-seminar'
+    ];
+    
+    series.forEach(seriesName => {
+        fetch(`/api/podcasts/${seriesName}`)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById(seriesName);
+                if (data.episodes && data.episodes.length > 0) {
+                    data.episodes.forEach(episode => {
+                        const episodeElement = document.createElement('div');
+                        episodeElement.classList.add('podcast-episode');
+                        episodeElement.innerHTML = `
+                            <h3>${episode.number ? `Episode ${episode.number}: ` : ''}${episode.title}</h3>
+                            ${episode.guest ? `<p class="guest">Guest: ${episode.guest}</p>` : ''}
+                            ${episode.scripture ? `<p class="scripture">${episode.scripture}</p>` : ''}
+                            ${episode.link ? `<a href="${episode.link}" target="_blank" class="btn btn-primary">Listen</a>` : ''}
+                        `;
+                        container.appendChild(episodeElement);
+                    });
+                } else {
+                    container.innerHTML = '<p>No episodes available yet.</p>';
+                }
+            })
+            .catch(error => {
+                console.error(`Error loading ${seriesName}:`, error);
+                document.getElementById(seriesName).innerHTML = '<p>Error loading episodes.</p>';
+            });
+    });
+});
+</script>
+{% endblock %}

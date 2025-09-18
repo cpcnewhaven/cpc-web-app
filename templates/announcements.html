@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Announcements - CPC New Haven{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <h1>Announcements</h1>
+        <p>Latest news and announcements from CPC New Haven</p>
+    </div>
+</section>
+
+<!-- Announcements Section -->
+<section class="announcements-section">
+    <div class="container">
+        <div id="announcements-container">
+            <!-- Announcements will be populated by JavaScript -->
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load announcements
+    fetch('/api/announcements')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('announcements-container');
+            
+            if (data.announcements && data.announcements.length > 0) {
+                data.announcements.forEach(announcement => {
+                    const announcementElement = document.createElement('div');
+                    announcementElement.classList.add('announcement');
+                    
+                    if (announcement.superfeatured) {
+                        announcementElement.classList.add('super-featured');
+                    }
+                    
+                    let html = `
+                        <h2 class="announcement-title">${announcement.title}</h2>
+                        <div class="announcement-meta">
+                            <span class="announcement-type">${announcement.type}</span>
+                            ${announcement.category ? `<span class="announcement-category">${announcement.category}</span>` : ''}
+                            ${announcement.dateEntered ? `<span class="announcement-date">${announcement.dateEntered}</span>` : ''}
+                        </div>
+                        <div class="announcement-content">
+                            <p>${announcement.description}</p>
+                        </div>
+                    `;
+                    
+                    if (announcement.featuredImage) {
+                        html = `
+                            <div class="announcement-image">
+                                <img src="${announcement.featuredImage}" alt="${announcement.title}" style="width: 100%; height: auto; max-height: 400px; object-fit: cover; margin-bottom: 1rem;">
+                            </div>
+                        ` + html;
+                    }
+                    
+                    announcementElement.innerHTML = html;
+                    container.appendChild(announcementElement);
+                });
+            } else {
+                container.innerHTML = '<p>No announcements at this time.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading announcements:', error);
+            document.getElementById('announcements-container').innerHTML = '<p>Error loading announcements.</p>';
+        });
+});
+</script>
+{% endblock %}
