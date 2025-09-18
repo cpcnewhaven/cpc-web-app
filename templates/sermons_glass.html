@@ -1,0 +1,200 @@
+{% extends "base_glass.html" %}
+
+{% block title %}Sermons - CPC New Haven{% endblock %}
+
+{% block content %}
+<!-- Sermons Header -->
+<section class="dashboard-header">
+    <div class="welcome-widget">
+        <h1>Sunday Sermons</h1>
+        <p>Weekly sermons from our Sunday worship services. Listen to messages from Rev. Craig Luekens, Rev. Jerry Ornelas, and other guest speakers.</p>
+    </div>
+</section>
+
+<!-- Sermons Dashboard -->
+<div class="dashboard-grid">
+    <!-- Recent Sermons Widget -->
+    <div class="dashboard-widget recent-sermons-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-microphone"></i> Recent Sermons</h3>
+        </div>
+        <div class="widget-content">
+            {% for sermon in sermons[:5] %}
+            <div class="sermon-item">
+                {% if sermon.podcast_thumbnail_url %}
+                <div class="sermon-image" style="background-image: url('{{ sermon.podcast_thumbnail_url }}');"></div>
+                {% endif %}
+                <div class="sermon-content">
+                    <h4>{{ sermon.title }}</h4>
+                    <p class="sermon-author">{{ sermon.author }}</p>
+                    <p class="sermon-scripture">{{ sermon.scripture }}</p>
+                    <p class="sermon-date">{{ sermon.date }}</p>
+                    <div class="sermon-links">
+                        {% if sermon.spotify_url %}
+                        <a href="{{ sermon.spotify_url }}" target="_blank" class="btn-glass btn-sm">
+                            <i class="fab fa-spotify"></i> Spotify
+                        </a>
+                        {% endif %}
+                        {% if sermon.apple_podcasts_url %}
+                        <a href="{{ sermon.apple_podcasts_url }}" target="_blank" class="btn-glass btn-sm">
+                            <i class="fab fa-apple"></i> Apple
+                        </a>
+                        {% endif %}
+                        {% if sermon.youtube_url %}
+                        <a href="{{ sermon.youtube_url }}" target="_blank" class="btn-glass btn-sm">
+                            <i class="fab fa-youtube"></i> YouTube
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- All Sermons Widget -->
+    <div class="dashboard-widget all-sermons-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-list"></i> All Sermons</h3>
+        </div>
+        <div class="widget-content">
+            <div class="sermons-list">
+                {% for sermon in sermons %}
+                <div class="sermon-list-item">
+                    <div class="sermon-info">
+                        <h5>{{ sermon.title }}</h5>
+                        <p class="sermon-meta">{{ sermon.author }} • {{ sermon.date }}</p>
+                        <p class="sermon-scripture">{{ sermon.scripture }}</p>
+                    </div>
+                    <div class="sermon-actions">
+                        {% if sermon.spotify_url %}
+                        <a href="{{ sermon.spotify_url }}" target="_blank" class="btn-glass btn-sm">
+                            <i class="fab fa-spotify"></i>
+                        </a>
+                        {% endif %}
+                        {% if sermon.apple_podcasts_url %}
+                        <a href="{{ sermon.apple_podcasts_url }}" target="_blank" class="btn-glass btn-sm">
+                            <i class="fab fa-apple"></i>
+                        </a>
+                        {% endif %}
+                        {% if sermon.youtube_url %}
+                        <a href="{{ sermon.youtube_url }}" target="_blank" class="btn-glass btn-sm">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Podcast Platforms Widget -->
+    <div class="dashboard-widget platforms-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-podcast"></i> Listen on Your Platform</h3>
+        </div>
+        <div class="widget-content">
+            <div class="platforms-grid">
+                <a href="https://open.spotify.com/show/your-podcast" target="_blank" class="platform-link">
+                    <i class="fab fa-spotify"></i>
+                    <span>Spotify</span>
+                </a>
+                <a href="https://podcasts.apple.com/us/podcast/cpc-new-haven-podcasts/id1553483670" target="_blank" class="platform-link">
+                    <i class="fab fa-apple"></i>
+                    <span>Apple Podcasts</span>
+                </a>
+                <a href="https://www.youtube.com/@cpcnewhaven" target="_blank" class="platform-link">
+                    <i class="fab fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+                <a href="#" class="platform-link">
+                    <i class="fas fa-rss"></i>
+                    <span>RSS Feed</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Series Information Widget -->
+    <div class="dashboard-widget series-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-book-open"></i> Current Series</h3>
+        </div>
+        <div class="widget-content">
+            <div class="series-info">
+                <h4>Exodus: The Story of God's People</h4>
+                <p>Join us as we journey through the book of Exodus, exploring themes of deliverance, covenant, and God's faithfulness to His people.</p>
+                <div class="series-stats">
+                    <div class="stat">
+                        <span class="stat-number">{{ sermons|length }}</span>
+                        <span class="stat-label">Total Sermons</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">2</span>
+                        <span class="stat-label">Speakers</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">2024-2025</span>
+                        <span class="stat-label">Year</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Widget -->
+    <div class="dashboard-widget contact-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-info-circle"></i> Sermon Information</h3>
+        </div>
+        <div class="widget-content">
+            <div class="contact-info">
+                <p><strong>Questions about sermons?</strong></p>
+                <p>Contact our church office for more information about our sermon series or to request transcripts.</p>
+                <p>Phone: (203) 555-0123</p>
+                <p>Email: sermons@cpcnewhaven.org</p>
+            </div>
+            <div class="contact-actions">
+                <a href="mailto:sermons@cpcnewhaven.org" class="btn-glass">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+                <a href="{{ url_for('sundays') }}" class="btn-glass">
+                    <i class="fas fa-calendar"></i> Join Us Sunday
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Sermons dashboard loaded');
+    
+    // Animate widgets on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all dashboard widgets
+    document.querySelectorAll('.dashboard-widget').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease-out';
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock %}

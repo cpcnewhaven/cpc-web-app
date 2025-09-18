@@ -34,6 +34,12 @@ def about():
     """About page with church information"""
     return render_template('about.html')
 
+@app.route('/sermons')
+def sermons():
+    """Sermons page with recent sermons"""
+    sermons = data_manager.get_recent_sermons()
+    return render_template('sermons_glass.html', sermons=sermons)
+
 @app.route('/podcasts')
 def podcasts():
     """Podcasts page with series and episodes"""
