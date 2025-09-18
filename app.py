@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
@@ -6,6 +6,7 @@ from flask_admin.contrib.sqla import ModelView
 from datetime import datetime, date
 import os
 from dotenv import load_dotenv
+from admin_utils import export_announcements_csv, export_sermons_csv, bulk_update_announcements, bulk_delete_content, get_content_stats, create_sample_podcast_series
 
 load_dotenv()
 
@@ -13,7 +14,13 @@ app = Flask(__name__)
 
 # Configuration
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///cpc_newhaven.db')
+# Database configuration
+database_url = os.getenv('DATABASE_URL', 'sqlite:///cpc_newhaven.db')
+# Handle PostgreSQL URL format for Render.com
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
@@ -262,47 +269,428 @@ def api_gallery():
         ]
     })
 
-# Admin Interface
+# Admin Management Routes
+@app.route('/admin/export/announcements')
+def admin_export_announcements():
+    """Export announcements to CSV"""
+    return export_announcements_csv()
+
+@app.route('/admin/export/sermons')
+def admin_export_sermons():
+    """Export sermons to CSV"""
+    return export_sermons_csv()
+
+@app.route('/admin/stats')
+def admin_stats():
+    """Get detailed content statistics"""
+    stats = get_content_stats()
+    return jsonify(stats)
+
+@app.route('/admin/setup/podcast-series')
+def admin_setup_podcast_series():
+    """Create default podcast series"""
+    created_count = create_sample_podcast_series()
+    return jsonify({'message': f'Created {created_count} podcast series', 'created': created_count})
+
+@app.route('/admin/bulk/announcements', methods=['POST'])
+def admin_bulk_announcements():
+    """Bulk operations on announcements"""
+    data = request.get_json()
+    action = data.get('action')
+    ids = data.get('ids', [])
+    field = data.get('field')
+    value = data.get('value')
+    
+    if action == 'update' and field and value is not None:
+        success = bulk_update_announcements(ids, field, value)
+        return jsonify({'success': success})
+    elif action == 'delete':
+        success = bulk_delete_content(Announcement, ids)
+        return jsonify({'success': success})
+    
+    return jsonify({'success': False, 'error': 'Invalid action'})
+
+@app.route('/admin/bulk/sermons', methods=['POST'])
+def admin_bulk_sermons():
+    """Bulk operations on sermons"""
+    data = request.get_json()
+    action = data.get('action')
+    ids = data.get('ids', [])
+    
+    if action == 'delete':
+        success = bulk_delete_content(Sermon, ids)
+        return jsonify({'success': success})
+    
+    return jsonify({'success': False, 'error': 'Invalid action'})
+
+# Enhanced Admin Interface
+from flask_admin import BaseView, expose
+from flask_admin.actions import action
+from flask_admin.form import Select2Field
+from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField
+from wtforms.validators import DataRequired, URL, Length
+from wtforms.widgets import TextArea
+from datetime import datetime
+
 class AnnouncementView(ModelView):
-    column_list = ('id', 'title', 'type', 'active', 'superfeatured', 'date_entered')
-    column_searchable_list = ('title', 'description')
-    column_filters = ('type', 'active', 'tag', 'superfeatured')
-    form_excluded_columns = ('date_entered',)
+    column_list = ('id', 'title', 'type', 'category', 'active', 'superfeatured', 'date_entered')
+    column_searchable_list = ('title', 'description', 'tag')
+    column_filters = ('type', 'active', 'tag', 'superfeatured', 'category')
+    column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered')
     column_default_sort = ('date_entered', True)
+    
+    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'superfeatured', 'featured_image')
+    form_extra_fields = {
+        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
+    }
+    
+    form_widget_args = {
+        'description': {'rows': 10, 'style': 'width: 100%'},
+        'featured_image': {'placeholder': 'https://example.com/image.jpg'}
+    }
+    
+    column_labels = {
+        'date_entered': 'Date Created',
+        'superfeatured': 'Super Featured',
+        'featured_image': 'Featured Image URL'
+    }
+    
+    form_choices = {
+        'type': [
+            ('announcement', 'Announcement'),
+            ('event', 'Event'),
+            ('ongoing', 'Ongoing'),
+            ('highlight', 'Highlight')
+        ],
+        'category': [
+            ('general', 'General'),
+            ('worship', 'Worship'),
+            ('education', 'Education'),
+            ('fellowship', 'Fellowship'),
+            ('missions', 'Missions'),
+            ('youth', 'Youth'),
+            ('children', 'Children')
+        ]
+    }
+    
+    @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
+    def toggle_active(self, ids):
+        try:
+            for id in ids:
+                announcement = Announcement.query.get(id)
+                if announcement:
+                    announcement.active = not announcement.active
+            db.session.commit()
+            flash(f'Successfully toggled active status for {len(ids)} announcements', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error toggling active status: {str(e)}', 'error')
+            return False
+    
+    @action('toggle_superfeatured', 'Toggle Super Featured', 'Are you sure you want to toggle the super featured status of selected items?')
+    def toggle_superfeatured(self, ids):
+        try:
+            for id in ids:
+                announcement = Announcement.query.get(id)
+                if announcement:
+                    announcement.superfeatured = not announcement.superfeatured
+            db.session.commit()
+            flash(f'Successfully toggled super featured status for {len(ids)} announcements', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error toggling super featured status: {str(e)}', 'error')
+            return False
+    
+    @action('set_category', 'Set Category', 'Are you sure you want to update the category of selected items?')
+    def set_category(self, ids):
+        # This would need a custom form, but for now we'll use a simple approach
+        category = request.form.get('category')
+        if category:
+            try:
+                for id in ids:
+                    announcement = Announcement.query.get(id)
+                    if announcement:
+                        announcement.category = category
+                db.session.commit()
+                flash(f'Successfully updated category for {len(ids)} announcements', 'success')
+                return True
+            except Exception as e:
+                flash(f'Error updating category: {str(e)}', 'error')
+                return False
+        return False
 
 class SermonView(ModelView):
-    column_list = ('id', 'title', 'author', 'date', 'scripture')
+    column_list = ('id', 'title', 'author', 'date', 'scripture', 'spotify_url', 'youtube_url')
     column_searchable_list = ('title', 'author', 'scripture')
     column_filters = ('author', 'date')
+    column_sortable_list = ('title', 'author', 'date')
     column_default_sort = ('date', True)
-
-class PodcastEpisodeView(ModelView):
-    column_list = ('number', 'title', 'series', 'guest', 'date_added')
-    column_searchable_list = ('title', 'guest')
-    column_filters = ('series', 'guest')
+    
+    form_columns = ('id', 'title', 'author', 'scripture', 'date', 'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url')
+    form_extra_fields = {
+        'scripture': TextAreaField('Scripture', widget=TextArea()),
+        'spotify_url': URLField('Spotify URL', validators=[URL()]),
+        'youtube_url': URLField('YouTube URL', validators=[URL()]),
+        'apple_podcasts_url': URLField('Apple Podcasts URL', validators=[URL()]),
+        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[URL()])
+    }
+    
+    form_widget_args = {
+        'scripture': {'rows': 3, 'style': 'width: 100%'},
+        'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
+        'youtube_url': {'placeholder': 'https://youtube.com/watch?v=...'},
+        'apple_podcasts_url': {'placeholder': 'https://podcasts.apple.com/podcast/...'},
+        'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'}
+    }
+    
+    column_labels = {
+        'spotify_url': 'Spotify',
+        'youtube_url': 'YouTube',
+        'apple_podcasts_url': 'Apple Podcasts',
+        'podcast_thumbnail_url': 'Thumbnail'
+    }
+    
+    @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected sermons?')
+    def bulk_delete(self, ids):
+        try:
+            for id in ids:
+                sermon = Sermon.query.get(id)
+                if sermon:
+                    db.session.delete(sermon)
+            db.session.commit()
+            flash(f'Successfully deleted {len(ids)} sermons', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error deleting sermons: {str(e)}', 'error')
+            return False
 
 class PodcastSeriesView(ModelView):
-    column_list = ('title', 'description')
+    column_list = ('title', 'description', 'episode_count')
     column_searchable_list = ('title', 'description')
+    column_sortable_list = ('title',)
+    
+    form_columns = ('title', 'description')
+    form_extra_fields = {
+        'description': TextAreaField('Description', widget=TextArea(), validators=[Length(max=1000)])
+    }
+    
+    form_widget_args = {
+        'description': {'rows': 5, 'style': 'width: 100%'}
+    }
+    
+    def episode_count(self, context, model, name):
+        return len(model.episodes) if model.episodes else 0
+    
+    episode_count.column_type = 'integer'
+
+class PodcastEpisodeView(ModelView):
+    column_list = ('number', 'title', 'series', 'guest', 'date_added', 'scripture')
+    column_searchable_list = ('title', 'guest', 'scripture')
+    column_filters = ('series', 'guest', 'season')
+    column_sortable_list = ('number', 'title', 'date_added')
+    column_default_sort = ('number', True)
+    
+    form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url')
+    form_extra_fields = {
+        'scripture': TextAreaField('Scripture', widget=TextArea()),
+        'link': URLField('Episode Link', validators=[URL()]),
+        'listen_url': URLField('Listen URL', validators=[URL()]),
+        'handout_url': URLField('Handout URL', validators=[URL()]),
+        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[URL()])
+    }
+    
+    form_widget_args = {
+        'scripture': {'rows': 3, 'style': 'width: 100%'},
+        'link': {'placeholder': 'https://example.com/episode'},
+        'listen_url': {'placeholder': 'https://example.com/listen'},
+        'handout_url': {'placeholder': 'https://example.com/handout.pdf'},
+        'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'}
+    }
+    
+    column_labels = {
+        'listen_url': 'Listen URL',
+        'handout_url': 'Handout URL',
+        'podcast_thumbnail_url': 'Thumbnail'
+    }
+    
+    @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected podcast episodes?')
+    def bulk_delete(self, ids):
+        try:
+            for id in ids:
+                episode = PodcastEpisode.query.get(id)
+                if episode:
+                    db.session.delete(episode)
+            db.session.commit()
+            flash(f'Successfully deleted {len(ids)} podcast episodes', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error deleting podcast episodes: {str(e)}', 'error')
+            return False
 
 class GalleryImageView(ModelView):
-    column_list = ('id', 'name', 'event', 'created')
+    column_list = ('id', 'name', 'event', 'created', 'tags_display')
     column_searchable_list = ('name',)
     column_filters = ('event',)
+    column_sortable_list = ('name', 'created')
+    column_default_sort = ('created', True)
+    
+    form_columns = ('id', 'name', 'url', 'size', 'type', 'tags', 'event')
+    form_extra_fields = {
+        'url': URLField('Image URL', validators=[DataRequired(), URL()]),
+        'tags': TextAreaField('Tags (comma-separated)', widget=TextArea())
+    }
+    
+    form_widget_args = {
+        'tags': {'rows': 3, 'style': 'width: 100%', 'placeholder': 'worship, fellowship, youth, etc.'},
+        'url': {'placeholder': 'https://example.com/image.jpg'}
+    }
+    
+    column_labels = {
+        'event': 'Is Event Photo'
+    }
+    
+    def tags_display(self, context, model, name):
+        if model.tags:
+            return ', '.join(model.tags) if isinstance(model.tags, list) else str(model.tags)
+        return ''
+    
+    tags_display.column_type = 'string'
+    
+    def on_model_change(self, form, model, is_created):
+        if form.tags.data:
+            # Convert comma-separated string to list
+            tags = [tag.strip() for tag in form.tags.data.split(',') if tag.strip()]
+            model.tags = tags
+    
+    @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected gallery images?')
+    def bulk_delete(self, ids):
+        try:
+            for id in ids:
+                image = GalleryImage.query.get(id)
+                if image:
+                    db.session.delete(image)
+            db.session.commit()
+            flash(f'Successfully deleted {len(ids)} gallery images', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error deleting gallery images: {str(e)}', 'error')
+            return False
+    
+    @action('toggle_event', 'Toggle Event Status', 'Are you sure you want to toggle the event status of selected images?')
+    def toggle_event(self, ids):
+        try:
+            for id in ids:
+                image = GalleryImage.query.get(id)
+                if image:
+                    image.event = not image.event
+            db.session.commit()
+            flash(f'Successfully toggled event status for {len(ids)} images', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error toggling event status: {str(e)}', 'error')
+            return False
 
 class OngoingEventView(ModelView):
-    column_list = ('id', 'title', 'type', 'active', 'date_entered')
+    column_list = ('id', 'title', 'type', 'category', 'active', 'date_entered')
     column_searchable_list = ('title', 'description')
-    column_filters = ('type', 'active')
+    column_filters = ('type', 'active', 'category')
+    column_sortable_list = ('title', 'type', 'active', 'date_entered')
+    column_default_sort = ('date_entered', True)
+    
+    form_columns = ('id', 'title', 'description', 'type', 'category', 'active')
+    form_extra_fields = {
+        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
+    }
+    
+    form_widget_args = {
+        'description': {'rows': 8, 'style': 'width: 100%'}
+    }
+    
+    form_choices = {
+        'type': [
+            ('ongoing', 'Ongoing'),
+            ('recurring', 'Recurring'),
+            ('special', 'Special Event')
+        ],
+        'category': [
+            ('worship', 'Worship'),
+            ('education', 'Education'),
+            ('fellowship', 'Fellowship'),
+            ('missions', 'Missions'),
+            ('youth', 'Youth'),
+            ('children', 'Children'),
+            ('prayer', 'Prayer')
+        ]
+    }
+    
+    column_labels = {
+        'date_entered': 'Date Created'
+    }
+    
+    @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
+    def toggle_active(self, ids):
+        try:
+            for id in ids:
+                event = OngoingEvent.query.get(id)
+                if event:
+                    event.active = not event.active
+            db.session.commit()
+            flash(f'Successfully toggled active status for {len(ids)} events', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error toggling active status: {str(e)}', 'error')
+            return False
+    
+    @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected events?')
+    def bulk_delete(self, ids):
+        try:
+            for id in ids:
+                event = OngoingEvent.query.get(id)
+                if event:
+                    db.session.delete(event)
+            db.session.commit()
+            flash(f'Successfully deleted {len(ids)} events', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error deleting events: {str(e)}', 'error')
+            return False
 
-# Setup admin
+# Custom Admin Dashboard
+class DashboardView(BaseView):
+    @expose('/')
+    def index(self):
+        stats = {
+            'announcements': Announcement.query.count(),
+            'active_announcements': Announcement.query.filter_by(active=True).count(),
+            'sermons': Sermon.query.count(),
+            'podcast_series': PodcastSeries.query.count(),
+            'podcast_episodes': PodcastEpisode.query.count(),
+            'gallery_images': GalleryImage.query.count(),
+            'ongoing_events': OngoingEvent.query.count(),
+            'active_events': OngoingEvent.query.filter_by(active=True).count()
+        }
+        
+        recent_announcements = Announcement.query.order_by(Announcement.date_entered.desc()).limit(5).all()
+        recent_sermons = Sermon.query.order_by(Sermon.date.desc()).limit(5).all()
+        
+        return self.render('admin/dashboard.html', 
+                         stats=stats, 
+                         recent_announcements=recent_announcements,
+                         recent_sermons=recent_sermons)
+
+# Setup admin with enhanced organization
 admin = Admin(app, name='CPC Admin', template_mode='bootstrap3')
-admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements'))
-admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Ongoing Events'))
-admin.add_view(SermonView(Sermon, db.session, name='Sermons'))
-admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series'))
-admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes'))
-admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery Images'))
+
+# Add dashboard view
+admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
+
+# Add views with categories
+admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
+admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
+admin.add_view(SermonView(Sermon, db.session, name='Sermons', category='Media'))
+admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
+admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
+admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
 
 if __name__ == '__main__':
     with app.app_context():

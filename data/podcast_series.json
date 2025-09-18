@@ -1,0 +1,22 @@
+[
+  {
+    "id": "series_001",
+    "title": "Beyond the Sunday Sermon",
+    "description": "Extended conversations and deeper dives into biblical topics with our pastoral staff and special guests."
+  },
+  {
+    "id": "series_002",
+    "title": "Biblical Interpretation",
+    "description": "Teaching series on how to read and understand Scripture in its historical and theological context."
+  },
+  {
+    "id": "series_003",
+    "title": "Confessional Theology",
+    "description": "Exploring Reformed theology and doctrine through systematic study of our confessional standards."
+  },
+  {
+    "id": "series_004",
+    "title": "Membership Seminar",
+    "description": "Understanding church membership and the Christian life through our comprehensive membership course."
+  }
+]

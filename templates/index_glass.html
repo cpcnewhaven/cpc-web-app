@@ -1,0 +1,197 @@
+{% extends "base_glass.html" %}
+
+{% block title %}CPC New Haven - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-glass animate-fade-in">
+    <h1>Welcome to Christ Presbyterian Church</h1>
+    <p>Growing in the truth and grace of Jesus Christ, acting as a faithful witness in the greater New Haven community and world, trusting in the grace and power of the Holy Spirit.</p>
+    <div style="margin-top: var(--space-lg);">
+        <a href="{{ url_for('sundays') }}" class="btn-glass btn-glass-primary">
+            <i class="fas fa-calendar-alt"></i> Join Us This Sunday
+        </a>
+        <a href="{{ url_for('about') }}" class="btn-glass">
+            <i class="fas fa-info-circle"></i> Learn More
+        </a>
+    </div>
+</section>
+
+<!-- Service Information -->
+<section class="glass-grid glass-grid-3" style="margin-top: var(--space-xl);">
+    <div class="card-glass animate-fade-in-up">
+        <div style="text-align: center; margin-bottom: var(--space-md);">
+            <i class="fas fa-clock" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
+            <h3>Sunday Worship</h3>
+        </div>
+        <p><strong>10:30 AM</strong></p>
+        <p>Join us for worship, preaching, and communion every Sunday morning.</p>
+    </div>
+    
+    <div class="card-glass animate-fade-in-up" style="animation-delay: 0.2s;">
+        <div style="text-align: center; margin-bottom: var(--space-md);">
+            <i class="fas fa-graduation-cap" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
+            <h3>Sunday School</h3>
+        </div>
+        <p><strong>9:30 AM</strong></p>
+        <p>Children's Sunday School and Adult Bible Studies for all ages.</p>
+    </div>
+    
+    <div class="card-glass animate-fade-in-up" style="animation-delay: 0.4s;">
+        <div style="text-align: center; margin-bottom: var(--space-md);">
+            <i class="fas fa-users" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
+            <h3>Fellowship</h3>
+        </div>
+        <p><strong>12:00 PM</strong></p>
+        <p>Stay for fellowship lunch and community after worship.</p>
+    </div>
+</section>
+
+<!-- Featured Announcements -->
+{% if superfeatured %}
+<section style="margin-top: var(--space-xl);">
+    <div class="glass-card" style="text-align: center; margin-bottom: var(--space-lg);">
+        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-sm);">Featured Announcements</h2>
+        <p style="color: #666;">Important updates and upcoming events</p>
+    </div>
+    
+    <div class="glass-grid glass-grid-2">
+        {% for announcement in superfeatured %}
+        <div class="card-glass animate-fade-in-up">
+            {% if announcement.featured_image %}
+            <div style="width: 100%; height: 200px; background-image: url('{{ announcement.featured_image }}'); background-size: cover; background-position: center; border-radius: var(--radius-medium); margin-bottom: var(--space-md);"></div>
+            {% endif %}
+            <h3>{{ announcement.title }}</h3>
+            <p>{{ announcement.description }}</p>
+            <div style="margin-top: var(--space-md);">
+                <span class="glass-button" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm);">
+                    {{ announcement.category|title }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Recent Sermons -->
+{% if recent_sermons %}
+<section style="margin-top: var(--space-xl);">
+    <div class="glass-card" style="text-align: center; margin-bottom: var(--space-lg);">
+        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-sm);">Recent Sermons</h2>
+        <p style="color: #666;">Latest messages from our worship services</p>
+    </div>
+    
+    <div class="glass-grid glass-grid-3">
+        {% for sermon in recent_sermons %}
+        <div class="card-glass animate-fade-in-up">
+            {% if sermon.podcast_thumbnail_url %}
+            <div style="width: 100%; height: 150px; background-image: url('{{ sermon.podcast_thumbnail_url }}'); background-size: cover; background-position: center; border-radius: var(--radius-medium); margin-bottom: var(--space-md);"></div>
+            {% endif %}
+            <h3>{{ sermon.title }}</h3>
+            <p><strong>Speaker:</strong> {{ sermon.author }}</p>
+            {% if sermon.scripture %}
+            <p><strong>Scripture:</strong> {{ sermon.scripture }}</p>
+            {% endif %}
+            <p><strong>Date:</strong> {{ sermon.date }}</p>
+            <div style="margin-top: var(--space-md);">
+                <a href="{{ url_for('sermons') }}" class="btn-glass">
+                    <i class="fas fa-play"></i> Listen Now
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Quick Links -->
+<section style="margin-top: var(--space-xl);">
+    <div class="glass-card" style="text-align: center; margin-bottom: var(--space-lg);">
+        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-sm);">Quick Links</h2>
+        <p style="color: #666;">Explore our community and resources</p>
+    </div>
+    
+    <div class="glass-grid glass-grid-4">
+        <a href="{{ url_for('podcasts') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit;">
+            <div style="text-align: center;">
+                <i class="fas fa-podcast" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
+                <h3>Podcasts</h3>
+                <p>Listen to sermons and discussions</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('events') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit; animation-delay: 0.1s;">
+            <div style="text-align: center;">
+                <i class="fas fa-calendar" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
+                <h3>Events</h3>
+                <p>Upcoming activities and gatherings</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('community') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit; animation-delay: 0.2s;">
+            <div style="text-align: center;">
+                <i class="fas fa-users" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
+                <h3>Community</h3>
+                <p>Join our church family</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('live') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit; animation-delay: 0.3s;">
+            <div style="text-align: center;">
+                <i class="fas fa-video" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
+                <h3>Live Stream</h3>
+                <p>Watch services online</p>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section style="margin-top: var(--space-xl);">
+    <div class="glass-card" style="text-align: center; background: var(--cpc-blue-glass);">
+        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-md);">Ready to Visit?</h2>
+        <p style="margin-bottom: var(--space-lg);">We'd love to welcome you to our community. Join us this Sunday at 10:30 AM.</p>
+        <div>
+            <a href="{{ url_for('sundays') }}" class="btn-glass btn-glass-primary">
+                <i class="fas fa-map-marker-alt"></i> Get Directions
+            </a>
+            <a href="mailto:admin@cpcnewhaven.org" class="btn-glass">
+                <i class="fas fa-envelope"></i> Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any homepage-specific JavaScript here
+    console.log('CPC New Haven homepage loaded');
+    
+    // Animate elements on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all animated elements
+    document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease-out';
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock %}

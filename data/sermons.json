@@ -1,0 +1,35 @@
+[
+  {
+    "id": "serm_001",
+    "title": "The Grace of God",
+    "author": "Pastor Craig Luekens",
+    "scripture": "Ephesians 2:8-9",
+    "date": "2024-01-07",
+    "spotify_url": "https://open.spotify.com/episode/example1",
+    "youtube_url": "https://youtube.com/watch?v=example1",
+    "apple_podcasts_url": "https://podcasts.apple.com/podcast/example1",
+    "podcast_thumbnail_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+  },
+  {
+    "id": "serm_002",
+    "title": "Walking in Faith",
+    "author": "Pastor Craig Luekens",
+    "scripture": "Hebrews 11:1-6",
+    "date": "2024-01-14",
+    "spotify_url": "https://open.spotify.com/episode/example2",
+    "youtube_url": "https://youtube.com/watch?v=example2",
+    "apple_podcasts_url": "https://podcasts.apple.com/podcast/example2",
+    "podcast_thumbnail_url": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=400&fit=crop"
+  },
+  {
+    "id": "serm_003",
+    "title": "The Love of Christ",
+    "author": "Pastor Jerry Ornelas",
+    "scripture": "Romans 8:35-39",
+    "date": "2024-01-21",
+    "spotify_url": "https://open.spotify.com/episode/example3",
+    "youtube_url": "https://youtube.com/watch?v=example3",
+    "apple_podcasts_url": "https://podcasts.apple.com/podcast/example3",
+    "podcast_thumbnail_url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop"
+  }
+]

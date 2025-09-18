@@ -6,16 +6,136 @@
 <!-- Hero Section -->
 <section class="page-hero">
     <div class="container">
-        <h1>Events</h1>
-        <p>Upcoming events and ongoing activities at CPC New Haven</p>
+        <h1>Events & Activities</h1>
+        <p>Join us for fellowship, learning, and community events</p>
     </div>
 </section>
 
-<!-- Events Section -->
+<!-- Events Content -->
 <section class="events-section">
     <div class="container">
-        <div id="events-container">
-            <!-- Events will be populated by JavaScript -->
+        <div class="events-content">
+            <h2>Upcoming Events</h2>
+            <div class="events-grid" id="eventsGrid">
+                <!-- Events will be populated by JavaScript -->
+                <div class="loading-message">Loading events...</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Event Categories -->
+<section class="event-categories-section">
+    <div class="container">
+        <h2>Event Categories</h2>
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Weekly Events</h3>
+                <p>Regular weekly gatherings including Bible studies, prayer meetings, and fellowship groups.</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3>Educational</h3>
+                <p>Classes, seminars, and educational programs for spiritual growth and learning.</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Fellowship</h3>
+                <p>Community building events, social gatherings, and fellowship opportunities.</p>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Service</h3>
+                <p>Outreach events, service projects, and opportunities to serve our community.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Regular Schedule -->
+<section class="regular-schedule-section">
+    <div class="container">
+        <h2>Regular Schedule</h2>
+        <div class="schedule-list">
+            <div class="schedule-item">
+                <div class="schedule-day">Sunday</div>
+                <div class="schedule-events">
+                    <div class="schedule-event">
+                        <span class="time">8:30am</span>
+                        <span class="event">Prayer in the Parlor</span>
+                    </div>
+                    <div class="schedule-event">
+                        <span class="time">9:30am</span>
+                        <span class="event">Sunday School & Adult Studies</span>
+                    </div>
+                    <div class="schedule-event">
+                        <span class="time">10:30am</span>
+                        <span class="event">Sunday Worship Service</span>
+                    </div>
+                    <div class="schedule-event">
+                        <span class="time">12:00pm</span>
+                        <span class="event">Fellowship Lunch</span>
+                    </div>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-day">Wednesday</div>
+                <div class="schedule-events">
+                    <div class="schedule-event">
+                        <span class="time">7:00pm</span>
+                        <span class="event">Bible Study</span>
+                    </div>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-day">Friday</div>
+                <div class="schedule-events">
+                    <div class="schedule-event">
+                        <span class="time">7:00pm</span>
+                        <span class="event">Youth Group Meeting</span>
+                    </div>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-day">Saturday</div>
+                <div class="schedule-events">
+                    <div class="schedule-event">
+                        <span class="time">8:00am</span>
+                        <span class="event">Men's Fellowship</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="events-contact-section">
+    <div class="container">
+        <h2>Questions About Events?</h2>
+        <p>If you have questions about any of our events or would like to get involved, please don't hesitate to contact us.</p>
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>admin@cpcnewhaven.org</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>(203) 555-0123</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>135 Whitney Ave, New Haven, CT 06510</span>
+            </div>
         </div>
     </div>
 </section>
@@ -24,34 +144,46 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Load ongoing events
-    fetch('/api/ongoing-events')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('events-container');
-            
-            if (data.ongoingEvents && data.ongoingEvents.length > 0) {
-                data.ongoingEvents.forEach(event => {
-                    const eventElement = document.createElement('div');
-                    eventElement.classList.add('event-card');
-                    eventElement.innerHTML = `
-                        <h3>${event.title}</h3>
-                        <p>${event.description}</p>
-                        <div class="event-meta">
-                            <span class="event-type">${event.type}</span>
-                            <span class="event-category">${event.category}</span>
-                        </div>
-                    `;
-                    container.appendChild(eventElement);
-                });
-            } else {
-                container.innerHTML = '<p>No events scheduled at this time.</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Error loading events:', error);
-            document.getElementById('events-container').innerHTML = '<p>Error loading events.</p>';
-        });
+    // Load events from API
+    loadEvents();
+    
+    function loadEvents() {
+        fetch('/api/ongoing-events')
+            .then(response => response.json())
+            .then(data => {
+                displayEvents(data.events);
+            })
+            .catch(error => {
+                console.error('Error loading events:', error);
+                document.getElementById('eventsGrid').innerHTML = 
+                    '<div class="error-message">Unable to load events. Please try again later.</div>';
+            });
+    }
+    
+    function displayEvents(events) {
+        const eventsGrid = document.getElementById('eventsGrid');
+        
+        if (!events || events.length === 0) {
+            eventsGrid.innerHTML = '<div class="no-events-message">No upcoming events at this time.</div>';
+            return;
+        }
+        
+        eventsGrid.innerHTML = events.map(event => `
+            <div class="event-card">
+                <div class="event-header">
+                    <h3>${event.title}</h3>
+                    <span class="event-type">${event.type}</span>
+                </div>
+                <div class="event-content">
+                    <p>${event.description}</p>
+                    <div class="event-meta">
+                        <span class="event-category">${event.category}</span>
+                        ${event.active ? '<span class="event-status active">Active</span>' : '<span class="event-status inactive">Inactive</span>'}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
 });
 </script>
 {% endblock %}

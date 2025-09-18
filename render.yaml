@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: cpc-new-haven
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python migrate_data.py
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cpc-database
+          property: connectionString
+    healthCheckPath: /
+    autoDeploy: true
+
+databases:
+  - name: cpc-database
+    plan: free
+    databaseName: cpc_new_haven
+    user: cpc_user

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ann_001",
+    "title": "Welcome to CPC New Haven",
+    "description": "We are excited to welcome you to our church community. Join us for worship every Sunday at 10:30am.",
+    "type": "announcement",
+    "category": "general",
+    "tag": "welcome",
+    "active": true,
+    "superfeatured": true,
+    "date_entered": "2024-01-15T10:00:00Z",
+    "featured_image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "ann_002",
+    "title": "Sunday School Classes Resume",
+    "description": "Children's Sunday School and Adult Sunday Studies begin at 9:30am every Sunday.",
+    "type": "event",
+    "category": "education",
+    "tag": "sunday-school",
+    "active": true,
+    "superfeatured": false,
+    "date_entered": "2024-01-10T14:30:00Z",
+    "featured_image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "ann_003",
+    "title": "Fellowship Lunch",
+    "description": "Join us for fellowship lunch every Sunday after worship service at 12:00pm.",
+    "type": "ongoing",
+    "category": "fellowship",
+    "tag": "fellowship",
+    "active": true,
+    "superfeatured": false,
+    "date_entered": "2024-01-08T09:15:00Z",
+    "featured_image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop"
+  }
+]

@@ -4,42 +4,252 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="page-hero">
+<section class="page-hero live-hero">
     <div class="container">
-        <h1>Watch Live</h1>
+        <h1>Live Worship</h1>
         <p>Join us for live worship services and events</p>
     </div>
 </section>
 
-<!-- Live Section -->
-<section class="live-section">
+<!-- Live Stream Section -->
+<section class="live-stream-section">
     <div class="container">
         <div class="live-content">
-            <h2>Sunday Worship Service</h2>
-            <p>Join us live every Sunday at 10:30am for our worship service.</p>
-            
-            <div class="live-stream">
-                <div class="stream-placeholder">
-                    <h3>Live Stream Coming Soon</h3>
-                    <p>We're working on setting up live streaming for our worship services. Check back soon!</p>
+            <div class="live-video-container">
+                <div class="live-video-placeholder">
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        <span>LIVE</span>
+                    </div>
+                    <div class="video-placeholder">
+                        <i class="fas fa-video"></i>
+                        <p>Live stream will appear here during worship services</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="service-info">
-                <h3>Service Times</h3>
-                <ul>
-                    <li>8:30am - Prayer in the Parlor</li>
-                    <li>9:30am - Sunday School & Adult Studies</li>
-                    <li>10:30am - Worship Service</li>
-                    <li>12:00pm - Fellowship Lunch</li>
-                </ul>
-            </div>
-            
-            <div class="contact-info">
-                <h3>Can't Join Us Live?</h3>
-                <p>Our sermons are available on our <a href="{{ url_for('sermons') }}">Sermons page</a> and on our podcast platforms.</p>
+            <div class="live-info">
+                <h2>Sunday Worship Service</h2>
+                <div class="service-details">
+                    <div class="service-time">
+                        <i class="fas fa-clock"></i>
+                        <span>Every Sunday at 10:30am EST</span>
+                    </div>
+                    <div class="service-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>135 Whitney Ave, New Haven, CT</span>
+                    </div>
+                </div>
+                
+                <div class="live-actions">
+                    <button class="btn btn-primary" onclick="joinLive()">
+                        <i class="fas fa-play"></i> Join Live Stream
+                    </button>
+                    <button class="btn btn-secondary" onclick="openChat()">
+                        <i class="fas fa-comments"></i> Live Chat
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Service Schedule -->
+<section class="service-schedule-section">
+    <div class="container">
+        <h2>Service Schedule</h2>
+        <div class="schedule-timeline">
+            <div class="schedule-item">
+                <div class="schedule-time">8:30am</div>
+                <div class="schedule-content">
+                    <h3>Prayer in the Parlor</h3>
+                    <p>Join us for prayer and fellowship in the church parlor</p>
+                </div>
+            </div>
+            
+            <div class="schedule-item">
+                <div class="schedule-time">9:30am</div>
+                <div class="schedule-content">
+                    <h3>Sunday School & Adult Studies</h3>
+                    <p>Children's Sunday School and Adult Bible Studies</p>
+                </div>
+            </div>
+            
+            <div class="schedule-item featured">
+                <div class="schedule-time">10:30am</div>
+                <div class="schedule-content">
+                    <h3>Sunday Worship Service</h3>
+                    <p>Our main worship service with preaching, prayer, and communion</p>
+                    <span class="live-badge">LIVE STREAM</span>
+                </div>
+            </div>
+            
+            <div class="schedule-item">
+                <div class="schedule-time">12:00pm</div>
+                <div class="schedule-content">
+                    <h3>Fellowship Lunch</h3>
+                    <p>Stay for fellowship and community after worship</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Live Chat Section -->
+<section class="live-chat-section" id="liveChat" style="display: none;">
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>Live Chat</h3>
+                <button class="close-chat" onclick="closeChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message">
+                    <span class="message-author">Moderator</span>
+                    <span class="message-text">Welcome to our live worship service! Please feel free to share prayer requests or ask questions.</span>
+                    <span class="message-time">10:30 AM</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technical Requirements -->
+<section class="technical-requirements-section">
+    <div class="container">
+        <h2>Technical Requirements</h2>
+        <div class="requirements-grid">
+            <div class="requirement-card">
+                <div class="requirement-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <h3>Internet Connection</h3>
+                <p>Stable internet connection recommended for best viewing experience</p>
+            </div>
+            
+            <div class="requirement-card">
+                <div class="requirement-icon">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <h3>Device Compatibility</h3>
+                <p>Works on desktop, tablet, and mobile devices with modern browsers</p>
+            </div>
+            
+            <div class="requirement-card">
+                <div class="requirement-icon">
+                    <i class="fas fa-volume-up"></i>
+                </div>
+                <h3>Audio</h3>
+                <p>Ensure your device's audio is enabled for the best worship experience</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Support -->
+<section class="support-section">
+    <div class="container">
+        <h2>Need Help?</h2>
+        <p>If you're experiencing technical difficulties with our live stream, please contact us:</p>
+        <div class="support-contact">
+            <div class="support-item">
+                <i class="fas fa-envelope"></i>
+                <span>tech@cpcnewhaven.org</span>
+            </div>
+            <div class="support-item">
+                <i class="fas fa-phone"></i>
+                <span>(203) 555-0123</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if it's currently a worship service time
+    checkServiceTime();
+    
+    // Update live indicator
+    updateLiveIndicator();
+    
+    // Set up chat functionality
+    setupChat();
+});
+
+function checkServiceTime() {
+    const now = new Date();
+    const day = now.getDay(); // 0 = Sunday
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    
+    // Check if it's Sunday between 10:30 AM and 12:00 PM
+    if (day === 0 && hour >= 10 && hour < 12) {
+        document.querySelector('.live-indicator').style.display = 'flex';
+        document.querySelector('.video-placeholder p').textContent = 'Live stream is currently active';
+    }
+}
+
+function updateLiveIndicator() {
+    const liveDot = document.querySelector('.live-dot');
+    if (liveDot) {
+        setInterval(() => {
+            liveDot.style.opacity = liveDot.style.opacity === '0.3' ? '1' : '0.3';
+        }, 1000);
+    }
+}
+
+function joinLive() {
+    // In a real implementation, this would start the live stream
+    alert('Live stream functionality would be implemented here. This would connect to your streaming service (YouTube Live, Facebook Live, etc.)');
+}
+
+function openChat() {
+    document.getElementById('liveChat').style.display = 'block';
+    document.getElementById('chatInput').focus();
+}
+
+function closeChat() {
+    document.getElementById('liveChat').style.display = 'none';
+}
+
+function setupChat() {
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+}
+
+function sendMessage() {
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+    
+    if (chatInput.value.trim()) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message';
+        messageDiv.innerHTML = `
+            <span class="message-author">You</span>
+            <span class="message-text">${chatInput.value}</span>
+            <span class="message-time">${new Date().toLocaleTimeString()}</span>
+        `;
+        
+        chatMessages.appendChild(messageDiv);
+        chatInput.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+</script>
 {% endblock %}

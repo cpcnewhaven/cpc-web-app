@@ -1,0 +1,38 @@
+[
+  {
+    "id": "event_001",
+    "title": "Prayer in the Parlor",
+    "description": "Join us for prayer every Sunday at 8:30am in the parlor.",
+    "type": "ongoing",
+    "category": "prayer",
+    "active": true,
+    "date_entered": "2024-01-01T08:30:00Z"
+  },
+  {
+    "id": "event_002",
+    "title": "Bible Study",
+    "description": "Weekly Bible study on Wednesdays at 7:00pm.",
+    "type": "ongoing",
+    "category": "education",
+    "active": true,
+    "date_entered": "2024-01-01T19:00:00Z"
+  },
+  {
+    "id": "event_003",
+    "title": "Men's Fellowship",
+    "description": "Men's fellowship group meets every Saturday at 8:00am.",
+    "type": "ongoing",
+    "category": "fellowship",
+    "active": true,
+    "date_entered": "2024-01-01T08:00:00Z"
+  },
+  {
+    "id": "event_004",
+    "title": "Youth Group Meeting",
+    "description": "High school and middle school students meet every Friday at 7:00pm for fellowship and study.",
+    "type": "ongoing",
+    "category": "youth",
+    "active": true,
+    "date_entered": "2024-01-01T19:00:00Z"
+  }
+]

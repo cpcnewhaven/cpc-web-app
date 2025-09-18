@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ep_001",
+    "series_id": "series_001",
+    "number": 1,
+    "title": "Understanding Grace",
+    "link": "https://example.com/beyond1",
+    "listen_url": "https://example.com/listen1",
+    "handout_url": "https://example.com/handout1.pdf",
+    "guest": "Dr. Jane Doe",
+    "date_added": "2024-01-08",
+    "season": 1,
+    "scripture": "Romans 3:23-24",
+    "podcast_thumbnail_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+  },
+  {
+    "id": "ep_002",
+    "series_id": "series_001",
+    "number": 2,
+    "title": "The Role of Prayer",
+    "link": "https://example.com/beyond2",
+    "listen_url": "https://example.com/listen2",
+    "handout_url": "https://example.com/handout2.pdf",
+    "guest": "Pastor Mike Johnson",
+    "date_added": "2024-01-15",
+    "season": 1,
+    "scripture": "Philippians 4:6-7",
+    "podcast_thumbnail_url": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=400&fit=crop"
+  }
+]

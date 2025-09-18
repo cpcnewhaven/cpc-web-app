@@ -1,0 +1,470 @@
+/* Glass Morphism Design System for CPC New Haven */
+
+:root {
+  /* Color Palette */
+  --cpc-blue: #0078D4;
+  --cpc-blue-light: #4A9EFF;
+  --cpc-blue-dark: #005A9E;
+  --cpc-blue-glass: rgba(0, 120, 212, 0.1);
+  --cpc-blue-glass-strong: rgba(0, 120, 212, 0.2);
+  
+  /* Glass Colors */
+  --glass-white: rgba(255, 255, 255, 0.25);
+  --glass-white-strong: rgba(255, 255, 255, 0.35);
+  --glass-black: rgba(0, 0, 0, 0.1);
+  --glass-black-strong: rgba(0, 0, 0, 0.2);
+  
+  /* Background Gradients */
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-gradient-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --bg-gradient-dark: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  
+  /* Shadows */
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --shadow-glass-strong: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
+  --shadow-soft: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
+  --shadow-strong: 0 8px 24px 0 rgba(0, 0, 0, 0.15);
+  
+  /* Border Radius */
+  --radius-small: 8px;
+  --radius-medium: 12px;
+  --radius-large: 16px;
+  --radius-xl: 24px;
+  
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  line-height: 1.6;
+  color: #333;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Glass Morphism Components */
+.glass-card {
+  background: var(--glass-white);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-glass);
+  transition: all var(--transition-medium);
+}
+
+.glass-card:hover {
+  background: var(--glass-white-strong);
+  box-shadow: var(--shadow-glass-strong);
+  transform: translateY(-2px);
+}
+
+.glass-card-dark {
+  background: var(--glass-black);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-glass);
+  color: white;
+}
+
+.glass-button {
+  background: var(--glass-white);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-medium);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--cpc-blue);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+}
+
+.glass-button:hover {
+  background: var(--cpc-blue-glass-strong);
+  color: var(--cpc-blue-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-strong);
+}
+
+.glass-button-primary {
+  background: var(--cpc-blue);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-button-primary:hover {
+  background: var(--cpc-blue-dark);
+  color: white;
+}
+
+.glass-input {
+  background: var(--glass-white);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-medium);
+  padding: var(--space-sm) var(--space-md);
+  color: #333;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: var(--cpc-blue);
+  box-shadow: 0 0 0 3px var(--cpc-blue-glass);
+  background: var(--glass-white-strong);
+}
+
+.glass-input::placeholder {
+  color: rgba(51, 51, 51, 0.6);
+}
+
+/* Navigation */
+.nav-glass {
+  background: var(--glass-white);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-large);
+  padding: var(--space-sm) var(--space-lg);
+  margin: var(--space-md);
+  box-shadow: var(--shadow-glass);
+  position: sticky;
+  top: var(--space-md);
+  z-index: 1000;
+}
+
+.nav-glass ul {
+  list-style: none;
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-glass a {
+  color: var(--cpc-blue);
+  text-decoration: none;
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-small);
+  transition: all var(--transition-fast);
+}
+
+.nav-glass a:hover {
+  background: var(--cpc-blue-glass);
+  color: var(--cpc-blue-dark);
+}
+
+/* Hero Sections */
+.hero-glass {
+  background: var(--glass-white);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  margin: var(--space-lg);
+  text-align: center;
+  box-shadow: var(--shadow-glass);
+}
+
+.hero-glass h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--cpc-blue);
+  margin-bottom: var(--space-md);
+  background: linear-gradient(135deg, var(--cpc-blue), var(--cpc-blue-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-glass p {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Grid Layouts */
+.glass-grid {
+  display: grid;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+}
+
+.glass-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.glass-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.glass-grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Cards */
+.card-glass {
+  background: var(--glass-white);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-large);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-glass);
+  transition: all var(--transition-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.card-glass:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glass-strong);
+}
+
+.card-glass h3 {
+  color: var(--cpc-blue);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.card-glass p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+/* Buttons */
+.btn-glass {
+  background: var(--glass-white);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-medium);
+  padding: var(--space-sm) var(--space-lg);
+  color: var(--cpc-blue);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  font-size: 1rem;
+}
+
+.btn-glass:hover {
+  background: var(--cpc-blue-glass-strong);
+  color: var(--cpc-blue-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-strong);
+}
+
+.btn-glass-primary {
+  background: var(--cpc-blue);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-glass-primary:hover {
+  background: var(--cpc-blue-dark);
+  color: white;
+}
+
+/* Forms */
+.form-glass {
+  background: var(--glass-white);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-large);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-glass);
+}
+
+.form-group {
+  margin-bottom: var(--space-md);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-weight: 600;
+  color: var(--cpc-blue);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-glass {
+    margin: var(--space-sm);
+    padding: var(--space-sm);
+  }
+  
+  .nav-glass ul {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .hero-glass {
+    margin: var(--space-sm);
+    padding: var(--space-lg);
+  }
+  
+  .hero-glass h1 {
+    font-size: 2rem;
+  }
+  
+  .glass-grid {
+    padding: var(--space-sm);
+    gap: var(--space-md);
+  }
+  
+  .card-glass {
+    padding: var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-glass h1 {
+    font-size: 1.5rem;
+  }
+  
+  .hero-glass p {
+    font-size: 1rem;
+  }
+  
+  .glass-grid-2,
+  .glass-grid-3,
+  .glass-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--space-xs); }
+.mb-2 { margin-bottom: var(--space-sm); }
+.mb-3 { margin-bottom: var(--space-md); }
+.mb-4 { margin-bottom: var(--space-lg); }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--space-xs); }
+.mt-2 { margin-top: var(--space-sm); }
+.mt-3 { margin-top: var(--space-md); }
+.mt-4 { margin-top: var(--space-lg); }
+
+.p-0 { padding: 0; }
+.p-1 { padding: var(--space-xs); }
+.p-2 { padding: var(--space-sm); }
+.p-3 { padding: var(--space-md); }
+.p-4 { padding: var(--space-lg); }
+
+.hidden { display: none; }
+.visible { display: block; }
+
+/* Loading States */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  color: #666;
+}
+
+.loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--cpc-blue-glass);
+  border-top: 2px solid var(--cpc-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: var(--space-sm);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

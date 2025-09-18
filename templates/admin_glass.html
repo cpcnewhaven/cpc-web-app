@@ -1,0 +1,395 @@
+{% extends "base_glass.html" %}
+
+{% block title %}Admin - CPC New Haven{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: var(--space-lg);">
+    <!-- Admin Header -->
+    <div class="glass-card" style="text-align: center; margin-bottom: var(--space-xl);">
+        <h1 style="color: var(--cpc-blue); margin-bottom: var(--space-sm);">CPC New Haven Admin</h1>
+        <p>Manage your church website content easily</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="glass-grid glass-grid-4" style="margin-bottom: var(--space-xl);">
+        <div class="card-glass" style="text-align: center;">
+            <h3 style="color: var(--cpc-blue);">{{ announcements|length }}</h3>
+            <p>Announcements</p>
+        </div>
+        <div class="card-glass" style="text-align: center;">
+            <h3 style="color: var(--cpc-blue);">{{ sermons|length }}</h3>
+            <p>Sermons</p>
+        </div>
+        <div class="card-glass" style="text-align: center;">
+            <h3 style="color: var(--cpc-blue);">{{ events|length }}</h3>
+            <p>Events</p>
+        </div>
+        <div class="card-glass" style="text-align: center;">
+            <h3 style="color: var(--cpc-blue);">{{ gallery|length }}</h3>
+            <p>Gallery Images</p>
+        </div>
+    </div>
+
+    <!-- Content Management Tabs -->
+    <div class="glass-card">
+        <div style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg); flex-wrap: wrap;">
+            <button class="btn-glass" onclick="showTab('announcements')" id="tab-announcements">
+                <i class="fas fa-bullhorn"></i> Announcements
+            </button>
+            <button class="btn-glass" onclick="showTab('sermons')" id="tab-sermons">
+                <i class="fas fa-microphone"></i> Sermons
+            </button>
+            <button class="btn-glass" onclick="showTab('events')" id="tab-events">
+                <i class="fas fa-calendar"></i> Events
+            </button>
+            <button class="btn-glass" onclick="showTab('gallery')" id="tab-gallery">
+                <i class="fas fa-images"></i> Gallery
+            </button>
+        </div>
+
+        <!-- Announcements Tab -->
+        <div id="content-announcements" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h2>Announcements</h2>
+                <button class="btn-glass btn-glass-primary" onclick="showAddForm('announcement')">
+                    <i class="fas fa-plus"></i> Add Announcement
+                </button>
+            </div>
+            
+            <div class="glass-grid glass-grid-2">
+                {% for announcement in announcements %}
+                <div class="card-glass">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-sm);">
+                        <h3>{{ announcement.title }}</h3>
+                        <div>
+                            {% if announcement.superfeatured %}
+                            <span class="glass-button" style="font-size: 0.7rem; padding: 2px 6px; background: var(--cpc-blue); color: white;">Featured</span>
+                            {% endif %}
+                            {% if announcement.active %}
+                            <span class="glass-button" style="font-size: 0.7rem; padding: 2px 6px; background: #28a745; color: white;">Active</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <p style="margin-bottom: var(--space-sm);">{{ announcement.description[:100] }}{% if announcement.description|length > 100 %}...{% endif %}</p>
+                    <div style="display: flex; gap: var(--space-xs);">
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm);" onclick="editItem('announcement', '{{ announcement.id }}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm); background: #dc3545; color: white;" onclick="deleteItem('announcement', '{{ announcement.id }}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Sermons Tab -->
+        <div id="content-sermons" class="tab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h2>Sermons</h2>
+                <button class="btn-glass btn-glass-primary" onclick="showAddForm('sermon')">
+                    <i class="fas fa-plus"></i> Add Sermon
+                </button>
+            </div>
+            
+            <div class="glass-grid glass-grid-2">
+                {% for sermon in sermons %}
+                <div class="card-glass">
+                    <h3>{{ sermon.title }}</h3>
+                    <p><strong>Speaker:</strong> {{ sermon.author }}</p>
+                    <p><strong>Date:</strong> {{ sermon.date }}</p>
+                    {% if sermon.scripture %}
+                    <p><strong>Scripture:</strong> {{ sermon.scripture }}</p>
+                    {% endif %}
+                    <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm);" onclick="editItem('sermon', '{{ sermon.id }}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm); background: #dc3545; color: white;" onclick="deleteItem('sermon', '{{ sermon.id }}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Events Tab -->
+        <div id="content-events" class="tab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h2>Events</h2>
+                <button class="btn-glass btn-glass-primary" onclick="showAddForm('event')">
+                    <i class="fas fa-plus"></i> Add Event
+                </button>
+            </div>
+            
+            <div class="glass-grid glass-grid-2">
+                {% for event in events %}
+                <div class="card-glass">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-sm);">
+                        <h3>{{ event.title }}</h3>
+                        {% if event.active %}
+                        <span class="glass-button" style="font-size: 0.7rem; padding: 2px 6px; background: #28a745; color: white;">Active</span>
+                        {% endif %}
+                    </div>
+                    <p style="margin-bottom: var(--space-sm);">{{ event.description }}</p>
+                    <p><strong>Type:</strong> {{ event.type|title }} | <strong>Category:</strong> {{ event.category|title }}</p>
+                    <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm);" onclick="editItem('event', '{{ event.id }}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm); background: #dc3545; color: white;" onclick="deleteItem('event', '{{ event.id }}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Gallery Tab -->
+        <div id="content-gallery" class="tab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h2>Gallery</h2>
+                <button class="btn-glass btn-glass-primary" onclick="showAddForm('gallery')">
+                    <i class="fas fa-plus"></i> Add Image
+                </button>
+            </div>
+            
+            <div class="glass-grid glass-grid-3">
+                {% for image in gallery %}
+                <div class="card-glass">
+                    <div style="width: 100%; height: 150px; background-image: url('{{ image.url }}'); background-size: cover; background-position: center; border-radius: var(--radius-medium); margin-bottom: var(--space-sm);"></div>
+                    <h3>{{ image.name }}</h3>
+                    <p><strong>Type:</strong> {{ image.type|title }}</p>
+                    {% if image.tags %}
+                    <p><strong>Tags:</strong> {{ image.tags|join(', ') }}</p>
+                    {% endif %}
+                    <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm);" onclick="editItem('gallery', '{{ image.id }}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-glass" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm); background: #dc3545; color: white;" onclick="deleteItem('gallery', '{{ image.id }}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="modal" class="glass-card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; max-width: 600px; width: 90%; display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+        <h2 id="modal-title">Add Item</h2>
+        <button class="btn-glass" onclick="closeModal()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <form id="modal-form">
+        <div id="modal-content">
+            <!-- Form content will be dynamically generated -->
+        </div>
+        
+        <div style="display: flex; gap: var(--space-sm); justify-content: flex-end; margin-top: var(--space-lg);">
+            <button type="button" class="btn-glass" onclick="closeModal()">Cancel</button>
+            <button type="submit" class="btn-glass btn-glass-primary">Save</button>
+        </div>
+    </form>
+</div>
+
+<!-- Modal Overlay -->
+<div id="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999; display: none;"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentTab = 'announcements';
+let currentItemType = '';
+let currentItemId = '';
+
+// Tab switching
+function showTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+        btn.classList.remove('btn-glass-primary');
+        btn.classList.add('btn-glass');
+    });
+    
+    // Show selected tab content
+    document.getElementById('content-' + tabName).style.display = 'block';
+    
+    // Add active class to selected tab button
+    const activeBtn = document.getElementById('tab-' + tabName);
+    activeBtn.classList.remove('btn-glass');
+    activeBtn.classList.add('btn-glass-primary');
+    
+    currentTab = tabName;
+}
+
+// Show add form
+function showAddForm(itemType) {
+    currentItemType = itemType;
+    currentItemId = '';
+    showModal('Add ' + itemType.charAt(0).toUpperCase() + itemType.slice(1), getFormFields(itemType));
+}
+
+// Show edit form
+function editItem(itemType, itemId) {
+    currentItemType = itemType;
+    currentItemId = itemId;
+    showModal('Edit ' + itemType.charAt(0).toUpperCase() + itemType.slice(1), getFormFields(itemType, itemId));
+}
+
+// Delete item
+function deleteItem(itemType, itemId) {
+    if (confirm('Are you sure you want to delete this item?')) {
+        fetch('/admin/delete-' + itemType + '/' + itemId, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error deleting item');
+            }
+        });
+    }
+}
+
+// Show modal
+function showModal(title, content) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-content').innerHTML = content;
+    document.getElementById('modal').style.display = 'block';
+    document.getElementById('modal-overlay').style.display = 'block';
+}
+
+// Close modal
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('modal-overlay').style.display = 'none';
+}
+
+// Get form fields based on item type
+function getFormFields(itemType, itemId = '') {
+    const fields = {
+        announcement: [
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'type', label: 'Type', type: 'select', options: ['announcement', 'event', 'ongoing', 'highlight'], required: true },
+            { name: 'category', label: 'Category', type: 'select', options: ['general', 'worship', 'education', 'fellowship', 'missions', 'youth', 'children'], required: true },
+            { name: 'tag', label: 'Tag', type: 'text' },
+            { name: 'featured_image', label: 'Featured Image URL', type: 'url' },
+            { name: 'active', label: 'Active', type: 'checkbox', checked: true },
+            { name: 'superfeatured', label: 'Super Featured', type: 'checkbox' }
+        ],
+        sermon: [
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'author', label: 'Author', type: 'text', required: true },
+            { name: 'scripture', label: 'Scripture', type: 'text' },
+            { name: 'date', label: 'Date', type: 'date', required: true },
+            { name: 'spotify_url', label: 'Spotify URL', type: 'url' },
+            { name: 'youtube_url', label: 'YouTube URL', type: 'url' },
+            { name: 'apple_podcasts_url', label: 'Apple Podcasts URL', type: 'url' },
+            { name: 'podcast_thumbnail_url', label: 'Thumbnail URL', type: 'url' }
+        ],
+        event: [
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'type', label: 'Type', type: 'select', options: ['ongoing', 'recurring', 'special'], required: true },
+            { name: 'category', label: 'Category', type: 'select', options: ['worship', 'education', 'fellowship', 'missions', 'youth', 'children', 'prayer'], required: true },
+            { name: 'active', label: 'Active', type: 'checkbox', checked: true }
+        ],
+        gallery: [
+            { name: 'name', label: 'Name', type: 'text', required: true },
+            { name: 'url', label: 'Image URL', type: 'url', required: true },
+            { name: 'type', label: 'Type', type: 'text' },
+            { name: 'tags', label: 'Tags (comma-separated)', type: 'text' },
+            { name: 'event', label: 'Is Event Photo', type: 'checkbox' }
+        ]
+    };
+    
+    const formFields = fields[itemType] || [];
+    let html = '';
+    
+    formFields.forEach(field => {
+        html += '<div class="form-group">';
+        html += '<label>' + field.label + (field.required ? ' *' : '') + '</label>';
+        
+        if (field.type === 'text' || field.type === 'url' || field.type === 'date') {
+            html += '<input type="' + field.type + '" name="' + field.name + '" class="glass-input" ' + (field.required ? 'required' : '') + '>';
+        } else if (field.type === 'textarea') {
+            html += '<textarea name="' + field.name + '" class="glass-input" rows="4" ' + (field.required ? 'required' : '') + '></textarea>';
+        } else if (field.type === 'select') {
+            html += '<select name="' + field.name + '" class="glass-input" ' + (field.required ? 'required' : '') + '>';
+            field.options.forEach(option => {
+                html += '<option value="' + option + '">' + option.charAt(0).toUpperCase() + option.slice(1) + '</option>';
+            });
+            html += '</select>';
+        } else if (field.type === 'checkbox') {
+            html += '<input type="checkbox" name="' + field.name + '" ' + (field.checked ? 'checked' : '') + '>';
+        }
+        
+        html += '</div>';
+    });
+    
+    return html;
+}
+
+// Form submission
+document.getElementById('modal-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Handle checkboxes
+    const checkboxes = this.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        data[checkbox.name] = checkbox.checked;
+    });
+    
+    const url = currentItemId ? 
+        '/admin/update-' + currentItemType + '/' + currentItemId :
+        '/admin/add-' + currentItemType;
+    
+    const method = currentItemId ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeModal();
+            location.reload();
+        } else {
+            alert('Error saving item');
+        }
+    });
+});
+
+// Close modal when clicking overlay
+document.getElementById('modal-overlay').addEventListener('click', closeModal);
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    showTab('announcements');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cpc-new-haven-simple
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements_simple.txt
+    startCommand: python app_simple.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        value: cpc-new-haven-secret-key-2024
+    healthCheckPath: /
+    autoDeploy: true
