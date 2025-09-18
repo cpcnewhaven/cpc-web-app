@@ -23,8 +23,34 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="nav-glass">
-        <ul>
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="{{ url_for('index') }}">CPC New Haven</a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('sundays') }}">Sundays</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('podcasts') }}">Podcasts</a></li>
+                <li><a href="{{ url_for('events') }}">Events</a></li>
+                <li><a href="{{ url_for('community') }}">Community</a></li>
+                <li><a href="{{ url_for('live') }}">Live</a></li>
+                <li><a href="{{ url_for('resources') }}">Resources</a></li>
+                <li><a href="{{ url_for('give') }}">Give</a></li>
+            </ul>
+            
+            <!-- Hamburger Menu for Mobile -->
+            <button id="hamburgerMenu" class="hamburger-menu">☰</button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Navigation -->
+    <div id="mobileNavigation" class="mobile-navigation">
+        <button id="closeMenuButton" class="close-menu">✕</button>
+        <ul class="mobile-nav-links">
             <li><a href="{{ url_for('index') }}">Home</a></li>
             <li><a href="{{ url_for('sundays') }}">Sundays</a></li>
             <li><a href="{{ url_for('about') }}">About</a></li>
@@ -35,7 +61,7 @@
             <li><a href="{{ url_for('resources') }}">Resources</a></li>
             <li><a href="{{ url_for('give') }}">Give</a></li>
         </ul>
-    </nav>
+    </div>
 
     <!-- Main Content -->
     <main>
@@ -54,13 +80,148 @@
                 <a href="#" class="btn-glass" style="margin: 0 var(--space-xs);"><i class="fab fa-instagram"></i></a>
                 <a href="#" class="btn-glass" style="margin: 0 var(--space-xs);"><i class="fab fa-youtube"></i></a>
             </div>
+            <div style="margin-top: var(--space-md);">
+                <a href="{{ url_for('admin') }}" class="btn-glass btn-glass-primary" style="margin: 0 var(--space-xs);">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                <button id="debugToggle" class="btn-glass" style="margin: 0 var(--space-xs);">
+                    <i class="fas fa-bug"></i> Debug
+                </button>
+            </div>
             <p style="margin-top: var(--space-md); color: #666; font-size: 0.9rem;">
                 &copy; 2024 Christ Presbyterian Church New Haven. All rights reserved.
             </p>
         </div>
     </footer>
 
+    <!-- Debug Panel -->
+    <div id="debugPanel" class="debug-panel" style="display: none;">
+        <div class="debug-header">
+            <h3>Debug Panel</h3>
+            <button id="closeDebug" class="btn-glass">×</button>
+        </div>
+        <div class="debug-content">
+            <div class="debug-section">
+                <h4>Page Info</h4>
+                <p><strong>URL:</strong> <span id="debugUrl"></span></p>
+                <p><strong>User Agent:</strong> <span id="debugUserAgent"></span></p>
+                <p><strong>Screen Size:</strong> <span id="debugScreenSize"></span></p>
+            </div>
+            <div class="debug-section">
+                <h4>Performance</h4>
+                <p><strong>Load Time:</strong> <span id="debugLoadTime"></span>ms</p>
+                <p><strong>Memory:</strong> <span id="debugMemory"></span></p>
+            </div>
+            <div class="debug-section">
+                <h4>Data Status</h4>
+                <p><strong>Announcements:</strong> <span id="debugAnnouncements"></span></p>
+                <p><strong>Sermons:</strong> <span id="debugSermons"></span></p>
+                <p><strong>Events:</strong> <span id="debugEvents"></span></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
+    <script>
+    // Mobile Navigation Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const mobileNavigation = document.getElementById('mobileNavigation');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+        
+        if (hamburgerMenu && mobileNavigation) {
+            hamburgerMenu.addEventListener('click', function() {
+                mobileNavigation.classList.add('active');
+            });
+        }
+        
+        if (closeMenuButton && mobileNavigation) {
+            closeMenuButton.addEventListener('click', function() {
+                mobileNavigation.classList.remove('active');
+            });
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (mobileNavigation && mobileNavigation.classList.contains('active')) {
+                if (!mobileNavigation.contains(event.target) && !hamburgerMenu.contains(event.target)) {
+                    mobileNavigation.classList.remove('active');
+                }
+            }
+        });
+
+        // Debug Panel Toggle
+        const debugToggle = document.getElementById('debugToggle');
+        const debugPanel = document.getElementById('debugPanel');
+        const closeDebug = document.getElementById('closeDebug');
+        
+        if (debugToggle && debugPanel) {
+            debugToggle.addEventListener('click', function() {
+                debugPanel.style.display = debugPanel.style.display === 'none' ? 'block' : 'none';
+                if (debugPanel.style.display === 'block') {
+                    updateDebugInfo();
+                }
+            });
+        }
+        
+        if (closeDebug && debugPanel) {
+            closeDebug.addEventListener('click', function() {
+                debugPanel.style.display = 'none';
+            });
+        }
+
+        // Update debug information
+        function updateDebugInfo() {
+            const startTime = performance.now();
+            
+            // Page info
+            document.getElementById('debugUrl').textContent = window.location.href;
+            document.getElementById('debugUserAgent').textContent = navigator.userAgent.substring(0, 50) + '...';
+            document.getElementById('debugScreenSize').textContent = window.innerWidth + 'x' + window.innerHeight;
+            
+            // Performance
+            const loadTime = Math.round(performance.now() - startTime);
+            document.getElementById('debugLoadTime').textContent = loadTime;
+            
+            // Memory (if available)
+            if (performance.memory) {
+                const memory = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+                document.getElementById('debugMemory').textContent = memory + ' MB';
+            } else {
+                document.getElementById('debugMemory').textContent = 'N/A';
+            }
+            
+            // Data status
+            fetch('/api/announcements')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('debugAnnouncements').textContent = data.announcements ? data.announcements.length : 'Error';
+                })
+                .catch(() => {
+                    document.getElementById('debugAnnouncements').textContent = 'Error';
+                });
+                
+            fetch('/api/sermons')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('debugSermons').textContent = data.sermons ? data.sermons.length : 'Error';
+                })
+                .catch(() => {
+                    document.getElementById('debugSermons').textContent = 'Error';
+                });
+                
+            fetch('/api/events')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('debugEvents').textContent = data.events ? data.events.length : 'Error';
+                })
+                .catch(() => {
+                    document.getElementById('debugEvents').textContent = 'Error';
+                });
+        }
+    });
+    </script>
+    
     {% block scripts %}{% endblock %}
 </body>
 </html>

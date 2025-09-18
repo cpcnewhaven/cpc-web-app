@@ -1,176 +1,192 @@
 {% extends "base_glass.html" %}
 
-{% block title %}CPC New Haven - Home{% endblock %}
+{% block title %}CPC New Haven - Dashboard{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-glass animate-fade-in">
-    <h1>Welcome to Christ Presbyterian Church</h1>
-    <p>Growing in the truth and grace of Jesus Christ, acting as a faithful witness in the greater New Haven community and world, trusting in the grace and power of the Holy Spirit.</p>
-    <div style="margin-top: var(--space-lg);">
-        <a href="{{ url_for('sundays') }}" class="btn-glass btn-glass-primary">
-            <i class="fas fa-calendar-alt"></i> Join Us This Sunday
-        </a>
-        <a href="{{ url_for('about') }}" class="btn-glass">
-            <i class="fas fa-info-circle"></i> Learn More
-        </a>
+<!-- Dashboard Header -->
+<section class="dashboard-header">
+    <div class="welcome-widget">
+        <h1>Welcome to CPC New Haven</h1>
+        <p>Growing in the truth and grace of Jesus Christ, acting as a faithful witness in the greater New Haven community and world, trusting in the grace and power of the Holy Spirit.</p>
+        <div class="quick-actions">
+            <a href="{{ url_for('sundays') }}" class="btn-glass btn-glass-primary">
+                <i class="fas fa-calendar-alt"></i> Join Us This Sunday
+            </a>
+            <a href="{{ url_for('about') }}" class="btn-glass">
+                <i class="fas fa-info-circle"></i> Learn More
+            </a>
+        </div>
     </div>
 </section>
 
-<!-- Service Information -->
-<section class="glass-grid glass-grid-3" style="margin-top: var(--space-xl);">
-    <div class="card-glass animate-fade-in-up">
-        <div style="text-align: center; margin-bottom: var(--space-md);">
-            <i class="fas fa-clock" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
-            <h3>Sunday Worship</h3>
+<!-- Dashboard Grid -->
+<div class="dashboard-grid">
+    <!-- Service Times Widget -->
+    <div class="dashboard-widget service-times-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-clock"></i> Service Times</h3>
         </div>
-        <p><strong>10:30 AM</strong></p>
-        <p>Join us for worship, preaching, and communion every Sunday morning.</p>
-    </div>
-    
-    <div class="card-glass animate-fade-in-up" style="animation-delay: 0.2s;">
-        <div style="text-align: center; margin-bottom: var(--space-md);">
-            <i class="fas fa-graduation-cap" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
-            <h3>Sunday School</h3>
-        </div>
-        <p><strong>9:30 AM</strong></p>
-        <p>Children's Sunday School and Adult Bible Studies for all ages.</p>
-    </div>
-    
-    <div class="card-glass animate-fade-in-up" style="animation-delay: 0.4s;">
-        <div style="text-align: center; margin-bottom: var(--space-md);">
-            <i class="fas fa-users" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
-            <h3>Fellowship</h3>
-        </div>
-        <p><strong>12:00 PM</strong></p>
-        <p>Stay for fellowship lunch and community after worship.</p>
-    </div>
-</section>
-
-<!-- Featured Announcements -->
-{% if superfeatured %}
-<section style="margin-top: var(--space-xl);">
-    <div class="glass-card" style="text-align: center; margin-bottom: var(--space-lg);">
-        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-sm);">Featured Announcements</h2>
-        <p style="color: #666;">Important updates and upcoming events</p>
-    </div>
-    
-    <div class="glass-grid glass-grid-2">
-        {% for announcement in superfeatured %}
-        <div class="card-glass animate-fade-in-up">
-            {% if announcement.featured_image %}
-            <div style="width: 100%; height: 200px; background-image: url('{{ announcement.featured_image }}'); background-size: cover; background-position: center; border-radius: var(--radius-medium); margin-bottom: var(--space-md);"></div>
-            {% endif %}
-            <h3>{{ announcement.title }}</h3>
-            <p>{{ announcement.description }}</p>
-            <div style="margin-top: var(--space-md);">
-                <span class="glass-button" style="font-size: 0.8rem; padding: var(--space-xs) var(--space-sm);">
-                    {{ announcement.category|title }}
-                </span>
+        <div class="widget-content">
+            <div class="service-item">
+                <div class="service-time">10:30 AM</div>
+                <div class="service-name">Sunday Worship</div>
+                <div class="service-desc">Join us for worship, preaching, and communion</div>
+            </div>
+            <div class="service-item">
+                <div class="service-time">9:30 AM</div>
+                <div class="service-name">Sunday School</div>
+                <div class="service-desc">Children's and Adult Bible Studies</div>
+            </div>
+            <div class="service-item">
+                <div class="service-time">12:00 PM</div>
+                <div class="service-name">Fellowship Lunch</div>
+                <div class="service-desc">Stay for community after worship</div>
             </div>
         </div>
-        {% endfor %}
     </div>
-</section>
-{% endif %}
 
-<!-- Recent Sermons -->
-{% if recent_sermons %}
-<section style="margin-top: var(--space-xl);">
-    <div class="glass-card" style="text-align: center; margin-bottom: var(--space-lg);">
-        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-sm);">Recent Sermons</h2>
-        <p style="color: #666;">Latest messages from our worship services</p>
+    <!-- Featured Announcements Widget -->
+    {% if superfeatured %}
+    <div class="dashboard-widget announcements-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-bullhorn"></i> Featured Announcements</h3>
+            <a href="{{ url_for('announcements') }}" class="widget-link">View All</a>
+        </div>
+        <div class="widget-content">
+            {% for announcement in superfeatured %}
+            <div class="announcement-item">
+                {% if announcement.featured_image %}
+                <div class="announcement-image" style="background-image: url('{{ announcement.featured_image }}');"></div>
+                {% endif %}
+                <div class="announcement-content">
+                    <h4>{{ announcement.title }}</h4>
+                    <p>{{ announcement.description[:100] }}{% if announcement.description|length > 100 %}...{% endif %}</p>
+                    <span class="announcement-category">{{ announcement.category|title }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    
-    <div class="glass-grid glass-grid-3">
-        {% for sermon in recent_sermons %}
-        <div class="card-glass animate-fade-in-up">
-            {% if sermon.podcast_thumbnail_url %}
-            <div style="width: 100%; height: 150px; background-image: url('{{ sermon.podcast_thumbnail_url }}'); background-size: cover; background-position: center; border-radius: var(--radius-medium); margin-bottom: var(--space-md);"></div>
-            {% endif %}
-            <h3>{{ sermon.title }}</h3>
-            <p><strong>Speaker:</strong> {{ sermon.author }}</p>
-            {% if sermon.scripture %}
-            <p><strong>Scripture:</strong> {{ sermon.scripture }}</p>
-            {% endif %}
-            <p><strong>Date:</strong> {{ sermon.date }}</p>
-            <div style="margin-top: var(--space-md);">
-                <a href="{{ url_for('sermons') }}" class="btn-glass">
-                    <i class="fas fa-play"></i> Listen Now
+    {% endif %}
+
+    <!-- Recent Sermons Widget -->
+    {% if recent_sermons %}
+    <div class="dashboard-widget sermons-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-microphone"></i> Recent Sermons</h3>
+            <a href="{{ url_for('sermons') }}" class="widget-link">View All</a>
+        </div>
+        <div class="widget-content">
+            {% for sermon in recent_sermons %}
+            <div class="sermon-item">
+                {% if sermon.podcast_thumbnail_url %}
+                <div class="sermon-image" style="background-image: url('{{ sermon.podcast_thumbnail_url }}');"></div>
+                {% endif %}
+                <div class="sermon-content">
+                    <h4>{{ sermon.title }}</h4>
+                    <p class="sermon-author">{{ sermon.author }}</p>
+                    {% if sermon.scripture %}
+                    <p class="sermon-scripture">{{ sermon.scripture }}</p>
+                    {% endif %}
+                    <p class="sermon-date">{{ sermon.date }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Upcoming Events Widget -->
+    <div class="dashboard-widget events-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-calendar"></i> Upcoming Events</h3>
+            <a href="{{ url_for('events') }}" class="widget-link">View All</a>
+        </div>
+        <div class="widget-content">
+            <div class="event-item">
+                <div class="event-time">Every Sunday</div>
+                <div class="event-name">Prayer in the Parlor</div>
+                <div class="event-desc">8:30 AM - Join us for prayer</div>
+            </div>
+            <div class="event-item">
+                <div class="event-time">Wednesdays</div>
+                <div class="event-name">Bible Study</div>
+                <div class="event-desc">7:00 PM - Weekly Bible study</div>
+            </div>
+            <div class="event-item">
+                <div class="event-time">Saturdays</div>
+                <div class="event-name">Men's Fellowship</div>
+                <div class="event-desc">8:00 AM - Men's fellowship group</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links Widget -->
+    <div class="dashboard-widget quick-links-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-link"></i> Quick Links</h3>
+        </div>
+        <div class="widget-content">
+            <div class="quick-links-grid">
+                <a href="{{ url_for('podcasts') }}" class="quick-link">
+                    <i class="fas fa-podcast"></i>
+                    <span>Podcasts</span>
+                </a>
+                <a href="{{ url_for('events') }}" class="quick-link">
+                    <i class="fas fa-calendar"></i>
+                    <span>Events</span>
+                </a>
+                <a href="{{ url_for('community') }}" class="quick-link">
+                    <i class="fas fa-users"></i>
+                    <span>Community</span>
+                </a>
+                <a href="{{ url_for('live') }}" class="quick-link">
+                    <i class="fas fa-video"></i>
+                    <span>Live Stream</span>
+                </a>
+                <a href="{{ url_for('resources') }}" class="quick-link">
+                    <i class="fas fa-book"></i>
+                    <span>Resources</span>
+                </a>
+                <a href="{{ url_for('give') }}" class="quick-link">
+                    <i class="fas fa-heart"></i>
+                    <span>Give</span>
                 </a>
             </div>
         </div>
-        {% endfor %}
     </div>
-</section>
-{% endif %}
 
-<!-- Quick Links -->
-<section style="margin-top: var(--space-xl);">
-    <div class="glass-card" style="text-align: center; margin-bottom: var(--space-lg);">
-        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-sm);">Quick Links</h2>
-        <p style="color: #666;">Explore our community and resources</p>
-    </div>
-    
-    <div class="glass-grid glass-grid-4">
-        <a href="{{ url_for('podcasts') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit;">
-            <div style="text-align: center;">
-                <i class="fas fa-podcast" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
-                <h3>Podcasts</h3>
-                <p>Listen to sermons and discussions</p>
+    <!-- Contact Widget -->
+    <div class="dashboard-widget contact-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-map-marker-alt"></i> Visit Us</h3>
+        </div>
+        <div class="widget-content">
+            <div class="contact-info">
+                <p><strong>135 Whitney Ave</strong></p>
+                <p>New Haven, CT 06510</p>
+                <p>Phone: (203) 555-0123</p>
+                <p>Email: admin@cpcnewhaven.org</p>
             </div>
-        </a>
-        
-        <a href="{{ url_for('events') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit; animation-delay: 0.1s;">
-            <div style="text-align: center;">
-                <i class="fas fa-calendar" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
-                <h3>Events</h3>
-                <p>Upcoming activities and gatherings</p>
+            <div class="contact-actions">
+                <a href="https://maps.google.com" class="btn-glass" target="_blank">
+                    <i class="fas fa-directions"></i> Get Directions
+                </a>
+                <a href="mailto:admin@cpcnewhaven.org" class="btn-glass">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
             </div>
-        </a>
-        
-        <a href="{{ url_for('community') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit; animation-delay: 0.2s;">
-            <div style="text-align: center;">
-                <i class="fas fa-users" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
-                <h3>Community</h3>
-                <p>Join our church family</p>
-            </div>
-        </a>
-        
-        <a href="{{ url_for('live') }}" class="card-glass animate-fade-in-up" style="text-decoration: none; color: inherit; animation-delay: 0.3s;">
-            <div style="text-align: center;">
-                <i class="fas fa-video" style="font-size: 2rem; color: var(--cpc-blue); margin-bottom: var(--space-sm);"></i>
-                <h3>Live Stream</h3>
-                <p>Watch services online</p>
-            </div>
-        </a>
-    </div>
-</section>
-
-<!-- Contact CTA -->
-<section style="margin-top: var(--space-xl);">
-    <div class="glass-card" style="text-align: center; background: var(--cpc-blue-glass);">
-        <h2 style="color: var(--cpc-blue); margin-bottom: var(--space-md);">Ready to Visit?</h2>
-        <p style="margin-bottom: var(--space-lg);">We'd love to welcome you to our community. Join us this Sunday at 10:30 AM.</p>
-        <div>
-            <a href="{{ url_for('sundays') }}" class="btn-glass btn-glass-primary">
-                <i class="fas fa-map-marker-alt"></i> Get Directions
-            </a>
-            <a href="mailto:admin@cpcnewhaven.org" class="btn-glass">
-                <i class="fas fa-envelope"></i> Contact Us
-            </a>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Add any homepage-specific JavaScript here
-    console.log('CPC New Haven homepage loaded');
+    console.log('CPC New Haven dashboard loaded');
     
-    // Animate elements on scroll
+    // Animate widgets on scroll
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -185,8 +201,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
     
-    // Observe all animated elements
-    document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+    // Observe all dashboard widgets
+    document.querySelectorAll('.dashboard-widget').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
         el.style.transition = 'all 0.6s ease-out';

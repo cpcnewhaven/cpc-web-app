@@ -45,7 +45,7 @@ def podcasts():
 def events():
     """Events page with upcoming events"""
     events = data_manager.get_active_events()
-    return render_template('events.html', events=events)
+    return render_template('events_glass.html', events=events)
 
 @app.route('/community')
 def community():

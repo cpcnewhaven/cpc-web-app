@@ -1,0 +1,219 @@
+{% extends "base_glass.html" %}
+
+{% block title %}Events - CPC New Haven{% endblock %}
+
+{% block content %}
+<!-- Events Header -->
+<section class="dashboard-header">
+    <div class="welcome-widget">
+        <h1>Events & Activities</h1>
+        <p>Stay connected with our church community through various events, studies, and fellowship opportunities.</p>
+    </div>
+</section>
+
+<!-- Events Dashboard -->
+<div class="dashboard-grid">
+    <!-- Ongoing Events Widget -->
+    <div class="dashboard-widget ongoing-events-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-clock"></i> Ongoing Events</h3>
+        </div>
+        <div class="widget-content">
+            <div class="event-item">
+                <div class="event-time">Every Sunday</div>
+                <div class="event-details">
+                    <div class="event-name">Prayer in the Parlor</div>
+                    <div class="event-desc">8:30 AM - Join us for prayer</div>
+                    <div class="event-location">Church Parlor</div>
+                </div>
+            </div>
+            <div class="event-item">
+                <div class="event-time">Wednesdays</div>
+                <div class="event-details">
+                    <div class="event-name">Bible Study</div>
+                    <div class="event-desc">7:00 PM - Weekly Bible study</div>
+                    <div class="event-location">Fellowship Hall</div>
+                </div>
+            </div>
+            <div class="event-item">
+                <div class="event-time">Saturdays</div>
+                <div class="event-details">
+                    <div class="event-name">Men's Fellowship</div>
+                    <div class="event-desc">8:00 AM - Men's fellowship group</div>
+                    <div class="event-location">Conference Room</div>
+                </div>
+            </div>
+            <div class="event-item">
+                <div class="event-time">Fridays</div>
+                <div class="event-details">
+                    <div class="event-name">Youth Group</div>
+                    <div class="event-desc">7:00 PM - High school and middle school students</div>
+                    <div class="event-location">Youth Room</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Events Widget -->
+    <div class="dashboard-widget special-events-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-star"></i> Special Events</h3>
+        </div>
+        <div class="widget-content">
+            <div class="special-event-item">
+                <div class="event-date">Dec 24</div>
+                <div class="event-details">
+                    <div class="event-name">Christmas Eve Service</div>
+                    <div class="event-desc">7:00 PM - Special Christmas Eve worship service</div>
+                    <div class="event-location">Sanctuary</div>
+                </div>
+            </div>
+            <div class="special-event-item">
+                <div class="event-date">Dec 25</div>
+                <div class="event-details">
+                    <div class="event-name">Christmas Day Service</div>
+                    <div class="event-desc">10:30 AM - Christmas Day worship</div>
+                    <div class="event-location">Sanctuary</div>
+                </div>
+            </div>
+            <div class="special-event-item">
+                <div class="event-date">Jan 1</div>
+                <div class="event-details">
+                    <div class="event-name">New Year's Day Service</div>
+                    <div class="event-desc">10:30 AM - New Year worship and fellowship</div>
+                    <div class="event-location">Sanctuary</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study Groups Widget -->
+    <div class="dashboard-widget study-groups-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-book"></i> Study Groups</h3>
+        </div>
+        <div class="widget-content">
+            <div class="study-group-item">
+                <div class="group-name">Women's Bible Study</div>
+                <div class="group-schedule">Tuesdays, 10:00 AM</div>
+                <div class="group-location">Fellowship Hall</div>
+                <div class="group-desc">Weekly study for women of all ages</div>
+            </div>
+            <div class="study-group-item">
+                <div class="group-name">Men's Accountability Group</div>
+                <div class="group-schedule">Thursdays, 7:00 PM</div>
+                <div class="group-location">Conference Room</div>
+                <div class="group-desc">Men's accountability and prayer group</div>
+            </div>
+            <div class="study-group-item">
+                <div class="group-name">Young Adults Study</div>
+                <div class="group-schedule">Sundays, 6:00 PM</div>
+                <div class="group-location">Youth Room</div>
+                <div class="group-desc">Study group for young adults (18-30)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fellowship Events Widget -->
+    <div class="dashboard-widget fellowship-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-users"></i> Fellowship Events</h3>
+        </div>
+        <div class="widget-content">
+            <div class="fellowship-item">
+                <div class="event-name">Monthly Potluck</div>
+                <div class="event-schedule">First Sunday of each month</div>
+                <div class="event-desc">Bring a dish to share after worship</div>
+            </div>
+            <div class="fellowship-item">
+                <div class="event-name">Coffee & Conversation</div>
+                <div class="event-schedule">Every Sunday after service</div>
+                <div class="event-desc">Fellowship time with coffee and snacks</div>
+            </div>
+            <div class="fellowship-item">
+                <div class="event-name">Game Night</div>
+                <div class="event-schedule">Third Friday of each month</div>
+                <div class="event-desc">Board games and fellowship for all ages</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Opportunities Widget -->
+    <div class="dashboard-widget service-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-hands-helping"></i> Service Opportunities</h3>
+        </div>
+        <div class="widget-content">
+            <div class="service-opportunity-item">
+                <div class="opportunity-name">Food Pantry Volunteers</div>
+                <div class="opportunity-schedule">Saturdays, 9:00 AM - 12:00 PM</div>
+                <div class="opportunity-desc">Help distribute food to families in need</div>
+            </div>
+            <div class="service-opportunity-item">
+                <div class="opportunity-name">Community Cleanup</div>
+                <div class="opportunity-schedule">First Saturday of each month</div>
+                <div class="opportunity-desc">Clean up local parks and neighborhoods</div>
+            </div>
+            <div class="service-opportunity-item">
+                <div class="opportunity-name">Hospital Visitation</div>
+                <div class="opportunity-schedule">As needed</div>
+                <div class="opportunity-desc">Visit and pray with church members in hospital</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Widget -->
+    <div class="dashboard-widget contact-widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-info-circle"></i> Event Information</h3>
+        </div>
+        <div class="widget-content">
+            <div class="contact-info">
+                <p><strong>Questions about events?</strong></p>
+                <p>Contact our church office for more information about any event or activity.</p>
+                <p>Phone: (203) 555-0123</p>
+                <p>Email: events@cpcnewhaven.org</p>
+            </div>
+            <div class="contact-actions">
+                <a href="mailto:events@cpcnewhaven.org" class="btn-glass">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+                <a href="{{ url_for('community') }}" class="btn-glass">
+                    <i class="fas fa-users"></i> Join Community
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Events dashboard loaded');
+    
+    // Animate widgets on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all dashboard widgets
+    document.querySelectorAll('.dashboard-widget').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease-out';
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock %}
