@@ -3,13 +3,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const splashImageSection = document.getElementById('home-image');
     const midImageSection = document.getElementById('mid-image');
     
-    // Default placeholder images
+    // Real church images from gallery
     const defaultImages = [
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop',
-        'https://images.unsplash.com/photo-1515378791036-0648a814c963?w=1920&h=1080&fit=crop',
-        'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=1920&h=1080&fit=crop',
-        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop',
-        'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&h=1080&fit=crop'
+        'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG',
+        'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/89c3ea3b-e196-4318-bee8-08b5e66e728d.JPG',
+        'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/IMG_3661.jpg',
+        'https://storage.googleapis.com/cpc-public-website/events/Hill%20Christmas%20Store%202023/IMG_0244.JPG',
+        'https://storage.googleapis.com/cpc-public-website/events/Hill%20Christmas%20Store%202023/IMG_0251.JPG',
+        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/2.jpg',
+        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/3.jpg',
+        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/4.jpg'
     ];
     
     function getRandomImage() {

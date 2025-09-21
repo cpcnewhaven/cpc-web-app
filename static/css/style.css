@@ -115,8 +115,8 @@ body {
 /* Hero Section */
 .splash-image {
     height: 100vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                url('https://via.placeholder.com/1920x1080') center/cover;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url('https://via.placeholder.com/1920x1080') center/cover;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -271,8 +271,8 @@ body {
 /* Mid Image Section */
 .mid-image {
     height: 60vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                url('https://via.placeholder.com/1920x800') center/cover;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url('https://via.placeholder.com/1920x800') center/cover;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -328,13 +328,15 @@ body {
     width: 300px;
 }
 
-.view-controls, .sort-controls {
+.view-controls,
+.sort-controls {
     display: flex;
     gap: 0.5rem;
     align-items: center;
 }
 
-.view-controls button, .sort-controls button {
+.view-controls button,
+.sort-controls button {
     padding: 8px 16px;
     border: 2px solid #ddd;
     background: white;
@@ -343,7 +345,8 @@ body {
     transition: all 0.3s;
 }
 
-.view-controls button.active, .sort-controls button.active {
+.view-controls button.active,
+.sort-controls button.active {
     background-color: #3498db;
     color: white;
     border-color: #3498db;
@@ -454,7 +457,8 @@ body {
 }
 
 /* Loading and No Results */
-.loading, .no-results {
+.loading,
+.no-results {
     text-align: center;
     padding: 2rem;
     color: #7f8c8d;
@@ -507,41 +511,41 @@ body {
     .nav-links {
         display: none;
     }
-    
+
     .hamburger-menu {
         display: block;
     }
-    
+
     .splash-content h1 {
         font-size: 2rem;
     }
-    
+
     .splash-content h2 {
         font-size: 1.5rem;
     }
-    
+
     .splash-buttons {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .service-schedule {
         grid-template-columns: 1fr;
     }
-    
+
     .sermon-controls {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .search-container input {
         width: 100%;
     }
-    
+
     .sermons-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .footer-content {
         grid-template-columns: 1fr;
         text-align: center;
@@ -567,4 +571,1060 @@ body {
 
 .mt-4 {
     margin-top: 2rem;
+}
+
+/* ========================================
+   ABOUT PAGE STYLES
+   ======================================== */
+
+/* Hero Section */
+.about-hero {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.about-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Table of Contents */
+.toc-section {
+    background: #f8f9fa;
+    padding: 3rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.toc-container {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.toc-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.toc-column h3 {
+    color: #34495e;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+}
+
+.toc-list li {
+    margin-bottom: 0.75rem;
+}
+
+.toc-link {
+    color: #555;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: block;
+    padding: 0.5rem 0;
+    border-radius: 6px;
+    padding-left: 1rem;
+}
+
+.toc-link:hover {
+    color: #3498db;
+    background: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.toc-link.active {
+    color: #3498db;
+    background: #e3f2fd;
+    font-weight: 600;
+}
+
+/* Floating Navigation */
+.about-floating-nav {
+    position: fixed;
+    top: 50%;
+    right: 2rem;
+    transform: translateY(-50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 1.5rem;
+    z-index: 1000;
+    max-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.about-floating-nav.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.floating-nav-content h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.about-floating-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.about-floating-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.about-floating-nav a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: block;
+    padding: 0.5rem 0;
+}
+
+.about-floating-nav a:hover,
+.about-floating-nav a.active {
+    color: #3498db;
+    font-weight: 600;
+}
+
+/* Main Content Container */
+.about-main-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Section Headers */
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.section-subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    font-weight: 400;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Mission Section */
+.mission-section {
+    padding: 4rem 0;
+    background: white;
+}
+
+.mission-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+.mission-statement {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 0;
+}
+
+.highlight-word {
+    background: linear-gradient(120deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.mission-image-container {
+    text-align: center;
+}
+
+.mission-church-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Total Christ Section */
+.total-christ-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.total-christ-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.intro-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.augustine-quote {
+    background: white;
+    border-left: 4px solid #3498db;
+    padding: 2rem;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.augustine-quote p {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.augustine-quote cite {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Five Marks Section */
+.five-marks-section {
+    padding: 4rem 0;
+    background: white;
+}
+
+.five-marks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.mark-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.mark-card.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mark-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.mark-number {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.mark-content h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.mark-description {
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+/* Keywords removed - using "Think:" format instead */
+
+/* Staff Section */
+.staff-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.staff-member {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.staff-member:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.staff-info h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.staff-info h4 {
+    color: #666;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Our Story Section */
+.our-story-section {
+    padding: 4rem 0;
+    background: white;
+}
+
+.story-timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.story-timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    transform: translateX(-50%);
+}
+
+.story-milestone {
+    display: flex;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.story-milestone.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.story-milestone:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.milestone-year {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    margin: 0 2rem;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.milestone-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    border: 1px solid #e9ecef;
+}
+
+.milestone-content h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.milestone-content p {
+    color: #555;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.story-conclusion {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.conclusion-text {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    font-weight: 600;
+    font-style: italic;
+    margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ======================================== */
+
+/* Large Tablets and Small Desktops */
+@media (max-width: 1024px) {
+    .about-main-container {
+        padding: 0 1.5rem;
+    }
+
+    .mission-content {
+        gap: 2rem;
+    }
+
+    .five-marks-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .staff-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 3rem 0;
+    }
+
+    .about-hero h1 {
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .mission-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .mission-statement {
+        font-size: 1.1rem;
+    }
+
+    .about-floating-nav {
+        display: none;
+    }
+
+    .toc-section {
+        padding: 2rem 0;
+    }
+
+    .toc-container {
+        padding: 2rem;
+    }
+
+    .toc-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .five-marks-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .mark-card {
+        padding: 1.5rem;
+    }
+
+    .staff-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .staff-member {
+        padding: 1.5rem;
+    }
+
+    .story-timeline::before {
+        left: 2rem;
+    }
+
+    .story-milestone {
+        flex-direction: column !important;
+        align-items: flex-start;
+        padding-left: 3rem;
+        margin-bottom: 2rem;
+    }
+
+    .milestone-year {
+        margin: 0 0 1rem 0;
+        align-self: flex-start;
+        font-size: 1rem;
+        padding: 0.8rem 1.2rem;
+    }
+
+    .milestone-content {
+        padding: 1.5rem;
+    }
+
+    .augustine-quote {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+}
+
+/* Mobile Landscape */
+@media (max-width: 640px) {
+    .about-hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .toc-container {
+        padding: 1.5rem;
+    }
+
+    .toc-container h2 {
+        font-size: 1.6rem;
+    }
+
+    .mark-card {
+        padding: 1.25rem;
+    }
+
+    .mark-number {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+    }
+
+    .staff-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .story-milestone {
+        padding-left: 2.5rem;
+    }
+
+    .milestone-year {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+    }
+}
+
+/* Mobile Portrait */
+@media (max-width: 480px) {
+    .about-main-container {
+        padding: 0 1rem;
+    }
+
+    .about-hero {
+        padding: 2.5rem 0;
+    }
+
+    .about-hero h1 {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+    }
+
+    .toc-container {
+        padding: 1.25rem;
+        margin: 0 0.5rem;
+    }
+
+    .toc-container h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .toc-column h3 {
+        font-size: 1.1rem;
+    }
+
+    .toc-link {
+        font-size: 0.9rem;
+        padding: 0.4rem 0;
+        padding-left: 0.8rem;
+    }
+
+    .mission-statement {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .highlight-word {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.95rem;
+    }
+
+    .intro-text {
+        font-size: 1.1rem;
+    }
+
+    .augustine-quote {
+        padding: 1.25rem;
+        margin: 1.25rem 0;
+    }
+
+    .augustine-quote p {
+        font-size: 1rem;
+    }
+
+    .mark-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .mark-number {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .mark-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .mark-description {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Keywords removed - using "Think:" format instead */
+
+    .staff-member {
+        padding: 1.25rem;
+    }
+
+    .staff-info h3 {
+        font-size: 1.1rem;
+    }
+
+    .staff-info h4 {
+        font-size: 0.9rem;
+    }
+
+    .story-timeline::before {
+        left: 1.5rem;
+    }
+
+    .story-milestone {
+        padding-left: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .milestone-year {
+        font-size: 0.85rem;
+        padding: 0.6rem 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .milestone-content {
+        padding: 1.25rem;
+    }
+
+    .milestone-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .milestone-content p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .story-conclusion {
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .conclusion-text {
+        font-size: 1.1rem;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .about-main-container {
+        padding: 0 0.75rem;
+    }
+
+    .about-hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+    }
+
+    .toc-container {
+        padding: 1rem;
+        margin: 0 0.25rem;
+    }
+
+    .toc-container h2 {
+        font-size: 1.3rem;
+    }
+
+    .mark-card,
+    .staff-member,
+    .milestone-content {
+        padding: 1rem;
+    }
+
+    .story-milestone {
+        padding-left: 1.5rem;
+    }
+
+    .story-timeline::before {
+        left: 1.25rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+
+    .toc-link,
+    .about-floating-nav a {
+        padding: 0.75rem 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .mark-card:hover,
+    .staff-member:hover {
+        transform: none;
+    }
+
+    .mark-card:active,
+    .staff-member:active {
+        transform: scale(0.98);
+    }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+    .mission-church-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .about-hero {
+        padding: 2rem 0;
+    }
+
+    .about-hero h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .toc-section {
+        padding: 1.5rem 0;
+    }
+
+    .section-header {
+        margin-bottom: 2rem;
+    }
+
+    .mission-section,
+    .total-christ-section,
+    .five-marks-section,
+    .staff-section,
+    .our-story-section {
+        padding: 2rem 0;
+    }
+}
+
+/* ========================================
+   MOBILE PERFORMANCE & UX ENHANCEMENTS
+   ======================================== */
+
+/* Smooth scrolling for all devices */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+    overflow-x: hidden;
+}
+
+/* Loading state */
+body:not(.loaded) .about-content-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+body.loaded .about-content-section {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Focus styles for accessibility */
+.toc-link:focus,
+.about-floating-nav a:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Touch-friendly button styles */
+@media (hover: none) and (pointer: coarse) {
+
+    .toc-link,
+    .about-floating-nav a {
+        -webkit-tap-highlight-color: rgba(52, 152, 219, 0.2);
+        tap-highlight-color: rgba(52, 152, 219, 0.2);
+    }
+}
+
+/* Optimize animations for mobile */
+@media (prefers-reduced-motion: reduce) {
+
+    .mark-card,
+    .story-milestone,
+    .about-content-section {
+        transition: none;
+        animation: none;
+    }
+
+    .mark-card.animate-in,
+    .story-milestone.animate-in {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .highlight-word {
+        background: #000;
+        color: #fff;
+    }
+
+    .mark-number {
+        background: #000;
+        color: #fff;
+    }
+
+    .milestone-year {
+        background: #000;
+        color: #fff;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .about-hero {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+
+    .toc-section {
+        background: #1a1a1a;
+    }
+
+    .toc-container {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    .toc-container h2,
+    .toc-column h3 {
+        color: #fff;
+    }
+
+    .toc-link {
+        color: #ccc;
+    }
+
+    .toc-link:hover,
+    .toc-link.active {
+        color: #3498db;
+        background: #3a3a3a;
+    }
+
+    .mission-section,
+    .five-marks-section,
+    .our-story-section {
+        background: #1a1a1a;
+        color: #fff;
+    }
+
+    .total-christ-section,
+    .staff-section {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    .section-title {
+        color: #fff;
+    }
+
+    .section-subtitle {
+        color: #ccc;
+    }
+
+    .mission-statement,
+    .intro-text,
+    .mark-description,
+    .milestone-content p {
+        color: #e0e0e0;
+    }
+
+    .mark-card,
+    .staff-member,
+    .milestone-content {
+        background: #2d2d2d;
+        border-color: #444;
+        color: #fff;
+    }
+
+    .augustine-quote {
+        background: #2d2d2d;
+        border-left-color: #3498db;
+    }
+
+    .augustine-quote p {
+        color: #fff;
+    }
+
+    .augustine-quote cite {
+        color: #ccc;
+    }
+}
+
+/* Print styles */
+@media print {
+
+    .about-floating-nav,
+    .toc-section {
+        display: none;
+    }
+
+    .about-hero {
+        background: none;
+        color: #000;
+        padding: 1rem 0;
+    }
+
+    .about-content-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .mark-card,
+    .staff-member,
+    .milestone-content {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
 }
