@@ -7,12 +7,16 @@ from datetime import datetime, date
 import os
 from dotenv import load_dotenv
 from admin_utils import export_announcements_csv, export_sermons_csv, bulk_update_announcements, bulk_delete_content, get_content_stats, create_sample_podcast_series
+from enhanced_api import enhanced_api
+
 
 load_dotenv()
 
 app = Flask(__name__)
 
 # Configuration
+app.register_blueprint(enhanced_api, url_prefix='/api')
+
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 # Database configuration
 database_url = os.getenv('DATABASE_URL', 'sqlite:///cpc_newhaven.db')

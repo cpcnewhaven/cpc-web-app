@@ -1,0 +1,21 @@
+{
+  "spotify": {
+    "enabled": false,
+    "client_id": "YOUR_SPOTIFY_CLIENT_ID",
+    "client_secret": "YOUR_SPOTIFY_CLIENT_SECRET",
+    "show_ids": [
+      "4rOoJ6Egrf8K2IrywzwOMk"
+    ]
+  },
+  "anchor": {
+    "enabled": true,
+    "rss_urls": [
+      "https://anchor.fm/s/4c59256c/podcast/rss"
+    ]
+  },
+  "settings": {
+    "update_interval_hours": 6,
+    "backup_before_update": true,
+    "log_level": "INFO"
+  }
+}
