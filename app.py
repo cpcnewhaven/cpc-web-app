@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 from admin_utils import export_announcements_csv, export_sermons_csv, bulk_update_announcements, bulk_delete_content, get_content_stats, create_sample_podcast_series
 from enhanced_api import enhanced_api
+from json_api import json_api
+from port_finder import find_available_port
 
 
 load_dotenv()
@@ -16,6 +18,7 @@ app = Flask(__name__)
 
 # Configuration
 app.register_blueprint(enhanced_api, url_prefix='/api')
+app.register_blueprint(json_api)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 # Database configuration
@@ -141,117 +144,68 @@ def api_ongoing_events():
 @app.route('/api/sermons')
 def api_sermons():
     """API endpoint matching your sunday-sermons.json structure"""
-    sermons = Sermon.query.order_by(Sermon.date.desc()).all()
-    
-    return jsonify({
-        'title': 'Sunday Sermons',
-        'description': 'Weekly sermons from our Sunday worship services',
-        'episodes': [
-            {
-                'id': s.id,
-                'title': s.title,
-                'author': s.author,
-                'scripture': s.scripture,
-                'date': s.date.strftime('%Y-%m-%d') if s.date else None,
-                'spotify_url': s.spotify_url,
-                'youtube_url': s.youtube_url,
-                'apple_podcasts_url': s.apple_podcasts_url,
-                'link': s.spotify_url or s.youtube_url or s.apple_podcasts_url,
-                'podcast-thumbnail_url': s.podcast_thumbnail_url
-            } for s in sermons
-        ]
-    })
+    # Use JSON data instead of database
+    try:
+        import json
+        with open('data/sermons.json', 'r') as f:
+            sermons_data = json.load(f)
+        
+        episodes = []
+        for sermon in sermons_data.get('sermons', []):
+            episode = {
+                'id': sermon.get('id', ''),
+                'title': sermon.get('title', ''),
+                'author': sermon.get('author', ''),
+                'scripture': sermon.get('scripture', ''),
+                'date': sermon.get('date', ''),
+                'spotify_url': sermon.get('spotify_url', ''),
+                'youtube_url': sermon.get('youtube_url', ''),
+                'apple_podcasts_url': sermon.get('apple_podcasts_url', ''),
+                'link': sermon.get('link', ''),
+                'podcast-thumbnail_url': sermon.get('podcast_thumbnail_url', '')
+            }
+            episodes.append(episode)
+        
+        return jsonify({
+            'title': sermons_data.get('title', 'Sunday Sermons'),
+            'description': sermons_data.get('description', 'Weekly sermons from our Sunday worship services'),
+            'episodes': episodes
+        })
+    except Exception as e:
+        print(f"Error loading sermons from JSON: {e}")
+        return jsonify({
+            'title': 'Sunday Sermons',
+            'description': 'Weekly sermons from our Sunday worship services',
+            'episodes': []
+        })
 
 @app.route('/api/podcasts/beyond-podcast')
 def api_beyond_podcast():
     """API endpoint for Beyond the Sunday Sermon podcast"""
-    series = PodcastSeries.query.filter_by(title='Beyond the Sunday Sermon').first()
-    if not series:
-        return jsonify({'episodes': []})
-    
-    episodes = PodcastEpisode.query.filter_by(series_id=series.id)\
-        .order_by(PodcastEpisode.date_added.desc()).all()
-    
-    return jsonify({
-        'title': series.title,
-        'description': series.description,
-        'episodes': [
-            {
-                'number': ep.number,
-                'title': ep.title,
-                'link': ep.link,
-                'guest': ep.guest,
-                'date_added': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
-                'season': ep.season,
-                'scripture': ep.scripture,
-                'podcast-thumbnail_url': ep.podcast_thumbnail_url
-            } for ep in episodes
-        ]
-    })
+    # Redirect to JSON API
+    from flask import redirect
+    return redirect('/api/json/podcasts/beyond-podcast')
 
 @app.route('/api/podcasts/biblical-interpretation')
 def api_biblical_interpretation():
     """API endpoint for Biblical Interpretation series"""
-    series = PodcastSeries.query.filter_by(title='Biblical Interpretation').first()
-    if not series:
-        return jsonify({'episodes': []})
-    
-    episodes = PodcastEpisode.query.filter_by(series_id=series.id)\
-        .order_by(PodcastEpisode.number).all()
-    
-    return jsonify({
-        'title': series.title,
-        'episodes': [
-            {
-                'number': ep.number,
-                'title': ep.title,
-                'link': ep.link
-            } for ep in episodes
-        ]
-    })
+    # Redirect to JSON API
+    from flask import redirect
+    return redirect('/api/json/podcasts/biblical-interpretation')
 
 @app.route('/api/podcasts/confessional-theology')
 def api_confessional_theology():
     """API endpoint for Confessional Theology series"""
-    series = PodcastSeries.query.filter_by(title='Confessional Theology').first()
-    if not series:
-        return jsonify({'episodes': []})
-    
-    episodes = PodcastEpisode.query.filter_by(series_id=series.id)\
-        .order_by(PodcastEpisode.number.desc()).all()
-    
-    return jsonify({
-        'title': series.title,
-        'episodes': [
-            {
-                'number': ep.number,
-                'title': ep.title,
-                'listen': ep.listen_url,
-                'handout': ep.handout_url
-            } for ep in episodes
-        ]
-    })
+    # Redirect to JSON API
+    from flask import redirect
+    return redirect('/api/json/podcasts/confessional-theology')
 
 @app.route('/api/podcasts/membership-seminar')
 def api_membership_seminar():
     """API endpoint for Membership Seminar series"""
-    series = PodcastSeries.query.filter_by(title='Membership Seminar').first()
-    if not series:
-        return jsonify({'episodes': []})
-    
-    episodes = PodcastEpisode.query.filter_by(series_id=series.id)\
-        .order_by(PodcastEpisode.number).all()
-    
-    return jsonify({
-        'title': series.title,
-        'episodes': [
-            {
-                'number': ep.number,
-                'title': ep.title,
-                'link': ep.link
-            } for ep in episodes
-        ]
-    })
+    # Redirect to JSON API
+    from flask import redirect
+    return redirect('/api/json/podcasts/membership-seminar')
 
 @app.route('/api/gallery')
 def api_gallery():
@@ -699,4 +653,17 @@ admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', catego
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, port=5001)
+    
+    # Find an available port
+    try:
+        port = find_available_port()
+        print(f"🚀 Starting Flask app on port {port}")
+        print(f"🌐 Main site: http://localhost:{port}")
+        print(f"⚙️  Admin panel: http://localhost:{port}/admin")
+        print(f"🔍 Enhanced search: http://localhost:{port}/sermons_enhanced")
+        print("Press Ctrl+C to stop the server")
+        app.run(debug=True, port=port, host='0.0.0.0')
+    except RuntimeError as e:
+        print(f"❌ Error: {e}")
+        print("Please free up a port or try running the app again.")
+        exit(1)

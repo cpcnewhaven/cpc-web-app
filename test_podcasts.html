@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test Podcasts</title>
+        <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-message { background: #f0f0f0; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .error-message { background: #ffebee; color: #c62828; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .success-message { background: #e8f5e8; color: #2e7d32; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+    </head>
+    <body>
+        <h1>Test Podcasts Page</h1>
+
+        <div id="podcast-container">
+            <div class="test-message">Loading...</div>
+        </div>
+
+        <script>
+    console.log('Test script starting...');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded');
+        
+        const container = document.getElementById('podcast-container');
+        console.log('Container found:', container);
+        
+        if (!container) {
+            console.error('Container not found!');
+            return;
+        }
+        
+        // Test API call
+        fetch('/api/json/podcasts/beyond-podcast')
+            .then(response => {
+                console.log('Response:', response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                container.innerHTML = `
+                    <div class="success-message">
+                        <h3>API Test Successful!</h3>
+                        <p>Series: ${data.title}</p>
+                        <p>Episodes: ${data.episodes ? data.episodes.length : 0}</p>
+                        <p>Description: ${data.description}</p>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                container.innerHTML = `
+                    <div class="error-message">
+                        <h3>API Test Failed</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            });
+    });
+    </script>
+    </body>
+</html>

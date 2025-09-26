@@ -7,6 +7,10 @@ A modern Flask web application for Christ Presbyterian Church New Haven, featuri
 - **Dynamic Content Management**: Admin interface for managing announcements, sermons, and events
 - **Sermon Archives**: Searchable and filterable sermon library with multiple viewing options
 - **Podcast Integration**: Multiple podcast series with episode management
+- **AI-Powered Enhancement**: Automatic scripture extraction, series classification, and content tagging
+- **Advanced Search**: Multi-field search with real-time suggestions and filtering
+- **Analytics Dashboard**: Comprehensive analytics and insights about your content
+- **Smart Port Management**: Automatic port detection and conflict resolution
 - **Responsive Design**: Mobile-first design with Alpine.js for interactive components
 - **API-First Architecture**: RESTful API endpoints for all content types
 - **Image Gallery**: Dynamic image management with tagging and categorization
@@ -53,11 +57,39 @@ python migrate_data.py
 
 ### 5. Run the Application
 
+#### **Smart Startup (Recommended)**
+```bash
+python start_app.py
+```
+- ✅ Automatically finds available port
+- ✅ Shows all URLs (main site, admin, enhanced search)
+- ✅ Handles dependencies and errors
+- ✅ Provides helpful troubleshooting
+
+#### **Direct Flask Start**
 ```bash
 python app.py
 ```
+- ✅ Now includes smart port detection
+- ✅ Automatically finds available port
+- ✅ Shows startup information
 
-Visit `http://localhost:5000` to see the website and `http://localhost:5000/admin` for the admin interface.
+#### **Port Management**
+```bash
+# Check port availability
+python start_app.py --check-ports
+
+# Kill processes on common ports
+python start_app.py --kill-ports
+
+# Or use the shell script
+./fix_ports.sh
+```
+
+The application will be available at:
+- Main site: http://localhost:PORT (automatically detected)
+- Admin panel: http://localhost:PORT/admin
+- Enhanced search: http://localhost:PORT/sermons_enhanced
 
 ## Project Structure
 

@@ -2,47 +2,104 @@
 
 {% block title %}Podcasts - CPC New Haven{% endblock %}
 
+{% block head %}
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='css/podcasts.css') }}">
+{% endblock %}
+
 {% block content %}
 <!-- Hero Section -->
 <section class="page-hero">
     <div class="container">
-        <h1>Podcasts</h1>
-        <p>Listen to our various podcast series</p>
+        <h1>Explore Our Podcasts</h1>
+        <p>Discover our collection of sermons, discussions and classes.</p>
     </div>
 </section>
 
 <!-- Podcasts Section -->
 <section class="podcasts-section">
     <div class="container">
-        <div class="podcast-series">
-            <h2>Beyond the Sunday Sermon</h2>
-            <p>Extended conversations and deeper dives into biblical topics</p>
-            <div id="beyond-podcast" class="podcast-episodes">
-                <!-- Will be populated by JavaScript -->
+        <!-- Podcast Shows Grid -->
+        <div class="podcast-shows-grid">
+            <!-- The Sunday Sermon -->
+            <div class="podcast-show-card">
+                <div class="show-header">
+                    <div class="show-icon">📖</div>
+                    <div class="show-info">
+                        <h2>The Sunday Sermon</h2>
+                        <h3>Sunday Sermons</h3>
+                    </div>
+                </div>
+                <p class="show-description">Weekly sermons from our Sunday
+                    worship services. Explore our archive of biblical teaching
+                    and preaching.</p>
+                <a href="/sermons" class="browse-btn">Browse Sermons</a>
+            </div>
+
+            <!-- Beyond the Sunday Sermon -->
+            <div class="podcast-show-card">
+                <div class="show-header">
+                    <div class="show-icon">🎙️</div>
+                    <div class="show-info">
+                        <h2>Beyond the Sunday Sermon</h2>
+                        <h3>Beyond the Sunday Sermon</h3>
+                    </div>
+                </div>
+                <p class="show-description">Discussions with Pastors about the
+                    Sunday Sermon and deeper biblical topics.</p>
+                <div id="beyond-podcast-container" class="episodes-preview">
+                    <div class="loading-message">
+                        <p>Loading episodes...</p>
+                    </div>
+                </div>
+                <a href="#" class="browse-btn"
+                    onclick="showAllEpisodes('beyond-podcast')">Browse
+                    Episodes</a>
+            </div>
+
+            <!-- Classes -->
+            <div class="podcast-show-card">
+                <div class="show-header">
+                    <div class="show-icon">🎓</div>
+                    <div class="show-info">
+                        <h2>Classes</h2>
+                        <h3>Classes</h3>
+                    </div>
+                </div>
+                <p class="show-description">Educational content from our various
+                    classes including Biblical Interpretation, Confessional
+                    Theology, and more.</p>
+                <div class="classes-grid">
+                    <div class="class-item">
+                        <h4>Biblical Interpretation</h4>
+                        <p>Teaching series on how to read and understand
+                            Scripture</p>
+                    </div>
+                    <div class="class-item">
+                        <h4>Confessional Theology</h4>
+                        <p>Exploring Reformed theology and doctrine</p>
+                    </div>
+                    <div class="class-item">
+                        <h4>Membership Seminar</h4>
+                        <p>Understanding church membership and Christian
+                            life</p>
+                    </div>
+                </div>
+                <a href="#" class="browse-btn">Browse Classes</a>
             </div>
         </div>
-        
-        <div class="podcast-series">
-            <h2>Biblical Interpretation</h2>
-            <p>Teaching series on how to read and understand Scripture</p>
-            <div id="biblical-interpretation" class="podcast-episodes">
-                <!-- Will be populated by JavaScript -->
+
+        <!-- Full Episodes View (hidden by default) -->
+        <div id="full-episodes-view" class="full-episodes-view"
+            style="display: none;">
+            <div class="episodes-header">
+                <button onclick="hideFullEpisodes()" class="back-btn">← Back to
+                    Shows</button>
+                <h2 id="episodes-title">Episodes</h2>
             </div>
-        </div>
-        
-        <div class="podcast-series">
-            <h2>Confessional Theology</h2>
-            <p>Exploring Reformed theology and doctrine</p>
-            <div id="confessional-theology" class="podcast-episodes">
-                <!-- Will be populated by JavaScript -->
-            </div>
-        </div>
-        
-        <div class="podcast-series">
-            <h2>Membership Seminar</h2>
-            <p>Understanding church membership and Christian life</p>
-            <div id="membership-seminar" class="podcast-episodes">
-                <!-- Will be populated by JavaScript -->
+            <div id="full-episodes-container"
+                class="episodes-container list-view">
+                <!-- Episodes will be loaded here -->
             </div>
         </div>
     </div>
@@ -51,41 +108,152 @@
 
 {% block scripts %}
 <script>
-// Load podcast data for each series
-document.addEventListener('DOMContentLoaded', function() {
-    const series = [
-        'beyond-podcast',
-        'biblical-interpretation', 
-        'confessional-theology',
-        'membership-seminar'
-    ];
+// Load preview episodes for Beyond the Sunday Sermon
+function loadPreviewEpisodes() {
+    const container = document.getElementById('beyond-podcast-container');
+    if (!container) return;
     
-    series.forEach(seriesName => {
-        fetch(`/api/podcasts/${seriesName}`)
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById(seriesName);
-                if (data.episodes && data.episodes.length > 0) {
-                    data.episodes.forEach(episode => {
-                        const episodeElement = document.createElement('div');
-                        episodeElement.classList.add('podcast-episode');
-                        episodeElement.innerHTML = `
-                            <h3>${episode.number ? `Episode ${episode.number}: ` : ''}${episode.title}</h3>
-                            ${episode.guest ? `<p class="guest">Guest: ${episode.guest}</p>` : ''}
-                            ${episode.scripture ? `<p class="scripture">${episode.scripture}</p>` : ''}
-                            ${episode.link ? `<a href="${episode.link}" target="_blank" class="btn btn-primary">Listen</a>` : ''}
-                        `;
-                        container.appendChild(episodeElement);
-                    });
-                } else {
-                    container.innerHTML = '<p>No episodes available yet.</p>';
-                }
-            })
-            .catch(error => {
-                console.error(`Error loading ${seriesName}:`, error);
-                document.getElementById(seriesName).innerHTML = '<p>Error loading episodes.</p>';
-            });
+    fetch('/api/json/podcasts/beyond-podcast')
+        .then(response => response.json())
+        .then(data => {
+            if (data.episodes && data.episodes.length > 0) {
+                const episodes = data.episodes.slice(0, 3); // Show first 3 episodes
+                let html = '<div class="episodes-preview-list">';
+                
+                episodes.forEach(episode => {
+                    html += `
+                        <div class="preview-episode">
+                            <div class="preview-episode-info">
+                                <h4>${episode.title}</h4>
+                                <p class="preview-episode-meta">
+                                    ${episode.date_added ? new Date(episode.date_added).toLocaleDateString() : ''}
+                                    ${episode.guest ? ` • Guest: ${episode.guest}` : ''}
+                                </p>
+                            </div>
+                            <div class="preview-episode-actions">
+                                ${episode.link ? `<a href="${episode.link}" target="_blank" class="btn btn-sm">Listen</a>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p>No episodes available</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading preview episodes:', error);
+            container.innerHTML = '<p>Error loading episodes</p>';
+        });
+}
+
+// Show all episodes for a specific series
+function showAllEpisodes(seriesId) {
+    const showsGrid = document.querySelector('.podcast-shows-grid');
+    const fullView = document.getElementById('full-episodes-view');
+    const episodesTitle = document.getElementById('episodes-title');
+    const episodesContainer = document.getElementById('full-episodes-container');
+    
+    // Hide shows grid and show full episodes view
+    showsGrid.style.display = 'none';
+    fullView.style.display = 'block';
+    
+    // Set title based on series
+    const seriesNames = {
+        'beyond-podcast': 'Beyond the Sunday Sermon',
+        'biblical-interpretation': 'Biblical Interpretation',
+        'confessional-theology': 'Confessional Theology',
+        'membership-seminar': 'Membership Seminar'
+    };
+    
+    episodesTitle.textContent = seriesNames[seriesId] || 'Episodes';
+    
+    // Load episodes
+    episodesContainer.innerHTML = '<div class="loading-message"><h3>🎧 Loading Episodes...</h3><p>Please wait...</p></div>';
+    
+    fetch(`/api/json/podcasts/${seriesId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.episodes && data.episodes.length > 0) {
+                renderFullEpisodes(data);
+            } else {
+                episodesContainer.innerHTML = '<div class="error-message">No episodes found.</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading episodes:', error);
+            episodesContainer.innerHTML = '<div class="error-message">Error loading episodes. Please try again.</div>';
+        });
+}
+
+// Hide full episodes view and return to shows
+function hideFullEpisodes() {
+    const showsGrid = document.querySelector('.podcast-shows-grid');
+    const fullView = document.getElementById('full-episodes-view');
+    
+    showsGrid.style.display = 'grid';
+    fullView.style.display = 'none';
+}
+
+// Render full episodes list
+function renderFullEpisodes(data) {
+    const container = document.getElementById('full-episodes-container');
+    if (!container) return;
+    
+    const episodes = data.episodes || [];
+    
+    let html = `
+        <div class="podcast-series">
+            <div class="series-header">
+                <h2 class="series-title">${data.title || 'Episodes'}</h2>
+                <p class="series-description">${data.description || ''}</p>
+                <div class="series-stats">
+                    <span class="episode-count">${episodes.length} episode${episodes.length !== 1 ? 's' : ''}</span>
+                </div>
+            </div>
+            <div class="episodes-container list-view">
+    `;
+    
+    episodes.forEach(episode => {
+        html += `
+            <div class="podcast-episode">
+                <div class="episode-thumbnail">
+                    <div class="play-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="episode-info">
+                    <div class="episode-header">
+                        <h3 class="episode-title">${episode.title}</h3>
+                        <div class="episode-meta">
+                            ${episode.date_added ? `<span class="episode-date">${new Date(episode.date_added).toLocaleDateString()}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="episode-details">
+                        ${episode.guest ? `<span class="episode-guest">Guest: ${episode.guest}</span>` : ''}
+                        ${episode.scripture ? `<span class="episode-scripture">${episode.scripture}</span>` : ''}
+                    </div>
+                </div>
+                <div class="episode-actions">
+                    ${episode.link ? `<a href="${episode.link}" target="_blank" class="btn btn-primary">Listen</a>` : ''}
+                </div>
+            </div>
+        `;
     });
-});
+    
+    html += `
+            </div>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+}
+
+// Start loading when page loads
+document.addEventListener('DOMContentLoaded', loadPreviewEpisodes);
 </script>
 {% endblock %}
