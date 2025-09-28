@@ -1,13 +1,18 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_caching import Cache
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import os
 import requests
 import feedparser
+import json
+import re
+from ics import Calendar, Event
+from dateutil import tz
+import pytz
 from dotenv import load_dotenv
 from admin_utils import export_announcements_csv, export_sermons_csv, bulk_update_announcements, bulk_delete_content, get_content_stats, create_sample_podcast_series
 from enhanced_api import enhanced_api
@@ -345,32 +350,12 @@ def api_newsletter():
 @app.route("/api/events")
 @cache.cached(timeout=900)
 def api_events():
-    """Fetch events from Google Calendar ICS feed"""
-    url = app.config.get("EVENTS_ICS_URL")
-    if not url or url == "<PASTE_YOUR_GOOGLE_CALENDAR_ICS_URL>":
-        return {"error": "EVENTS_ICS_URL not configured"}, 500
-    
+    """Fetch events from Google Calendar ICS feed with enhanced categorization"""
     try:
-        r = requests.get(url, timeout=10)
-        r.raise_for_status()
-        
-        # Parse ICS content
-        from ics import Calendar
-        c = Calendar(r.text)
-        items = []
-        
-        for e in sorted(c.events, key=lambda x: x.begin)[:50]:
-            items.append({
-                "title": e.name,
-                "start": str(e.begin),
-                "end": str(e.end),
-                "location": e.location,
-                "description": e.description
-            })
-        
-        return {"events": items}
+        data = _fetch_events_json()
+        return jsonify(data), 200
     except Exception as ex:
-        return {"error": "Failed to fetch events", "details": str(ex)}, 502
+        return jsonify({"error": "failed to load events", "details": str(ex)}), 502
 
 @app.route("/api/youtube")
 @cache.cached(timeout=900)
@@ -511,6 +496,91 @@ def cpc_newsletter_sample():
         return sample_data
     except Exception as e:
         return {"error": f"Failed to load sample data: {str(e)}"}, 500
+
+# ---------- Events ingest & normalization ----------
+def _categorize(title, description, rules):
+    text = f"{title} {description}".lower()
+    for cat, keywords in rules.items():
+        for k in keywords:
+            if k in text:
+                return cat
+    return "General"
+
+def _normalize_events(ics_text, site_tz, rules):
+    cal = Calendar(ics_text)
+    local = pytz.timezone(site_tz)
+    items = []
+    for ev in cal.events:
+        # Handle all-day vs timed
+        all_day = (ev.all_day is True) or (ev.begin and ev.begin.time() == datetime.min.time() and ev.duration and ev.duration.days >= 1)
+        # Normalize datetimes
+        start = ev.begin.datetime if ev.begin else None
+        end   = ev.end.datetime if ev.end else None
+        if start and start.tzinfo is None:
+            start = pytz.utc.localize(start)
+        if end and end.tzinfo is None:
+            end = pytz.utc.localize(end)
+        if start:
+            start = start.astimezone(local)
+        if end:
+            end = end.astimezone(local)
+        # Stable id
+        eid = (getattr(ev, "uid", None) or f"{ev.name}-{start}").replace(" ", "_")
+        items.append({
+            "id": eid,
+            "title": ev.name or "Untitled Event",
+            "start": start.isoformat() if start else None,
+            "end":   end.isoformat() if end else None,
+            "all_day": bool(all_day),
+            "location": ev.location,
+            "description": ev.description,
+            "url": getattr(ev, "url", None),
+            "category": _categorize(ev.name or "", ev.description or "", rules),
+        })
+    # Sort by start
+    items.sort(key=lambda x: x["start"] or "")
+    return items
+
+@cache.cached(timeout=900, key_prefix="events_json")
+def _fetch_events_json():
+    ics_url = app.config.get("EVENTS_ICS_URL")
+    if not ics_url:
+        return {"error": "EVENTS_ICS_URL not configured"}
+    r = requests.get(ics_url, timeout=10, headers={"User-Agent":"CPC-Web-App"})
+    r.raise_for_status()
+    items = _normalize_events(
+        r.text,
+        app.config.get("SITE_TIMEZONE", "America/New_York"),
+        app.config.get("EVENT_CATEGORY_RULES", {})
+    )
+    # window filter
+    lookahead = int(app.config.get("EVENTS_LOOKAHEAD_DAYS", 120))
+    now = datetime.now(pytz.timezone(app.config.get("SITE_TIMEZONE", "America/New_York")))
+    until = now + timedelta(days=lookahead)
+    upcoming = [e for e in items if e["start"] and now.isoformat() <= e["start"] <= until.isoformat()]
+    return {"events": upcoming}
+
+@app.route("/api/events/<eid>.ics")
+def api_event_ics(eid):
+    # Build a single .ics download from cached list
+    data = _fetch_events_json()
+    ev = next((e for e in data.get("events", []) if e["id"] == eid), None)
+    if not ev:
+        return Response("Not found", status=404)
+    cal = Calendar()
+    evt = Event()
+    evt.name = ev["title"]
+    tzname = app.config.get("SITE_TIMEZONE", "America/New_York")
+    local = pytz.timezone(tzname)
+    if ev["start"]:
+        evt.begin = datetime.fromisoformat(ev["start"]).astimezone(local)
+    if ev["end"]:
+        evt.end = datetime.fromisoformat(ev["end"]).astimezone(local)
+    evt.description = ev.get("description") or ""
+    evt.location = ev.get("location") or ""
+    cal.events.add(evt)
+    return Response(str(cal), mimetype="text/calendar",
+                    headers={"Content-Disposition": f"attachment; filename={eid}.ics"})
 
 @app.route("/api/external-data")
 @cache.cached(timeout=900)

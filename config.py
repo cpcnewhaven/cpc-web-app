@@ -28,6 +28,23 @@ EVENTS_ICS_URL = "https://calendar.google.com/calendar/ical/baf2h147ghi7nu8ifijj
 YOUTUBE_CHANNEL_ID = "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # Desiring God YouTube for testing
 BIBLE_API_KEY = "not_needed"  # Uses free public API
 
+# === Events (Google Calendar ICS) ===
+# How far ahead to show events (in days)
+EVENTS_LOOKAHEAD_DAYS = 120
+
+# Site timezone for display
+SITE_TIMEZONE = "America/New_York"
+
+# Keyword → category mapping (used for UI chips)
+EVENT_CATEGORY_RULES = {
+    "Weekly":      ["sunday", "service", "worship", "prayer", "midweek"],
+    "Educational": ["class", "seminar", "course", "training"],
+    "Fellowship":  ["fellowship", "potluck", "picnic", "gathering", "banquet"],
+    "Service":     ["outreach", "volunteer", "serve", "service project"],
+    "Youth":       ["youth", "teen", "students"],
+    "Children":    ["children", "kids", "vbs", "sunday school", "nursery"]
+}
+
 # --- Mailchimp Integration ---
 MAILCHIMP_API_KEY = os.getenv("MAILCHIMP_API_KEY")
 MAILCHIMP_SERVER_PREFIX = os.getenv("MAILCHIMP_SERVER_PREFIX")  # e.g., "us21"

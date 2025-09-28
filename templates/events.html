@@ -16,10 +16,7 @@
     <div class="container">
         <div class="events-content">
             <h2>Upcoming Events</h2>
-            <div class="events-grid" id="eventsGrid">
-                <!-- Events will be populated by JavaScript -->
-                <div class="loading-message">Loading events...</div>
-            </div>
+            <div id="events-app"></div>
         </div>
     </div>
 </section>
@@ -142,48 +139,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Load events from API
-    loadEvents();
-    
-    function loadEvents() {
-        fetch('/api/ongoing-events')
-            .then(response => response.json())
-            .then(data => {
-                displayEvents(data.events);
-            })
-            .catch(error => {
-                console.error('Error loading events:', error);
-                document.getElementById('eventsGrid').innerHTML = 
-                    '<div class="error-message">Unable to load events. Please try again later.</div>';
-            });
-    }
-    
-    function displayEvents(events) {
-        const eventsGrid = document.getElementById('eventsGrid');
-        
-        if (!events || events.length === 0) {
-            eventsGrid.innerHTML = '<div class="no-events-message">No upcoming events at this time.</div>';
-            return;
-        }
-        
-        eventsGrid.innerHTML = events.map(event => `
-            <div class="event-card">
-                <div class="event-header">
-                    <h3>${event.title}</h3>
-                    <span class="event-type">${event.type}</span>
-                </div>
-                <div class="event-content">
-                    <p>${event.description}</p>
-                    <div class="event-meta">
-                        <span class="event-category">${event.category}</span>
-                        ${event.active ? '<span class="event-status active">Active</span>' : '<span class="event-status inactive">Inactive</span>'}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-});
-</script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/events.css') }}">
+<script src="{{ url_for('static', filename='js/events.js') }}"></script>
 {% endblock %}
