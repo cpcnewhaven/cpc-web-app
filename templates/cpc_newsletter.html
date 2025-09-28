@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+
+{% block title %}CPC Weekly Newsletter - Christ Presbyterian Church{% endblock %}
+
+{% block head %}
+<style>
+.newsletter-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.newsletter-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    color: white;
+    border-radius: 1rem;
+}
+
+.newsletter-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.newsletter-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.newsletter-content {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.newsletter-item {
+    padding: 2rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.newsletter-item:last-child {
+    border-bottom: none;
+}
+
+.newsletter-item-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.newsletter-item-title::before {
+    content: "📧";
+    font-size: 1.25rem;
+}
+
+.newsletter-item-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.newsletter-item-content {
+    color: #374151;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.newsletter-item-content h1,
+.newsletter-item-content h2,
+.newsletter-item-content h3 {
+    color: #1e293b;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.newsletter-item-content h1:first-child,
+.newsletter-item-content h2:first-child,
+.newsletter-item-content h3:first-child {
+    margin-top: 0;
+}
+
+.newsletter-item-content p {
+    margin-bottom: 1rem;
+}
+
+.newsletter-item-content ul,
+.newsletter-item-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.newsletter-item-content li {
+    margin-bottom: 0.5rem;
+}
+
+.newsletter-item-content a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.newsletter-item-content a:hover {
+    text-decoration: underline;
+}
+
+.newsletter-item-content strong {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.newsletter-item-content em {
+    font-style: italic;
+    color: #64748b;
+}
+
+.events-section {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+.events-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.events-title::before {
+    content: "📅";
+    font-size: 1rem;
+}
+
+.event-item {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid #3b82f6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.event-item:last-child {
+    margin-bottom: 0;
+}
+
+.event-title {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.event-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+}
+
+.error-message {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.refresh-button {
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    transition: transform 0.2s;
+}
+
+.refresh-button:hover {
+    transform: translateY(-2px);
+}
+
+.refresh-button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.method-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.method-rss {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.method-api {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.method-webhook {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.cpc-info {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.cpc-info h3 {
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.cpc-info p {
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.cpc-info a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.cpc-info a:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="newsletter-container">
+    <div class="newsletter-header">
+        <h1 class="newsletter-title">CPC Weekly Newsletter</h1>
+        <p class="newsletter-subtitle">Christ Presbyterian Church, New Haven, CT</p>
+        <button id="refresh-btn" class="refresh-button" onclick="refreshNewsletter()">
+            🔄 Refresh Newsletter
+        </button>
+    </div>
+    
+    <div id="newsletter-content">
+        <div class="loading-message">
+            <h3>📧 Loading Newsletter...</h3>
+            <p>Fetching the latest content from Mailchimp.</p>
+        </div>
+    </div>
+    
+    <div class="cpc-info">
+        <h3>Christ Presbyterian Church</h3>
+        <p>135 Whitney Ave, New Haven, CT 06510</p>
+        <p>
+            <a href="mailto:admin@cpcnewhaven.org">admin@cpcnewhaven.org</a> | 
+            <a href="https://cpcnewhaven.org">cpcnewhaven.org</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let newsletterData = null;
+
+async function loadNewsletter() {
+    const container = document.getElementById('newsletter-content');
+    const refreshBtn = document.getElementById('refresh-btn');
+    
+    if (!container) return;
+    
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = '🔄 Loading...';
+    
+    try {
+        // Try Mailchimp first, then fall back to general newsletter
+        let response = await fetch('/api/mailchimp', { cache: 'no-store' });
+        let data = await response.json();
+        
+        // If Mailchimp fails, try general newsletter
+        if (data.error) {
+            response = await fetch('/api/newsletter', { cache: 'no-store' });
+            data = await response.json();
+        }
+        
+        newsletterData = data;
+        renderNewsletter(data);
+        
+    } catch (error) {
+        console.error('Error loading newsletter:', error);
+        container.innerHTML = `
+            <div class="error-message">
+                <h3>❌ Error Loading Newsletter</h3>
+                <p>Failed to load newsletter content. Please try again later.</p>
+                <p><small>Error: ${error.message}</small></p>
+            </div>
+        `;
+    } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Refresh Newsletter';
+    }
+}
+
+function renderNewsletter(data) {
+    const container = document.getElementById('newsletter-content');
+    if (!container) return;
+    
+    if (data.error) {
+        container.innerHTML = `
+            <div class="error-message">
+                <h3>❌ Newsletter Not Available</h3>
+                <p>${data.error}</p>
+                <p><small>Please check your Mailchimp configuration.</small></p>
+            </div>
+        `;
+        return;
+    }
+    
+    if (!data.items || data.items.length === 0) {
+        container.innerHTML = `
+            <div class="loading-message">
+                <h3>📭 No Newsletter Content</h3>
+                <p>No newsletter content is currently available.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const method = data.method || 'unknown';
+    const methodClass = `method-${method}`;
+    
+    let html = `
+        <div class="newsletter-content">
+            <div class="newsletter-item">
+                <div class="newsletter-item-title">
+                    ${data.source || 'CPC Weekly Newsletter'}
+                    <span class="method-badge ${methodClass}">${method.toUpperCase()}</span>
+                </div>
+                <div class="newsletter-item-meta">
+                    <span>📅 ${data.count || 0} items</span>
+                    <span>🕒 Last updated: ${new Date().toLocaleString()}</span>
+                </div>
+            </div>
+    `;
+    
+    data.items.forEach((item, index) => {
+        const title = item.title || 'Newsletter Item';
+        const published = item.published ? new Date(item.published).toLocaleDateString() : '';
+        const summary = item.summary || '';
+        const events = item.events || [];
+        
+        html += `
+            <div class="newsletter-item">
+                <div class="newsletter-item-title">${title}</div>
+                ${published ? `<div class="newsletter-item-meta">Published: ${published}</div>` : ''}
+                ${summary ? `
+                    <div class="newsletter-item-content">
+                        ${formatNewsletterContent(summary)}
+                    </div>
+                ` : ''}
+                ${events.length > 0 ? `
+                    <div class="events-section">
+                        <div class="events-title">Upcoming Events</div>
+                        ${events.map(event => `
+                            <div class="event-item">
+                                <div class="event-title">${event.title}</div>
+                                <div class="event-meta">From Newsletter</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+                ${item.url ? `
+                    <div style="margin-top: 1rem;">
+                        <a href="${item.url}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">
+                            Read Full Newsletter →
+                        </a>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function formatNewsletterContent(content) {
+    // Enhanced formatting for CPC newsletter content
+    return content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/^(.*)$/, '<p>$1</p>')
+        .replace(/(\d{1,2}:\d{2}[ap]m)/g, '<strong>$1</strong>')
+        .replace(/(Sept|Oct|Nov|Dec|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug)\.?\s+\d{1,2}/g, '<strong>$&</strong>');
+}
+
+function refreshNewsletter() {
+    loadNewsletter();
+}
+
+// Load newsletter when page loads
+document.addEventListener('DOMContentLoaded', loadNewsletter);
+</script>
+{% endblock %}

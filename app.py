@@ -16,6 +16,7 @@ from port_finder import find_available_port
 from ingest.newsletter import NewsletterIngester
 from ingest.events import EventsIngester
 from ingest.youtube import YouTubeIngester
+from ingest.mailchimp import MailchimpIngester
 
 
 load_dotenv()
@@ -109,6 +110,14 @@ def gallery():
 @app.route('/newsletter')
 def newsletter():
     return render_template('newsletter.html')
+
+@app.route('/mailchimp-newsletter')
+def mailchimp_newsletter():
+    return render_template('mailchimp_newsletter.html')
+
+@app.route('/cpc-newsletter')
+def cpc_newsletter():
+    return render_template('cpc_newsletter.html')
 
 @app.route('/data-dashboard')
 def data_dashboard():
@@ -425,6 +434,84 @@ def api_bible_verse():
     except Exception as ex:
         return {"error": "Failed to fetch Bible verse", "details": str(ex)}, 502
 
+@app.route("/api/mailchimp")
+@cache.cached(timeout=900)
+def api_mailchimp():
+    """Fetch Mailchimp newsletter content"""
+    ingester = MailchimpIngester(cache)
+    data = ingester.fetch_data(app.config)
+    return ingester.normalize_data(data)
+
+@app.route("/webhooks/mailchimp", methods=["POST"])
+def mailchimp_webhook():
+    """Handle Mailchimp webhook for campaign sent events"""
+    try:
+        # Parse webhook payload
+        payload = request.form or request.json or {}
+        campaign_id = payload.get("data[id]") or payload.get("data", {}).get("id")
+        
+        if not campaign_id:
+            return {"error": "Missing campaign ID"}, 400
+        
+        # Get campaign content and cache it
+        api_key = app.config.get("MAILCHIMP_API_KEY")
+        server_prefix = app.config.get("MAILCHIMP_SERVER_PREFIX")
+        
+        if not api_key or not server_prefix:
+            return {"error": "Mailchimp API not configured"}, 500
+        
+        # Fetch campaign content
+        content_url = f"https://{server_prefix}.api.mailchimp.com/3.0/campaigns/{campaign_id}/content"
+        response = requests.get(
+            content_url, 
+            auth=("anystring", api_key), 
+            timeout=10,
+            headers={"User-Agent": "CPC-Web-App"}
+        )
+        
+        if response.status_code != 200:
+            return {"error": f"Failed to fetch campaign: {response.text}"}, 502
+        
+        campaign_data = response.json()
+        
+        # Process and cache the content
+        ingester = MailchimpIngester(cache)
+        processed_data = {
+            "title": campaign_data.get("settings", {}).get("subject_line", "Newsletter"),
+            "html_content": campaign_data.get("html", ""),
+            "text_content": campaign_data.get("plain_text", ""),
+            "campaign_id": campaign_id,
+            "webhook_received": datetime.utcnow().isoformat()
+        }
+        
+        # Cache the latest newsletter
+        cache.set("latest_mailchimp_newsletter", processed_data, timeout=60*60*24*7)  # 7 days
+        
+        return {"status": "success", "campaign_id": campaign_id}, 200
+        
+    except Exception as e:
+        return {"error": f"Webhook processing failed: {str(e)}"}, 500
+
+@app.route("/api/mailchimp/latest")
+def mailchimp_latest():
+    """Get the latest newsletter from webhook cache"""
+    latest = cache.get("latest_mailchimp_newsletter")
+    if not latest:
+        return {"error": "No newsletter available"}, 404
+    
+    return latest
+
+@app.route("/api/cpc-newsletter-sample")
+def cpc_newsletter_sample():
+    """Get sample CPC newsletter data for testing"""
+    try:
+        import json
+        with open('data/cpc_newsletter_sample.json', 'r') as f:
+            sample_data = json.load(f)
+        return sample_data
+    except Exception as e:
+        return {"error": f"Failed to load sample data: {str(e)}"}, 500
+
 @app.route("/api/external-data")
 @cache.cached(timeout=900)
 def api_external_data():
@@ -435,6 +522,7 @@ def api_external_data():
     newsletter_ingester = NewsletterIngester(cache)
     events_ingester = EventsIngester(cache)
     youtube_ingester = YouTubeIngester(cache)
+    mailchimp_ingester = MailchimpIngester(cache)
     
     # Fetch newsletter data
     try:
@@ -442,6 +530,13 @@ def api_external_data():
         data["newsletter"] = newsletter_ingester.normalize_data(newsletter_data)
     except Exception as e:
         data["newsletter"] = {"error": f"Newsletter fetch failed: {str(e)}"}
+    
+    # Fetch Mailchimp data
+    try:
+        mailchimp_data = mailchimp_ingester.fetch_data(app.config)
+        data["mailchimp"] = mailchimp_ingester.normalize_data(mailchimp_data)
+    except Exception as e:
+        data["mailchimp"] = {"error": f"Mailchimp fetch failed: {str(e)}"}
     
     # Fetch events data
     try:

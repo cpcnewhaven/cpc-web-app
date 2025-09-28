@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}CPC Weekly Newsletter - CPC New Haven{% endblock %}
+
+{% block head %}
+<style>
+.newsletter-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.newsletter-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.newsletter-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.newsletter-subtitle {
+    color: #64748b;
+    font-size: 1.125rem;
+}
+
+.newsletter-content {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.newsletter-item {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.newsletter-item:last-child {
+    border-bottom: none;
+}
+
+.newsletter-item-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+}
+
+.newsletter-item-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.newsletter-item-content {
+    color: #374151;
+    line-height: 1.6;
+}
+
+.newsletter-item-content h1,
+.newsletter-item-content h2,
+.newsletter-item-content h3 {
+    color: #1e293b;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.newsletter-item-content h1:first-child,
+.newsletter-item-content h2:first-child,
+.newsletter-item-content h3:first-child {
+    margin-top: 0;
+}
+
+.newsletter-item-content p {
+    margin-bottom: 1rem;
+}
+
+.newsletter-item-content ul,
+.newsletter-item-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.newsletter-item-content li {
+    margin-bottom: 0.5rem;
+}
+
+.newsletter-item-content a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.newsletter-item-content a:hover {
+    text-decoration: underline;
+}
+
+.newsletter-item-content strong {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.newsletter-item-content em {
+    font-style: italic;
+    color: #64748b;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+}
+
+.error-message {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.refresh-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.refresh-button:hover {
+    background-color: #2563eb;
+}
+
+.refresh-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.method-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.method-rss {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.method-api {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.method-webhook {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="newsletter-container">
+    <div class="newsletter-header">
+        <h1 class="newsletter-title">CPC Weekly Newsletter</h1>
+        <p class="newsletter-subtitle">Stay connected with our church
+            community</p>
+        <button id="refresh-btn" class="refresh-button"
+            onclick="refreshNewsletter()">
+            🔄 Refresh Newsletter
+        </button>
+    </div>
+
+    <div id="newsletter-content">
+        <div class="loading-message">
+            <h3>📧 Loading Newsletter...</h3>
+            <p>Fetching the latest content from Mailchimp.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let newsletterData = null;
+
+async function loadNewsletter() {
+    const container = document.getElementById('newsletter-content');
+    const refreshBtn = document.getElementById('refresh-btn');
+    
+    if (!container) return;
+    
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = '🔄 Loading...';
+    
+    try {
+        // Try Mailchimp first, then fall back to general newsletter
+        let response = await fetch('/api/mailchimp', { cache: 'no-store' });
+        let data = await response.json();
+        
+        // If Mailchimp fails, try general newsletter
+        if (data.error) {
+            response = await fetch('/api/newsletter', { cache: 'no-store' });
+            data = await response.json();
+        }
+        
+        newsletterData = data;
+        renderNewsletter(data);
+        
+    } catch (error) {
+        console.error('Error loading newsletter:', error);
+        container.innerHTML = `
+            <div class="error-message">
+                <h3>❌ Error Loading Newsletter</h3>
+                <p>Failed to load newsletter content. Please try again later.</p>
+                <p><small>Error: ${error.message}</small></p>
+            </div>
+        `;
+    } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Refresh Newsletter';
+    }
+}
+
+function renderNewsletter(data) {
+    const container = document.getElementById('newsletter-content');
+    if (!container) return;
+    
+    if (data.error) {
+        container.innerHTML = `
+            <div class="error-message">
+                <h3>❌ Newsletter Not Available</h3>
+                <p>${data.error}</p>
+                <p><small>Please check your Mailchimp configuration.</small></p>
+            </div>
+        `;
+        return;
+    }
+    
+    if (!data.items || data.items.length === 0) {
+        container.innerHTML = `
+            <div class="loading-message">
+                <h3>📭 No Newsletter Content</h3>
+                <p>No newsletter content is currently available.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const method = data.method || 'unknown';
+    const methodClass = `method-${method}`;
+    
+    let html = `
+        <div class="newsletter-content">
+            <div class="newsletter-item">
+                <div class="newsletter-item-title">
+                    ${data.source || 'CPC Weekly Newsletter'}
+                    <span class="method-badge ${methodClass}">${method.toUpperCase()}</span>
+                </div>
+                <div class="newsletter-item-meta">
+                    ${data.count || 0} items • Last updated: ${new Date().toLocaleString()}
+                </div>
+            </div>
+    `;
+    
+    data.items.forEach((item, index) => {
+        const title = item.title || 'Newsletter Item';
+        const published = item.published ? new Date(item.published).toLocaleDateString() : '';
+        const summary = item.summary || '';
+        
+        html += `
+            <div class="newsletter-item">
+                <div class="newsletter-item-title">${title}</div>
+                ${published ? `<div class="newsletter-item-meta">Published: ${published}</div>` : ''}
+                ${summary ? `
+                    <div class="newsletter-item-content">
+                        ${formatNewsletterContent(summary)}
+                    </div>
+                ` : ''}
+                ${item.url ? `
+                    <div style="margin-top: 1rem;">
+                        <a href="${item.url}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">
+                            Read Full Newsletter →
+                        </a>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function formatNewsletterContent(content) {
+    // Basic HTML formatting for newsletter content
+    return content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/^(.*)$/, '<p>$1</p>');
+}
+
+function refreshNewsletter() {
+    loadNewsletter();
+}
+
+// Load newsletter when page loads
+document.addEventListener('DOMContentLoaded', loadNewsletter);
+</script>
+{% endblock %}
