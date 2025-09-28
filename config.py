@@ -21,6 +21,12 @@ PODCAST_FEEDS = {
 CACHE_TYPE = "SimpleCache"
 CACHE_DEFAULT_TIMEOUT = 900  # 15 minutes
 
+# --- External data sources ---
+NEWSLETTER_FEED_URL = "<PASTE_YOUR_NEWSLETTER_RSS_URL>"
+EVENTS_ICS_URL = "<PASTE_YOUR_GOOGLE_CALENDAR_ICS_URL>"
+YOUTUBE_CHANNEL_ID = "<PASTE_YOUR_YOUTUBE_CHANNEL_ID>"
+BIBLE_API_KEY = "<PASTE_YOUR_BIBLE_API_KEY>"
+
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,

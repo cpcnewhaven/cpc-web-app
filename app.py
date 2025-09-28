@@ -13,6 +13,9 @@ from admin_utils import export_announcements_csv, export_sermons_csv, bulk_updat
 from enhanced_api import enhanced_api
 from json_api import json_api
 from port_finder import find_available_port
+from ingest.newsletter import NewsletterIngester
+from ingest.events import EventsIngester
+from ingest.youtube import YouTubeIngester
 
 
 load_dotenv()
@@ -102,6 +105,15 @@ def resources():
 @app.route('/gallery')
 def gallery():
     return render_template('gallery.html')
+
+@app.route('/newsletter')
+def newsletter():
+    return render_template('newsletter.html')
+
+@app.route('/data-dashboard')
+def data_dashboard():
+    """Comprehensive data dashboard showing all external data sources"""
+    return render_template('data_dashboard.html')
 
 # API Routes
 @app.route('/api/announcements')
@@ -280,6 +292,179 @@ def api_podcast(series_key):
         return data, 200
     except requests.RequestException as ex:
         return {"error": "Failed to fetch RSS", "details": str(ex)}, 502
+
+@app.route("/api/newsletter")
+@cache.cached(timeout=900)  # 15 min cache
+def api_newsletter():
+    """Fetch latest newsletter content from RSS feed"""
+    url = app.config.get("NEWSLETTER_FEED_URL")
+    if not url or url == "<PASTE_YOUR_NEWSLETTER_RSS_URL>":
+        return {"error": "NEWSLETTER_FEED_URL not configured"}, 500
+    
+    try:
+        r = requests.get(url, timeout=10, headers={"User-Agent": "CPC-Web-App"})
+        r.raise_for_status()
+        parsed = feedparser.parse(r.content)
+
+        items = []
+        for e in parsed.entries[:20]:
+            # Extract image from media_thumbnail or other sources
+            image = None
+            if e.get("media_thumbnail"):
+                image = e.get("media_thumbnail", [{}])[0].get("url")
+            elif e.get("enclosures"):
+                for enc in e.get("enclosures", []):
+                    if enc.get("type", "").startswith("image"):
+                        image = enc.get("href")
+                        break
+            
+            items.append({
+                "title": e.get("title"),
+                "url": e.get("link"),
+                "published": e.get("published"),
+                "summary": e.get("summary"),
+                "image": image
+            })
+        
+        return {
+            "source": parsed.feed.get("title", "Newsletter"),
+            "items": items
+        }
+    except requests.RequestException as ex:
+        return {"error": "Failed to fetch newsletter", "details": str(ex)}, 502
+
+@app.route("/api/events")
+@cache.cached(timeout=900)
+def api_events():
+    """Fetch events from Google Calendar ICS feed"""
+    url = app.config.get("EVENTS_ICS_URL")
+    if not url or url == "<PASTE_YOUR_GOOGLE_CALENDAR_ICS_URL>":
+        return {"error": "EVENTS_ICS_URL not configured"}, 500
+    
+    try:
+        r = requests.get(url, timeout=10)
+        r.raise_for_status()
+        
+        # Parse ICS content
+        from ics import Calendar
+        c = Calendar(r.text)
+        items = []
+        
+        for e in sorted(c.events, key=lambda x: x.begin)[:50]:
+            items.append({
+                "title": e.name,
+                "start": str(e.begin),
+                "end": str(e.end),
+                "location": e.location,
+                "description": e.description
+            })
+        
+        return {"events": items}
+    except Exception as ex:
+        return {"error": "Failed to fetch events", "details": str(ex)}, 502
+
+@app.route("/api/youtube")
+@cache.cached(timeout=900)
+def api_youtube():
+    """Fetch latest YouTube videos from channel RSS"""
+    channel_id = app.config.get("YOUTUBE_CHANNEL_ID")
+    if not channel_id or channel_id == "<PASTE_YOUR_YOUTUBE_CHANNEL_ID>":
+        return {"error": "YOUTUBE_CHANNEL_ID not configured"}, 500
+    
+    try:
+        feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+        r = requests.get(feed_url, timeout=10, headers={"User-Agent": "CPC-Web-App"})
+        r.raise_for_status()
+        parsed = feedparser.parse(r.content)
+
+        videos = []
+        for e in parsed.entries[:20]:
+            # Extract video ID from link
+            video_id = None
+            if e.get("link"):
+                import re
+                match = re.search(r'v=([^&]+)', e.get("link", ""))
+                if match:
+                    video_id = match.group(1)
+            
+            videos.append({
+                "title": e.get("title"),
+                "url": e.get("link"),
+                "published": e.get("published"),
+                "description": e.get("summary"),
+                "video_id": video_id,
+                "thumbnail": f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg" if video_id else None
+            })
+        
+        return {
+            "channel": parsed.feed.get("title", "YouTube Channel"),
+            "videos": videos
+        }
+    except requests.RequestException as ex:
+        return {"error": "Failed to fetch YouTube videos", "details": str(ex)}, 502
+
+@app.route("/api/bible-verse")
+@cache.cached(timeout=3600)  # 1 hour cache
+def api_bible_verse():
+    """Fetch verse of the day from Bible API"""
+    api_key = app.config.get("BIBLE_API_KEY")
+    if not api_key or api_key == "<PASTE_YOUR_BIBLE_API_KEY>":
+        return {"error": "BIBLE_API_KEY not configured"}, 500
+    
+    try:
+        # Using Bible API (bible-api.com) - free, no key required
+        r = requests.get("https://bible-api.com/john+3:16", timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        
+        return {
+            "reference": data.get("reference"),
+            "text": data.get("text"),
+            "translation": data.get("translation_name", "KJV")
+        }
+    except Exception as ex:
+        return {"error": "Failed to fetch Bible verse", "details": str(ex)}, 502
+
+@app.route("/api/external-data")
+@cache.cached(timeout=900)
+def api_external_data():
+    """Comprehensive external data endpoint using ingester architecture"""
+    data = {}
+    
+    # Initialize ingesters
+    newsletter_ingester = NewsletterIngester(cache)
+    events_ingester = EventsIngester(cache)
+    youtube_ingester = YouTubeIngester(cache)
+    
+    # Fetch newsletter data
+    try:
+        newsletter_data = newsletter_ingester.fetch_data(app.config)
+        data["newsletter"] = newsletter_ingester.normalize_data(newsletter_data)
+    except Exception as e:
+        data["newsletter"] = {"error": f"Newsletter fetch failed: {str(e)}"}
+    
+    # Fetch events data
+    try:
+        events_data = events_ingester.fetch_data(app.config)
+        data["events"] = events_ingester.normalize_data(events_data)
+    except Exception as e:
+        data["events"] = {"error": f"Events fetch failed: {str(e)}"}
+    
+    # Fetch YouTube data
+    try:
+        youtube_data = youtube_ingester.fetch_data(app.config)
+        data["youtube"] = youtube_ingester.normalize_data(youtube_data)
+    except Exception as e:
+        data["youtube"] = {"error": f"YouTube fetch failed: {str(e)}"}
+    
+    # Add metadata
+    data["metadata"] = {
+        "last_updated": datetime.utcnow().isoformat(),
+        "sources": list(data.keys()),
+        "status": "success" if all("error" not in v for v in data.values() if isinstance(v, dict)) else "partial"
+    }
+    
+    return data
 
 # Admin Management Routes
 @app.route('/admin/export/announcements')

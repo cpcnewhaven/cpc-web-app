@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Data Dashboard - CPC New Haven{% endblock %}
+
+{% block head %}
+<style>
+.dashboard-section {
+    padding: 2rem 0;
+}
+
+.data-card {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.data-card-header {
+    background: #f8fafc;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.data-card-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.data-card-subtitle {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.data-card-content {
+    padding: 1.5rem;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-success {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-error {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.status-warning {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.data-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.data-item:last-child {
+    border-bottom: none;
+}
+
+.data-item-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+
+.data-item-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.data-item-description {
+    color: #475569;
+    line-height: 1.5;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: #64748b;
+}
+
+.error-message {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+}
+
+.refresh-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.refresh-button:hover {
+    background-color: #2563eb;
+}
+
+.refresh-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <h1>Data Dashboard</h1>
+        <p>Real-time view of all external data sources and integrations.</p>
+    </div>
+</section>
+
+<!-- Dashboard Section -->
+<section class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-controls">
+            <button id="refresh-btn" class="refresh-button"
+                onclick="refreshData()">
+                🔄 Refresh All Data
+            </button>
+            <span id="last-updated" class="text-sm text-gray-600"></span>
+        </div>
+
+        <div id="dashboard-content">
+            <div class="loading-message">
+                <h3>📊 Loading Dashboard...</h3>
+                <p>Fetching data from all external sources.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let dashboardData = null;
+
+async function loadDashboard() {
+    const container = document.getElementById('dashboard-content');
+    const refreshBtn = document.getElementById('refresh-btn');
+    
+    if (!container) return;
+    
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = '🔄 Loading...';
+    
+    try {
+        const response = await fetch('/api/external-data', { cache: 'no-store' });
+        const data = await response.json();
+        
+        dashboardData = data;
+        renderDashboard(data);
+        
+        // Update last updated time
+        const lastUpdated = document.getElementById('last-updated');
+        if (lastUpdated && data.metadata) {
+            lastUpdated.textContent = `Last updated: ${new Date(data.metadata.last_updated).toLocaleString()}`;
+        }
+        
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+        container.innerHTML = `
+            <div class="error-message">
+                <h3>❌ Error Loading Dashboard</h3>
+                <p>Failed to load dashboard data. Please try again.</p>
+            </div>
+        `;
+    } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Refresh All Data';
+    }
+}
+
+function renderDashboard(data) {
+    const container = document.getElementById('dashboard-content');
+    if (!container) return;
+    
+    let html = '';
+    
+    // Newsletter section
+    if (data.newsletter) {
+        html += renderDataCard('newsletter', data.newsletter);
+    }
+    
+    // Events section
+    if (data.events) {
+        html += renderDataCard('events', data.events);
+    }
+    
+    // YouTube section
+    if (data.youtube) {
+        html += renderDataCard('youtube', data.youtube);
+    }
+    
+    container.innerHTML = html;
+}
+
+function renderDataCard(type, data) {
+    const config = {
+        newsletter: {
+            title: '📧 Newsletter',
+            subtitle: 'Latest newsletter content',
+            icon: '📧'
+        },
+        events: {
+            title: '📅 Events',
+            subtitle: 'Upcoming events from calendar',
+            icon: '📅'
+        },
+        youtube: {
+            title: '📺 YouTube',
+            subtitle: 'Latest videos from channel',
+            icon: '📺'
+        }
+    };
+    
+    const cardConfig = config[type] || { title: type, subtitle: '', icon: '📊' };
+    
+    if (data.error) {
+        return `
+            <div class="data-card">
+                <div class="data-card-header">
+                    <h3 class="data-card-title">${cardConfig.icon} ${cardConfig.title}</h3>
+                    <p class="data-card-subtitle">${cardConfig.subtitle}</p>
+                </div>
+                <div class="data-card-content">
+                    <div class="error-message">
+                        <strong>Error:</strong> ${data.error}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    let statusClass = 'status-success';
+    let statusText = 'Connected';
+    
+    if (data.count === 0) {
+        statusClass = 'status-warning';
+        statusText = 'No Data';
+    }
+    
+    let itemsHtml = '';
+    const items = data.items || data.events || data.videos || [];
+    
+    if (items.length === 0) {
+        itemsHtml = '<p class="text-gray-500">No items available.</p>';
+    } else {
+        items.slice(0, 5).forEach(item => {
+            const title = item.title || 'Untitled';
+            const published = item.published || item.start || '';
+            const description = item.summary || item.description || '';
+            
+            itemsHtml += `
+                <div class="data-item">
+                    <div class="data-item-title">${title}</div>
+                    <div class="data-item-meta">${published ? new Date(published).toLocaleDateString() : ''}</div>
+                    ${description ? `<div class="data-item-description">${description.slice(0, 150)}${description.length > 150 ? '...' : ''}</div>` : ''}
+                </div>
+            `;
+        });
+        
+        if (items.length > 5) {
+            itemsHtml += `<p class="text-sm text-gray-500 mt-2">... and ${items.length - 5} more items</p>`;
+        }
+    }
+    
+    return `
+        <div class="data-card">
+            <div class="data-card-header">
+                <h3 class="data-card-title">${cardConfig.icon} ${cardConfig.title}</h3>
+                <p class="data-card-subtitle">${cardConfig.subtitle}</p>
+                <span class="status-indicator ${statusClass}">${statusText}</span>
+            </div>
+            <div class="data-card-content">
+                ${itemsHtml}
+            </div>
+        </div>
+    `;
+}
+
+function refreshData() {
+    loadDashboard();
+}
+
+// Load dashboard when page loads
+document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+{% endblock %}

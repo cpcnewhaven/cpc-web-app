@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Newsletter - CPC New Haven{% endblock %}
+
+{% block head %}
+<style>
+.newsletter-section {
+    padding: 2rem 0;
+}
+
+.newsletter-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.newsletter-item:last-child {
+    border-bottom: none;
+}
+
+.newsletter-item h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.newsletter-item a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.newsletter-item a:hover {
+    text-decoration: underline;
+}
+
+.newsletter-meta {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.newsletter-summary {
+    color: #374151;
+    line-height: 1.6;
+}
+
+.newsletter-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+.error-message {
+    text-align: center;
+    padding: 2rem;
+    color: #dc2626;
+    background-color: #fef2f2;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <h1>Latest Newsletter</h1>
+        <p>Stay updated with our latest news and announcements.</p>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div id="newsletter-container">
+            <div class="loading-message">
+                <h3>📧 Loading Newsletter...</h3>
+                <p>Please wait while we fetch the latest content.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadNewsletter() {
+    const container = document.getElementById('newsletter-container');
+    if (!container) return;
+    
+    try {
+        const response = await fetch('/api/newsletter', { cache: 'no-store' });
+        const data = await response.json();
+        
+        if (data.error) {
+            container.innerHTML = `
+                <div class="error-message">
+                    <h3>❌ Error Loading Newsletter</h3>
+                    <p>${data.error}</p>
+                    <p><small>Please check your newsletter configuration.</small></p>
+                </div>
+            `;
+            return;
+        }
+        
+        if (!data.items || data.items.length === 0) {
+            container.innerHTML = `
+                <div class="loading-message">
+                    <h3>📭 No Newsletter Items</h3>
+                    <p>No newsletter content is currently available.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = `
+            <div class="newsletter-header">
+                <h2>${data.source || 'Newsletter'}</h2>
+                <p class="text-gray-600">Latest ${data.items.length} items</p>
+            </div>
+            <div class="newsletter-items">
+        `;
+        
+        data.items.forEach(item => {
+            html += `
+                <div class="newsletter-item">
+                    <h3>
+                        <a href="${item.url}" target="_blank" rel="noopener">
+                            ${item.title || 'Untitled'}
+                        </a>
+                    </h3>
+                    <div class="newsletter-meta">
+                        ${item.published ? new Date(item.published).toLocaleDateString() : ''}
+                    </div>
+                    ${item.summary ? `
+                        <div class="newsletter-summary">
+                            ${item.summary.slice(0, 300)}${item.summary.length > 300 ? '...' : ''}
+                        </div>
+                    ` : ''}
+                    ${item.image ? `
+                        <img src="${item.image}" alt="${item.title}" class="newsletter-image" loading="lazy">
+                    ` : ''}
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Error loading newsletter:', error);
+        container.innerHTML = `
+            <div class="error-message">
+                <h3>❌ Error Loading Newsletter</h3>
+                <p>Failed to load newsletter content. Please try again later.</p>
+            </div>
+        `;
+    }
+}
+
+// Load newsletter when page loads
+document.addEventListener('DOMContentLoaded', loadNewsletter);
+</script>
+{% endblock %}
