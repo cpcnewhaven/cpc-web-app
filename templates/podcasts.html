@@ -102,6 +102,12 @@
                 <!-- Episodes will be loaded here -->
             </div>
         </div>
+
+        <!-- RSS Feed Episodes List -->
+        <div class="rss-episodes-section" style="margin-top: 2rem;">
+            <h2>Latest Episodes from RSS Feed</h2>
+            <ul id="episodes" class="divide-y"></ul>
+        </div>
     </div>
 </section>
 {% endblock %}
@@ -253,7 +259,37 @@ function renderFullEpisodes(data) {
     container.innerHTML = html;
 }
 
+// Load podcast from RSS feed
+async function loadPodcast() {
+  const r = await fetch('/api/podcast/cpc', { cache: 'no-store' });
+  const data = await r.json();
+  const list = document.querySelector('#episodes');
+  if (!list) return;
+  
+  list.innerHTML = '';
+
+  if (data.error) {
+    list.innerHTML = `<li class="text-red-600">${data.error}</li>`;
+    return;
+  }
+
+  for (const ep of data.episodes) {
+    const li = document.createElement('li');
+    li.className = 'py-3 border-b';
+    li.innerHTML = `
+      <div class="font-semibold">${ep.title ?? 'Untitled'}</div>
+      <div class="text-sm opacity-70">${ep.published ?? ''}</div>
+      ${ep.audio?.url ? `<audio controls preload="none" src="${ep.audio.url}"></audio>` : ''}
+      <p class="mt-2 text-sm">${(ep.summary || '').slice(0, 240)}&hellip;</p>
+    `;
+    list.appendChild(li);
+  }
+}
+
 // Start loading when page loads
-document.addEventListener('DOMContentLoaded', loadPreviewEpisodes);
+document.addEventListener('DOMContentLoaded', function() {
+    loadPreviewEpisodes();
+    loadPodcast();
+});
 </script>
 {% endblock %}

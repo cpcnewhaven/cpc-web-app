@@ -3,8 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from flask_caching import Cache
 from datetime import datetime, date
 import os
+import requests
+import feedparser
 from dotenv import load_dotenv
 from admin_utils import export_announcements_csv, export_sermons_csv, bulk_update_announcements, bulk_delete_content, get_content_stats, create_sample_podcast_series
 from enhanced_api import enhanced_api
@@ -17,6 +20,9 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configuration
+app.config.from_object('config')
+cache = Cache(app)
+
 app.register_blueprint(enhanced_api, url_prefix='/api')
 app.register_blueprint(json_api)
 
@@ -226,6 +232,54 @@ def api_gallery():
             } for img in images
         ]
     })
+
+def _fetch_podcast(feed_url: str) -> dict:
+    r = requests.get(
+        feed_url,
+        timeout=10,
+        headers={"User-Agent": "CPC-Web-App (+https://cpcnewhaven.org)"}
+    )
+    r.raise_for_status()
+    parsed = feedparser.parse(r.content)
+
+    channel = {
+        "title": parsed.feed.get("title"),
+        "link": parsed.feed.get("link"),
+        "description": parsed.feed.get("subtitle") or parsed.feed.get("description"),
+        "image": getattr(parsed.feed, "image", {}).get("href")
+                 or parsed.feed.get("itunes_image", {}).get("href"),
+    }
+
+    episodes = []
+    for e in parsed.entries[:50]:
+        audio = None
+        for enc in e.get("enclosures", []):
+            if (enc.get("type") or "").startswith("audio"):
+                audio = {"url": enc.get("href"), "type": enc.get("type")}
+                break
+        episodes.append({
+            "title": e.get("title"),
+            "link": e.get("link"),
+            "published": e.get("published"),
+            "summary": e.get("summary"),
+            "audio": audio,
+            "duration": e.get("itunes_duration"),
+            "image": (e.get("itunes_image", {}) or {}).get("href"),
+            "guid": e.get("id") or e.get("guid")
+        })
+    return {"channel": channel, "episodes": episodes}
+
+@app.route("/api/podcast/<series_key>")
+@cache.cached(timeout=900)
+def api_podcast(series_key):
+    feed_url = app.config["PODCAST_FEEDS"].get(series_key)
+    if not feed_url:
+        return {"error": f"Unknown podcast key: {series_key}"}, 404
+    try:
+        data = _fetch_podcast(feed_url)
+        return data, 200
+    except requests.RequestException as ex:
+        return {"error": "Failed to fetch RSS", "details": str(ex)}, 502
 
 # Admin Management Routes
 @app.route('/admin/export/announcements')

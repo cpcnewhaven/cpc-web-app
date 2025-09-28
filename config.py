@@ -14,6 +14,13 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
 
+# --- Podcast + cache config ---
+PODCAST_FEEDS = {
+    "cpc": "<PASTE_YOUR_SPOTIFY_RSS_URL_HERE>"
+}
+CACHE_TYPE = "SimpleCache"
+CACHE_DEFAULT_TIMEOUT = 900  # 15 minutes
+
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
