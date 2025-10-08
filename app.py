@@ -112,6 +112,10 @@ def resources():
 def gallery():
     return render_template('gallery.html')
 
+@app.route('/yearbook')
+def yearbook():
+    return render_template('yearbook.html')
+
 @app.route('/newsletter')
 def newsletter():
     return render_template('newsletter.html')
@@ -241,23 +245,75 @@ def api_membership_seminar():
 
 @app.route('/api/gallery')
 def api_gallery():
-    """API endpoint for image gallery"""
-    images = GalleryImage.query.order_by(GalleryImage.created.desc()).all()
-    
-    return jsonify({
-        'images': [
-            {
-                'id': img.id,
-                'name': img.name,
-                'url': img.url,
-                'size': img.size,
-                'type': img.type,
-                'created': img.created.strftime('%Y-%m-%d') if img.created else None,
-                'tags': img.tags,
-                'event': img.event
-            } for img in images
-        ]
-    })
+    """API endpoint for image gallery with enhanced metadata"""
+    # Try to load from JSON first (for existing data)
+    try:
+        import json
+        with open('data/gallery.json', 'r') as f:
+            json_data = json.load(f)
+        
+        # Enhance JSON data with better metadata
+        enhanced_images = []
+        for img in json_data:
+            # Parse date from created field or use current date
+            created_date = None
+            if img.get('created') and img['created'] != 'Unknown':
+                try:
+                    created_date = datetime.strptime(img['created'], '%Y-%m-%d')
+                except:
+                    created_date = datetime.now()
+            else:
+                created_date = datetime.now()
+            
+            enhanced_img = {
+                'id': img.get('id', ''),
+                'name': img.get('name', 'Untitled'),
+                'url': img.get('url', ''),
+                'size': img.get('size', 'Unknown'),
+                'type': img.get('type', 'image/jpeg'),
+                'created': created_date.strftime('%Y-%m-%d'),
+                'created_timestamp': created_date.isoformat(),
+                'tags': img.get('tags', []),
+                'event': img.get('event', False),
+                'description': img.get('description', ''),
+                'location': img.get('location', ''),
+                'photographer': img.get('photographer', ''),
+                'category': img.get('category', 'general')
+            }
+            enhanced_images.append(enhanced_img)
+        
+        return jsonify({
+            'images': enhanced_images,
+            'total': len(enhanced_images),
+            'source': 'json'
+        })
+        
+    except Exception as e:
+        print(f"Error loading gallery from JSON: {e}")
+        # Fallback to database
+        images = GalleryImage.query.order_by(GalleryImage.created.desc()).all()
+        
+        return jsonify({
+            'images': [
+                {
+                    'id': img.id,
+                    'name': img.name,
+                    'url': img.url,
+                    'size': img.size,
+                    'type': img.type,
+                    'created': img.created.strftime('%Y-%m-%d') if img.created else None,
+                    'created_timestamp': img.created.isoformat() if img.created else None,
+                    'tags': img.tags,
+                    'event': img.event,
+                    'description': getattr(img, 'description', ''),
+                    'location': getattr(img, 'location', ''),
+                    'photographer': getattr(img, 'photographer', ''),
+                    'category': getattr(img, 'category', 'general')
+                } for img in images
+            ],
+            'total': len(images),
+            'source': 'database'
+        })
 
 def _fetch_podcast(feed_url: str) -> dict:
     r = requests.get(

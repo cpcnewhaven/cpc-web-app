@@ -2,108 +2,555 @@
 
 {% block title %}Gallery - CPC New Haven{% endblock %}
 
+{% block head %}
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='css/gallery.css') }}">
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
 {% block content %}
 <!-- Hero Section -->
-<section class="page-hero">
+<section class="page-hero gallery-hero">
     <div class="container">
-        <h1>Gallery</h1>
-        <p>Photos from our church community and events</p>
+        <div class="hero-content">
+            <h1>Community Gallery</h1>
+            <p>Moments of faith, fellowship, and celebration captured through
+                the lens of our community</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" id="total-photos">0</span>
+                    <span class="stat-label">Photos</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="total-events">0</span>
+                    <span class="stat-label">Events</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="total-years">0</span>
+                    <span class="stat-label">Years</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Navigation Tabs -->
+<section class="gallery-nav">
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-filter="all">All Photos</button>
+            <button class="nav-tab" data-filter="events">Events</button>
+            <button class="nav-tab" data-filter="worship">Worship</button>
+            <button class="nav-tab" data-filter="fellowship">Fellowship</button>
+            <button class="nav-tab" data-filter="youth">Youth</button>
+            <button class="nav-tab" data-filter="missions">Missions</button>
+            <button class="nav-tab yearbook-tab" data-filter="yearbook">Digital
+                Yearbook</button>
+        </div>
     </div>
 </section>
 
 <!-- Gallery Section -->
 <section class="gallery-section">
     <div class="container">
+        <!-- Filter Controls -->
+        <div class="gallery-controls">
+            <div class="search-box">
+                <input type="text" id="gallery-search"
+                    placeholder="Search photos...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="sort-controls">
+                <select id="sort-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="alphabetical">Alphabetical</option>
+                    <option value="event">By Event</option>
+                </select>
+            </div>
+            <div class="view-controls">
+                <button class="view-btn active" data-view="grid">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-btn" data-view="masonry">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="view-btn" data-view="timeline">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Gallery Grid -->
         <div id="gallery-container" class="gallery-grid">
             <!-- Gallery images will be populated by JavaScript -->
         </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Loading photos...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <i class="fas fa-images"></i>
+            <h3>No photos found</h3>
+            <p>Try adjusting your search or filter criteria</p>
+        </div>
     </div>
 </section>
+
+<!-- Photo Modal -->
+<div id="photo-modal" class="photo-modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-image-container">
+            <img id="modal-image" src alt>
+            <div class="image-nav">
+                <button id="prev-image" class="nav-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="next-image" class="nav-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="modal-info">
+            <h3 id="modal-title"></h3>
+            <p id="modal-description"></p>
+            <div class="modal-tags" id="modal-tags"></div>
+            <div class="modal-actions">
+                <button id="share-btn" class="action-btn">
+                    <i class="fas fa-share"></i> Share
+                </button>
+                <button id="download-btn" class="action-btn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Modal -->
+<div id="share-modal" class="share-modal">
+    <div class="share-content">
+        <span class="close-share">&times;</span>
+        <h3>Share Photo</h3>
+        <div class="share-options">
+            <button class="share-option" data-platform="facebook">
+                <i class="fab fa-facebook"></i>
+                <span>Facebook</span>
+            </button>
+            <button class="share-option" data-platform="twitter">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+            </button>
+            <button class="share-option" data-platform="linkedin">
+                <i class="fab fa-linkedin"></i>
+                <span>LinkedIn</span>
+            </button>
+            <button class="share-option" data-platform="email">
+                <i class="fas fa-envelope"></i>
+                <span>Email</span>
+            </button>
+            <button class="share-option" data-platform="copy">
+                <i class="fas fa-link"></i>
+                <span>Copy Link</span>
+            </button>
+        </div>
+        <div class="share-url">
+            <input type="text" id="share-url-input" readonly>
+            <button id="copy-url-btn">Copy</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    let allPhotos = [];
+    let filteredPhotos = [];
+    let currentFilter = 'all';
+    let currentView = 'grid';
+    let currentPhotoIndex = 0;
+
     // Load gallery images
-    fetch('/api/gallery')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('gallery-container');
-            
-            if (data.images && data.images.length > 0) {
-                data.images.forEach(image => {
-                    const imageElement = document.createElement('div');
-                    imageElement.classList.add('gallery-item');
-                    imageElement.innerHTML = `
-                        <img src="${image.url}" alt="${image.name || 'Gallery Image'}" loading="lazy">
-                        <div class="gallery-overlay">
-                            <h3>${image.name || 'Untitled'}</h3>
-                            ${image.tags ? `<p class="gallery-tags">${image.tags.join(', ')}</p>` : ''}
-                        </div>
-                    `;
-                    container.appendChild(imageElement);
-                });
-            } else {
-                container.innerHTML = '<p>No images in the gallery yet.</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Error loading gallery:', error);
-            document.getElementById('gallery-container').innerHTML = '<p>Error loading gallery images.</p>';
+    loadGallery();
+
+    function loadGallery() {
+        fetch('/api/gallery')
+            .then(response => response.json())
+            .then(data => {
+                allPhotos = data.images || [];
+                filteredPhotos = [...allPhotos];
+                updateStats();
+                renderGallery();
+                setupEventListeners();
+            })
+            .catch(error => {
+                console.error('Error loading gallery:', error);
+                showError('Failed to load gallery images');
+            });
+    }
+
+    function updateStats() {
+        const totalPhotos = allPhotos.length;
+        const eventPhotos = allPhotos.filter(photo => photo.event).length;
+        const years = new Set(allPhotos.map(photo => {
+            const date = new Date(photo.created);
+            return date.getFullYear();
+        })).size;
+
+        document.getElementById('total-photos').textContent = totalPhotos;
+        document.getElementById('total-events').textContent = eventPhotos;
+        document.getElementById('total-years').textContent = years;
+    }
+
+    function renderGallery() {
+        const container = document.getElementById('gallery-container');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const emptyState = document.getElementById('empty-state');
+
+        loadingIndicator.style.display = 'none';
+
+        if (filteredPhotos.length === 0) {
+            emptyState.style.display = 'block';
+            container.innerHTML = '';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+
+        if (currentView === 'yearbook') {
+            renderYearbookView(container);
+        } else {
+            renderGridView(container);
+        }
+    }
+
+    function renderGridView(container) {
+        container.className = `gallery-grid ${currentView}`;
+        container.innerHTML = '';
+
+        filteredPhotos.forEach((photo, index) => {
+            const photoElement = createPhotoElement(photo, index);
+            container.appendChild(photoElement);
         });
+
+        // Initialize masonry if needed
+        if (currentView === 'masonry') {
+            initializeMasonry();
+        }
+    }
+
+    function renderYearbookView(container) {
+        container.className = 'gallery-grid yearbook';
+        container.innerHTML = '';
+
+        // Group photos by year and month
+        const groupedPhotos = groupPhotosByYearMonth(filteredPhotos);
+
+        Object.keys(groupedPhotos).sort().reverse().forEach(year => {
+            const yearSection = document.createElement('div');
+            yearSection.className = 'yearbook-year';
+            yearSection.innerHTML = `<h2 class="yearbook-year-title">${year}</h2>`;
+
+            const monthsContainer = document.createElement('div');
+            monthsContainer.className = 'yearbook-months';
+
+            Object.keys(groupedPhotos[year]).sort().reverse().forEach(month => {
+                const monthSection = document.createElement('div');
+                monthSection.className = 'yearbook-month';
+                monthSection.innerHTML = `
+                    <h3 class="yearbook-month-title">${month}</h3>
+                    <div class="yearbook-photos"></div>
+                `;
+
+                const photosContainer = monthSection.querySelector('.yearbook-photos');
+                groupedPhotos[year][month].forEach((photo, index) => {
+                    const photoElement = createPhotoElement(photo, index, 'yearbook');
+                    photosContainer.appendChild(photoElement);
+                });
+
+                monthsContainer.appendChild(monthSection);
+            });
+
+            yearSection.appendChild(monthsContainer);
+            container.appendChild(yearSection);
+        });
+    }
+
+    function groupPhotosByYearMonth(photos) {
+        const grouped = {};
+        
+        photos.forEach(photo => {
+            const date = new Date(photo.created);
+            const year = date.getFullYear();
+            const month = date.toLocaleString('default', { month: 'long' });
+            
+            if (!grouped[year]) {
+                grouped[year] = {};
+            }
+            if (!grouped[year][month]) {
+                grouped[year][month] = [];
+            }
+            
+            grouped[year][month].push(photo);
+        });
+
+        return grouped;
+    }
+
+    function createPhotoElement(photo, index, type = 'gallery') {
+        const photoDiv = document.createElement('div');
+        photoDiv.className = `gallery-item ${type}`;
+        photoDiv.dataset.index = index;
+        photoDiv.dataset.photoId = photo.id;
+
+        const tags = photo.tags || [];
+        const tagString = tags.join(', ');
+
+        photoDiv.innerHTML = `
+            <div class="photo-container">
+                <img src="${photo.url}" alt="${photo.name || 'Gallery Image'}" loading="lazy">
+                <div class="photo-overlay">
+                    <div class="photo-info">
+                        <h3>${photo.name || 'Untitled'}</h3>
+                        ${tagString ? `<p class="photo-tags">${tagString}</p>` : ''}
+                        ${photo.event ? '<span class="event-badge">Event</span>' : ''}
+                    </div>
+                    <div class="photo-actions">
+                        <button class="action-btn view-btn" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn share-btn" title="Share">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return photoDiv;
+    }
+
+    function setupEventListeners() {
+        // Filter tabs
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentFilter = this.dataset.filter;
+                filterPhotos();
+            });
+        });
+
+        // Search
+        document.getElementById('gallery-search').addEventListener('input', function() {
+            filterPhotos();
+        });
+
+        // Sort
+        document.getElementById('sort-select').addEventListener('change', function() {
+            sortPhotos();
+        });
+
+        // View controls
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.dataset.view) {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentView = this.dataset.view;
+                    renderGallery();
+                }
+            });
+        });
+
+        // Photo clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.gallery-item')) {
+                const item = e.target.closest('.gallery-item');
+                const index = parseInt(item.dataset.index);
+                openPhotoModal(index);
+            }
+        });
+
+        // Modal controls
+        setupModalControls();
+    }
+
+    function filterPhotos() {
+        const searchTerm = document.getElementById('gallery-search').value.toLowerCase();
+        
+        filteredPhotos = allPhotos.filter(photo => {
+            const matchesSearch = !searchTerm || 
+                photo.name.toLowerCase().includes(searchTerm) ||
+                (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+            
+            const matchesFilter = currentFilter === 'all' || 
+                (currentFilter === 'events' && photo.event) ||
+                (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(currentFilter)));
+            
+            return matchesSearch && matchesFilter;
+        });
+
+        renderGallery();
+    }
+
+    function sortPhotos() {
+        const sortBy = document.getElementById('sort-select').value;
+        
+        filteredPhotos.sort((a, b) => {
+            switch (sortBy) {
+                case 'newest':
+                    return new Date(b.created) - new Date(a.created);
+                case 'oldest':
+                    return new Date(a.created) - new Date(b.created);
+                case 'alphabetical':
+                    return (a.name || '').localeCompare(b.name || '');
+                case 'event':
+                    return (b.event ? 1 : 0) - (a.event ? 1 : 0);
+                default:
+                    return 0;
+            }
+        });
+
+        renderGallery();
+    }
+
+    function openPhotoModal(index) {
+        currentPhotoIndex = index;
+        const photo = filteredPhotos[index];
+        
+        document.getElementById('modal-image').src = photo.url;
+        document.getElementById('modal-title').textContent = photo.name || 'Untitled';
+        document.getElementById('modal-description').textContent = photo.description || '';
+        
+        const tagsContainer = document.getElementById('modal-tags');
+        if (photo.tags && photo.tags.length > 0) {
+            tagsContainer.innerHTML = photo.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        } else {
+            tagsContainer.innerHTML = '';
+        }
+        
+        document.getElementById('photo-modal').style.display = 'block';
+    }
+
+    function setupModalControls() {
+        const modal = document.getElementById('photo-modal');
+        const shareModal = document.getElementById('share-modal');
+        
+        // Close modal
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        document.querySelector('.close-share').addEventListener('click', () => {
+            shareModal.style.display = 'none';
+        });
+
+        // Navigation
+        document.getElementById('prev-image').addEventListener('click', () => {
+            currentPhotoIndex = (currentPhotoIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
+            openPhotoModal(currentPhotoIndex);
+        });
+
+        document.getElementById('next-image').addEventListener('click', () => {
+            currentPhotoIndex = (currentPhotoIndex + 1) % filteredPhotos.length;
+            openPhotoModal(currentPhotoIndex);
+        });
+
+        // Share functionality
+        document.getElementById('share-btn').addEventListener('click', () => {
+            shareModal.style.display = 'block';
+            const photo = filteredPhotos[currentPhotoIndex];
+            const shareUrl = `${window.location.origin}/gallery?photo=${photo.id}`;
+            document.getElementById('share-url-input').value = shareUrl;
+        });
+
+        // Share options
+        document.querySelectorAll('.share-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const platform = this.dataset.platform;
+                const photo = filteredPhotos[currentPhotoIndex];
+                const shareUrl = `${window.location.origin}/gallery?photo=${photo.id}`;
+                
+                switch (platform) {
+                    case 'facebook':
+                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
+                        break;
+                    case 'twitter':
+                        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(photo.name || 'Check out this photo from CPC New Haven')}`);
+                        break;
+                    case 'linkedin':
+                        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`);
+                        break;
+                    case 'email':
+                        window.location.href = `mailto:?subject=${encodeURIComponent(photo.name || 'Photo from CPC New Haven')}&body=${encodeURIComponent(`Check out this photo: ${shareUrl}`)}`;
+                        break;
+                    case 'copy':
+                        navigator.clipboard.writeText(shareUrl).then(() => {
+                            alert('Link copied to clipboard!');
+                        });
+                        break;
+                }
+            });
+        });
+
+        // Copy URL button
+        document.getElementById('copy-url-btn').addEventListener('click', () => {
+            const urlInput = document.getElementById('share-url-input');
+            urlInput.select();
+            document.execCommand('copy');
+            alert('Link copied to clipboard!');
+        });
+
+        // Download
+        document.getElementById('download-btn').addEventListener('click', () => {
+            const photo = filteredPhotos[currentPhotoIndex];
+            const link = document.createElement('a');
+            link.href = photo.url;
+            link.download = photo.name || 'cpc-photo.jpg';
+            link.click();
+        });
+    }
+
+    function initializeMasonry() {
+        // Simple masonry implementation
+        const container = document.getElementById('gallery-container');
+        const items = container.querySelectorAll('.gallery-item');
+        
+        // Reset positioning
+        items.forEach(item => {
+            item.style.position = 'static';
+            item.style.top = 'auto';
+            item.style.left = 'auto';
+        });
+
+        // Simple column layout
+        const columns = 3;
+        const columnHeights = new Array(columns).fill(0);
+        
+        items.forEach(item => {
+            const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
+            item.style.position = 'absolute';
+            item.style.left = `${(shortestColumn * 100) / columns}%`;
+            item.style.top = `${columnHeights[shortestColumn]}px`;
+            columnHeights[shortestColumn] += item.offsetHeight + 20;
+        });
+
+        container.style.height = `${Math.max(...columnHeights)}px`;
+    }
+
+    function showError(message) {
+        const container = document.getElementById('gallery-container');
+        container.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i><p>${message}</p></div>`;
+    }
 });
 </script>
-
-<style>
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-.gallery-item {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-
-.gallery-item:hover {
-    transform: translateY(-5px);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    display: block;
-}
-
-.gallery-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-    color: white;
-    padding: 1rem;
-    transform: translateY(100%);
-    transition: transform 0.3s;
-}
-
-.gallery-item:hover .gallery-overlay {
-    transform: translateY(0);
-}
-
-.gallery-overlay h3 {
-    margin-bottom: 0.5rem;
-}
-
-.gallery-tags {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-</style>
 {% endblock %}

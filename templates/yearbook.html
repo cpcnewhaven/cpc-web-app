@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+
+{% block title %}Digital Yearbook - CPC New Haven{% endblock %}
+
+{% block head %}
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='css/gallery.css') }}">
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero yearbook-hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Digital Yearbook</h1>
+            <p>Our journey through the years - memories, milestones, and moments
+                that define our community</p>
+            <div class="yearbook-stats">
+                <div class="stat">
+                    <span class="stat-number" id="total-years">0</span>
+                    <span class="stat-label">Years</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="total-memories">0</span>
+                    <span class="stat-label">Memories</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="total-events">0</span>
+                    <span class="stat-label">Events</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Year Navigation -->
+<section class="year-navigation">
+    <div class="container">
+        <div class="year-tabs" id="year-tabs">
+            <!-- Year tabs will be populated by JavaScript -->
+        </div>
+    </div>
+</section>
+
+<!-- Yearbook Content -->
+<section class="yearbook-content">
+    <div class="container">
+        <!-- Timeline View -->
+        <div id="timeline-view" class="timeline-container">
+            <!-- Timeline will be populated by JavaScript -->
+        </div>
+
+        <!-- Month Grid View -->
+        <div id="month-grid-view" class="month-grid-container"
+            style="display: none;">
+            <!-- Month grid will be populated by JavaScript -->
+        </div>
+
+        <!-- View Toggle -->
+        <div class="view-toggle">
+            <button class="toggle-btn active" data-view="timeline">
+                <i class="fas fa-list"></i>
+                Timeline View
+            </button>
+            <button class="toggle-btn" data-view="months">
+                <i class="fas fa-calendar-alt"></i>
+                Month View
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Memory Modal -->
+<div id="memory-modal" class="memory-modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="memory-image-container">
+            <img id="memory-image" src alt>
+            <div class="image-nav">
+                <button id="prev-memory" class="nav-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="next-memory" class="nav-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="memory-info">
+            <div class="memory-header">
+                <h3 id="memory-title"></h3>
+                <div class="memory-date" id="memory-date"></div>
+            </div>
+            <div class="memory-description" id="memory-description"></div>
+            <div class="memory-tags" id="memory-tags"></div>
+            <div class="memory-actions">
+                <button id="memory-share-btn" class="action-btn">
+                    <i class="fas fa-share"></i> Share Memory
+                </button>
+                <button id="memory-download-btn" class="action-btn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button id="memory-favorite-btn" class="action-btn">
+                    <i class="fas fa-heart"></i> Favorite
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Modal -->
+<div id="share-modal" class="share-modal">
+    <div class="share-content">
+        <span class="close-share">&times;</span>
+        <h3>Share Memory</h3>
+        <div class="share-options">
+            <button class="share-option" data-platform="facebook">
+                <i class="fab fa-facebook"></i>
+                <span>Facebook</span>
+            </button>
+            <button class="share-option" data-platform="twitter">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+            </button>
+            <button class="share-option" data-platform="instagram">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </button>
+            <button class="share-option" data-platform="email">
+                <i class="fas fa-envelope"></i>
+                <span>Email</span>
+            </button>
+            <button class="share-option" data-platform="copy">
+                <i class="fas fa-link"></i>
+                <span>Copy Link</span>
+            </button>
+        </div>
+        <div class="share-url">
+            <input type="text" id="share-url-input" readonly>
+            <button id="copy-url-btn">Copy</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let allPhotos = [];
+    let filteredPhotos = [];
+    let currentYear = null;
+    let currentView = 'timeline';
+    let currentMemoryIndex = 0;
+    let favoriteMemories = JSON.parse(localStorage.getItem('favoriteMemories') || '[]');
+
+    // Load yearbook data
+    loadYearbook();
+
+    function loadYearbook() {
+        fetch('/api/gallery')
+            .then(response => response.json())
+            .then(data => {
+                allPhotos = data.images || [];
+                filteredPhotos = [...allPhotos];
+                updateStats();
+                renderYearTabs();
+                renderYearbook();
+                setupEventListeners();
+            })
+            .catch(error => {
+                console.error('Error loading yearbook:', error);
+                showError('Failed to load yearbook data');
+            });
+    }
+
+    function updateStats() {
+        const years = new Set(allPhotos.map(photo => {
+            const date = new Date(photo.created);
+            return date.getFullYear();
+        })).size;
+
+        const eventPhotos = allPhotos.filter(photo => photo.event).length;
+
+        document.getElementById('total-years').textContent = years;
+        document.getElementById('total-memories').textContent = allPhotos.length;
+        document.getElementById('total-events').textContent = eventPhotos;
+    }
+
+    function renderYearTabs() {
+        const years = [...new Set(allPhotos.map(photo => {
+            const date = new Date(photo.created);
+            return date.getFullYear();
+        }))].sort((a, b) => b - a);
+
+        const tabsContainer = document.getElementById('year-tabs');
+        tabsContainer.innerHTML = '';
+
+        years.forEach(year => {
+            const yearTab = document.createElement('button');
+            yearTab.className = 'year-tab';
+            yearTab.textContent = year;
+            yearTab.dataset.year = year;
+            yearTab.addEventListener('click', () => {
+                currentYear = year;
+                filterByYear(year);
+                updateActiveTab(yearTab);
+            });
+            tabsContainer.appendChild(yearTab);
+        });
+
+        // Set current year to most recent
+        if (years.length > 0) {
+            currentYear = years[0];
+            filterByYear(currentYear);
+            updateActiveTab(tabsContainer.querySelector('.year-tab'));
+        }
+    }
+
+    function updateActiveTab(activeTab) {
+        document.querySelectorAll('.year-tab').forEach(tab => tab.classList.remove('active'));
+        activeTab.classList.add('active');
+    }
+
+    function filterByYear(year) {
+        filteredPhotos = allPhotos.filter(photo => {
+            const photoYear = new Date(photo.created).getFullYear();
+            return photoYear === year;
+        });
+        renderYearbook();
+    }
+
+    function renderYearbook() {
+        if (currentView === 'timeline') {
+            renderTimelineView();
+        } else {
+            renderMonthGridView();
+        }
+    }
+
+    function renderTimelineView() {
+        const container = document.getElementById('timeline-view');
+        container.innerHTML = '';
+
+        // Group photos by month
+        const groupedPhotos = groupPhotosByMonth(filteredPhotos);
+
+        Object.keys(groupedPhotos).sort((a, b) => {
+            const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            return monthOrder.indexOf(a) - monthOrder.indexOf(b);
+        }).forEach(month => {
+            const monthSection = document.createElement('div');
+            monthSection.className = 'timeline-month';
+            
+            monthSection.innerHTML = `
+                <div class="timeline-month-header">
+                    <h3 class="month-title">${month}</h3>
+                    <span class="photo-count">${groupedPhotos[month].length} memories</span>
+                </div>
+                <div class="timeline-photos"></div>
+            `;
+
+            const photosContainer = monthSection.querySelector('.timeline-photos');
+            groupedPhotos[month].forEach((photo, index) => {
+                const photoElement = createMemoryElement(photo, index);
+                photosContainer.appendChild(photoElement);
+            });
+
+            container.appendChild(monthSection);
+        });
+    }
+
+    function renderMonthGridView() {
+        const container = document.getElementById('month-grid-view');
+        container.innerHTML = '';
+
+        // Group photos by month
+        const groupedPhotos = groupPhotosByMonth(filteredPhotos);
+
+        Object.keys(groupedPhotos).sort((a, b) => {
+            const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            return monthOrder.indexOf(a) - monthOrder.indexOf(b);
+        }).forEach(month => {
+            const monthCard = document.createElement('div');
+            monthCard.className = 'month-card';
+            
+            const coverPhoto = groupedPhotos[month][0]; // Use first photo as cover
+            const photoCount = groupedPhotos[month].length;
+            
+            monthCard.innerHTML = `
+                <div class="month-cover">
+                    <img src="${coverPhoto.url}" alt="${month}">
+                    <div class="month-overlay">
+                        <h3 class="month-title">${month}</h3>
+                        <span class="photo-count">${photoCount} memories</span>
+                    </div>
+                </div>
+                <div class="month-photos">
+                    ${groupedPhotos[month].slice(0, 6).map(photo => 
+                        `<div class="month-photo" data-photo-id="${photo.id}">
+                            <img src="${photo.url}" alt="${photo.name}">
+                        </div>`
+                    ).join('')}
+                    ${photoCount > 6 ? `<div class="more-photos">+${photoCount - 6} more</div>` : ''}
+                </div>
+            `;
+
+            // Add click handler for month card
+            monthCard.addEventListener('click', () => {
+                // Switch to timeline view and scroll to this month
+                currentView = 'timeline';
+                document.querySelector('[data-view="timeline"]').classList.add('active');
+                document.querySelector('[data-view="months"]').classList.remove('active');
+                renderYearbook();
+                
+                // Scroll to the month
+                setTimeout(() => {
+                    const monthElement = document.querySelector(`.timeline-month:has(.month-title:contains("${month}"))`);
+                    if (monthElement) {
+                        monthElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 100);
+            });
+
+            container.appendChild(monthCard);
+        });
+    }
+
+    function groupPhotosByMonth(photos) {
+        const grouped = {};
+        
+        photos.forEach(photo => {
+            const date = new Date(photo.created);
+            const month = date.toLocaleString('default', { month: 'long' });
+            
+            if (!grouped[month]) {
+                grouped[month] = [];
+            }
+            
+            grouped[month].push(photo);
+        });
+
+        return grouped;
+    }
+
+    function createMemoryElement(photo, index) {
+        const memoryDiv = document.createElement('div');
+        memoryDiv.className = 'memory-item';
+        memoryDiv.dataset.index = index;
+        memoryDiv.dataset.photoId = photo.id;
+
+        const date = new Date(photo.created);
+        const formattedDate = date.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        const tags = photo.tags || [];
+        const tagString = tags.join(', ');
+
+        const isFavorite = favoriteMemories.includes(photo.id);
+
+        memoryDiv.innerHTML = `
+            <div class="memory-image">
+                <img src="${photo.url}" alt="${photo.name || 'Memory'}" loading="lazy">
+                <div class="memory-overlay">
+                    <div class="memory-info">
+                        <h4>${photo.name || 'Untitled Memory'}</h4>
+                        <div class="memory-date">${formattedDate}</div>
+                        ${tagString ? `<div class="memory-tags">${tagString}</div>` : ''}
+                        ${photo.event ? '<span class="event-badge">Event</span>' : ''}
+                    </div>
+                    <div class="memory-actions">
+                        <button class="action-btn view-btn" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn share-btn" title="Share">
+                            <i class="fas fa-share"></i>
+                        </button>
+                        <button class="action-btn favorite-btn ${isFavorite ? 'favorited' : ''}" title="Favorite">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return memoryDiv;
+    }
+
+    function setupEventListeners() {
+        // View toggle
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentView = this.dataset.view;
+                renderYearbook();
+            });
+        });
+
+        // Memory clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.memory-item')) {
+                const item = e.target.closest('.memory-item');
+                const index = parseInt(item.dataset.index);
+                openMemoryModal(index);
+            }
+        });
+
+        // Modal controls
+        setupModalControls();
+    }
+
+    function openMemoryModal(index) {
+        currentMemoryIndex = index;
+        const photo = filteredPhotos[index];
+        
+        document.getElementById('memory-image').src = photo.url;
+        document.getElementById('memory-title').textContent = photo.name || 'Untitled Memory';
+        
+        const date = new Date(photo.created);
+        const formattedDate = date.toLocaleDateString('en-US', { 
+            weekday: 'long',
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric'
+        });
+        document.getElementById('memory-date').textContent = formattedDate;
+        document.getElementById('memory-description').textContent = photo.description || '';
+        
+        const tagsContainer = document.getElementById('memory-tags');
+        if (photo.tags && photo.tags.length > 0) {
+            tagsContainer.innerHTML = photo.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        } else {
+            tagsContainer.innerHTML = '';
+        }
+        
+        document.getElementById('memory-modal').style.display = 'block';
+    }
+
+    function setupModalControls() {
+        const modal = document.getElementById('memory-modal');
+        const shareModal = document.getElementById('share-modal');
+        
+        // Close modal
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        document.querySelector('.close-share').addEventListener('click', () => {
+            shareModal.style.display = 'none';
+        });
+
+        // Navigation
+        document.getElementById('prev-memory').addEventListener('click', () => {
+            currentMemoryIndex = (currentMemoryIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
+            openMemoryModal(currentMemoryIndex);
+        });
+
+        document.getElementById('next-memory').addEventListener('click', () => {
+            currentMemoryIndex = (currentMemoryIndex + 1) % filteredPhotos.length;
+            openMemoryModal(currentMemoryIndex);
+        });
+
+        // Share functionality
+        document.getElementById('memory-share-btn').addEventListener('click', () => {
+            shareModal.style.display = 'block';
+            const photo = filteredPhotos[currentMemoryIndex];
+            const shareUrl = `${window.location.origin}/yearbook?memory=${photo.id}`;
+            document.getElementById('share-url-input').value = shareUrl;
+        });
+
+        // Favorite functionality
+        document.getElementById('memory-favorite-btn').addEventListener('click', () => {
+            const photo = filteredPhotos[currentMemoryIndex];
+            const photoId = photo.id;
+            
+            if (favoriteMemories.includes(photoId)) {
+                favoriteMemories = favoriteMemories.filter(id => id !== photoId);
+            } else {
+                favoriteMemories.push(photoId);
+            }
+            
+            localStorage.setItem('favoriteMemories', JSON.stringify(favoriteMemories));
+            updateFavoriteButton();
+        });
+
+        // Share options
+        document.querySelectorAll('.share-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const platform = this.dataset.platform;
+                const photo = filteredPhotos[currentMemoryIndex];
+                const shareUrl = `${window.location.origin}/yearbook?memory=${photo.id}`;
+                
+                switch (platform) {
+                    case 'facebook':
+                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
+                        break;
+                    case 'twitter':
+                        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(photo.name || 'Check out this memory from CPC New Haven')}`);
+                        break;
+                    case 'instagram':
+                        // Instagram doesn't support direct sharing, so we'll copy the URL
+                        navigator.clipboard.writeText(shareUrl).then(() => {
+                            alert('Link copied! You can paste this in your Instagram story or post.');
+                        });
+                        break;
+                    case 'email':
+                        window.location.href = `mailto:?subject=${encodeURIComponent(photo.name || 'Memory from CPC New Haven')}&body=${encodeURIComponent(`Check out this memory: ${shareUrl}`)}`;
+                        break;
+                    case 'copy':
+                        navigator.clipboard.writeText(shareUrl).then(() => {
+                            alert('Link copied to clipboard!');
+                        });
+                        break;
+                }
+            });
+        });
+
+        // Copy URL button
+        document.getElementById('copy-url-btn').addEventListener('click', () => {
+            const urlInput = document.getElementById('share-url-input');
+            urlInput.select();
+            document.execCommand('copy');
+            alert('Link copied to clipboard!');
+        });
+
+        // Download
+        document.getElementById('memory-download-btn').addEventListener('click', () => {
+            const photo = filteredPhotos[currentMemoryIndex];
+            const link = document.createElement('a');
+            link.href = photo.url;
+            link.download = photo.name || 'cpc-memory.jpg';
+            link.click();
+        });
+    }
+
+    function updateFavoriteButton() {
+        const photo = filteredPhotos[currentMemoryIndex];
+        const isFavorite = favoriteMemories.includes(photo.id);
+        const button = document.getElementById('memory-favorite-btn');
+        
+        if (isFavorite) {
+            button.classList.add('favorited');
+        } else {
+            button.classList.remove('favorited');
+        }
+    }
+
+    function showError(message) {
+        const container = document.getElementById('timeline-view');
+        container.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i><p>${message}</p></div>`;
+    }
+});
+</script>
+{% endblock %}
