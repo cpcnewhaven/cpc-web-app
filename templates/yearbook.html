@@ -411,8 +411,145 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Mobile-specific enhancements
+        setupMobileEnhancements();
+
         // Modal controls
         setupModalControls();
+    }
+
+    function setupMobileEnhancements() {
+        // Touch gestures for modal navigation
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const minSwipeDistance = 50;
+
+            // Only handle horizontal swipes
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                const modal = document.getElementById('memory-modal');
+                if (modal.style.display === 'block') {
+                    if (deltaX > 0) {
+                        // Swipe right - previous memory
+                        document.getElementById('prev-memory').click();
+                    } else {
+                        // Swipe left - next memory
+                        document.getElementById('next-memory').click();
+                    }
+                }
+            }
+        }
+
+        // Prevent zoom on double tap for images
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                renderYearbook();
+            }, 100);
+        });
+
+        // Improve scroll performance on mobile
+        let ticking = false;
+        function updateScrollPosition() {
+            // Add any scroll-based animations here
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateScrollPosition);
+                ticking = true;
+            }
+        });
+
+        // Add haptic feedback for supported devices
+        function addHapticFeedback(element) {
+            element.addEventListener('click', function() {
+                if (navigator.vibrate) {
+                    navigator.vibrate(10); // Short vibration
+                }
+            });
+        }
+
+        // Apply haptic feedback to interactive elements
+        document.querySelectorAll('.year-tab, .toggle-btn, .action-btn').forEach(addHapticFeedback);
+
+        // Smooth scrolling for year tabs on mobile
+        document.querySelectorAll('.year-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Smooth scroll to top of yearbook content
+                setTimeout(() => {
+                    document.querySelector('.yearbook-content').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 100);
+            });
+        });
+
+        // Add pull-to-refresh functionality
+        let startY = 0;
+        let currentY = 0;
+        let isRefreshing = false;
+
+        document.addEventListener('touchstart', function(e) {
+            if (window.scrollY === 0) {
+                startY = e.touches[0].clientY;
+            }
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (window.scrollY === 0 && !isRefreshing) {
+                currentY = e.touches[0].clientY;
+                const pullDistance = currentY - startY;
+                
+                if (pullDistance > 50) {
+                    // Show refresh indicator
+                    document.body.style.transform = `translateY(${Math.min(pullDistance * 0.5, 100)}px)`;
+                }
+            }
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (window.scrollY === 0 && !isRefreshing) {
+                const pullDistance = currentY - startY;
+                
+                if (pullDistance > 100) {
+                    // Trigger refresh
+                    isRefreshing = true;
+                    document.body.style.transform = 'translateY(0)';
+                    loadYearbook();
+                    setTimeout(() => {
+                        isRefreshing = false;
+                    }, 1000);
+                } else {
+                    // Reset position
+                    document.body.style.transform = 'translateY(0)';
+                }
+            }
+        });
     }
 
     function openMemoryModal(index) {

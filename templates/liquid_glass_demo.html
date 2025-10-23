@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Liquid Glass Demo - CPC New Haven{% endblock %}
+
+{% block content %}
+<div class="demo-container">
+    <div class="demo-hero">
+        <h1>Apple-Inspired Liquid Glass Design</h1>
+        <p>Experience the sleek, modern navigation and footer design</p>
+    </div>
+
+    <div class="demo-sections">
+        <section class="demo-section">
+            <h2>Navigation Features</h2>
+            <ul>
+                <li>✨ Floating glass navigation bar</li>
+                <li>🎨 Backdrop blur effects</li>
+                <li>📱 Responsive mobile menu</li>
+                <li>⚡ Smooth animations and transitions</li>
+                <li>🎯 Apple-style interactions</li>
+            </ul>
+        </section>
+
+        <section class="demo-section">
+            <h2>Footer Features</h2>
+            <ul>
+                <li>🔮 Liquid glass morphism</li>
+                <li>💫 Subtle hover effects</li>
+                <li>📐 Rounded corners and shadows</li>
+                <li>🎨 Gradient backgrounds</li>
+                <li>📱 Mobile-optimized layout</li>
+            </ul>
+        </section>
+
+        <section class="demo-section">
+            <h2>Design System</h2>
+            <ul>
+                <li>🎨 CSS custom properties for theming</li>
+                <li>♿ Accessibility features</li>
+                <li>🌙 High contrast mode support</li>
+                <li>🎭 Reduced motion support</li>
+                <li>📱 Mobile-first responsive design</li>
+            </ul>
+        </section>
+    </div>
+
+    <div class="demo-cards">
+        <div class="demo-card">
+            <h3>Compact Design</h3>
+            <p>The navigation is much more compact and takes up minimal screen
+                space while maintaining full functionality.</p>
+        </div>
+
+        <div class="demo-card">
+            <h3>Liquid Glass Effect</h3>
+            <p>Beautiful glass morphism with backdrop blur, transparency, and
+                subtle shadows that create depth.</p>
+        </div>
+
+        <div class="demo-card">
+            <h3>Apple Aesthetics</h3>
+            <p>Inspired by Apple's design language with clean typography, smooth
+                animations, and premium feel.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.demo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: white;
+}
+
+.demo-hero {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 40px 0;
+}
+
+.demo-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.demo-hero p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.demo-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.demo-section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.demo-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.demo-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.demo-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.demo-section li {
+    padding: 8px 0;
+    font-size: 1rem;
+    opacity: 0.9;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.demo-section li:last-child {
+    border-bottom: none;
+}
+
+.demo-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.demo-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.demo-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.demo-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.demo-card p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .demo-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .demo-hero p {
+        font-size: 1rem;
+    }
+    
+    .demo-sections {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .demo-section {
+        padding: 20px;
+    }
+    
+    .demo-cards {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

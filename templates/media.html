@@ -1,22 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Gallery - CPC New Haven{% endblock %}
+{% block title %}Media - CPC New Haven{% endblock %}
 
 {% block head %}
-<link rel="stylesheet"
-    href="{{ url_for('static', filename='css/gallery.css') }}">
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="page-hero gallery-hero">
+<section class="page-hero media-hero">
     <div class="container">
         <div class="hero-content">
-            <h1>Community Gallery</h1>
-            <p>Moments of faith, fellowship, and celebration captured through
-                the lens of our community</p>
+            <h1>Media Center</h1>
+            <p>Explore our photo gallery and digital yearbook - moments of faith, fellowship, and celebration</p>
             <div class="hero-stats">
                 <div class="stat">
                     <span class="stat-number" id="total-photos">0</span>
@@ -35,30 +32,29 @@
     </div>
 </section>
 
-<!-- Navigation Tabs -->
-<section class="gallery-nav">
+<!-- Media Navigation Tabs -->
+<section class="media-nav">
     <div class="container">
-        <div class="nav-tabs">
-            <button class="nav-tab active" data-filter="all">All Photos</button>
-            <button class="nav-tab" data-filter="events">Events</button>
-            <button class="nav-tab" data-filter="worship">Worship</button>
-            <button class="nav-tab" data-filter="fellowship">Fellowship</button>
-            <button class="nav-tab" data-filter="youth">Youth</button>
-            <button class="nav-tab" data-filter="missions">Missions</button>
-            <button class="nav-tab yearbook-tab" data-filter="yearbook">Digital
-                Yearbook</button>
+        <div class="media-tabs">
+            <button class="media-tab active" data-tab="gallery">
+                <i class="fas fa-images"></i>
+                <span>Gallery</span>
+            </button>
+            <button class="media-tab" data-tab="yearbook">
+                <i class="fas fa-book"></i>
+                <span>Yearbook</span>
+            </button>
         </div>
     </div>
 </section>
 
 <!-- Gallery Section -->
-<section class="gallery-section">
+<section id="gallery-section" class="media-section active">
     <div class="container">
         <!-- Filter Controls -->
         <div class="gallery-controls">
             <div class="search-box">
-                <input type="text" id="gallery-search"
-                    placeholder="Search photos...">
+                <input type="text" id="gallery-search" placeholder="Search photos...">
                 <i class="fas fa-search"></i>
             </div>
             <div class="sort-controls">
@@ -98,6 +94,25 @@
             <i class="fas fa-images"></i>
             <h3>No photos found</h3>
             <p>Try adjusting your search or filter criteria</p>
+        </div>
+    </div>
+</section>
+
+<!-- Yearbook Section -->
+<section id="yearbook-section" class="media-section">
+    <div class="container">
+        <!-- Year Navigation -->
+        <div class="year-navigation">
+            <div class="container">
+                <div class="year-tabs" id="year-tabs">
+                    <!-- Year tabs will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Yearbook Content -->
+        <div id="yearbook-container" class="yearbook-container">
+            <!-- Yearbook content will be populated by JavaScript -->
         </div>
     </div>
 </section>
@@ -176,14 +191,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentFilter = 'all';
     let currentView = 'grid';
     let currentPhotoIndex = 0;
+    let currentTab = 'gallery';
 
     // Load gallery images
     loadGallery();
 
     function loadGallery() {
-    fetch('/api/gallery')
-        .then(response => response.json())
-        .then(data => {
+        fetch('/api/gallery')
+            .then(response => response.json())
+            .then(data => {
                 allPhotos = data.images || [];
                 filteredPhotos = [...allPhotos];
                 updateStats();
@@ -210,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderGallery() {
-            const container = document.getElementById('gallery-container');
+        const container = document.getElementById('gallery-container');
         const loadingIndicator = document.getElementById('loading-indicator');
         const emptyState = document.getElementById('empty-state');
 
@@ -331,13 +347,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         </button>
                     </div>
                 </div>
-                        </div>
-                    `;
+            </div>
+        `;
 
         return photoDiv;
     }
 
     function setupEventListeners() {
+        // Tab switching
+        document.querySelectorAll('.media-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                switchTab(tabName);
+            });
+        });
+
         // Filter tabs
         document.querySelectorAll('.nav-tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -380,92 +404,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Mobile-specific enhancements
-        setupMobileEnhancements();
-
         // Modal controls
         setupModalControls();
     }
 
-    function setupMobileEnhancements() {
-        // Touch gestures for modal navigation
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
-
-        document.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
+    function switchTab(tabName) {
+        currentTab = tabName;
+        
+        // Update tab buttons
+        document.querySelectorAll('.media-tab').forEach(tab => {
+            tab.classList.remove('active');
         });
-
-        document.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            handleSwipe();
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        
+        // Show/hide sections
+        document.querySelectorAll('.media-section').forEach(section => {
+            section.classList.remove('active');
         });
-
-        function handleSwipe() {
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            const minSwipeDistance = 50;
-
-            // Only handle horizontal swipes
-            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-                const modal = document.getElementById('photo-modal');
-                if (modal.style.display === 'block') {
-                    if (deltaX > 0) {
-                        // Swipe right - previous image
-                        document.getElementById('prev-image').click();
-            } else {
-                        // Swipe left - next image
-                        document.getElementById('next-image').click();
-                    }
-                }
-            }
+        document.getElementById(`${tabName}-section`).classList.add('active');
+        
+        // Update view based on tab
+        if (tabName === 'yearbook') {
+            currentView = 'yearbook';
+            renderGallery();
+        } else {
+            currentView = 'grid';
+            renderGallery();
         }
-
-        // Prevent zoom on double tap for images
-        document.addEventListener('touchstart', function(e) {
-            if (e.touches.length > 1) {
-                e.preventDefault();
-            }
-        });
-
-        // Handle orientation change
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                if (currentView === 'masonry') {
-                    initializeMasonry();
-                }
-            }, 100);
-        });
-
-        // Improve scroll performance on mobile
-        let ticking = false;
-        function updateScrollPosition() {
-            // Add any scroll-based animations here
-            ticking = false;
-        }
-
-        window.addEventListener('scroll', function() {
-            if (!ticking) {
-                requestAnimationFrame(updateScrollPosition);
-                ticking = true;
-            }
-        });
-
-        // Add haptic feedback for supported devices
-        function addHapticFeedback(element) {
-            element.addEventListener('click', function() {
-                if (navigator.vibrate) {
-                    navigator.vibrate(10); // Short vibration
-                }
-            });
-        }
-
-        // Apply haptic feedback to interactive elements
-        document.querySelectorAll('.nav-tab, .view-btn, .action-btn').forEach(addHapticFeedback);
     }
 
     function filterPhotos() {
@@ -553,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('share-btn').addEventListener('click', () => {
             shareModal.style.display = 'block';
             const photo = filteredPhotos[currentPhotoIndex];
-            const shareUrl = `${window.location.origin}/gallery?photo=${photo.id}`;
+            const shareUrl = `${window.location.origin}/media?photo=${photo.id}`;
             document.getElementById('share-url-input').value = shareUrl;
         });
 
@@ -562,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
             option.addEventListener('click', function() {
                 const platform = this.dataset.platform;
                 const photo = filteredPhotos[currentPhotoIndex];
-                const shareUrl = `${window.location.origin}/gallery?photo=${photo.id}`;
+                const shareUrl = `${window.location.origin}/media?photo=${photo.id}`;
                 
                 switch (platform) {
                     case 'facebook':

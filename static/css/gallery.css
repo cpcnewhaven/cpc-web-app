@@ -901,63 +901,572 @@
     cursor: pointer;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Mobile-First Responsive Design */
+
+/* Extra Small Devices (phones, 480px and down) */
+@media (max-width: 480px) {
+
+    .gallery-hero,
+    .yearbook-hero {
+        padding: 2rem 0;
+    }
+
     .hero-content h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
     }
 
     .yearbook-hero .hero-content h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 0 1rem;
     }
 
     .hero-stats,
     .yearbook-stats {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
     }
 
     .nav-tabs,
     .year-tabs {
         flex-direction: column;
         align-items: center;
+        gap: 0.5rem;
+        padding: 0 1rem;
+    }
+
+    .nav-tab,
+    .year-tab {
+        width: 100%;
+        max-width: 200px;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        text-align: center;
     }
 
     .gallery-controls {
         flex-direction: column;
         align-items: stretch;
+        gap: 0.75rem;
+        margin: 1rem 0;
+        padding: 0 1rem;
+    }
+
+    .search-box {
+        max-width: none;
+    }
+
+    .search-box input {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+    }
+
+    .sort-controls select {
+        width: 100%;
+        font-size: 16px;
+        padding: 0.8rem 1rem;
+    }
+
+    .view-controls {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .view-btn,
+    .toggle-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        min-width: 80px;
     }
 
     .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin-top: 1rem;
+        padding: 0 1rem;
     }
 
-    .timeline-photos {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
+    .gallery-grid.masonry {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .month-grid-container {
-        grid-template-columns: 1fr;
+    .gallery-item {
+        border-radius: 8px;
     }
 
-    .modal-content {
-        flex-direction: column;
-        width: 95%;
-        margin: 5% auto;
+    .photo-container {
+        height: 150px;
     }
 
-    .modal-image-container,
-    .memory-image-container {
-        height: 50vh;
+    .photo-overlay {
+        padding: 1rem;
     }
 
-    .memory-actions {
-        flex-direction: column;
+    .photo-info h3 {
+        font-size: 1rem;
+    }
+
+    .photo-tags {
+        font-size: 0.8rem;
+    }
+
+    .photo-actions {
+        gap: 0.25rem;
+    }
+
+    .action-btn {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+
+    .yearbook-year-title {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
     }
 
     .yearbook-months {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .yearbook-month {
+        padding: 1rem;
+    }
+
+    .yearbook-month-title {
+        font-size: 1.2rem;
+    }
+
+    .yearbook-photos {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.25rem;
+    }
+
+    .yearbook .gallery-item {
+        height: 80px;
+    }
+
+    .yearbook .photo-container {
+        height: 80px;
+    }
+
+    .timeline-photos {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .month-grid-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .month-card {
+        border-radius: 10px;
+    }
+
+    .month-cover {
+        height: 150px;
+    }
+
+    .month-overlay {
+        padding: 1rem;
+    }
+
+    .month-overlay .month-title {
+        font-size: 1.2rem;
+    }
+
+    .month-photos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.25rem;
+        padding: 0.75rem;
+    }
+
+    .memory-item {
+        border-radius: 8px;
+    }
+
+    .memory-image {
+        height: 150px;
+    }
+
+    .memory-overlay {
+        padding: 1rem;
+    }
+
+    .memory-info h4 {
+        font-size: 1rem;
+    }
+
+    .memory-date {
+        font-size: 0.8rem;
+    }
+
+    .memory-tags {
+        font-size: 0.75rem;
+    }
+
+    .modal-content {
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        max-height: none;
+    }
+
+    .modal-image-container,
+    .memory-image-container {
+        height: 60vh;
+        flex: none;
+    }
+
+    .modal-info,
+    .memory-info {
+        padding: 1rem;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .modal-info h3,
+    .memory-info h3 {
+        font-size: 1.3rem;
+    }
+
+    .memory-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .close-modal {
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 35px;
+        height: 35px;
+        font-size: 1.5rem;
+    }
+
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .image-nav {
+        padding: 0 0.5rem;
+    }
+
+    .modal-actions,
+    .memory-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .modal-actions .action-btn,
+    .memory-actions .action-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .share-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 1.5rem;
+    }
+
+    .share-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .share-option {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .share-option i {
+        font-size: 1.2rem;
+    }
+
+    .share-url {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .share-url input {
+        font-size: 16px;
+    }
+
+    .share-url button {
+        width: 100%;
+        padding: 0.8rem;
+    }
+}
+
+/* Small Devices (phones, 481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+
+    .gallery-hero,
+    .yearbook-hero {
+        padding: 3rem 0;
+    }
+
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+
+    .yearbook-hero .hero-content h1 {
+        font-size: 2.8rem;
+    }
+
+    .hero-content p {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+
+    .hero-stats,
+    .yearbook-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 1rem;
+    }
+
+    .nav-tabs,
+    .year-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0 1rem;
+    }
+
+    .nav-tab,
+    .year-tab {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .gallery-controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .gallery-grid.masonry {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .photo-container {
+        height: 200px;
+    }
+
+    .yearbook-months {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .yearbook-photos {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .yearbook .gallery-item {
+        height: 100px;
+    }
+
+    .yearbook .photo-container {
+        height: 100px;
+    }
+
+    .timeline-photos {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
+    .month-grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+
+    .memory-image {
+        height: 180px;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 2.5% auto;
+    }
+
+    .modal-image-container,
+    .memory-image-container {
+        height: 55vh;
+    }
+
+    .modal-info,
+    .memory-info {
+        padding: 1.5rem;
+    }
+
+    .modal-actions,
+    .memory-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .modal-actions .action-btn,
+    .memory-actions .action-btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
+/* Medium Devices (tablets, 769px to 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .gallery-grid.masonry {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .yearbook-months {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .month-grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .modal-content {
+        width: 90%;
+        margin: 2% auto;
+    }
+}
+
+/* Touch-friendly improvements for all mobile devices */
+@media (max-width: 1024px) {
+
+    /* Increase touch targets */
+    .nav-tab,
+    .year-tab,
+    .view-btn,
+    .toggle-btn,
+    .action-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Improve scrolling */
+    .gallery-grid,
+    .yearbook-months,
+    .month-grid-container,
+    .timeline-photos {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Better modal handling on mobile */
+    .photo-modal,
+    .memory-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    /* Prevent horizontal scroll */
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Better text selection */
+    .gallery-item,
+    .memory-item,
+    .month-card {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Improve button feedback */
+    .nav-tab:active,
+    .year-tab:active,
+    .view-btn:active,
+    .toggle-btn:active,
+    .action-btn:active {
+        transform: scale(0.95);
+    }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+
+    .gallery-hero,
+    .yearbook-hero {
+        padding: 1.5rem 0;
+    }
+
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .yearbook-hero .hero-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-stats,
+    .yearbook-stats {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .modal-content {
+        flex-direction: row;
+        height: 100vh;
+    }
+
+    .modal-image-container,
+    .memory-image-container {
+        height: 100vh;
+        flex: 1;
+    }
+
+    .modal-info,
+    .memory-info {
+        flex: 1;
+        padding: 1rem;
     }
 }

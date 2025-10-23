@@ -22,6 +22,7 @@ from ingest.newsletter import NewsletterIngester
 from ingest.events import EventsIngester
 from ingest.youtube import YouTubeIngester
 from ingest.mailchimp import MailchimpIngester
+from google_drive_routes import google_drive_bp
 
 
 load_dotenv()
@@ -34,6 +35,7 @@ cache = Cache(app)
 
 app.register_blueprint(enhanced_api, url_prefix='/api')
 app.register_blueprint(json_api)
+app.register_blueprint(google_drive_bp)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 # Database configuration
@@ -100,6 +102,10 @@ def community():
 def give():
     return render_template('give.html')
 
+@app.route('/liquid-glass-demo')
+def liquid_glass_demo():
+    return render_template('liquid_glass_demo.html')
+
 @app.route('/live')
 def live():
     return render_template('live.html')
@@ -108,13 +114,17 @@ def live():
 def resources():
     return render_template('resources.html')
 
+@app.route('/media')
+def media():
+    return render_template('media.html')
+
 @app.route('/gallery')
 def gallery():
-    return render_template('gallery.html')
+    return redirect(url_for('media'))
 
 @app.route('/yearbook')
 def yearbook():
-    return render_template('yearbook.html')
+    return redirect(url_for('media'))
 
 @app.route('/newsletter')
 def newsletter():

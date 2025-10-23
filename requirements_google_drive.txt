@@ -1,0 +1,12 @@
+# Google Drive Integration Requirements
+# Add these to your main requirements.txt file
+
+# Google API Client Libraries
+google-api-python-client==2.108.0
+google-auth-httplib2==0.1.1
+google-auth-oauthlib==1.1.0
+google-auth==2.23.4
+
+# Additional dependencies for Google Drive integration
+googleapis-common-protos==1.61.0
+google-resumable-media==2.6.0

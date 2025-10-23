@@ -8,10 +8,12 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background-color: #f8f9fa;
+    color: #1d1d1f;
+    background: linear-gradient(135deg, #003d7a 0%, #002a5c 50%, #001f42 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
@@ -20,96 +22,54 @@ body {
     padding: 0 20px;
 }
 
-/* Navigation */
+/* Navigation - Overridden by liquid-glass.css */
 .main-navigation {
-    background-color: #2c3e50;
-    color: white;
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    /* Styles are now in liquid-glass.css */
 }
 
 .nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    /* Styles are now in liquid-glass.css */
 }
 
 .nav-logo a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
+    /* Styles are now in liquid-glass.css */
 }
 
 .nav-links {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
+    /* Styles are now in liquid-glass.css */
 }
 
 .nav-links a {
-    color: white;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: #3498db;
+    /* Styles are now in liquid-glass.css */
 }
 
 .hamburger-menu {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
+    /* Styles are now in liquid-glass.css */
 }
 
-/* Mobile Navigation */
+/* Mobile Navigation - Overridden by liquid-glass.css */
 .mobile-navigation {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #2c3e50;
-    z-index: 2000;
-    padding: 2rem;
+    /* Styles are now in liquid-glass.css */
 }
 
 .mobile-navigation.active {
-    display: block;
+    /* Styles are now in liquid-glass.css */
 }
 
 .mobile-nav-links {
-    list-style: none;
-    margin-top: 2rem;
+    /* Styles are now in liquid-glass.css */
 }
 
 .mobile-nav-links li {
-    margin-bottom: 1rem;
+    /* Styles are now in liquid-glass.css */
 }
 
 .mobile-nav-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2rem;
+    /* Styles are now in liquid-glass.css */
 }
 
 .close-menu {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    float: right;
+    /* Styles are now in liquid-glass.css */
 }
 
 /* Hero Section */
@@ -470,57 +430,33 @@ body {
     margin-top: 1rem;
 }
 
-/* Footer */
+/* Footer - Overridden by liquid-glass.css */
 .main-footer {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    color: white;
-    padding: 1.5rem 0;
-    margin-top: 3rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* Styles are now in liquid-glass.css */
 }
 
 .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    /* Styles are now in liquid-glass.css */
 }
 
 .footer-brand h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    color: #ecf0f1;
+    /* Styles are now in liquid-glass.css */
 }
 
 .footer-brand p {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    margin: 0;
+    /* Styles are now in liquid-glass.css */
 }
 
 .footer-links {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
+    /* Styles are now in liquid-glass.css */
 }
 
 .footer-links a {
-    color: #bdc3c7;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    /* Styles are now in liquid-glass.css */
 }
 
 .footer-links a:hover {
-    color: #3498db;
-    background-color: rgba(52, 152, 219, 0.1);
-    transform: translateY(-1px);
+    /* Styles are now in liquid-glass.css */
 }
 
 /* Responsive Design */
