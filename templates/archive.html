@@ -312,10 +312,13 @@
         });
     });
 
+    let currentPage = 1;
+    const perPage = 10;
+
     function loadArchive() {
         showLoading();
 
-        let url = `/api/archive?type=${currentType}`;
+        let url = `/api/archive?type=${currentType}&page=${currentPage}&per_page=${perPage}`;
         if (selectedYear) {
             url += `&year=${selectedYear}`;
         }
@@ -375,6 +378,9 @@
             html += '</div>';
         }
 
+        // Show total results count
+        html += `<div class="results-header"><div class="results-count">Showing ${data.page} of ${data.pages} pages (${data.total} total items)</div></div>`;
+
         for (const [type, items] of Object.entries(groupedItems)) {
             html += `
                 <div class="archive-section">
@@ -409,8 +415,25 @@
             html += '</div>';
         }
 
+        // Add pagination
+        if (data.pages > 1) {
+            html += '<div class="pagination">';
+            html += `<button class="pagination-button" ${currentPage === 1 ? 'disabled' : ''} onclick="changeArchivePage(${currentPage - 1})">← Previous</button>`;
+            html += `<span style="padding: 10px 20px; display: inline-block;">Page ${data.page} of ${data.pages}</span>`;
+            html += `<button class="pagination-button" ${currentPage >= data.pages ? 'disabled' : ''} onclick="changeArchivePage(${currentPage + 1})">Next →</button>`;
+            html += '</div>';
+        }
+
         archiveContent.innerHTML = html;
     }
+
+    function changeArchivePage(page) {
+        currentPage = page;
+        loadArchive();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.changeArchivePage = changeArchivePage;
 
     function capitalizeFirst(str) {
         return str.charAt(0).toUpperCase() + str.slice(1) + (str.endsWith('s') ? '' : 's');
@@ -429,6 +452,7 @@
 
     function filterByYear(year) {
         selectedYear = year;
+        currentPage = 1; // Reset to first page when filtering
         document.querySelectorAll('.year-button').forEach(btn => {
             btn.classList.remove('active');
         });
@@ -437,6 +461,14 @@
     }
 
     window.filterByYear = filterByYear;
+    
+    // Also reset page when changing content type
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            currentPage = 1;
+        });
+    });
+    
     loadArchive();
 </script>
 {% endblock %}

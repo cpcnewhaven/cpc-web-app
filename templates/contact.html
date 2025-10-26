@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - CPC New Haven{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+    .contact-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .contact-hero {
+        text-align: center;
+        margin-bottom: 60px;
+        position: relative;
+    }
+
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(231, 76, 60, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(60px);
+        z-index: -1;
+    }
+
+    .contact-hero h1 {
+        font-size: 3rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 10px;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        letter-spacing: 2px;
+    }
+
+    .contact-hero p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        font-weight: 300;
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .contact-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .contact-icon {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    .contact-card h3 {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 15px;
+        font-weight: 400;
+        letter-spacing: 1px;
+    }
+
+    .contact-card p {
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 15px;
+        font-weight: 300;
+        line-height: 1.8;
+    }
+
+    .contact-card a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-block;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .contact-card a:hover {
+        color: rgba(255, 255, 255, 1);
+        transform: translateX(4px);
+    }
+
+    .contact-form-section {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        margin-top: 40px;
+    }
+
+    .contact-form h2 {
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 30px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 10px;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 15px 20px;
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1rem;
+        font-weight: 300;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .submit-button {
+        background: rgba(231, 76, 60, 0.3);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(231, 76, 60, 0.5);
+        color: rgba(255, 255, 255, 0.95);
+        padding: 15px 40px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.95rem;
+        width: 100%;
+    }
+
+    .submit-button:hover {
+        background: rgba(231, 76, 60, 0.4);
+        border-color: rgba(231, 76, 60, 0.6);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .office-hours {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 30px;
+        margin-top: 40px;
+    }
+
+    .office-hours h3 {
+        font-size: 1.8rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 20px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .hours-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .hours-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 300;
+    }
+
+    .hours-list li:last-child {
+        border-bottom: none;
+    }
+
+    .map-container {
+        margin-top: 40px;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .map-container iframe {
+        width: 100%;
+        height: 300px;
+        border: none;
+    }
+
+    @media (max-width: 768px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .contact-hero h1 {
+            font-size: 2.2rem;
+        }
+
+        .contact-form-section {
+            padding: 25px;
+        }
+
+        .contact-card {
+            padding: 25px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+    <div class="contact-hero">
+        <h1>Contact Us</h1>
+        <p>Get in touch with Christ Presbyterian Church</p>
+    </div>
+
+    <!-- Contact Methods -->
+    <div class="contact-grid">
+        <div class="contact-card">
+            <div class="contact-icon">📧</div>
+            <h3>Email</h3>
+            <p>Send us an email for general inquiries, questions about our services, or to connect with our staff.</p>
+            <a href="mailto:admin@cpcnewhaven.org">admin@cpcnewhaven.org</a>
+        </div>
+
+        <div class="contact-card">
+            <div class="contact-icon">📍</div>
+            <h3>Visit Us</h3>
+            <p>Join us for worship and fellowship at our location in the heart of New Haven.</p>
+            <p><strong>135 Whitney Ave<br>New Haven, CT 06510</strong></p>
+        </div>
+
+        <div class="contact-card">
+            <div class="contact-icon">📱</div>
+            <h3>Phone</h3>
+            <p>Give us a call for more information or to speak with our church office.</p>
+            <a href="tel:+12037650123">(203) 765-0123</a>
+        </div>
+
+        <div class="contact-card">
+            <div class="contact-icon">⛪</div>
+            <h3>Worship</h3>
+            <p>Join us for Sunday worship services every week at 10:30 AM. All are welcome!</p>
+            <a href="{{ url_for('events') }}">View Schedule</a>
+        </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form-section">
+        <h2>Send Us a Message</h2>
+        <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required placeholder="Your name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <select id="subject" name="subject">
+                    <option value="general">General Inquiry</option>
+                    <option value="pastoral">Pastoral Care</option>
+                    <option value="visit">Planning a Visit</option>
+                    <option value="ministries">Ministries</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" required placeholder="Your message..."></textarea>
+            </div>
+            
+            <button type="submit" class="submit-button">Send Message</button>
+        </form>
+    </div>
+
+    <!-- Office Hours -->
+    <div class="office-hours">
+        <h3>Office Hours</h3>
+        <ul class="hours-list">
+            <li>
+                <span>Monday - Thursday</span>
+                <span>9:00 AM - 5:00 PM</span>
+            </li>
+            <li>
+                <span>Friday</span>
+                <span>9:00 AM - 3:00 PM</span>
+            </li>
+            <li>
+                <span>Saturday</span>
+                <span>Closed</span>
+            </li>
+            <li>
+                <span>Sunday</span>
+                <span>Worship Service Only</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Map -->
+    <div class="map-container">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2992.997969235885!2d-72.92902678426954!3d41.31077497927073!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e7d9b9a8a89b9b%3A0x8c7f9a9b8a89b9b!2s135%20Whitney%20Ave%2C%20New%20Haven%2C%20CT%2006510!5e0!3m2!1sen!2sus!4v1234567890"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+</div>
+
+<script>
+function handleSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Get form values
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const subject = formData.get('subject');
+    const message = formData.get('message');
+    
+    // Create mailto link
+    const mailtoLink = `mailto:admin@cpcnewhaven.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Optional: Show success message
+    alert('Thank you for your message! Your email client should now open.');
+    
+    // Reset form
+    form.reset();
+}
+</script>
+{% endblock %}

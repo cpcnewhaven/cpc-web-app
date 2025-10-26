@@ -153,6 +153,11 @@ def archive():
     """Site archive page showing older content"""
     return render_template('archive.html')
 
+@app.route('/contact')
+def contact():
+    """Contact page"""
+    return render_template('contact.html')
+
 # API Routes
 @app.route('/api/announcements')
 def api_announcements():
@@ -713,7 +718,7 @@ def api_search():
     query = request.args.get('q', '').strip().lower()
     content_type = request.args.get('type', 'all')  # all, sermons, podcasts, announcements, events, gallery
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 20, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
     
     results = {
         'query': query,
@@ -863,11 +868,16 @@ def api_archive():
     """Archive endpoint showing older content from all sources"""
     content_type = request.args.get('type', 'all')  # all, sermons, podcasts, announcements, events, gallery
     year = request.args.get('year', None)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
     
     results = {
         'type': content_type,
         'items': [],
-        'total': 0
+        'total': 0,
+        'page': page,
+        'per_page': per_page,
+        'pages': 0
     }
     
     try:
@@ -949,6 +959,12 @@ def api_archive():
         # Sort by date
         results['items'].sort(key=lambda x: x.get('date', ''), reverse=True)
         results['total'] = len(results['items'])
+        
+        # Pagination
+        start = (page - 1) * per_page
+        end = start + per_page
+        results['items'] = results['items'][start:end]
+        results['pages'] = (results['total'] + per_page - 1) // per_page
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
