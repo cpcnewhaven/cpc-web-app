@@ -77,3 +77,19 @@ class OngoingEvent(db.Model):
     active = db.Column(db.Boolean, default=True)
     type = db.Column(db.String(50))
     category = db.Column(db.String(50))
+
+class Paper(db.Model):
+    __tablename__ = 'papers'
+    
+    id = db.Column(db.String(20), primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    author = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    content = db.Column(db.Text)
+    date_published = db.Column(db.Date)
+    date_entered = db.Column(db.DateTime, default=datetime.utcnow)
+    category = db.Column(db.String(50))
+    tags = db.Column(JSON)  # Store as JSON array
+    file_url = db.Column(db.String(500))
+    thumbnail_url = db.Column(db.String(500))
+    active = db.Column(db.Boolean, default=True)

@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+
+{% block title %}Archive - CPC New Haven{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+    .archive-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .archive-header {
+        text-align: center;
+        margin-bottom: 60px;
+        position: relative;
+    }
+
+    .archive-header::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(155, 89, 182, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(60px);
+        z-index: -1;
+    }
+
+    .archive-header h1 {
+        font-size: 3rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 10px;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        letter-spacing: 2px;
+    }
+
+    .archive-header p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        font-weight: 300;
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+    }
+
+    .filter-tab {
+        padding: 12px 28px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-tab:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .filter-tab.active {
+        background: rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 1);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+        font-weight: 600;
+    }
+
+    .archive-content {
+        margin-top: 50px;
+    }
+
+    .archive-section {
+        margin-bottom: 60px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .section-count {
+        margin-left: auto;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 300;
+        font-size: 1.1rem;
+    }
+
+    .archive-item {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .archive-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .archive-item-content {
+        display: flex;
+        gap: 25px;
+        align-items: flex-start;
+    }
+
+    .archive-item-thumb {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 12px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .archive-item-info {
+        flex: 1;
+    }
+
+    .archive-item-title {
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 10px;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    .archive-item-meta {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+        font-weight: 300;
+    }
+
+    .archive-item-description {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        font-weight: 300;
+    }
+
+    .archive-item-link {
+        display: inline-block;
+        margin-top: 15px;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .archive-item-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateX(4px);
+    }
+
+    .year-filter {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+    }
+
+    .year-button {
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+    }
+
+    .year-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .year-button.active {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        font-weight: 600;
+    }
+
+    .loading, .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 300;
+    }
+
+    .loading, .empty-state h2 {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 15px;
+        font-weight: 300;
+    }
+
+    @media (max-width: 768px) {
+        .archive-header h1 {
+            font-size: 2.2rem;
+        }
+
+        .archive-item-content {
+            flex-direction: column;
+        }
+
+        .archive-item-thumb {
+            width: 100%;
+            height: 200px;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .section-count {
+            margin-left: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="archive-container">
+    <div class="archive-header">
+        <h1>Archive</h1>
+        <p>Browse historical content and older materials</p>
+    </div>
+
+    <div class="filter-tabs">
+        <div class="filter-tab active" data-type="all">All Content</div>
+        <div class="filter-tab" data-type="sermons">Sermons</div>
+        <div class="filter-tab" data-type="podcasts">Podcasts</div>
+        <div class="filter-tab" data-type="announcements">Announcements</div>
+        <div class="filter-tab" data-type="papers">Papers</div>
+    </div>
+
+    <div class="archive-content" id="archiveContent">
+        <!-- Content will be populated here -->
+    </div>
+</div>
+
+<script>
+    let currentType = 'all';
+    let selectedYear = null;
+
+    const archiveContent = document.getElementById('archiveContent');
+    const filterTabs = document.querySelectorAll('.filter-tab');
+
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            filterTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentType = tab.dataset.type;
+            loadArchive();
+        });
+    });
+
+    function loadArchive() {
+        showLoading();
+
+        let url = `/api/archive?type=${currentType}`;
+        if (selectedYear) {
+            url += `&year=${selectedYear}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                displayArchive(data);
+            })
+            .catch(error => {
+                console.error('Archive error:', error);
+                showError();
+            });
+    }
+
+    function showLoading() {
+        archiveContent.innerHTML = '<div class="loading">Loading archive...</div>';
+    }
+
+    function showError() {
+        archiveContent.innerHTML = `
+            <div class="empty-state">
+                <h2>Loading Error</h2>
+                <p>Something went wrong. Please try again.</p>
+            </div>
+        `;
+    }
+
+    function displayArchive(data) {
+        if (data.total === 0) {
+            archiveContent.innerHTML = `
+                <div class="empty-state">
+                    <h2>No Archived Content</h2>
+                    <p>No older content found in this category</p>
+                </div>
+            `;
+            return;
+        }
+
+        const groupedItems = {};
+        data.items.forEach(item => {
+            if (!groupedItems[item.type]) {
+                groupedItems[item.type] = [];
+            }
+            groupedItems[item.type].push(item);
+        });
+
+        let html = '';
+
+        const years = getAvailableYears(data.items);
+        if (years.length > 0) {
+            html += '<div class="year-filter">';
+            html += '<div class="year-button" onclick="filterByYear(null)">All Years</div>';
+            years.forEach(year => {
+                html += `<div class="year-button ${selectedYear === year ? 'active' : ''}" onclick="filterByYear(${year})">${year}</div>`;
+            });
+            html += '</div>';
+        }
+
+        for (const [type, items] of Object.entries(groupedItems)) {
+            html += `
+                <div class="archive-section">
+                    <div class="section-header">
+                        <h2 class="section-title">${capitalizeFirst(type)}</h2>
+                        <div class="section-count">${items.length} item${items.length !== 1 ? 's' : ''}</div>
+                    </div>
+            `;
+
+            items.forEach(item => {
+                html += `
+                    <div class="archive-item">
+                        <div class="archive-item-content">
+                            ${item.thumbnail ? `<img src="${item.thumbnail}" class="archive-item-thumb" alt="${item.title}">` : ''}
+                            <div class="archive-item-info">
+                                <div class="archive-item-title">${item.title}</div>
+                                <div class="archive-item-meta">
+                                    ${item.author || item.guest ? `${item.author || item.guest} • ` : ''}
+                                    ${item.date ? new Date(item.date).toLocaleDateString() : ''}
+                                    ${item.category ? ` • ${item.category}` : ''}
+                                </div>
+                                <div class="archive-item-description">
+                                    ${item.description || ''}
+                                </div>
+                                ${item.url ? `<a href="${item.url}" class="archive-item-link" target="_blank">View →</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+        }
+
+        archiveContent.innerHTML = html;
+    }
+
+    function capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1) + (str.endsWith('s') ? '' : 's');
+    }
+
+    function getAvailableYears(items) {
+        const years = new Set();
+        items.forEach(item => {
+            if (item.date) {
+                const year = new Date(item.date).getFullYear();
+                years.add(year);
+            }
+        });
+        return Array.from(years).sort((a, b) => b - a);
+    }
+
+    function filterByYear(year) {
+        selectedYear = year;
+        document.querySelectorAll('.year-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        loadArchive();
+    }
+
+    window.filterByYear = filterByYear;
+    loadArchive();
+</script>
+{% endblock %}

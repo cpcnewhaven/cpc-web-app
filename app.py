@@ -58,7 +58,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper
 
 # Routes
 @app.route('/')
@@ -142,6 +142,16 @@ def cpc_newsletter():
 def data_dashboard():
     """Comprehensive data dashboard showing all external data sources"""
     return render_template('data_dashboard.html')
+
+@app.route('/search')
+def search():
+    """Unified search page"""
+    return render_template('search.html')
+
+@app.route('/archive')
+def archive():
+    """Site archive page showing older content"""
+    return render_template('archive.html')
 
 # API Routes
 @app.route('/api/announcements')
@@ -696,6 +706,254 @@ def api_external_data():
     }
     
     return data
+
+@app.route("/api/search")
+def api_search():
+    """Unified search endpoint that searches across all content types"""
+    query = request.args.get('q', '').strip().lower()
+    content_type = request.args.get('type', 'all')  # all, sermons, podcasts, announcements, events, gallery
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    
+    results = {
+        'query': query,
+        'type': content_type,
+        'results': [],
+        'total': 0,
+        'page': page,
+        'per_page': per_page,
+        'pages': 0
+    }
+    
+    if not query:
+        return jsonify(results)
+    
+    try:
+        # Search sermons
+        if content_type in ['all', 'sermons']:
+            with open('data/sermons.json', 'r') as f:
+                sermons_data = json.load(f)
+                for sermon in sermons_data.get('sermons', []):
+                    search_text = f"{sermon.get('title', '')} {sermon.get('author', '')} {sermon.get('scripture', '')}".lower()
+                    if query in search_text:
+                        results['results'].append({
+                            'type': 'sermon',
+                            'title': sermon.get('title'),
+                            'description': sermon.get('scripture', ''),
+                            'author': sermon.get('author'),
+                            'date': sermon.get('date'),
+                            'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url'),
+                            'thumbnail': sermon.get('podcast_thumbnail_url')
+                        })
+        
+        # Search announcements
+        if content_type in ['all', 'announcements']:
+            announcements = Announcement.query.filter(
+                db.or_(
+                    Announcement.title.ilike(f'%{query}%'),
+                    Announcement.description.ilike(f'%{query}%')
+                )
+            ).all()
+            for a in announcements:
+                results['results'].append({
+                    'type': 'announcement',
+                    'title': a.title,
+                    'description': a.description[:200] if a.description else '',
+                    'date': a.date_entered.strftime('%Y-%m-%d') if a.date_entered else None,
+                    'category': a.category,
+                    'url': url_for('announcements')
+                })
+        
+        # Search podcasts
+        if content_type in ['all', 'podcasts']:
+            from sqlalchemy import or_
+            conditions = [PodcastEpisode.title.ilike(f'%{query}%')]
+            # Only add guest/scripture conditions if those fields exist
+            try:
+                conditions.append(or_(
+                    PodcastEpisode.guest.ilike(f'%{query}%'),
+                    PodcastEpisode.scripture.ilike(f'%{query}%')
+                ))
+            except:
+                pass  # Fields might not exist
+            
+            episodes = PodcastEpisode.query.filter(or_(*conditions)).all()
+            for ep in episodes:
+                results['results'].append({
+                    'type': 'podcast',
+                    'title': ep.title,
+                    'description': getattr(ep, 'scripture', None) or '',
+                    'guest': getattr(ep, 'guest', None),
+                    'date': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
+                    'url': ep.link or getattr(ep, 'listen_url', None)
+                })
+        
+        # Search events
+        if content_type in ['all', 'events']:
+            events = OngoingEvent.query.filter(
+                db.or_(
+                    OngoingEvent.title.ilike(f'%{query}%'),
+                    OngoingEvent.description.ilike(f'%{query}%')
+                )
+            ).all()
+            for e in events:
+                results['results'].append({
+                    'type': 'event',
+                    'title': e.title,
+                    'description': e.description[:200] if e.description else '',
+                    'date': e.date_entered.strftime('%Y-%m-%d') if e.date_entered else None,
+                    'category': e.category,
+                    'url': url_for('events')
+                })
+        
+        # Search gallery
+        if content_type in ['all', 'gallery']:
+            images = GalleryImage.query.filter(
+                GalleryImage.name.ilike(f'%{query}%')
+            ).all()
+            for img in images:
+                results['results'].append({
+                    'type': 'gallery',
+                    'title': img.name,
+                    'description': ', '.join(img.tags) if img.tags else '',
+                    'date': img.created.strftime('%Y-%m-%d') if img.created else None,
+                    'url': img.url,
+                    'thumbnail': img.url
+                })
+        
+        # Search papers
+        if content_type in ['all', 'papers']:
+            papers = Paper.query.filter(
+                db.or_(
+                    Paper.title.ilike(f'%{query}%'),
+                    Paper.author.ilike(f'%{query}%') if Paper.author else False,
+                    Paper.description.ilike(f'%{query}%') if Paper.description else False
+                )
+            ).all()
+            for p in papers:
+                results['results'].append({
+                    'type': 'paper',
+                    'title': p.title,
+                    'author': p.author,
+                    'description': p.description[:200] if p.description else '',
+                    'date': p.date_published.strftime('%Y-%m-%d') if p.date_published else (p.date_entered.strftime('%Y-%m-%d') if p.date_entered else None),
+                    'category': p.category,
+                    'url': p.file_url
+                })
+        
+        # Sort by date descending
+        results['results'].sort(key=lambda x: x.get('date', ''), reverse=True)
+        results['total'] = len(results['results'])
+        
+        # Pagination
+        start = (page - 1) * per_page
+        end = start + per_page
+        results['results'] = results['results'][start:end]
+        results['page'] = page
+        results['per_page'] = per_page
+        results['pages'] = (results['total'] + per_page - 1) // per_page
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+    return jsonify(results)
+
+@app.route("/api/archive")
+def api_archive():
+    """Archive endpoint showing older content from all sources"""
+    content_type = request.args.get('type', 'all')  # all, sermons, podcasts, announcements, events, gallery
+    year = request.args.get('year', None)
+    
+    results = {
+        'type': content_type,
+        'items': [],
+        'total': 0
+    }
+    
+    try:
+        # Get old sermons
+        if content_type in ['all', 'sermons']:
+            with open('data/sermons.json', 'r') as f:
+                sermons_data = json.load(f)
+                cutoff_date = datetime.now() - timedelta(days=90)  # Older than 90 days
+                
+                for sermon in sermons_data.get('sermons', []):
+                    sermon_date = sermon.get('date')
+                    if sermon_date:
+                        try:
+                            serm_dt = datetime.strptime(sermon_date, '%Y-%m-%d')
+                            if serm_dt < cutoff_date:
+                                if not year or sermon_date.startswith(str(year)):
+                                    results['items'].append({
+                                        'type': 'sermon',
+                                        'title': sermon.get('title'),
+                                        'author': sermon.get('author'),
+                                        'date': sermon_date,
+                                        'url': sermon.get('link') or sermon.get('spotify_url')
+                                    })
+                        except:
+                            pass
+        
+        # Get old announcements
+        if content_type in ['all', 'announcements']:
+            cutoff_date = datetime.now() - timedelta(days=60)
+            announcements = Announcement.query.filter(
+                Announcement.date_entered < cutoff_date
+            ).order_by(Announcement.date_entered.desc()).limit(50).all()
+            
+            for a in announcements:
+                results['items'].append({
+                    'type': 'announcement',
+                    'title': a.title,
+                    'date': a.date_entered.strftime('%Y-%m-%d'),
+                    'category': a.category
+                })
+        
+        # Get old podcast episodes
+        if content_type in ['all', 'podcasts']:
+            cutoff_date = datetime.now() - timedelta(days=90)
+            episodes = PodcastEpisode.query.filter(
+                PodcastEpisode.date_added < cutoff_date
+            ).order_by(PodcastEpisode.date_added.desc()).limit(50).all()
+            
+            for ep in episodes:
+                results['items'].append({
+                    'type': 'podcast',
+                    'title': ep.title,
+                    'guest': ep.guest,
+                    'date': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
+                    'url': ep.link
+                })
+        
+        # Get old papers
+        if content_type in ['all', 'papers']:
+            cutoff_date = datetime.now() - timedelta(days=180)
+            papers = Paper.query.filter(
+                db.or_(
+                    Paper.date_entered < cutoff_date,
+                    Paper.date_published < cutoff_date if Paper.date_published else False
+                )
+            ).order_by(Paper.date_entered.desc()).limit(50).all()
+            
+            for p in papers:
+                results['items'].append({
+                    'type': 'paper',
+                    'title': p.title,
+                    'author': p.author,
+                    'description': p.description[:150] if p.description else '',
+                    'date': p.date_published.strftime('%Y-%m-%d') if p.date_published else (p.date_entered.strftime('%Y-%m-%d') if p.date_entered else None),
+                    'category': p.category,
+                    'url': p.file_url
+                })
+        
+        # Sort by date
+        results['items'].sort(key=lambda x: x.get('date', ''), reverse=True)
+        results['total'] = len(results['items'])
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+    return jsonify(results)
 
 # Admin Management Routes
 @app.route('/admin/export/announcements')
