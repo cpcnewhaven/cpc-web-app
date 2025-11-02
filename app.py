@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
@@ -58,7 +58,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User
 
 # Routes
 @app.route('/')
@@ -971,30 +971,99 @@ def api_archive():
     
     return jsonify(results)
 
-# Admin Management Routes
+# Authentication Routes
+def init_admin_users():
+    """Initialize the 5 admin accounts"""
+    admin_accounts = [
+        {'username': 'alex', 'password': 'totalchrist135'},
+        {'username': 'chris', 'password': 'chrisROCKS!@#'},
+        {'username': 'jerry', 'password': 'jerryOR123'},
+        {'username': 'craig', 'password': 'mrCRAIG'},
+        {'username': 'alexis', 'password': 'adminADMIN'}
+    ]
+    
+    for account in admin_accounts:
+        user = User.query.filter_by(username=account['username']).first()
+        if not user:
+            user = User(username=account['username'])
+            user.set_password(account['password'])
+            db.session.add(user)
+    
+    db.session.commit()
+
+def is_authenticated():
+    """Check if user is authenticated"""
+    return session.get('authenticated', False)
+
+def require_auth(f):
+    """Decorator to require authentication"""
+    from functools import wraps
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_authenticated():
+            return redirect(url_for('admin_login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """Admin login page"""
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if username and password:
+            user = User.query.filter_by(username=username).first()
+            if user and user.check_password(password):
+                session['authenticated'] = True
+                session['username'] = username
+                flash('Login successful!', 'success')
+                next_url = request.args.get('next', url_for('admin.index'))
+                return redirect(next_url)
+            else:
+                flash('Invalid username or password', 'error')
+        else:
+            flash('Please enter both username and password', 'error')
+    
+    return render_template('admin/login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    """Admin logout"""
+    session.pop('authenticated', None)
+    session.pop('username', None)
+    flash('You have been logged out', 'info')
+    return redirect(url_for('index'))
+
+# Admin Management Routes (all require authentication)
 @app.route('/admin/export/announcements')
+@require_auth
 def admin_export_announcements():
     """Export announcements to CSV"""
     return export_announcements_csv()
 
 @app.route('/admin/export/sermons')
+@require_auth
 def admin_export_sermons():
     """Export sermons to CSV"""
     return export_sermons_csv()
 
 @app.route('/admin/stats')
+@require_auth
 def admin_stats():
     """Get detailed content statistics"""
     stats = get_content_stats()
     return jsonify(stats)
 
 @app.route('/admin/setup/podcast-series')
+@require_auth
 def admin_setup_podcast_series():
     """Create default podcast series"""
     created_count = create_sample_podcast_series()
     return jsonify({'message': f'Created {created_count} podcast series', 'created': created_count})
 
 @app.route('/admin/bulk/announcements', methods=['POST'])
+@require_auth
 def admin_bulk_announcements():
     """Bulk operations on announcements"""
     data = request.get_json()
@@ -1013,6 +1082,7 @@ def admin_bulk_announcements():
     return jsonify({'success': False, 'error': 'Invalid action'})
 
 @app.route('/admin/bulk/sermons', methods=['POST'])
+@require_auth
 def admin_bulk_sermons():
     """Bulk operations on sermons"""
     data = request.get_json()
@@ -1034,7 +1104,16 @@ from wtforms.validators import DataRequired, URL, Length
 from wtforms.widgets import TextArea
 from datetime import datetime
 
-class AnnouncementView(ModelView):
+# Authenticated ModelView
+class AuthenticatedModelView(ModelView):
+    """ModelView that requires authentication"""
+    def is_accessible(self):
+        return is_authenticated()
+    
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+class AnnouncementView(AuthenticatedModelView):
     column_list = ('id', 'title', 'type', 'category', 'active', 'superfeatured', 'date_entered')
     column_searchable_list = ('title', 'description', 'tag')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'category')
@@ -1121,7 +1200,7 @@ class AnnouncementView(ModelView):
                 return False
         return False
 
-class SermonView(ModelView):
+class SermonView(AuthenticatedModelView):
     column_list = ('id', 'title', 'author', 'date', 'scripture', 'spotify_url', 'youtube_url')
     column_searchable_list = ('title', 'author', 'scripture')
     column_filters = ('author', 'date')
@@ -1166,7 +1245,7 @@ class SermonView(ModelView):
             flash(f'Error deleting sermons: {str(e)}', 'error')
             return False
 
-class PodcastSeriesView(ModelView):
+class PodcastSeriesView(AuthenticatedModelView):
     column_list = ('title', 'description', 'episode_count')
     column_searchable_list = ('title', 'description')
     column_sortable_list = ('title',)
@@ -1185,7 +1264,7 @@ class PodcastSeriesView(ModelView):
     
     episode_count.column_type = 'integer'
 
-class PodcastEpisodeView(ModelView):
+class PodcastEpisodeView(AuthenticatedModelView):
     column_list = ('number', 'title', 'series', 'guest', 'date_added', 'scripture')
     column_searchable_list = ('title', 'guest', 'scripture')
     column_filters = ('series', 'guest', 'season')
@@ -1229,7 +1308,7 @@ class PodcastEpisodeView(ModelView):
             flash(f'Error deleting podcast episodes: {str(e)}', 'error')
             return False
 
-class GalleryImageView(ModelView):
+class GalleryImageView(AuthenticatedModelView):
     column_list = ('id', 'name', 'event', 'created', 'tags_display')
     column_searchable_list = ('name',)
     column_filters = ('event',)
@@ -1292,7 +1371,7 @@ class GalleryImageView(ModelView):
             flash(f'Error toggling event status: {str(e)}', 'error')
             return False
 
-class OngoingEventView(ModelView):
+class OngoingEventView(AuthenticatedModelView):
     column_list = ('id', 'title', 'type', 'category', 'active', 'date_entered')
     column_searchable_list = ('title', 'description')
     column_filters = ('type', 'active', 'category')
@@ -1359,6 +1438,12 @@ class OngoingEventView(ModelView):
 
 # Custom Admin Dashboard
 class DashboardView(BaseView):
+    def is_accessible(self):
+        return is_authenticated()
+    
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+    
     @expose('/')
     def index(self):
         stats = {
@@ -1394,10 +1479,12 @@ admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series
 admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
 admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
 
+# Initialize database and admin users
+with app.app_context():
+    db.create_all()
+    init_admin_users()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    
     # Find an available port
     try:
         port = find_available_port()
