@@ -102,9 +102,10 @@ def community():
 def give():
     return render_template('give.html')
 
-@app.route('/liquid-glass-demo')
-def liquid_glass_demo():
-    return render_template('liquid_glass_demo.html')
+# Liquid glass demo moved to possiblyDELETE folder
+# @app.route('/liquid-glass-demo')
+# def liquid_glass_demo():
+#     return render_template('liquid_glass_demo.html')
 
 @app.route('/live')
 def live():
