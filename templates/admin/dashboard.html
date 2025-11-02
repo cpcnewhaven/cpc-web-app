@@ -3,284 +3,561 @@
 {% block head_css %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    /* Liquid Glass Admin Override */
+    body {
+        background: var(--bg-gradient) !important;
+        font-family: var(--font-primary) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .navbar, .navbar-default {
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: none !important;
+        box-shadow: var(--glass-shadow) !important;
+    }
+    
+    .navbar-brand, .navbar-nav > li > a {
+        color: var(--text-white) !important;
+    }
+    
+    /* Welcome Header */
+    .admin-welcome {
+        background: var(--glass-white);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--glass-shadow);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .admin-welcome::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+    }
+    
+    .admin-welcome h1 {
+        color: var(--text-white);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+    
+    .admin-date {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .admin-date i {
+        color: var(--cpc-blue-light);
+    }
+    
+    .admin-welcome p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    
+    /* Glass Stats Cards */
+    .stat-card {
+        background: var(--glass-white);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        box-shadow: var(--glass-shadow);
+        transition: var(--transition-base);
+        text-align: center;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-strong);
+        background: var(--glass-white-strong);
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--text-white);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-sub {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+    }
+    
+    /* Wizard Cards */
+    .wizard-card {
+        background: var(--glass-white);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--glass-shadow);
+        transition: var(--transition-base);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .wizard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--cpc-blue), var(--cpc-blue-light));
+    }
+    
+    .wizard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-strong);
+        background: var(--glass-white-strong);
+    }
+    
+    .wizard-icon {
+        font-size: 2.5rem;
+        color: var(--cpc-blue-light);
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .wizard-title {
+        color: var(--text-white);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .wizard-desc {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    .wizard-btn {
+        background: var(--cpc-blue);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-base);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    
+    .wizard-btn:hover {
+        background: var(--cpc-blue-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* Recent Content Cards */
+    .content-card {
+        background: var(--glass-white);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-soft);
+        transition: var(--transition-base);
+    }
+    
+    .content-card:hover {
+        background: var(--glass-white-strong);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .content-card h5 {
+        color: var(--text-white);
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .content-card p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .content-card small {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+    }
+    
+    .badge-glass {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--text-white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+    
+    /* Quick Actions Grid */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    /* Cozy touches */
+    .welcome-emoji {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+    }
+    
+    .cozy-note {
+        background: rgba(255, 255, 255, 0.1);
+        border-left: 3px solid var(--cpc-blue-light);
+        padding: 1rem;
+        border-radius: var(--radius-sm);
+        margin-top: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-style: italic;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>CPC New Haven - Admin Dashboard</h1>
-            <p class="lead">Welcome to the content management system for Christ
-                Presbyterian Church New Haven.</p>
+<div class="container-fluid"
+    style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+    <!-- Welcome Header with Today's Date -->
+    <div class="admin-welcome">
+        <h1><span class="welcome-emoji">👋</span> Welcome{% if
+            session.get('username') %}, {{ session.get('username')|title }}{%
+            endif %} to CPC Admin</h1>
+        <div class="admin-date">
+            <i class="fas fa-calendar-day"></i>
+            <span id="today-date">{{ today.strftime('%A, %B %d, %Y') }}</span>
+        </div>
+        <p>Your cozy workspace for updating the church website. Everything you
+            need is right here.</p>
+        <div class="cozy-note">
+            💡 <strong>Tip:</strong> Use the wizards below to quickly add new
+            content, or browse the menu for full management options.
         </div>
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row">
-        <div class="col-md-3">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Announcements</h3>
-                </div>
-                <div class="panel-body">
-                    <h2>{{ stats.announcements }}</h2>
-                    <p>Total Announcements</p>
-                    <small class="text-success">{{ stats.active_announcements }}
-                        Active</small>
-                </div>
-            </div>
+    <div class="quick-actions">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.announcements }}</div>
+            <div class="stat-label">Announcements</div>
+            <div class="stat-sub">{{ stats.active_announcements }} Active</div>
         </div>
 
-        <div class="col-md-3">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Sermons</h3>
-                </div>
-                <div class="panel-body">
-                    <h2>{{ stats.sermons }}</h2>
-                    <p>Total Sermons</p>
-                </div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.sermons }}</div>
+            <div class="stat-label">Sermons</div>
+            <div class="stat-sub">In Archive</div>
         </div>
 
-        <div class="col-md-3">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Podcasts</h3>
-                </div>
-                <div class="panel-body">
-                    <h2>{{ stats.podcast_episodes }}</h2>
-                    <p>Total Episodes</p>
-                    <small class="text-muted">{{ stats.podcast_series }}
-                        Series</small>
-                </div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.podcast_episodes }}</div>
+            <div class="stat-label">Podcast Episodes</div>
+            <div class="stat-sub">{{ stats.podcast_series }} Series</div>
         </div>
 
-        <div class="col-md-3">
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Events</h3>
-                </div>
-                <div class="panel-body">
-                    <h2>{{ stats.ongoing_events }}</h2>
-                    <p>Total Events</p>
-                    <small class="text-success">{{ stats.active_events }}
-                        Active</small>
-                </div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.ongoing_events }}</div>
+            <div class="stat-label">Events</div>
+            <div class="stat-sub">{{ stats.active_events }} Active</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.gallery_images }}</div>
+            <div class="stat-label">Gallery Images</div>
+            <div class="stat-sub">Total Photos</div>
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Quick Actions</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="btn-group" role="group">
-                        <a href="{{ url_for('announcement.create_view') }}"
-                            class="btn btn-primary">
-                            <i class="glyphicon glyphicon-plus"></i> New
-                            Announcement
-                        </a>
-                        <a href="{{ url_for('sermon.create_view') }}"
-                            class="btn btn-info">
-                            <i class="glyphicon glyphicon-plus"></i> New Sermon
-                        </a>
-                        <a href="{{ url_for('podcastepisode.create_view') }}"
-                            class="btn btn-success">
-                            <i class="glyphicon glyphicon-plus"></i> New Podcast
-                            Episode
-                        </a>
-                        <a href="{{ url_for('ongoingevent.create_view') }}"
-                            class="btn btn-warning">
-                            <i class="glyphicon glyphicon-plus"></i> New Event
-                        </a>
-                        <a href="{{ url_for('galleryimage.create_view') }}"
-                            class="btn btn-default">
-                            <i class="glyphicon glyphicon-plus"></i> Add Gallery
-                            Image
-                        </a>
-                    </div>
-                </div>
+    <!-- Content Wizards -->
+    <h2
+        style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.8rem;">
+        <i class="fas fa-magic"></i> Quick Wizards
+    </h2>
+    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+        Use these wizards to easily create new content. Each wizard guides you
+        through the process step by step.
+    </p>
+
+    <div class="quick-actions">
+        <!-- Announcement Wizard -->
+        <div class="wizard-card"
+            onclick="window.location.href='{{ url_for('announcement.create_view') }}'">
+            <i class="fas fa-bullhorn wizard-icon"></i>
+            <div class="wizard-title">New Announcement</div>
+            <div class="wizard-desc">
+                Create a new announcement or event for the homepage. Perfect for
+                sharing news, upcoming events, or important updates.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
+            </div>
+        </div>
+
+        <!-- Sermon Wizard -->
+        <div class="wizard-card"
+            onclick="window.location.href='{{ url_for('sermon.create_view') }}'">
+            <i class="fas fa-microphone wizard-icon"></i>
+            <div class="wizard-title">New Sermon</div>
+            <div class="wizard-desc">
+                Add a new sermon to the archive. Include title, speaker,
+                scripture, date, and links to Spotify, YouTube, or Apple
+                Podcasts.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
+            </div>
+        </div>
+
+        <!-- Podcast Wizard -->
+        <div class="wizard-card"
+            onclick="window.location.href='{{ url_for('podcastepisode.create_view') }}'">
+            <i class="fas fa-podcast wizard-icon"></i>
+            <div class="wizard-title">New Podcast Episode</div>
+            <div class="wizard-desc">
+                Add a new episode to your podcast series. Include episode
+                number, title, guest speaker, and links.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
+            </div>
+        </div>
+
+        <!-- Event Wizard -->
+        <div class="wizard-card"
+            onclick="window.location.href='{{ url_for('ongoingevent.create_view') }}'">
+            <i class="fas fa-calendar-plus wizard-icon"></i>
+            <div class="wizard-title">New Event</div>
+            <div class="wizard-desc">
+                Create a new ongoing or special event. Set category, type, and
+                description to help people find and attend.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
+            </div>
+        </div>
+
+        <!-- Gallery Wizard -->
+        <div class="wizard-card"
+            onclick="window.location.href='{{ url_for('galleryimage.create_view') }}'">
+            <i class="fas fa-images wizard-icon"></i>
+            <div class="wizard-title">Add Gallery Image</div>
+            <div class="wizard-desc">
+                Add a new photo to the gallery. Include image URL, name, tags,
+                and mark if it's an event photo.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
+            </div>
+        </div>
+
+        <!-- Podcast Series Wizard -->
+        <div class="wizard-card"
+            onclick="window.location.href='{{ url_for('podcastseries.create_view') }}'">
+            <i class="fas fa-list wizard-icon"></i>
+            <div class="wizard-title">New Podcast Series</div>
+            <div class="wizard-desc">
+                Create a new podcast series to organize episodes. Give it a
+                title and description that describes the series.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
             </div>
         </div>
     </div>
 
     <!-- Recent Content -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Recent Announcements</h3>
-                </div>
-                <div class="panel-body">
-                    {% if recent_announcements %}
-                    <div class="list-group">
-                        {% for announcement in recent_announcements %}
-                        <div class="list-group-item">
-                            <h5 class="list-group-item-heading">
-                                {{ announcement.title }}
-                                {% if announcement.superfeatured %}
-                                <span class="label label-danger">Super
-                                    Featured</span>
-                                {% endif %}
-                                {% if not announcement.active %}
-                                <span
-                                    class="label label-default">Inactive</span>
-                                {% endif %}
-                            </h5>
-                            <p class="list-group-item-text">
-                                {{ announcement.description[:100] }}{% if
-                                announcement.description|length > 100 %}...{%
-                                endif %}
-                            </p>
-                            <small class="text-muted">
-                                {{
-                                announcement.date_entered.strftime('%Y-%m-%d %H:%M')
-                                }} |
-                                {{ announcement.type|title }} |
-                                {{ announcement.category|title }}
-                            </small>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <p class="text-muted">No announcements yet.</p>
+    <div
+        style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem;">
+        <!-- Recent Announcements -->
+        <div class="wizard-card">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3
+                    style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
+                    <i class="fas fa-clock"></i> Recent Announcements
+                </h3>
+                <a href="{{ url_for('announcement.index_view') }}"
+                    class="wizard-btn"
+                    style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                    View All
+                </a>
+            </div>
+
+            {% if recent_announcements %}
+            {% for announcement in recent_announcements %}
+            <div class="content-card">
+                <h5>
+                    {{ announcement.title }}
+                    {% if announcement.superfeatured %}
+                    <span class="badge-glass"
+                        style="background: var(--cpc-blue);">⭐ Featured</span>
                     {% endif %}
+                    {% if not announcement.active %}
+                    <span class="badge-glass"
+                        style="background: rgba(255,255,255,0.2);">Inactive</span>
+                    {% endif %}
+                </h5>
+                <p>{{ announcement.description[:100] }}{% if
+                    announcement.description|length > 100 %}...{% endif %}</p>
+                <small>
+                    <i class="fas fa-calendar"></i> {{
+                    announcement.date_entered.strftime('%B %d, %Y') }} |
+                    <i class="fas fa-tag"></i> {{ announcement.type|title }} |
+                    <i class="fas fa-folder"></i> {{ announcement.category|title
+                    }}
+                </small>
+                <div style="margin-top: 1rem;">
+                    <a
+                        href="{{ url_for('announcement.edit_view', id=announcement.id) }}"
+                        class="wizard-btn"
+                        style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
                 </div>
             </div>
+            {% endfor %}
+            {% else %}
+            <p
+                style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
+                <i class="fas fa-inbox"
+                    style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
+                No announcements yet. Create your first one above!
+            </p>
+            {% endif %}
         </div>
 
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Recent Sermons</h3>
-                </div>
-                <div class="panel-body">
-                    {% if recent_sermons %}
-                    <div class="list-group">
-                        {% for sermon in recent_sermons %}
-                        <div class="list-group-item">
-                            <h5 class="list-group-item-heading">{{ sermon.title
-                                }}</h5>
-                            <p class="list-group-item-text">
-                                <strong>Speaker:</strong> {{ sermon.author
-                                }}<br>
-                                {% if sermon.scripture %}
-                                <strong>Scripture:</strong> {{ sermon.scripture
-                                }}
-                                {% endif %}
-                            </p>
-                            <small class="text-muted">
-                                {{ sermon.date.strftime('%Y-%m-%d') }}
-                            </small>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <p class="text-muted">No sermons yet.</p>
+        <!-- Recent Sermons -->
+        <div class="wizard-card">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3
+                    style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
+                    <i class="fas fa-book"></i> Recent Sermons
+                </h3>
+                <a href="{{ url_for('sermon.index_view') }}" class="wizard-btn"
+                    style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                    View All
+                </a>
+            </div>
+
+            {% if recent_sermons %}
+            {% for sermon in recent_sermons %}
+            <div class="content-card">
+                <h5>{{ sermon.title }}</h5>
+                <p>
+                    <i class="fas fa-user"></i> <strong>{{ sermon.author
+                        }}</strong>
+                    {% if sermon.scripture %}
+                    <br><i class="fas fa-book-open"></i> {{ sermon.scripture }}
                     {% endif %}
+                </p>
+                <small>
+                    <i class="fas fa-calendar"></i> {{
+                    sermon.date.strftime('%B %d, %Y') }}
+                </small>
+                <div style="margin-top: 1rem;">
+                    <a href="{{ url_for('sermon.edit_view', id=sermon.id) }}"
+                        class="wizard-btn"
+                        style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
                 </div>
             </div>
+            {% endfor %}
+            {% else %}
+            <p
+                style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
+                <i class="fas fa-inbox"
+                    style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
+                No sermons yet. Add your first sermon above!
+            </p>
+            {% endif %}
         </div>
     </div>
 
-    <!-- System Information -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">System Information</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h5>Content Management</h5>
-                            <ul class="list-unstyled">
-                                <li><a
-                                        href="{{ url_for('announcement.index_view') }}">Manage
-                                        Announcements</a></li>
-                                <li><a
-                                        href="{{ url_for('ongoingevent.index_view') }}">Manage
-                                        Events</a></li>
-                                <li><a
-                                        href="{{ url_for('sermon.index_view') }}">Manage
-                                        Sermons</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4">
-                            <h5>Media Management</h5>
-                            <ul class="list-unstyled">
-                                <li><a
-                                        href="{{ url_for('podcastseries.index_view') }}">Manage
-                                        Podcast Series</a></li>
-                                <li><a
-                                        href="{{ url_for('podcastepisode.index_view') }}">Manage
-                                        Podcast Episodes</a></li>
-                                <li><a
-                                        href="{{ url_for('galleryimage.index_view') }}">Manage
-                                        Gallery</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4">
-                            <h5>Quick Links</h5>
-                            <ul class="list-unstyled">
-                                <li><a href="/" target="_blank">View
-                                        Website</a></li>
-                                <li><a href="/api/announcements"
-                                        target="_blank">API:
-                                        Announcements</a></li>
-                                <li><a href="/api/sermons" target="_blank">API:
-                                        Sermons</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Quick Links -->
+    <div class="wizard-card" style="margin-top: 2rem;">
+        <h3
+            style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.3rem;">
+            <i class="fas fa-link"></i> Quick Links
+        </h3>
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="/" target="_blank" class="wizard-btn"
+                style="font-size: 0.9rem; padding: 0.75rem 1rem;">
+                <i class="fas fa-globe"></i> View Website
+            </a>
+            <a href="{{ url_for('admin_logout') }}" class="wizard-btn"
+                style="font-size: 0.9rem; padding: 0.75rem 1rem; background: rgba(255,255,255,0.2);">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </div>
     </div>
 </div>
 
-<style>
-.panel {
-    margin-bottom: 20px;
-}
-
-.panel-body h2 {
-    margin: 0;
-    font-size: 2.5em;
-    color: #337ab7;
-}
-
-.panel-body p {
-    margin: 5px 0;
-    color: #666;
-}
-
-.list-group-item {
-    border-left: none;
-    border-right: none;
-}
-
-.list-group-item:first-child {
-    border-top: none;
-}
-
-.list-group-item:last-child {
-    border-bottom: none;
-}
-
-.label {
-    margin-left: 5px;
-}
-
-.btn-group .btn {
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-</style>
+<script>
+// Add smooth animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate cards on load
+    const cards = document.querySelectorAll('.wizard-card, .stat-card, .content-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
 {% endblock %}

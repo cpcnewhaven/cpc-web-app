@@ -1,0 +1,269 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    /* Liquid Glass Admin Theme */
+    body {
+        background: var(--bg-gradient) !important;
+        font-family: var(--font-primary) !important;
+        color: var(--text-primary) !important;
+        min-height: 100vh;
+    }
+    
+    /* Navigation */
+    .navbar, .navbar-default {
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: none !important;
+        box-shadow: var(--glass-shadow) !important;
+        border-radius: 0 !important;
+    }
+    
+    .navbar-brand, .navbar-nav > li > a {
+        color: var(--text-white) !important;
+        transition: var(--transition-fast) !important;
+    }
+    
+    .navbar-nav > li > a:hover {
+        color: var(--cpc-blue-light) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .navbar-nav > .active > a {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: var(--text-white) !important;
+    }
+    
+    /* Content Area */
+    .container-fluid {
+        padding: 2rem !important;
+    }
+    
+    /* Buttons */
+    .btn {
+        border-radius: var(--radius-md) !important;
+        transition: var(--transition-base) !important;
+        font-family: var(--font-primary) !important;
+    }
+    
+    .btn-primary {
+        background: var(--cpc-blue) !important;
+        border-color: var(--cpc-blue) !important;
+    }
+    
+    .btn-primary:hover {
+        background: var(--cpc-blue-dark) !important;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .btn-success {
+        background: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+    
+    .btn-danger {
+        background: #dc3545 !important;
+        border-color: #dc3545 !important;
+    }
+    
+    .btn-info {
+        background: var(--cpc-blue-medium) !important;
+        border-color: var(--cpc-blue-medium) !important;
+    }
+    
+    /* Tables */
+    .table {
+        background: var(--glass-white) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: var(--radius-md) !important;
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+    }
+    
+    .table thead {
+        background: var(--cpc-blue) !important;
+    }
+    
+    .table thead th {
+        color: var(--text-white) !important;
+        border: none !important;
+        padding: 1rem !important;
+    }
+    
+    .table tbody tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .table td {
+        color: rgba(255, 255, 255, 0.9) !important;
+        padding: 1rem !important;
+    }
+    
+    /* Forms */
+    .form-control {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: var(--radius-md) !important;
+        color: var(--text-white) !important;
+        padding: 0.75rem 1rem !important;
+    }
+    
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border-color: var(--cpc-blue) !important;
+        box-shadow: 0 0 0 3px rgba(0, 60, 109, 0.2) !important;
+        color: var(--text-white) !important;
+    }
+    
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    label {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Panels/Cards */
+    .panel, .card {
+        background: var(--glass-white) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border) !important;
+        border-radius: var(--radius-lg) !important;
+        box-shadow: var(--glass-shadow) !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .panel-heading, .card-header {
+        background: var(--cpc-blue) !important;
+        color: var(--text-white) !important;
+        border: none !important;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+        padding: 1rem 1.5rem !important;
+    }
+    
+    .panel-title, .card-title {
+        color: var(--text-white) !important;
+        font-weight: 600 !important;
+    }
+    
+    .panel-body, .card-body {
+        background: transparent !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        padding: 1.5rem !important;
+    }
+    
+    /* Alerts */
+    .alert {
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: var(--radius-md) !important;
+        color: var(--text-white) !important;
+    }
+    
+    .alert-success {
+        background: rgba(46, 204, 113, 0.2) !important;
+        border-color: rgba(46, 204, 113, 0.5) !important;
+    }
+    
+    .alert-danger {
+        background: rgba(231, 76, 60, 0.2) !important;
+        border-color: rgba(231, 76, 60, 0.5) !important;
+    }
+    
+    .alert-info {
+        background: rgba(52, 152, 219, 0.2) !important;
+        border-color: rgba(52, 152, 219, 0.5) !important;
+    }
+    
+    /* Links */
+    a {
+        color: var(--cpc-blue-light) !important;
+        transition: var(--transition-fast) !important;
+    }
+    
+    a:hover {
+        color: var(--text-white) !important;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumb {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-radius: var(--radius-md) !important;
+        padding: 0.75rem 1rem !important;
+    }
+    
+    .breadcrumb a {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    /* Pagination */
+    .pagination > li > a {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        color: var(--text-white) !important;
+    }
+    
+    .pagination > li.active > a {
+        background: var(--cpc-blue) !important;
+        border-color: var(--cpc-blue) !important;
+    }
+    
+    /* Model View Headers */
+    h1, h2, h3 {
+        color: var(--text-white) !important;
+    }
+    
+    /* Select2 dropdowns */
+    .select2-container .select2-selection {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: var(--radius-md) !important;
+    }
+    
+    .select2-container .select2-selection__rendered {
+        color: var(--text-white) !important;
+    }
+    
+    /* Action buttons in tables */
+    .btn-xs, .btn-sm {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.85rem !important;
+    }
+</style>
+{% endblock %}
+
+{% block brand %}
+<a class="navbar-brand" href="{{ admin_view.admin.url }}">
+    <i class="fas fa-church"></i> CPC Admin
+</a>
+{% endblock %}
+
+{% block access_control %}
+<div style="display: flex; align-items: center; gap: 1rem; margin-right: 1rem;">
+    {% if session.get('username') %}
+    <span style="color: rgba(255, 255, 255, 0.8);">
+        <i class="fas fa-user-circle"></i> {{ session.get('username') }}
+    </span>
+    {% endif %}
+    <a href="{{ url_for('admin_logout') }}"
+        style="color: var(--text-white); text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); transition: var(--transition-fast);">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
+{% endblock %}

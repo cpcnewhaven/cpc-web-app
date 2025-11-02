@@ -1446,6 +1446,8 @@ class DashboardView(BaseView):
     
     @expose('/')
     def index(self):
+        from datetime import datetime
+        
         stats = {
             'announcements': Announcement.query.count(),
             'active_announcements': Announcement.query.filter_by(active=True).count(),
@@ -1459,11 +1461,13 @@ class DashboardView(BaseView):
         
         recent_announcements = Announcement.query.order_by(Announcement.date_entered.desc()).limit(5).all()
         recent_sermons = Sermon.query.order_by(Sermon.date.desc()).limit(5).all()
+        today = datetime.now()
         
         return self.render('admin/dashboard.html', 
                          stats=stats, 
                          recent_announcements=recent_announcements,
-                         recent_sermons=recent_sermons)
+                         recent_sermons=recent_sermons,
+                         today=today)
 
 # Setup admin with enhanced organization
 admin = Admin(app, name='CPC Admin', template_mode='bootstrap3')
