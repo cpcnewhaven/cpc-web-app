@@ -2,7 +2,7 @@
 
 {% block head_css %}
 {{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -10,7 +10,8 @@
     <div class="row">
         <div class="col-md-12">
             <h1>CPC New Haven - Admin Dashboard</h1>
-            <p class="lead">Welcome to the content management system for Christ Presbyterian Church New Haven.</p>
+            <p class="lead">Welcome to the content management system for Christ
+                Presbyterian Church New Haven.</p>
         </div>
     </div>
 
@@ -24,11 +25,12 @@
                 <div class="panel-body">
                     <h2>{{ stats.announcements }}</h2>
                     <p>Total Announcements</p>
-                    <small class="text-success">{{ stats.active_announcements }} Active</small>
+                    <small class="text-success">{{ stats.active_announcements }}
+                        Active</small>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3">
             <div class="panel panel-info">
                 <div class="panel-heading">
@@ -40,7 +42,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3">
             <div class="panel panel-success">
                 <div class="panel-heading">
@@ -49,11 +51,12 @@
                 <div class="panel-body">
                     <h2>{{ stats.podcast_episodes }}</h2>
                     <p>Total Episodes</p>
-                    <small class="text-muted">{{ stats.podcast_series }} Series</small>
+                    <small class="text-muted">{{ stats.podcast_series }}
+                        Series</small>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3">
             <div class="panel panel-warning">
                 <div class="panel-heading">
@@ -62,7 +65,8 @@
                 <div class="panel-body">
                     <h2>{{ stats.ongoing_events }}</h2>
                     <p>Total Events</p>
-                    <small class="text-success">{{ stats.active_events }} Active</small>
+                    <small class="text-success">{{ stats.active_events }}
+                        Active</small>
                 </div>
             </div>
         </div>
@@ -77,20 +81,28 @@
                 </div>
                 <div class="panel-body">
                     <div class="btn-group" role="group">
-                        <a href="{{ url_for('announcement.create_view') }}" class="btn btn-primary">
-                            <i class="glyphicon glyphicon-plus"></i> New Announcement
+                        <a href="{{ url_for('announcement.create_view') }}"
+                            class="btn btn-primary">
+                            <i class="glyphicon glyphicon-plus"></i> New
+                            Announcement
                         </a>
-                        <a href="{{ url_for('sermon.create_view') }}" class="btn btn-info">
+                        <a href="{{ url_for('sermon.create_view') }}"
+                            class="btn btn-info">
                             <i class="glyphicon glyphicon-plus"></i> New Sermon
                         </a>
-                        <a href="{{ url_for('podcastepisode.create_view') }}" class="btn btn-success">
-                            <i class="glyphicon glyphicon-plus"></i> New Podcast Episode
+                        <a href="{{ url_for('podcastepisode.create_view') }}"
+                            class="btn btn-success">
+                            <i class="glyphicon glyphicon-plus"></i> New Podcast
+                            Episode
                         </a>
-                        <a href="{{ url_for('ongoingevent.create_view') }}" class="btn btn-warning">
+                        <a href="{{ url_for('ongoingevent.create_view') }}"
+                            class="btn btn-warning">
                             <i class="glyphicon glyphicon-plus"></i> New Event
                         </a>
-                        <a href="{{ url_for('galleryimage.create_view') }}" class="btn btn-default">
-                            <i class="glyphicon glyphicon-plus"></i> Add Gallery Image
+                        <a href="{{ url_for('galleryimage.create_view') }}"
+                            class="btn btn-default">
+                            <i class="glyphicon glyphicon-plus"></i> Add Gallery
+                            Image
                         </a>
                     </div>
                 </div>
@@ -107,36 +119,42 @@
                 </div>
                 <div class="panel-body">
                     {% if recent_announcements %}
-                        <div class="list-group">
-                            {% for announcement in recent_announcements %}
-                            <div class="list-group-item">
-                                <h5 class="list-group-item-heading">
-                                    {{ announcement.title }}
-                                    {% if announcement.superfeatured %}
-                                        <span class="label label-danger">Super Featured</span>
-                                    {% endif %}
-                                    {% if not announcement.active %}
-                                        <span class="label label-default">Inactive</span>
-                                    {% endif %}
-                                </h5>
-                                <p class="list-group-item-text">
-                                    {{ announcement.description[:100] }}{% if announcement.description|length > 100 %}...{% endif %}
-                                </p>
-                                <small class="text-muted">
-                                    {{ announcement.date_entered.strftime('%Y-%m-%d %H:%M') }} | 
-                                    {{ announcement.type|title }} | 
-                                    {{ announcement.category|title }}
-                                </small>
-                            </div>
-                            {% endfor %}
+                    <div class="list-group">
+                        {% for announcement in recent_announcements %}
+                        <div class="list-group-item">
+                            <h5 class="list-group-item-heading">
+                                {{ announcement.title }}
+                                {% if announcement.superfeatured %}
+                                <span class="label label-danger">Super
+                                    Featured</span>
+                                {% endif %}
+                                {% if not announcement.active %}
+                                <span
+                                    class="label label-default">Inactive</span>
+                                {% endif %}
+                            </h5>
+                            <p class="list-group-item-text">
+                                {{ announcement.description[:100] }}{% if
+                                announcement.description|length > 100 %}...{%
+                                endif %}
+                            </p>
+                            <small class="text-muted">
+                                {{
+                                announcement.date_entered.strftime('%Y-%m-%d %H:%M')
+                                }} |
+                                {{ announcement.type|title }} |
+                                {{ announcement.category|title }}
+                            </small>
                         </div>
+                        {% endfor %}
+                    </div>
                     {% else %}
-                        <p class="text-muted">No announcements yet.</p>
+                    <p class="text-muted">No announcements yet.</p>
                     {% endif %}
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -144,24 +162,27 @@
                 </div>
                 <div class="panel-body">
                     {% if recent_sermons %}
-                        <div class="list-group">
-                            {% for sermon in recent_sermons %}
-                            <div class="list-group-item">
-                                <h5 class="list-group-item-heading">{{ sermon.title }}</h5>
-                                <p class="list-group-item-text">
-                                    <strong>Speaker:</strong> {{ sermon.author }}<br>
-                                    {% if sermon.scripture %}
-                                        <strong>Scripture:</strong> {{ sermon.scripture }}
-                                    {% endif %}
-                                </p>
-                                <small class="text-muted">
-                                    {{ sermon.date.strftime('%Y-%m-%d') }}
-                                </small>
-                            </div>
-                            {% endfor %}
+                    <div class="list-group">
+                        {% for sermon in recent_sermons %}
+                        <div class="list-group-item">
+                            <h5 class="list-group-item-heading">{{ sermon.title
+                                }}</h5>
+                            <p class="list-group-item-text">
+                                <strong>Speaker:</strong> {{ sermon.author
+                                }}<br>
+                                {% if sermon.scripture %}
+                                <strong>Scripture:</strong> {{ sermon.scripture
+                                }}
+                                {% endif %}
+                            </p>
+                            <small class="text-muted">
+                                {{ sermon.date.strftime('%Y-%m-%d') }}
+                            </small>
                         </div>
+                        {% endfor %}
+                    </div>
                     {% else %}
-                        <p class="text-muted">No sermons yet.</p>
+                    <p class="text-muted">No sermons yet.</p>
                     {% endif %}
                 </div>
             </div>
@@ -180,25 +201,41 @@
                         <div class="col-md-4">
                             <h5>Content Management</h5>
                             <ul class="list-unstyled">
-                                <li><a href="{{ url_for('announcement.index_view') }}">Manage Announcements</a></li>
-                                <li><a href="{{ url_for('ongoingevent.index_view') }}">Manage Events</a></li>
-                                <li><a href="{{ url_for('sermon.index_view') }}">Manage Sermons</a></li>
+                                <li><a
+                                        href="{{ url_for('announcement.index_view') }}">Manage
+                                        Announcements</a></li>
+                                <li><a
+                                        href="{{ url_for('ongoingevent.index_view') }}">Manage
+                                        Events</a></li>
+                                <li><a
+                                        href="{{ url_for('sermon.index_view') }}">Manage
+                                        Sermons</a></li>
                             </ul>
                         </div>
                         <div class="col-md-4">
                             <h5>Media Management</h5>
                             <ul class="list-unstyled">
-                                <li><a href="{{ url_for('podcastseries.index_view') }}">Manage Podcast Series</a></li>
-                                <li><a href="{{ url_for('podcastepisode.index_view') }}">Manage Podcast Episodes</a></li>
-                                <li><a href="{{ url_for('galleryimage.index_view') }}">Manage Gallery</a></li>
+                                <li><a
+                                        href="{{ url_for('podcastseries.index_view') }}">Manage
+                                        Podcast Series</a></li>
+                                <li><a
+                                        href="{{ url_for('podcastepisode.index_view') }}">Manage
+                                        Podcast Episodes</a></li>
+                                <li><a
+                                        href="{{ url_for('galleryimage.index_view') }}">Manage
+                                        Gallery</a></li>
                             </ul>
                         </div>
                         <div class="col-md-4">
                             <h5>Quick Links</h5>
                             <ul class="list-unstyled">
-                                <li><a href="/" target="_blank">View Website</a></li>
-                                <li><a href="/api/announcements" target="_blank">API: Announcements</a></li>
-                                <li><a href="/api/sermons" target="_blank">API: Sermons</a></li>
+                                <li><a href="/" target="_blank">View
+                                        Website</a></li>
+                                <li><a href="/api/announcements"
+                                        target="_blank">API:
+                                        Announcements</a></li>
+                                <li><a href="/api/sermons" target="_blank">API:
+                                        Sermons</a></li>
                             </ul>
                         </div>
                     </div>
