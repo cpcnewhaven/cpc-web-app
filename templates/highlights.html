@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}Highlights - CPC New Haven{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero">
+    <div class="container">
+        <h1>Highlights</h1>
+        <p>Featured events, announcements, and ongoing activities at CPC New Haven</p>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="filter-section" style="background: var(--glass-bg); backdrop-filter: blur(20px); padding: 2rem 0; margin: 2rem 0; border-radius: var(--radius-lg);">
+    <div class="container">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="event">Events</button>
+            <button class="filter-btn" data-filter="announcement">Announcements</button>
+            <button class="filter-btn" data-filter="ongoing">Ongoing</button>
+            <button class="filter-btn" data-filter="superfeatured">Featured</button>
+        </div>
+    </div>
+</section>
+
+<!-- Highlights Section -->
+<section class="highlights-section" style="padding: 2rem 0;">
+    <div class="container">
+        <div id="highlights-container" style="display: grid; gap: 2rem;">
+            <!-- Highlights will be populated by JavaScript -->
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-sm);
+        color: var(--text-white);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .filter-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+        background: var(--cpc-blue);
+        border-color: var(--cpc-blue);
+    }
+
+    .highlight-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        transition: all 0.3s ease;
+        display: none;
+    }
+
+    .highlight-card.show {
+        display: block;
+    }
+
+    .highlight-card.super-featured {
+        border: 2px solid var(--cpc-gold);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .highlight-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .highlight-title {
+        color: var(--text-white);
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .highlight-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .highlight-badge {
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .badge-event {
+        background: rgba(0, 122, 255, 0.2);
+        color: var(--cpc-blue);
+        border: 1px solid var(--cpc-blue);
+    }
+
+    .badge-announcement {
+        background: rgba(255, 215, 0, 0.2);
+        color: var(--cpc-gold);
+        border: 1px solid var(--cpc-gold);
+    }
+
+    .badge-ongoing {
+        background: rgba(52, 199, 89, 0.2);
+        color: #34c759;
+        border: 1px solid #34c759;
+    }
+
+    .badge-upcoming {
+        background: rgba(255, 149, 0, 0.2);
+        color: #ff9500;
+        border: 1px solid #ff9500;
+    }
+
+    .badge-superfeatured {
+        background: linear-gradient(135deg, var(--cpc-gold), #ffed4e);
+        color: #000;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border: none;
+    }
+
+    .highlight-date {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+    }
+
+    .highlight-content {
+        color: var(--text-white);
+        line-height: 1.6;
+    }
+
+    .highlight-image {
+        margin-bottom: 1.5rem;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    .highlight-image img {
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .highlight-image.poster img {
+        object-fit: contain;
+        background: white;
+    }
+
+    @media (max-width: 768px) {
+        .highlight-title {
+            font-size: 1.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let allHighlights = [];
+    
+    // Load highlights
+    fetch('/api/highlights')
+        .then(response => response.json())
+        .then(data => {
+            allHighlights = data.announcements || [];
+            displayHighlights(allHighlights);
+            setupFilters();
+        })
+        .catch(error => {
+            console.error('Error loading highlights:', error);
+            document.getElementById('highlights-container').innerHTML = '<p style="color: var(--text-white); text-align: center;">Error loading highlights.</p>';
+        });
+
+    function displayHighlights(highlights) {
+        const container = document.getElementById('highlights-container');
+        container.innerHTML = '';
+        
+        if (highlights.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-white); text-align: center;">No highlights at this time.</p>';
+            return;
+        }
+
+        highlights.forEach(highlight => {
+            const card = document.createElement('div');
+            card.classList.add('highlight-card', 'show');
+            card.dataset.type = highlight.type || '';
+            card.dataset.category = highlight.category || '';
+            card.dataset.superfeatured = highlight.superfeatured || false;
+            
+            if (highlight.superfeatured) {
+                card.classList.add('super-featured');
+            }
+            
+            let html = '';
+            
+            // Add image if available
+            if (highlight.featuredImage) {
+                const imageClass = highlight.imageDisplayType === 'poster' ? 'poster' : '';
+                html += `
+                    <div class="highlight-image ${imageClass}">
+                        <img src="${highlight.featuredImage}" alt="${highlight.title}" loading="lazy">
+                    </div>
+                `;
+            }
+            
+            // Add title
+            html += `<h2 class="highlight-title">${highlight.title}</h2>`;
+            
+            // Add meta badges
+            html += '<div class="highlight-meta">';
+            
+            if (highlight.type) {
+                const badgeClass = `badge-${highlight.type}`;
+                html += `<span class="highlight-badge ${badgeClass}">${highlight.type}</span>`;
+            }
+            
+            if (highlight.superfeatured) {
+                html += '<span class="highlight-badge badge-superfeatured">⭐ Featured</span>';
+            }
+            
+            if (highlight.dateEntered) {
+                html += `<span class="highlight-date">📅 ${highlight.dateEntered}</span>`;
+            }
+            
+            html += '</div>';
+            
+            // Add description
+            html += `<div class="highlight-content">${highlight.description}</div>`;
+            
+            card.innerHTML = html;
+            container.appendChild(card);
+        });
+    }
+
+    function setupFilters() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button
+                filterButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                filterHighlights(filter);
+            });
+        });
+    }
+
+    function filterHighlights(filter) {
+        const cards = document.querySelectorAll('.highlight-card');
+        
+        cards.forEach(card => {
+            if (filter === 'all') {
+                card.classList.add('show');
+            } else if (filter === 'superfeatured') {
+                if (card.dataset.superfeatured === 'true') {
+                    card.classList.add('show');
+                } else {
+                    card.classList.remove('show');
+                }
+            } else {
+                if (card.dataset.type === filter) {
+                    card.classList.add('show');
+                } else {
+                    card.classList.remove('show');
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+

@@ -46,6 +46,8 @@
                                 class="fas fa-chevron-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a
+                                    href="{{ url_for('highlights') }}">Highlights</a></li>
+                            <li><a
                                     href="{{ url_for('events') }}">Events</a></li>
                             <li><a
                                     href="{{ url_for('announcements') }}">Announcements</a></li>
@@ -110,6 +112,7 @@
                 <li class="mobile-nav-section">
                     <h3>Community</h3>
                     <ul>
+                        <li><a href="{{ url_for('highlights') }}">Highlights</a></li>
                         <li><a href="{{ url_for('events') }}">Events</a></li>
                         <li><a
                                 href="{{ url_for('announcements') }}">Announcements</a></li>

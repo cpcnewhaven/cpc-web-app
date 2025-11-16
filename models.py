@@ -16,6 +16,7 @@ class Announcement(db.Model):
     tag = db.Column(db.String(50))
     superfeatured = db.Column(db.Boolean, default=False)
     featured_image = db.Column(db.String(500))
+    image_display_type = db.Column(db.String(50))  # poster, cover, etc.
 
 class Sermon(db.Model):
     __tablename__ = 'sermons'

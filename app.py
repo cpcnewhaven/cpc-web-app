@@ -94,6 +94,10 @@ def events():
 def announcements():
     return render_template('announcements.html')
 
+@app.route('/highlights')
+def highlights():
+    return render_template('highlights.html')
+
 @app.route('/community')
 def community():
     return render_template('community.html')
@@ -178,7 +182,32 @@ def api_announcements():
                 'category': a.category,
                 'tag': a.tag,
                 'superfeatured': a.superfeatured,
-                'featuredImage': a.featured_image
+                'featuredImage': a.featured_image,
+                'imageDisplayType': a.image_display_type
+            } for a in announcements
+        ]
+    })
+
+@app.route('/api/highlights')
+def api_highlights():
+    """API endpoint for highlights data - pulls from database"""
+    # Get all announcements from database (not just active ones, for filtering on highlights page)
+    announcements = Announcement.query.order_by(Announcement.date_entered.desc()).all()
+    
+    return jsonify({
+        'announcements': [
+            {
+                'id': a.id,
+                'title': a.title,
+                'description': a.description,
+                'dateEntered': a.date_entered.strftime('%Y-%m-%d') if a.date_entered else None,
+                'active': 'true' if a.active else 'false',
+                'type': a.type,
+                'category': a.category,
+                'tag': a.tag,
+                'superfeatured': a.superfeatured,
+                'featuredImage': a.featured_image,
+                'imageDisplayType': a.image_display_type
             } for a in announcements
         ]
     })
@@ -1121,20 +1150,22 @@ class AnnouncementView(AuthenticatedModelView):
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered')
     column_default_sort = ('date_entered', True)
     
-    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'superfeatured', 'featured_image')
+    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
     }
     
     form_widget_args = {
         'description': {'rows': 10, 'style': 'width: 100%'},
-        'featured_image': {'placeholder': 'https://example.com/image.jpg'}
+        'featured_image': {'placeholder': 'https://example.com/image.jpg'},
+        'image_display_type': {'placeholder': 'poster or leave empty'}
     }
     
     column_labels = {
         'date_entered': 'Date Created',
         'superfeatured': 'Super Featured',
-        'featured_image': 'Featured Image URL'
+        'featured_image': 'Featured Image URL',
+        'image_display_type': 'Image Display Type'
     }
     
     form_choices = {
@@ -1471,7 +1502,7 @@ class DashboardView(BaseView):
                          today=today)
 
 # Setup admin with enhanced organization
-admin = Admin(app, name='CPC Admin', template_mode='bootstrap3')
+admin = Admin(app, name='CPC Admin')
 
 # Add dashboard view
 admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
