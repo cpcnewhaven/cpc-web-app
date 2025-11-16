@@ -3,11 +3,28 @@
 {% block title %}Highlights - CPC New Haven{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Highlights</h1>
-        <p>Featured events, announcements, and ongoing activities at CPC New Haven</p>
+<!-- Compact Modern Hero Section -->
+<section style="padding: 6rem 0 3rem; background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.98) 100%); position: relative; overflow: hidden;">
+    <!-- Subtle animated background -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.03; background-image: radial-gradient(circle at 20% 50%, rgba(0, 122, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%);"></div>
+    
+    <div class="container" style="position: relative; z-index: 1;">
+        <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+            <!-- Small badge -->
+            <div style="display: inline-block; padding: 8px 20px; background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.3); border-radius: 50px; margin-bottom: 1.5rem;">
+                <span style="color: var(--cpc-blue); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">✨ Church Highlights</span>
+            </div>
+            
+            <!-- Compact title -->
+            <h1 style="font-size: 2.75rem; font-weight: 800; color: var(--text-white); margin-bottom: 1rem; line-height: 1.2; letter-spacing: -0.02em;">
+                What's Happening at CPC
+            </h1>
+            
+            <!-- Subtle description -->
+            <p style="font-size: 1.125rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 0; line-height: 1.6;">
+                Stay connected with featured events, announcements, and ongoing activities
+            </p>
+        </div>
     </div>
 </section>
 
