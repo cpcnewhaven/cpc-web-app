@@ -2,13 +2,20 @@
 
 {% block title %}About CPC New Haven{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero about-hero">
-    <div class="container">
+<!-- Prompt 4: Better Hero Section -->
+<section class="about-hero-full">
+    <div class="about-hero-content">
         <h1>About Christ Presbyterian Church</h1>
-        <p class="hero-subtitle">Discover our mission, values, and the story of
-            how we're building God's kingdom in New Haven</p>
+        <p>We are a community of believers in New Haven, Connecticut, committed
+            to growing in the truth and grace of Jesus Christ, acting as
+            faithful witnesses in our community and world, and trusting in the
+            grace and power of the Holy Spirit.</p>
+        <a href="#mission" class="hero-cta-button">Join Us Sunday</a>
     </div>
 </section>
 
@@ -73,13 +80,13 @@
 <div class="about-main-container">
     <!-- Mission Section -->
     <section id="mission" class="about-content-section mission-section">
-        <div class="about-inner-section">
+        <div class="section-wrapper">
             <div class="section-header">
                 <h2 class="section-title">Our Mission</h2>
                 <p class="section-subtitle">Ambitious for the glory of God</p>
             </div>
 
-            <div class="mission-content">
+            <div class="two-column-grid">
                 <div class="mission-text">
                     <p class="mission-statement">
                         We are a church that is ambitious for the glory of God
@@ -108,7 +115,7 @@
     <!-- Total Christ Section -->
     <section id="totalChrist"
         class="about-content-section total-christ-section">
-        <div class="about-inner-section">
+        <div class="section-wrapper">
             <div class="section-header">
                 <h2 class="section-title">Our Total Christ Spirituality</h2>
                 <p class="section-subtitle">All about Christ—his work, not
@@ -128,9 +135,13 @@
                         of Christ.
                     </p>
 
-                    <blockquote class="augustine-quote">
-                        <p>"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."</p>
-                        <cite>— St. Augustine, 5th century
+                    <blockquote class="augustine-quote"
+                        style="margin: 2rem 0; padding: 2rem; background: var(--glass-white); backdrop-filter: blur(20px); border-left: 4px solid var(--cpc-blue); border-radius: var(--radius-md);">
+                        <p
+                            style="font-size: 1.25rem; line-height: 1.75; color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem; font-style: italic;">"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."</p>
+                        <cite
+                            style="color: rgba(255, 255, 255, 0.7); font-size: 1rem;">—
+                            St. Augustine, 5th century
                             pastor-theologian</cite>
                     </blockquote>
                 </div>
@@ -140,7 +151,7 @@
 
     <!-- Five Marks Section -->
     <section id="fiveMarks" class="about-content-section five-marks-section">
-        <div class="about-inner-section">
+        <div class="section-wrapper">
             <div class="section-header">
                 <h2 class="section-title">The Five Marks</h2>
                 <p class="section-subtitle">Our distinctive approach to church
@@ -149,116 +160,151 @@
 
             <div class="five-marks-grid">
                 <div class="mark-card">
-                    <div class="mark-number">1</div>
-                    <div class="mark-content">
+                    <div class="mark-card-header">
+                        <svg class="mark-icon" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                         <h3>Gospel-Centered</h3>
-                        <p class="mark-description">
-                            Trust in the gospel motivates us to be humble
-                            because we know Christ's work to us
-                            is purely a gift, but also boldly confident in the
-                            face of shame
-                            and sin because it's based in God's power! This
-                            grounds us
-                            in God's finished work on the cross, where he
-                            forgave our
-                            sins and reconciled us to himself. Everything we do
-                            is
-                            motivated from and by the gospel.
-                            <strong style="font-weight: bold;">Think: Humble,
-                                honest, authentic, gracious, safe, desire
-                                to be truly known and loved by God and
-                                others</strong>
-                        </p>
+                    </div>
+                    <p class="mark-description">
+                        Trust in the gospel motivates us to be humble
+                        because we know Christ's work to us
+                        is purely a gift, but also boldly confident in the
+                        face of shame
+                        and sin because it's based in God's power! This
+                        grounds us
+                        in God's finished work on the cross, where he
+                        forgave our
+                        sins and reconciled us to himself. Everything we do
+                        is
+                        motivated from and by the gospel.
+                    </p>
+                    <div class="mark-think">
+                        <strong>Think:</strong> Humble,
+                        honest, authentic, gracious, safe, desire
+                        to be truly known and loved by God and
+                        others
                     </div>
                 </div>
 
                 <div class="mark-card">
-                    <div class="mark-number">2</div>
-                    <div class="mark-content">
+                    <div class="mark-card-header">
+                        <svg class="mark-icon" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                         <h3>Missional</h3>
-                        <p class="mark-description">
-                            More (though not less!) than being evangelistic, we
-                            strive to be missional because God
-                            promises to dwell with His people in all their
-                            God-given
-                            cultures, languages, and demographics through the
-                            church. This grounds us
-                            in God's global presence, where the church is the
-                            evangelist
-                            for a whole new way of life, showing the world who
-                            Jesus is and
-                            what it means to follow Him in all our
-                            relationships.
-                            <strong style="font-weight: bold;">Think: Culturally
-                                self-aware, open & inviting, purposeful,
-                                holistic evangelism</strong>
-                        </p>
+                    </div>
+                    <p class="mark-description">
+                        More (though not less!) than being evangelistic, we
+                        strive to be missional because God
+                        promises to dwell with His people in all their
+                        God-given
+                        cultures, languages, and demographics through the
+                        church. This grounds us
+                        in God's global presence, where the church is the
+                        evangelist
+                        for a whole new way of life, showing the world who
+                        Jesus is and
+                        what it means to follow Him in all our
+                        relationships.
+                    </p>
+                    <div class="mark-think">
+                        <strong>Think:</strong> Culturally
+                        self-aware, open & inviting, purposeful,
+                        holistic evangelism
                     </div>
                 </div>
 
                 <div class="mark-card">
-                    <div class="mark-number">3</div>
-                    <div class="mark-content">
+                    <div class="mark-card-header">
+                        <svg class="mark-icon" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
                         <h3>Confessional - Christ as our Prophet</h3>
-                        <p class="mark-description">
-                            We are not the first ones to consider what church
-                            should be
-                            (thank God!). We humbly submit to God's revelation
-                            in the Word as
-                            it has been historically interpreted, seeking to be
-                            united in
-                            belief across generations and cultures. Officially,
-                            we subscribe
-                            to the documents of Westminster (c.1630) as the
-                            summary of
-                            our faith. This grounds us in Christ as our Prophet
-                            who still
-                            speaks.
-                            <strong style="font-weight: bold;">Think: doctrine
-                                that is alive and an unwillingness to be
-                                distracted by cultural fads</strong>
-                        </p>
+                    </div>
+                    <p class="mark-description">
+                        We are not the first ones to consider what church
+                        should be
+                        (thank God!). We humbly submit to God's revelation
+                        in the Word as
+                        it has been historically interpreted, seeking to be
+                        united in
+                        belief across generations and cultures. Officially,
+                        we subscribe
+                        to the documents of Westminster (c.1630) as the
+                        summary of
+                        our faith. This grounds us in Christ as our Prophet
+                        who still
+                        speaks.
+                    </p>
+                    <div class="mark-think">
+                        <strong>Think:</strong> doctrine
+                        that is alive and an unwillingness to be
+                        distracted by cultural fads
                     </div>
                 </div>
 
                 <div class="mark-card">
-                    <div class="mark-number">4</div>
-                    <div class="mark-content">
+                    <div class="mark-card-header">
+                        <svg class="mark-icon" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
                         <h3>Sacramental - Christ as our Priest</h3>
-                        <p class="mark-description">
-                            Christ is "fleshed out" in a carefully
-                            designed four movement worship service that follows
-                            the logic of the gospel and culminates every week in
-                            a participation in eucharistic communion with
-                            Christ. Jesus is experienced in the body of Christ
-                            through different cultural styles specific to each
-                            local community (1 Cor. 10:14-17, Heb. 12:22-24,
-                            Rev. 4-5).
-                            <strong style="font-weight: bold;">Think: Friendly,
-                                worshipful, mysterious</strong>
-                        </p>
+                    </div>
+                    <p class="mark-description">
+                        Christ is "fleshed out" in a carefully
+                        designed four movement worship service that follows
+                        the logic of the gospel and culminates every week in
+                        a participation in eucharistic communion with
+                        Christ. Jesus is experienced in the body of Christ
+                        through different cultural styles specific to each
+                        local community (1 Cor. 10:14-17, Heb. 12:22-24,
+                        Rev. 4-5).
+                    </p>
+                    <div class="mark-think">
+                        <strong>Think:</strong> Friendly,
+                        worshipful, mysterious
                     </div>
                 </div>
 
                 <div class="mark-card">
-                    <div class="mark-number">5</div>
-                    <div class="mark-content">
+                    <div class="mark-card-header">
+                        <svg class="mark-icon" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
                         <h3>Communal - Christ as our King</h3>
-                        <p class="mark-description">
-                            Christ did not leave us as orphans, but joined us
-                            with Himself to
-                            the church, so to be a Christian is to be a part of
-                            the redeemed
-                            community. Many of us experience Christ first
-                            through the love of
-                            his body. We also take church government as an
-                            instrument of
-                            mercy seriously. This grounds us in Christ as our
-                            King.
-                            <strong style="font-weight: bold;">Think: loving,
-                                humble accountability and
-                                one-anothering</strong>
-                        </p>
+                    </div>
+                    <p class="mark-description">
+                        Christ did not leave us as orphans, but joined us
+                        with Himself to
+                        the church, so to be a Christian is to be a part of
+                        the redeemed
+                        community. Many of us experience Christ first
+                        through the love of
+                        his body. We also take church government as an
+                        instrument of
+                        mercy seriously. This grounds us in Christ as our
+                        King.
+                    </p>
+                    <div class="mark-think">
+                        <strong>Think:</strong> loving,
+                        humble accountability and
+                        one-anothering
                     </div>
                 </div>
             </div>
@@ -267,7 +313,7 @@
 
     <!-- Staff Section -->
     <section id="staff" class="about-content-section staff-section">
-        <div class="about-inner-section">
+        <div class="section-wrapper">
             <div class="section-header">
                 <h2 class="section-title">Our Staff Team</h2>
                 <p class="section-subtitle">Meet the people who serve our
@@ -276,46 +322,46 @@
 
             <div class="staff-grid">
                 <div class="staff-member">
-                    <div class="staff-info">
-                        <h3>Craig Luekens</h3>
-                        <h4>Senior Pastor</h4>
-                    </div>
+                    <div class="staff-photo">CL</div>
+                    <h3>Craig Luekens</h3>
+                    <h4>Senior Pastor</h4>
+                    <a href="#contact" class="staff-contact-btn">Contact</a>
                 </div>
                 <div class="staff-member">
-                    <div class="staff-info">
-                        <h3>Jerry Ornelas</h3>
-                        <h4>Assistant Pastor</h4>
-                    </div>
+                    <div class="staff-photo">JO</div>
+                    <h3>Jerry Ornelas</h3>
+                    <h4>Assistant Pastor</h4>
+                    <a href="#contact" class="staff-contact-btn">Contact</a>
                 </div>
                 <div class="staff-member">
-                    <div class="staff-info">
-                        <h3>Alexis Vano</h3>
-                        <h4>Administrative Coordinator</h4>
-                    </div>
+                    <div class="staff-photo">AV</div>
+                    <h3>Alexis Vano</h3>
+                    <h4>Administrative Coordinator</h4>
+                    <a href="#contact" class="staff-contact-btn">Contact</a>
                 </div>
                 <div class="staff-member">
-                    <div class="staff-info">
-                        <h3>Alex Gonzalez</h3>
-                        <h4>AV Director</h4>
-                    </div>
+                    <div class="staff-photo">AG</div>
+                    <h3>Alex Gonzalez</h3>
+                    <h4>AV Director</h4>
+                    <a href="#contact" class="staff-contact-btn">Contact</a>
                 </div>
                 <div class="staff-member">
-                    <div class="staff-info">
-                        <h3>Christopher Battista</h3>
-                        <h4>Audio and IT Specialist</h4>
-                    </div>
+                    <div class="staff-photo">CB</div>
+                    <h3>Christopher Battista</h3>
+                    <h4>Audio and IT Specialist</h4>
+                    <a href="#contact" class="staff-contact-btn">Contact</a>
                 </div>
                 <div class="staff-member">
-                    <div class="staff-info">
-                        <h3>Paul Wildey</h3>
-                        <h4>Sexton</h4>
-                    </div>
+                    <div class="staff-photo">PW</div>
+                    <h3>Paul Wildey</h3>
+                    <h4>Sexton</h4>
+                    <a href="#contact" class="staff-contact-btn">Contact</a>
                 </div>
                 <div class="staff-member">
-                    <div class="staff-info">
-                        <h3>Jennifer Cheng</h3>
-                        <h4>Music Coordinator</h4>
-                    </div>
+                    <div class="staff-photo">JC</div>
+                    <h3>Jennifer Cheng</h3>
+                    <h4>Music Coordinator</h4>
+                    <a href="#contact" class="staff-contact-btn">Contact</a>
                 </div>
             </div>
         </div>
@@ -323,7 +369,7 @@
 
     <!-- Our Story Section -->
     <section id="ourStory" class="about-content-section our-story-section">
-        <div class="about-inner-section">
+        <div class="section-wrapper">
             <div class="section-header">
                 <h2 class="section-title">Our Story</h2>
                 <p class="section-subtitle">From a small Bible study to a

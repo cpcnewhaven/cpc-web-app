@@ -4,358 +4,58 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<style>
-    .search-container {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 0 20px;
-    }
-
-    .search-header {
-        text-align: center;
-        margin-bottom: 60px;
-        position: relative;
-    }
-
-    .search-header::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, transparent 70%);
-        border-radius: 50%;
-        filter: blur(60px);
-        z-index: -1;
-    }
-
-    .search-header h1 {
-        font-size: 3rem;
-        font-weight: 300;
-        color: rgba(255, 255, 255, 0.95);
-        margin-bottom: 10px;
-        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-        letter-spacing: 2px;
-    }
-
-    .search-header p {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1.2rem;
-        font-weight: 300;
-        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .search-box {
-        position: relative;
-        margin: 50px auto;
-        max-width: 800px;
-    }
-
-    .search-input-container {
-        display: flex;
-        gap: 0;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        padding: 20px 30px;
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.3),
-            inset 0 1px 1px rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-    }
-
-    .search-input-container:focus-within {
-        transform: translateY(-2px);
-        box-shadow: 
-            0 12px 40px rgba(0, 0, 0, 0.4),
-            inset 0 1px 1px rgba(255, 255, 255, 0.4);
-        border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .search-input {
-        flex: 1;
-        border: none;
-        outline: none;
-        background: transparent;
-        font-size: 1.1rem;
-        color: rgba(255, 255, 255, 0.95);
-        padding: 0;
-    }
-
-    .search-input::placeholder {
-        color: rgba(255, 255, 255, 0.6);
-    }
-
-    .search-button {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        color: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 12px 40px;
-        border-radius: 12px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 0.9rem;
-    }
-
-    .search-button:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.05);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .filter-tabs {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin: 40px 0;
-        flex-wrap: wrap;
-    }
-
-    .filter-tab {
-        padding: 12px 28px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 25px;
-        cursor: pointer;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.8);
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-size: 0.85rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .filter-tab:hover {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .filter-tab.active {
-        background: rgba(255, 255, 255, 0.25);
-        color: rgba(255, 255, 255, 1);
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
-        font-weight: 600;
-    }
-
-    .search-results {
-        margin-top: 50px;
-    }
-
-    .results-header {
-        margin-bottom: 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.1rem;
-        font-weight: 300;
-    }
-
-    .result-item {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        padding: 30px;
-        margin-bottom: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
-    }
-
-    .result-item:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        border-color: rgba(255, 255, 255, 0.25);
-        background: rgba(255, 255, 255, 0.12);
-    }
-
-    .result-type {
-        display: inline-block;
-        padding: 6px 16px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        margin-bottom: 15px;
-        background: rgba(255, 255, 255, 0.15);
-        color: rgba(255, 255, 255, 0.9);
-        letter-spacing: 0.5px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .result-title {
-        font-size: 1.5rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin-bottom: 12px;
-        font-weight: 400;
-        line-height: 1.4;
-    }
-
-    .result-meta {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.95rem;
-        margin-bottom: 15px;
-        font-weight: 300;
-    }
-
-    .result-description {
-        color: rgba(255, 255, 255, 0.85);
-        line-height: 1.8;
-        margin-bottom: 20px;
-        font-weight: 300;
-    }
-
-    .result-link {
-        display: inline-block;
-        color: rgba(255, 255, 255, 0.9);
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        padding: 10px 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-    }
-
-    .result-link:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.3);
-        transform: translateX(4px);
-    }
-
-    .no-results, .loading {
-        text-align: center;
-        padding: 80px 20px;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 20px;
-        color: rgba(255, 255, 255, 0.7);
-        font-weight: 300;
-    }
-
-    .no-results h2, .loading {
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 15px;
-        font-weight: 300;
-    }
-
-    .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin: 50px 0;
-        flex-wrap: wrap;
-    }
-
-    .pagination-button {
-        padding: 12px 24px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: rgba(255, 255, 255, 0.9);
-        border-radius: 12px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .pagination-button:hover:not(:disabled) {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-    }
-
-    .pagination-button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-
-    .pagination span {
-        color: rgba(255, 255, 255, 0.7);
-        padding: 12px 24px;
-        font-weight: 300;
-    }
-
-    @media (max-width: 768px) {
-        .search-header h1 {
-            font-size: 2.2rem;
-        }
-
-        .search-input-container {
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .search-button {
-            width: 100%;
-        }
-
-        .filter-tabs {
-            gap: 8px;
-        }
-
-        .filter-tab {
-            padding: 10px 20px;
-            font-size: 0.8rem;
-        }
-
-        .result-item {
-            padding: 25px;
-        }
-    }
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="search-container">
-    <div class="search-header">
-        <h1>Search</h1>
-        <p>Find sermons, podcasts, announcements, and more</p>
-    </div>
+<div class="max-w-3xl mx-auto px-4 py-10">
+    <h1 class="text-4xl font-bold mb-4">Search</h1>
+    <p class="text-lg text-gray-600 mb-10">Find sermons, podcasts,
+        announcements, and more</p>
 
-    <div class="search-box">
-        <div class="search-input-container">
-            <input type="text"
-                class="search-input"
+    <!-- Search Bar -->
+    <div class="mt-12">
+        <label class="block text-gray-700 font-medium mb-2">Search</label>
+        <div class="flex gap-2">
+            <input
+                type="text"
                 id="searchInput"
                 placeholder="Search for anything... (e.g., 'Luke', 'grace', 'worship')"
+                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
                 autocomplete="off">
-            <button class="search-button" id="searchButton">Search</button>
+            <button id="searchButton"
+                class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Go
+            </button>
         </div>
     </div>
 
-    <div class="filter-tabs">
-        <div class="filter-tab active" data-type="all">All Content</div>
-        <div class="filter-tab" data-type="sermons">Sermons</div>
-        <div class="filter-tab" data-type="podcasts">Podcasts</div>
-        <div class="filter-tab" data-type="announcements">Announcements</div>
-        <div class="filter-tab" data-type="events">Events</div>
-        <div class="filter-tab" data-type="papers">Papers</div>
-        <div class="filter-tab" data-type="gallery">Gallery</div>
+    <!-- Filter Tabs -->
+    <div class="mt-6 flex gap-2 flex-wrap">
+        <button
+            class="filter-tab active px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            data-type="all">All Content</button>
+        <button
+            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-type="sermons">Sermons</button>
+        <button
+            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-type="podcasts">Podcasts</button>
+        <button
+            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-type="announcements">Announcements</button>
+        <button
+            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-type="events">Events</button>
+        <button
+            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-type="papers">Papers</button>
+        <button
+            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-type="gallery">Gallery</button>
     </div>
 
-    <div class="search-results" id="searchResults">
+    <!-- Search Results -->
+    <div class="search-results mt-8" id="searchResults">
         <!-- Results will be populated here -->
     </div>
 </div>
@@ -374,14 +74,19 @@
 
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
             performSearch();
         }
     });
 
     filterTabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            filterTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+            filterTabs.forEach(t => {
+                t.classList.remove('active', 'bg-blue-600', 'text-white');
+                t.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            tab.classList.add('active', 'bg-blue-600', 'text-white');
+            tab.classList.remove('bg-gray-200', 'text-gray-700');
             currentType = tab.dataset.type;
             currentPage = 1;
             if (currentQuery) {
@@ -412,23 +117,23 @@
     }
 
     function showLoading() {
-        searchResults.innerHTML = '<div class="loading">Searching...</div>';
+        searchResults.innerHTML = '<div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">Searching...</div>';
     }
 
     function showEmptyState() {
         searchResults.innerHTML = `
-            <div class="no-results">
-                <h2>Start Your Search</h2>
-                <p>Enter a search query to find content across the site</p>
+            <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
+                <h2 class="text-2xl font-semibold mb-2">Start Your Search</h2>
+                <p class="text-base leading-relaxed text-gray-700">Enter a search query to find content across the site</p>
             </div>
         `;
     }
 
     function showError() {
         searchResults.innerHTML = `
-            <div class="no-results">
-                <h2>Search Error</h2>
-                <p>Something went wrong. Please try again.</p>
+            <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
+                <h2 class="text-2xl font-semibold mb-2">Search Error</h2>
+                <p class="text-base leading-relaxed text-gray-700">Something went wrong. Please try again.</p>
             </div>
         `;
     }
@@ -436,41 +141,44 @@
     function displayResults(data) {
         if (data.total === 0) {
             searchResults.innerHTML = `
-                <div class="no-results">
-                    <h2>No Results Found</h2>
-                    <p>Try a different search term or check the spelling</p>
+                <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
+                    <h2 class="text-2xl font-semibold mb-2">No Results Found</h2>
+                    <p class="text-base leading-relaxed text-gray-700">Try a different search term or check the spelling</p>
                 </div>
             `;
             return;
         }
 
         let html = `
-            <div class="results-header">
-                <div class="results-count">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
+            <div class="mb-6">
+                <div class="text-base leading-relaxed text-gray-700">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
             </div>
+            <div class="space-y-6">
         `;
 
         data.results.forEach(item => {
             html += `
-                <div class="result-item">
-                    <div class="result-type">${item.type}</div>
-                    <div class="result-title">${item.title}</div>
-                    <div class="result-meta">
+                <div class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
+                    <div class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium inline-block mb-3">${item.type}</div>
+                    <h3 class="text-xl font-semibold mb-2">${item.title}</h3>
+                    <div class="text-sm text-gray-500 mb-4">
                         ${item.author ? `${item.author} • ` : ''}
                         ${item.date ? new Date(item.date).toLocaleDateString() : ''}
                         ${item.category ? ` • ${item.category}` : ''}
                     </div>
-                    ${item.description ? `<div class="result-description">${item.description}</div>` : ''}
-                    ${item.url ? `<a href="${item.url}" class="result-link" target="_blank">View →</a>` : ''}
+                    ${item.description ? `<p class="text-base leading-relaxed text-gray-700 mb-4">${item.description}</p>` : ''}
+                    ${item.url ? `<a href="${item.url}" class="text-blue-600 font-medium hover:underline" target="_blank">Read More →</a>` : ''}
                 </div>
             `;
         });
+        
+        html += '</div>';
 
         if (data.pages > 1) {
-            html += `<div class="pagination">`;
-            html += `<button class="pagination-button" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">← Previous</button>`;
-            html += `<span>Page ${data.page} of ${data.pages}</span>`;
-            html += `<button class="pagination-button" ${currentPage >= data.pages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next →</button>`;
+            html += `<div class="flex justify-center items-center gap-4 mt-8">`;
+            html += `<button class="px-4 py-2 border rounded-lg ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">← Previous</button>`;
+            html += `<span class="text-gray-700">Page ${data.page} of ${data.pages}</span>`;
+            html += `<button class="px-4 py-2 border rounded-lg ${currentPage >= data.pages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}" ${currentPage >= data.pages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next →</button>`;
             html += `</div>`;
         }
 

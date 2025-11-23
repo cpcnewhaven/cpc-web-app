@@ -3,144 +3,157 @@
 {% block title %}Events - CPC New Haven{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Events & Activities</h1>
-        <p>Join us for fellowship, learning, and community events</p>
-    </div>
-</section>
+<div class="max-w-3xl mx-auto px-4 py-10">
+    <h1 class="text-4xl font-bold mb-4">Events & Activities</h1>
+    <p class="text-lg text-gray-600 mb-10">Join us for fellowship, learning, and
+        community events</p>
 
-<!-- Events Content -->
-<section class="events-section">
-    <div class="container">
-        <div class="events-content">
-            <h2>Upcoming Events</h2>
-            <div id="events-app"></div>
-        </div>
-    </div>
-</section>
+    <!-- Events Content -->
+    <section class="mt-16">
+        <h2 class="text-2xl font-semibold mb-4">Upcoming Events</h2>
+        <div id="events-app"></div>
+    </section>
 
-<!-- Event Categories -->
-<section class="event-categories-section">
-    <div class="container">
-        <h2>Event Categories</h2>
-        <div class="categories-grid">
-            <div class="category-card">
-                <div class="category-icon">
+    <!-- Event Categories -->
+    <section class="mt-16">
+        <h2 class="text-2xl font-semibold mb-4">Event Categories</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div
+                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
+                <div class="text-4xl text-blue-600 mb-4">
                     <i class="fas fa-calendar-alt"></i>
                 </div>
-                <h3>Weekly Events</h3>
-                <p>Regular weekly gatherings including Bible studies, prayer
-                    meetings, and fellowship groups.</p>
+                <h3 class="text-xl font-semibold mb-2">Weekly Events</h3>
+                <p class="text-base leading-relaxed text-gray-700">Regular
+                    weekly gatherings including Bible studies, prayer meetings,
+                    and fellowship groups.</p>
             </div>
-            <div class="category-card">
-                <div class="category-icon">
+            <div
+                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
+                <div class="text-4xl text-blue-600 mb-4">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
-                <h3>Educational</h3>
-                <p>Classes, seminars, and educational programs for spiritual
-                    growth and learning.</p>
+                <h3 class="text-xl font-semibold mb-2">Educational</h3>
+                <p class="text-base leading-relaxed text-gray-700">Classes,
+                    seminars, and educational programs for spiritual growth and
+                    learning.</p>
             </div>
-            <div class="category-card">
-                <div class="category-icon">
+            <div
+                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
+                <div class="text-4xl text-blue-600 mb-4">
                     <i class="fas fa-users"></i>
                 </div>
-                <h3>Fellowship</h3>
-                <p>Community building events, social gatherings, and fellowship
+                <h3 class="text-xl font-semibold mb-2">Fellowship</h3>
+                <p class="text-base leading-relaxed text-gray-700">Community
+                    building events, social gatherings, and fellowship
                     opportunities.</p>
             </div>
-            <div class="category-card">
-                <div class="category-icon">
+            <div
+                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
+                <div class="text-4xl text-blue-600 mb-4">
                     <i class="fas fa-heart"></i>
                 </div>
-                <h3>Service</h3>
-                <p>Outreach events, service projects, and opportunities to serve
-                    our community.</p>
+                <h3 class="text-xl font-semibold mb-2">Service</h3>
+                <p class="text-base leading-relaxed text-gray-700">Outreach
+                    events, service projects, and opportunities to serve our
+                    community.</p>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Regular Schedule -->
-<section class="regular-schedule-section">
-    <div class="container">
-        <h2>Regular Schedule</h2>
-        <div class="schedule-list">
-            <div class="schedule-item">
-                <div class="schedule-day">Sunday</div>
-                <div class="schedule-events">
-                    <div class="schedule-event">
-                        <span class="time">8:30am</span>
-                        <span class="event">Prayer in the Parlor</span>
+    <!-- Regular Schedule -->
+    <section class="mt-16">
+        <h2 class="text-2xl font-semibold mb-4">Regular Schedule</h2>
+        <div class="space-y-4">
+            <div class="p-6 border rounded-lg bg-white">
+                <div
+                    class="text-xl font-semibold mb-4 text-blue-600">Sunday</div>
+                <div class="space-y-2">
+                    <div class="flex gap-4">
+                        <span
+                            class="font-medium text-gray-700 w-20">8:30am</span>
+                        <span
+                            class="text-base leading-relaxed text-gray-700">Prayer
+                            in the Parlor</span>
                     </div>
-                    <div class="schedule-event">
-                        <span class="time">9:30am</span>
-                        <span class="event">Sunday School & Adult Studies</span>
+                    <div class="flex gap-4">
+                        <span
+                            class="font-medium text-gray-700 w-20">9:30am</span>
+                        <span
+                            class="text-base leading-relaxed text-gray-700">Sunday
+                            School & Adult Studies</span>
                     </div>
-                    <div class="schedule-event">
-                        <span class="time">10:30am</span>
-                        <span class="event">Sunday Worship Service</span>
+                    <div class="flex gap-4">
+                        <span
+                            class="font-medium text-gray-700 w-20">10:30am</span>
+                        <span
+                            class="text-base leading-relaxed text-gray-700">Sunday
+                            Worship Service</span>
                     </div>
-                    <div class="schedule-event">
-                        <span class="time">12:00pm</span>
-                        <span class="event">Fellowship Lunch</span>
-                    </div>
-                </div>
-            </div>
-            <div class="schedule-item">
-                <div class="schedule-day">Wednesday</div>
-                <div class="schedule-events">
-                    <div class="schedule-event">
-                        <span class="time">7:00pm</span>
-                        <span class="event">Bible Study</span>
-                    </div>
-                </div>
-            </div>
-            <div class="schedule-item">
-                <div class="schedule-day">Friday</div>
-                <div class="schedule-events">
-                    <div class="schedule-event">
-                        <span class="time">7:00pm</span>
-                        <span class="event">Youth Group Meeting</span>
+                    <div class="flex gap-4">
+                        <span
+                            class="font-medium text-gray-700 w-20">12:00pm</span>
+                        <span
+                            class="text-base leading-relaxed text-gray-700">Fellowship
+                            Lunch</span>
                     </div>
                 </div>
             </div>
-            <div class="schedule-item">
-                <div class="schedule-day">Saturday</div>
-                <div class="schedule-events">
-                    <div class="schedule-event">
-                        <span class="time">8:00am</span>
-                        <span class="event">Men's Fellowship</span>
-                    </div>
+            <div class="p-6 border rounded-lg bg-white">
+                <div
+                    class="text-xl font-semibold mb-4 text-blue-600">Wednesday</div>
+                <div class="flex gap-4">
+                    <span class="font-medium text-gray-700 w-20">7:00pm</span>
+                    <span class="text-base leading-relaxed text-gray-700">Bible
+                        Study</span>
+                </div>
+            </div>
+            <div class="p-6 border rounded-lg bg-white">
+                <div
+                    class="text-xl font-semibold mb-4 text-blue-600">Friday</div>
+                <div class="flex gap-4">
+                    <span class="font-medium text-gray-700 w-20">7:00pm</span>
+                    <span class="text-base leading-relaxed text-gray-700">Youth
+                        Group Meeting</span>
+                </div>
+            </div>
+            <div class="p-6 border rounded-lg bg-white">
+                <div
+                    class="text-xl font-semibold mb-4 text-blue-600">Saturday</div>
+                <div class="flex gap-4">
+                    <span class="font-medium text-gray-700 w-20">8:00am</span>
+                    <span class="text-base leading-relaxed text-gray-700">Men's
+                        Fellowship</span>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Contact Section -->
-<section class="events-contact-section">
-    <div class="container">
-        <h2>Questions About Events?</h2>
-        <p>If you have questions about any of our events or would like to get
-            involved, please don't hesitate to contact us.</p>
-        <div class="contact-info">
-            <div class="contact-item">
-                <i class="fas fa-envelope"></i>
-                <span>admin@cpcnewhaven.org</span>
+    <!-- Contact Section -->
+    <section class="mt-16 mb-32">
+        <h2 class="text-2xl font-semibold mb-4">Questions About Events?</h2>
+        <p class="text-base leading-relaxed text-gray-700 mb-6">If you have
+            questions about any of our events or would like to get involved,
+            please don't hesitate to contact us.</p>
+        <div class="space-y-4">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-envelope text-blue-600"></i>
+                <span
+                    class="text-base leading-relaxed text-gray-700">admin@cpcnewhaven.org</span>
             </div>
-            <div class="contact-item">
-                <i class="fas fa-phone"></i>
-                <span>(203) 555-0123</span>
+            <div class="flex items-center gap-3">
+                <i class="fas fa-phone text-blue-600"></i>
+                <span class="text-base leading-relaxed text-gray-700">(203)
+                    555-0123</span>
             </div>
-            <div class="contact-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>135 Whitney Ave, New Haven, CT 06510</span>
+            <div class="flex items-center gap-3">
+                <i class="fas fa-map-marker-alt text-blue-600"></i>
+                <span class="text-base leading-relaxed text-gray-700">135
+                    Whitney Ave, New Haven, CT 06510</span>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 {% endblock %}
 
 {% block scripts %}

@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}CPC New Haven{% endblock %}</title>
 
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
         <!-- Unified Stylesheet -->
         <link rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}">
@@ -24,203 +27,196 @@
         <div id="warningBanner" class="warning-banner"
             style="display: none;"></div>
 
-        <!-- Navigation -->
-        <nav class="main-navigation">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <a href="{{ url_for('index') }}">
-                        <img
-                            src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
-                            alt="CPC New Haven" class="logo-image">
-                    </a>
-                </div>
-
-                <!-- Desktop Navigation -->
-                <ul class="nav-links">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('about') }}">About</a></li>
-
-                    <!-- Community Dropdown -->
-                    <li class="nav-dropdown">
-                        <a href="#" class="dropdown-toggle">Community <i
-                                class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a
-                                    href="{{ url_for('highlights') }}">Highlights</a></li>
-                            <li><a
-                                    href="{{ url_for('events') }}">Events</a></li>
-                            <li><a
-                                    href="{{ url_for('announcements') }}">Announcements</a></li>
-                            <li><a
-                                    href="{{ url_for('community') }}">Community</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Media Dropdown -->
-                    <li class="nav-dropdown">
-                        <a href="#" class="dropdown-toggle">Media <i
-                                class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a
-                                    href="{{ url_for('media') }}">Gallery</a></li>
-                            <li><a
-                                    href="{{ url_for('sermons') }}">Sermons</a></li>
-                            <li><a
-                                    href="{{ url_for('podcasts') }}">Podcasts</a></li>
-                            <li><a href="{{ url_for('live') }}">Live
-                                    Stream</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Resources Dropdown -->
-                    <li class="nav-dropdown">
-                        <a href="#" class="dropdown-toggle">Resources <i
-                                class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a
-                                    href="{{ url_for('resources') }}">Resources</a></li>
-                            <li><a href="{{ url_for('give') }}">Give</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Search & Archive -->
-                    <li class="nav-dropdown">
-                        <a href="#" class="dropdown-toggle">More <i
-                                class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a
-                                    href="{{ url_for('search') }}">Search</a></li>
-                            <li><a
-                                    href="{{ url_for('archive') }}">Archive</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <!-- Hamburger Menu for Mobile -->
-                <button id="hamburgerMenu" class="hamburger-menu">☰</button>
+        <!-- Desktop Navigation -->
+        <nav
+            class="hidden md:flex w-full max-w-6xl mx-auto rounded-lg py-3 px-6 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+            style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
+            <div class="nav-logo">
+                <a href="{{ url_for('index') }}">
+                    <img src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
+                        alt="CPC New Haven"
+                        class="h-10 filter brightness-0 invert">
+                </a>
             </div>
-        </nav>
-
-        <!-- Mobile Navigation -->
-        <div id="mobileNavigation" class="mobile-navigation">
-            <button id="closeMenuButton" class="close-menu">✕</button>
-            <ul class="mobile-nav-links">
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('about') }}">About</a></li>
-
-                <!-- Community Section -->
-                <li class="mobile-nav-section">
-                    <h3>Community</h3>
-                    <ul>
-                        <li><a href="{{ url_for('highlights') }}">Highlights</a></li>
-                        <li><a href="{{ url_for('events') }}">Events</a></li>
-                        <li><a
-                                href="{{ url_for('announcements') }}">Announcements</a></li>
-                        <li><a
-                                href="{{ url_for('community') }}">Community</a></li>
+            <ul class="flex items-center gap-2">
+                <li><a href="{{ url_for('index') }}"
+                        class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Home</a></li>
+                <li><a href="{{ url_for('about') }}"
+                        class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">About</a></li>
+                <li class="relative nav-dropdown">
+                    <a href="#"
+                        class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">Community
+                        <i class="fas fa-chevron-down text-xs"></i></a>
+                    <ul
+                        class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg py-2 min-w-[200px] hidden backdrop-blur-lg"
+                        style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
+                        <li><a href="{{ url_for('highlights') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Highlights</a></li>
+                        <li><a href="{{ url_for('events') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Events</a></li>
+                        <li><a href="{{ url_for('announcements') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Announcements</a></li>
+                        <li><a href="{{ url_for('community') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Community</a></li>
                     </ul>
                 </li>
-
-                <!-- Media Section -->
-                <li class="mobile-nav-section">
-                    <h3>Media</h3>
-                    <ul>
-                        <li><a href="{{ url_for('media') }}">Gallery</a></li>
-                        <li><a href="{{ url_for('sermons') }}">Sermons</a></li>
-                        <li><a
-                                href="{{ url_for('podcasts') }}">Podcasts</a></li>
-                        <li><a href="{{ url_for('live') }}">Live Stream</a></li>
+                <li class="relative nav-dropdown">
+                    <a href="#"
+                        class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">Media
+                        <i class="fas fa-chevron-down text-xs"></i></a>
+                    <ul
+                        class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg py-2 min-w-[200px] hidden backdrop-blur-lg"
+                        style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
+                        <li><a href="{{ url_for('media') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Gallery</a></li>
+                        <li><a href="{{ url_for('sermons') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Sermons</a></li>
+                        <li><a href="{{ url_for('podcasts') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Podcasts</a></li>
+                        <li><a href="{{ url_for('live') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Live
+                                Stream</a></li>
                     </ul>
                 </li>
-
-                <!-- Resources Section -->
-                <li class="mobile-nav-section">
-                    <h3>Resources</h3>
-                    <ul>
-                        <li><a
-                                href="{{ url_for('resources') }}">Resources</a></li>
-                        <li><a href="{{ url_for('give') }}">Give</a></li>
+                <li class="relative nav-dropdown">
+                    <a href="#"
+                        class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">Resources
+                        <i class="fas fa-chevron-down text-xs"></i></a>
+                    <ul
+                        class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg py-2 min-w-[200px] hidden backdrop-blur-lg"
+                        style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
+                        <li><a href="{{ url_for('resources') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Resources</a></li>
+                        <li><a href="{{ url_for('give') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Give</a></li>
                     </ul>
                 </li>
-
-                <!-- More Section -->
-                <li class="mobile-nav-section">
-                    <h3>More</h3>
-                    <ul>
-                        <li><a href="{{ url_for('search') }}">Search</a></li>
-                        <li><a href="{{ url_for('archive') }}">Archive</a></li>
+                <li class="relative nav-dropdown">
+                    <a href="#"
+                        class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">More
+                        <i class="fas fa-chevron-down text-xs"></i></a>
+                    <ul
+                        class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg py-2 min-w-[200px] hidden backdrop-blur-lg"
+                        style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
+                        <li><a href="{{ url_for('search') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Search</a></li>
+                        <li><a href="{{ url_for('archive') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Archive</a></li>
                     </ul>
                 </li>
             </ul>
-        </div>
+        </nav>
+
+        <!-- Mobile Navigation -->
+        <nav x-data="{ open: false }"
+            class="flex md:hidden w-full max-w-6xl mx-auto rounded-lg py-3 px-4 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+            style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
+            <div class="nav-logo">
+                <a href="{{ url_for('index') }}">
+                    <img src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
+                        alt="CPC New Haven"
+                        class="h-10 filter brightness-0 invert">
+                </a>
+            </div>
+            <button @click="open = !open"
+                class="text-3xl text-white">☰</button>
+            <div x-show="open" x-transition
+                class="absolute top-full left-0 right-0 rounded-lg shadow-lg mt-2 space-y-2 p-4 backdrop-blur-lg"
+                style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
+                <a href="{{ url_for('index') }}"
+                    class="block text-white hover:text-blue-200 font-medium py-2">Home</a>
+                <a href="{{ url_for('about') }}"
+                    class="block text-white hover:text-blue-200 font-medium py-2">About</a>
+                <div class="border-t border-white border-opacity-20 pt-2 mt-2">
+                    <p
+                        class="text-sm font-semibold text-white text-opacity-70 mb-2">Community</p>
+                    <a href="{{ url_for('highlights') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Highlights</a>
+                    <a href="{{ url_for('events') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Events</a>
+                    <a href="{{ url_for('announcements') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Announcements</a>
+                    <a href="{{ url_for('community') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Community</a>
+                </div>
+                <div class="border-t border-white border-opacity-20 pt-2 mt-2">
+                    <p
+                        class="text-sm font-semibold text-white text-opacity-70 mb-2">Media</p>
+                    <a href="{{ url_for('media') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Gallery</a>
+                    <a href="{{ url_for('sermons') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Sermons</a>
+                    <a href="{{ url_for('podcasts') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Podcasts</a>
+                    <a href="{{ url_for('live') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Live
+                        Stream</a>
+                </div>
+                <div class="border-t border-white border-opacity-20 pt-2 mt-2">
+                    <p
+                        class="text-sm font-semibold text-white text-opacity-70 mb-2">Resources</p>
+                    <a href="{{ url_for('resources') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Resources</a>
+                    <a href="{{ url_for('give') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Give</a>
+                </div>
+                <div class="border-t border-white border-opacity-20 pt-2 mt-2">
+                    <p
+                        class="text-sm font-semibold text-white text-opacity-70 mb-2">More</p>
+                    <a href="{{ url_for('search') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Search</a>
+                    <a href="{{ url_for('archive') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Archive</a>
+                </div>
+            </div>
+        </nav>
 
         <!-- Main Content -->
-        <main>
+        <main class="pt-24">
             {% block content %}{% endblock %}
         </main>
 
         <!-- Footer -->
-        <footer class="main-footer glass-footer">
-            <div class="footer-content glass-footer-content">
-                <!-- Footer Search Section -->
-                <div class="footer-search">
-                    <h3>Search</h3>
-                    <p class="glass-text-muted">Find sermons, podcasts, and
-                        more</p>
-                    <div class="footer-search-box">
-                        <input type="text" id="footerSearchInput"
-                            class="glass-input" placeholder="Search...">
-                        <button class="glass-button"
-                            onclick="footerSearch()">Go</button>
-                    </div>
+        <footer
+            class="mt-20 pt-10 pb-6 bg-gray-100 border-t border-gray-300 text-gray-600">
+            <div
+                class="max-w-5xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-10">
+                <!-- Column 1: Logo, Address, Service Times -->
+                <div>
+                    <img src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
+                        alt="CPC New Haven" class="h-10 mb-4">
+                    <p class="text-sm mb-2">135 Whitney Ave, New Haven, CT</p>
+                    <p class="text-sm">Sunday Worship: 10:30am</p>
                 </div>
 
-                <!-- Quick Links -->
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <div class="footer-links-grid">
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Quick
+                        Links</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-1 gap-2">
                         <a href="{{ url_for('search') }}"
-                            class="glass-link">Search</a>
+                            class="text-sm text-gray-600 hover:text-blue-600">Search</a>
                         <a href="{{ url_for('archive') }}"
-                            class="glass-link">Archive</a>
+                            class="text-sm text-gray-600 hover:text-blue-600">Archive</a>
                         <a href="{{ url_for('sermons') }}"
-                            class="glass-link">Sermons</a>
+                            class="text-sm text-gray-600 hover:text-blue-600">Sermons</a>
                         <a href="{{ url_for('podcasts') }}"
-                            class="glass-link">Podcasts</a>
+                            class="text-sm text-gray-600 hover:text-blue-600">Podcasts</a>
                         <a href="{{ url_for('events') }}"
-                            class="glass-link">Events</a>
+                            class="text-sm text-gray-600 hover:text-blue-600">Events</a>
                         <a href="{{ url_for('announcements') }}"
-                            class="glass-link">Announcements</a>
+                            class="text-sm text-gray-600 hover:text-blue-600">Announcements</a>
                     </div>
                 </div>
 
-                <!-- Footer Brand -->
-                <div class="footer-brand glass-footer-brand">
-                    <div class="footer-logo">
-                        <img
-                            src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
-                            alt="CPC New Haven" class="footer-logo-image">
-                    </div>
-                    <p class="glass-text-secondary">135 Whitney Ave, New Haven,
-                        CT</p>
-                    <p class="glass-text-secondary">Sunday Worship: 10:30am</p>
-                </div>
-
-                <!-- Admin Section -->
-                <div class="footer-section">
-                    <h3>Admin</h3>
-                    <div class="footer-links-grid">
-                        <a href="{{ url_for('admin_login') }}"
-                            class="glass-link">Admin Login</a>
-                    </div>
-                </div>
-
-                <!-- Social Media -->
-                <div class="footer-social glass-footer-social">
-                    <h3>Connect With Us</h3>
-                    <div class="social-links">
+                <!-- Column 3: Social Media -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Connect
+                        With Us</h3>
+                    <div class="flex gap-4">
                         <a href="https://www.instagram.com/cpcnewhaven"
-                            target="_blank" class="social-link glass-button"
+                            target="_blank"
+                            class="text-gray-600 hover:text-blue-600"
                             title="Instagram">
                             <svg width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor">
@@ -229,7 +225,8 @@
                             </svg>
                         </a>
                         <a href="https://www.youtube.com/@cpcnewhaven"
-                            target="_blank" class="social-link glass-button"
+                            target="_blank"
+                            class="text-gray-600 hover:text-blue-600"
                             title="YouTube">
                             <svg width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor">
@@ -238,7 +235,8 @@
                             </svg>
                         </a>
                         <a href="https://open.spotify.com/show/cpcnewhaven"
-                            target="_blank" class="social-link glass-button"
+                            target="_blank"
+                            class="text-gray-600 hover:text-blue-600"
                             title="Spotify">
                             <svg width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor">
@@ -247,7 +245,8 @@
                             </svg>
                         </a>
                         <a href="{{ url_for('contact') }}"
-                            class="social-link glass-button" title="Contact">
+                            class="text-gray-600 hover:text-blue-600"
+                            title="Contact">
                             <svg width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
@@ -259,15 +258,12 @@
             </div>
 
             <!-- Footer Copyright -->
-            <div class="footer-copyright glass-footer-copyright">
-                <p class="glass-text-muted">&copy; 2025 CPC New Haven. All
-                    rights reserved.</p>
+            <div class="text-center text-xs mt-10">
+                © 2025 CPC New Haven. All rights reserved.
             </div>
         </footer>
 
         <!-- Keep all your existing JavaScript files -->
-        <script
-            src="{{ url_for('static', filename='js/function_toggle_mobileMenu.js') }}"></script>
         <script
             src="{{ url_for('static', filename='js/dynamic-banner.js') }}"></script>
         <script
@@ -281,16 +277,19 @@
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     const dropdown = this.closest('.nav-dropdown');
-                    const isActive = dropdown.classList.contains('active');
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    const isActive = menu.classList.contains('hidden');
                     
                     // Close all other dropdowns
-                    document.querySelectorAll('.nav-dropdown').forEach(d => {
-                        d.classList.remove('active');
+                    document.querySelectorAll('.dropdown-menu').forEach(m => {
+                        m.classList.add('hidden');
                     });
                     
                     // Toggle current dropdown
-                    if (!isActive) {
-                        dropdown.classList.add('active');
+                    if (isActive) {
+                        menu.classList.remove('hidden');
+                    } else {
+                        menu.classList.add('hidden');
                     }
                 });
             });
@@ -298,8 +297,8 @@
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.nav-dropdown')) {
-                    document.querySelectorAll('.nav-dropdown').forEach(d => {
-                        d.classList.remove('active');
+                    document.querySelectorAll('.dropdown-menu').forEach(m => {
+                        m.classList.add('hidden');
                     });
                 }
             });
@@ -308,28 +307,5 @@
 
         {% block scripts %}{% endblock %}
 
-        <script>
-        // Footer Search Functionality
-        function footerSearch() {
-            const searchInput = document.getElementById('footerSearchInput');
-            const query = searchInput.value.trim();
-            
-            if (query) {
-                window.location.href = `/search?q=${encodeURIComponent(query)}`;
-            }
-        }
-        
-        // Allow Enter key to trigger footer search
-        document.addEventListener('DOMContentLoaded', function() {
-            const footerSearchInput = document.getElementById('footerSearchInput');
-            if (footerSearchInput) {
-                footerSearchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        footerSearch();
-                    }
-                });
-            }
-        });
-        </script>
     </body>
 </html>

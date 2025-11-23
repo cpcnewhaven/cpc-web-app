@@ -3,196 +3,38 @@
 {% block title %}Highlights - CPC New Haven{% endblock %}
 
 {% block content %}
-<!-- Compact Modern Hero Section -->
-<section style="padding: 6rem 0 3rem; background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.98) 100%); position: relative; overflow: hidden;">
-    <!-- Subtle animated background -->
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.03; background-image: radial-gradient(circle at 20% 50%, rgba(0, 122, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%);"></div>
-    
-    <div class="container" style="position: relative; z-index: 1;">
-        <div style="max-width: 700px; margin: 0 auto; text-align: center;">
-            <!-- Small badge -->
-            <div style="display: inline-block; padding: 8px 20px; background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.3); border-radius: 50px; margin-bottom: 1.5rem;">
-                <span style="color: var(--cpc-blue); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">✨ Church Highlights</span>
-            </div>
-            
-            <!-- Compact title -->
-            <h1 style="font-size: 2.75rem; font-weight: 800; color: var(--text-white); margin-bottom: 1rem; line-height: 1.2; letter-spacing: -0.02em;">
-                What's Happening at CPC
-            </h1>
-            
-            <!-- Subtle description -->
-            <p style="font-size: 1.125rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 0; line-height: 1.6;">
-                Stay connected with featured events, announcements, and ongoing activities
-            </p>
-        </div>
-    </div>
-</section>
+<div class="max-w-3xl mx-auto px-4 py-10">
+    <h1 class="text-4xl font-bold mb-4">What's Happening at CPC</h1>
+    <p class="text-lg text-gray-600 mb-10">Stay connected with featured events,
+        announcements, and ongoing activities</p>
 
-<!-- Filter Section -->
-<section class="filter-section" style="background: var(--glass-bg); backdrop-filter: blur(20px); padding: 2rem 0; margin: 2rem 0; border-radius: var(--radius-lg);">
-    <div class="container">
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="event">Events</button>
-            <button class="filter-btn" data-filter="announcement">Announcements</button>
-            <button class="filter-btn" data-filter="ongoing">Ongoing</button>
-            <button class="filter-btn" data-filter="superfeatured">Featured</button>
-        </div>
+    <!-- Filter Section -->
+    <div class="mb-8 flex gap-2 flex-wrap justify-center">
+        <button
+            class="filter-btn active px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            data-filter="all">All</button>
+        <button
+            class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-filter="event">Events</button>
+        <button
+            class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-filter="announcement">Announcements</button>
+        <button
+            class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-filter="ongoing">Ongoing</button>
+        <button
+            class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            data-filter="superfeatured">Featured</button>
     </div>
-</section>
 
-<!-- Highlights Section -->
-<section class="highlights-section" style="padding: 2rem 0;">
-    <div class="container">
-        <div id="highlights-container" style="display: grid; gap: 2rem;">
-            <!-- Highlights will be populated by JavaScript -->
-        </div>
+    <!-- Highlights Section -->
+    <div id="highlights-container" class="space-y-6">
+        <!-- Highlights will be populated by JavaScript -->
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block scripts %}
-<style>
-    .filter-btn {
-        padding: 0.75rem 1.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: var(--radius-sm);
-        color: var(--text-white);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-    }
-
-    .filter-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-    }
-
-    .filter-btn.active {
-        background: var(--cpc-blue);
-        border-color: var(--cpc-blue);
-    }
-
-    .highlight-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: var(--radius-lg);
-        padding: 2rem;
-        transition: all 0.3s ease;
-        display: none;
-    }
-
-    .highlight-card.show {
-        display: block;
-    }
-
-    .highlight-card.super-featured {
-        border: 2px solid var(--cpc-gold);
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-    }
-
-    .highlight-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--glass-shadow);
-    }
-
-    .highlight-title {
-        color: var(--text-white);
-        font-size: 1.75rem;
-        margin-bottom: 1rem;
-        font-weight: 600;
-    }
-
-    .highlight-meta {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
-    }
-
-    .highlight-badge {
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius-sm);
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-transform: uppercase;
-    }
-
-    .badge-event {
-        background: rgba(0, 122, 255, 0.2);
-        color: var(--cpc-blue);
-        border: 1px solid var(--cpc-blue);
-    }
-
-    .badge-announcement {
-        background: rgba(255, 215, 0, 0.2);
-        color: var(--cpc-gold);
-        border: 1px solid var(--cpc-gold);
-    }
-
-    .badge-ongoing {
-        background: rgba(52, 199, 89, 0.2);
-        color: #34c759;
-        border: 1px solid #34c759;
-    }
-
-    .badge-upcoming {
-        background: rgba(255, 149, 0, 0.2);
-        color: #ff9500;
-        border: 1px solid #ff9500;
-    }
-
-    .badge-superfeatured {
-        background: linear-gradient(135deg, var(--cpc-gold), #ffed4e);
-        color: #000;
-        font-weight: 700;
-        padding: 0.5rem 1rem;
-        border: none;
-    }
-
-    .highlight-date {
-        color: var(--text-muted);
-        font-size: 0.875rem;
-    }
-
-    .highlight-content {
-        color: var(--text-white);
-        line-height: 1.6;
-    }
-
-    .highlight-image {
-        margin-bottom: 1.5rem;
-        border-radius: var(--radius-md);
-        overflow: hidden;
-    }
-
-    .highlight-image img {
-        width: 100%;
-        height: auto;
-        max-height: 400px;
-        object-fit: cover;
-        display: block;
-    }
-
-    .highlight-image.poster img {
-        object-fit: contain;
-        background: white;
-    }
-
-    @media (max-width: 768px) {
-        .highlight-title {
-            font-size: 1.5rem;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-    }
-</style>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let allHighlights = [];
@@ -207,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error loading highlights:', error);
-            document.getElementById('highlights-container').innerHTML = '<p style="color: var(--text-white); text-align: center;">Error loading highlights.</p>';
+            document.getElementById('highlights-container').innerHTML = '<div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">Error loading highlights.</div>';
         });
 
     function displayHighlights(highlights) {
@@ -215,56 +57,53 @@ document.addEventListener('DOMContentLoaded', function() {
         container.innerHTML = '';
         
         if (highlights.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-white); text-align: center;">No highlights at this time.</p>';
+            container.innerHTML = '<div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">No highlights at this time.</div>';
             return;
         }
 
         highlights.forEach(highlight => {
             const card = document.createElement('div');
-            card.classList.add('highlight-card', 'show');
+            card.classList.add('p-6', 'border', 'rounded-lg', 'shadow-sm', 'hover:shadow-md', 'transition', 'bg-white', 'highlight-card', 'show');
             card.dataset.type = highlight.type || '';
             card.dataset.category = highlight.category || '';
             card.dataset.superfeatured = highlight.superfeatured || false;
             
             if (highlight.superfeatured) {
-                card.classList.add('super-featured');
+                card.classList.add('border-yellow-400', 'border-2');
             }
             
             let html = '';
             
             // Add image if available
             if (highlight.featuredImage) {
-                const imageClass = highlight.imageDisplayType === 'poster' ? 'poster' : '';
+                const imageClass = highlight.imageDisplayType === 'poster' ? 'object-contain bg-white' : 'object-cover';
                 html += `
-                    <div class="highlight-image ${imageClass}">
-                        <img src="${highlight.featuredImage}" alt="${highlight.title}" loading="lazy">
-                    </div>
+                    <img src="${highlight.featuredImage}" alt="${highlight.title}" class="w-full max-w-2xl mx-auto rounded-lg shadow-md mt-6 mb-6 ${imageClass}" style="max-height: 400px;">
                 `;
             }
             
             // Add title
-            html += `<h2 class="highlight-title">${highlight.title}</h2>`;
+            html += `<h2 class="text-2xl font-semibold mb-4">${highlight.title}</h2>`;
             
             // Add meta badges
-            html += '<div class="highlight-meta">';
+            html += '<div class="flex gap-3 mb-4 text-sm text-gray-500 flex-wrap">';
             
             if (highlight.type) {
-                const badgeClass = `badge-${highlight.type}`;
-                html += `<span class="highlight-badge ${badgeClass}">${highlight.type}</span>`;
+                html += `<span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full">${highlight.type}</span>`;
             }
             
             if (highlight.superfeatured) {
-                html += '<span class="highlight-badge badge-superfeatured">⭐ Featured</span>';
+                html += '<span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-semibold">⭐ Featured</span>';
             }
             
             if (highlight.dateEntered) {
-                html += `<span class="highlight-date">📅 ${highlight.dateEntered}</span>`;
+                html += `<span class="text-gray-500">📅 ${highlight.dateEntered}</span>`;
             }
             
             html += '</div>';
             
             // Add description
-            html += `<div class="highlight-content">${highlight.description}</div>`;
+            html += `<div class="text-base leading-relaxed text-gray-700">${highlight.description}</div>`;
             
             card.innerHTML = html;
             container.appendChild(card);
@@ -277,8 +116,12 @@ document.addEventListener('DOMContentLoaded', function() {
         filterButtons.forEach(btn => {
             btn.addEventListener('click', function() {
                 // Update active button
-                filterButtons.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
+                filterButtons.forEach(b => {
+                    b.classList.remove('active', 'bg-blue-600', 'text-white');
+                    b.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                this.classList.add('active', 'bg-blue-600', 'text-white');
+                this.classList.remove('bg-gray-200', 'text-gray-700');
                 
                 const filter = this.dataset.filter;
                 filterHighlights(filter);
@@ -291,17 +134,22 @@ document.addEventListener('DOMContentLoaded', function() {
         
         cards.forEach(card => {
             if (filter === 'all') {
+                card.classList.remove('hidden');
                 card.classList.add('show');
             } else if (filter === 'superfeatured') {
                 if (card.dataset.superfeatured === 'true') {
+                    card.classList.remove('hidden');
                     card.classList.add('show');
                 } else {
+                    card.classList.add('hidden');
                     card.classList.remove('show');
                 }
             } else {
                 if (card.dataset.type === filter) {
+                    card.classList.remove('hidden');
                     card.classList.add('show');
                 } else {
+                    card.classList.add('hidden');
                     card.classList.remove('show');
                 }
             }
@@ -310,4 +158,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
-

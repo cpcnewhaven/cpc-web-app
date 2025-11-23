@@ -3,22 +3,16 @@
 {% block title %}Announcements - CPC New Haven{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Announcements</h1>
-        <p>Latest news and announcements from CPC New Haven</p>
-    </div>
-</section>
+<div class="max-w-6xl mx-auto px-4 py-10">
+    <h1 class="text-4xl font-bold mb-4">Announcements</h1>
+    <p class="text-lg text-gray-600 mb-10">Latest news and announcements from
+        CPC New Haven</p>
 
-<!-- Announcements Section -->
-<section class="announcements-section">
-    <div class="container">
-        <div id="announcements-container">
-            <!-- Announcements will be populated by JavaScript -->
-        </div>
+    <div id="announcements-container"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Announcements will be populated by JavaScript -->
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -31,44 +25,41 @@ document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('announcements-container');
             
             if (data.announcements && data.announcements.length > 0) {
+                let html = '';
+                
                 data.announcements.forEach(announcement => {
-                    const announcementElement = document.createElement('div');
-                    announcementElement.classList.add('announcement');
-                    
-                    if (announcement.superfeatured) {
-                        announcementElement.classList.add('super-featured');
-                    }
-                    
-                    let html = `
-                        <h2 class="announcement-title">${announcement.title}</h2>
-                        <div class="announcement-meta">
-                            <span class="announcement-type">${announcement.type}</span>
-                            ${announcement.category ? `<span class="announcement-category">${announcement.category}</span>` : ''}
-                            ${announcement.dateEntered ? `<span class="announcement-date">${announcement.dateEntered}</span>` : ''}
-                        </div>
-                        <div class="announcement-content">
-                            <p>${announcement.description}</p>
+                    html += `
+                        <div class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white flex flex-col h-full">
+                            ${announcement.featuredImage ? `
+                                <img src="${announcement.featuredImage}" alt="${announcement.title}" class="w-full h-48 object-cover rounded-lg mb-4">
+                            ` : ''}
+                            <h3 class="text-xl font-semibold mb-2">${announcement.title}</h3>
+                            <div class="flex gap-3 mb-4 text-sm text-gray-500 flex-wrap">
+                                ${announcement.type ? `<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">${announcement.type}</span>` : ''}
+                                ${announcement.category ? `<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full">${announcement.category}</span>` : ''}
+                            </div>
+                            <p class="text-base leading-relaxed text-gray-700 mb-4 flex-grow">${announcement.description}</p>
+                            ${announcement.dateEntered ? `<p class="text-sm text-gray-500 mt-auto">${announcement.dateEntered}</p>` : ''}
                         </div>
                     `;
-                    
-                    if (announcement.featuredImage) {
-                        html = `
-                            <div class="announcement-image">
-                                <img src="${announcement.featuredImage}" alt="${announcement.title}" style="width: 100%; height: auto; max-height: 400px; object-fit: cover; margin-bottom: 1rem;">
-                            </div>
-                        ` + html;
-                    }
-                    
-                    announcementElement.innerHTML = html;
-                    container.appendChild(announcementElement);
                 });
+                
+                container.innerHTML = html;
             } else {
-                container.innerHTML = '<p>No announcements at this time.</p>';
+                container.innerHTML = `
+                    <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
+                        No announcements at this time.
+                    </div>
+                `;
             }
         })
         .catch(error => {
             console.error('Error loading announcements:', error);
-            document.getElementById('announcements-container').innerHTML = '<p>Error loading announcements.</p>';
+            document.getElementById('announcements-container').innerHTML = `
+                <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
+                    Error loading announcements.
+                </div>
+            `;
         });
 });
 </script>
