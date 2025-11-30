@@ -183,6 +183,14 @@
         <!-- Fixed Left Dashboard (Desktop) -->
         <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data>
             <div class="dashboard-section">
+                <div class="flex items-center gap-2">
+                    <a href="{{ url_for('index') }}" class="start-tile" title="Start">
+                        <i class="fa-brands fa-windows"></i>
+                        <span>Start</span>
+                    </a>
+                </div>
+            </div>
+            <div class="dashboard-section">
                 <div class="dashboard-title">Quick Search</div>
                 <form @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
                     <input x-ref="leftSearch" type="search" placeholder="Search site..."
@@ -244,6 +252,13 @@
 
         <!-- Fixed Right Dashboard (Desktop) -->
         <aside class="dashboard-sidebar dashboard-right hidden xl:block" :class="$store.dash.compact ? 'text-sm' : ''">
+            <div class="dashboard-section">
+                <div class="dashboard-title">Now</div>
+                <div class="dashboard-note">
+                    <div id="liveClock" class="text-white text-lg font-semibold"></div>
+                    <div id="liveDate" class="text-white/80 text-sm mt-1"></div>
+                </div>
+            </div>
             <div class="dashboard-section" x-show="$store.dash.showService">
                 <div class="dashboard-title">Sunday Service</div>
                 <div class="dashboard-note">
@@ -425,6 +440,23 @@
                 }
             });
         });
+        </script>
+
+        <!-- Live Clock -->
+        <script>
+        (function() {
+            function updateClock() {
+                const now = new Date();
+                const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const date = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+                const t = document.getElementById('liveClock');
+                const d = document.getElementById('liveDate');
+                if (t) t.textContent = time;
+                if (d) d.textContent = date;
+            }
+            updateClock();
+            setInterval(updateClock, 1000 * 30);
+        })();
         </script>
 
         {% block scripts %}{% endblock %}

@@ -910,6 +910,26 @@ a:hover {
 .main-nav i { font-size: 1.3rem; }
 .main-nav span { font-size: 0.95rem; font-weight: 500; }
 
+/* Windows-like Start tile */
+.start-tile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    color: #eaeaea;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    text-decoration: none;
+    transition: 0.2s;
+}
+.start-tile:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+}
+.start-tile i { font-size: 1.1rem; }
+.start-tile span { font-weight: 700; letter-spacing: 0.02em; font-size: 0.95rem; }
+
 /* Quick links icon grid */
 .quick-links-grid {
     display: grid;
