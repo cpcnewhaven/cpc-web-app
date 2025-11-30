@@ -147,7 +147,8 @@ main {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
     padding: 12px 12px; /* compact */
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden; /* prevent horizontal scroll */
     z-index: 40;
 }
 
@@ -996,8 +997,8 @@ a:hover {
 /* Quick links icon grid */
 .quick-links-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(3, 1fr); /* fit without horizontal scroll */
+    gap: 10px;
     padding: 10px 0;
 }
 .quick-links-grid a {
@@ -1006,9 +1007,9 @@ a:hover {
     align-items: center;
     color: #ddd;
     text-decoration: none;
-    padding: 10px;
+    padding: 6px; /* compact */
     background: rgba(255,255,255,0.03);
-    border-radius: 12px;
+    border-radius: 10px;
     transition: 0.25s;
     border: 1px solid rgba(255,255,255,0.06);
 }
@@ -1017,17 +1018,17 @@ a:hover {
     transform: translateY(-2px);
 }
 .quick-links-grid i {
-    font-size: 1.6rem;
-    margin-bottom: 6px;
+    font-size: 1.3rem; /* compact */
+    margin-bottom: 4px;
 }
 .quick-links-grid span {
-    font-size: 0.85rem;
+    font-size: 0.78rem; /* compact */
     text-align: center;
     opacity: 0.9;
 }
 @media (max-width: 768px) {
     .quick-links-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr); /* stays 3 on mobile */
     }
 }
 

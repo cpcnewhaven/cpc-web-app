@@ -243,8 +243,14 @@
                             @change="$store.dash.showService = !$store.dash.showService; $store.dash.save()">
                         <span>Show Sunday Service</span>
                     </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="accent-blue-600"
+                            :checked="$store.dash.showAdminCTA"
+                            @change="$store.dash.showAdminCTA = !$store.dash.showAdminCTA; $store.dash.save()">
+                        <span>Show Admin actions</span>
+                    </label>
                 </div>
-                <div class="mt-3">
+                <div class="mt-3" x-show="$store.dash.showAdminCTA">
                     <a href="/admin" class="glass-button w-full block text-center">Admin Login</a>
                 </div>
             </div>
@@ -268,7 +274,7 @@
                             <button class="glass-button" @click="$store.dash.userName=$refs.userInput.value.trim(); $store.dash.save()">Sign in</button>
                         </div>
                     </template>
-                    <div class="mt-2">
+                    <div class="mt-2" x-show="$store.dash.showAdminCTA">
                         <a href="/admin" class="glass-button w-full block text-center">Admin Login</a>
                     </div>
                 </div>
@@ -294,7 +300,7 @@
                     <li><a href="{{ url_for('contact') }}" class="dashboard-link" title="Contact"><i class="fa-solid fa-envelope"></i></a></li>
                 </ul>
             </div>
-            <div class="dashboard-section">
+            <div class="dashboard-section" x-show="$store.dash.showAdminCTA">
                 <div class="dashboard-title">Manage Content</div>
                 <div class="text-white/90 mb-2">Sign in to post highlights, edit events, and manage media.</div>
                 <a href="/admin" class="glass-button w-full block text-center">Sign in to Admin</a>
@@ -380,11 +386,13 @@
                 compact: JSON.parse(localStorage.getItem('dash_compact') || 'false'),
                 showQuickLinks: JSON.parse(localStorage.getItem('dash_showQuickLinks') || 'true'),
                 showService: JSON.parse(localStorage.getItem('dash_showService') || 'true'),
+                showAdminCTA: JSON.parse(localStorage.getItem('dash_showAdminCTA') || 'false'),
                 userName: localStorage.getItem('dash_userName') || '',
                 save() {
                     localStorage.setItem('dash_compact', JSON.stringify(this.compact));
                     localStorage.setItem('dash_showQuickLinks', JSON.stringify(this.showQuickLinks));
                     localStorage.setItem('dash_showService', JSON.stringify(this.showService));
+                    localStorage.setItem('dash_showAdminCTA', JSON.stringify(this.showAdminCTA));
                     localStorage.setItem('dash_userName', this.userName || '');
                 }
             });
