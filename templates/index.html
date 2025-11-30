@@ -206,14 +206,38 @@
 {% block content %}
 <!-- Hero Section with Dynamic Background -->
 <section id="home-image" class="splash-image relative">
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-blue-50/30 to-white/0"></div>
+    <video class="hero-video-bg" autoplay muted loop playsinline poster="" aria-hidden="true"></video>
+    <div class="pointer-events-none absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.25), rgba(0,0,0,0.45));"></div>
     <div class="splash-content mx-auto max-w-3xl px-4 md:px-6 text-center relative">
         <h1>Christ Presbyterian Church</h1>
         <h2>New Haven, CT</h2>
         <p>Everyone is truly welcomed into God's presence because there is no limit to God's grace as accomplished for us by Christ.</p>
         <div class="splash-buttons mt-4 md:mt-6">
-            <a href="{{ url_for('about') }}" class="btn btn-primary">Learn More</a>
-            <a href="{{ url_for('live') }}" class="btn btn-secondary">Watch Live</a>
+            <a href="{{ url_for('live') }}" class="btn btn-primary">Watch Live</a>
+            <a href="{{ url_for('about') }}" class="btn btn-secondary">Plan a Visit</a>
+            <a href="{{ url_for('sermons') }}" class="btn btn-secondary">Latest Sermon</a>
+        </div>
+    </div>
+</section>
+
+<!-- This Week at CPC -->
+<section class="section-band band-gray">
+    <div class="container">
+        <div x-data="{ i: 0, items: [
+            { icon: '⛪', text: 'Next Sunday Service · 10:30am · 135 Whitney Ave' },
+            { icon: '📖', text: 'This Week’s Sermon · Grace Without Limit' },
+            { icon: '⭐', text: 'Featured · Community Dinner Wednesday 6pm' }
+        ] }" class="week-strip relative">
+            <button class="ticker-arrow left" @click="i = (i + items.length - 1) % items.length">‹</button>
+            <div class="ticker" x-transition>
+                <template x-for="(item, idx) in items" :key="idx">
+                    <div class="ticker-item" x-show="idx === i">
+                        <span x-text="item.icon"></span>
+                        <span x-text="item.text"></span>
+                    </div>
+                </template>
+            </div>
+            <button class="ticker-arrow right" @click="i = (i + 1) % items.length">›</button>
         </div>
     </div>
 </section>
@@ -321,38 +345,56 @@
     </div>
 </section>
 
-<!-- Mid-Image Section -->
-<section id="mid-image" class="mid-image">
-    <div class="mid-image-content">
-        <h2>Come as you are</h2>
-        <p>Though we may be more sinful than we're even willing to imagine, we are more loved in Christ than we can ever dare to hope.</p>
+<!-- Pull Quote Section -->
+<section class="section-band band-warm">
+    <div class="container">
+        <div class="pull-quote fade-up">
+            <div class="quote-text">Though we may be more sinful than we're even willing to imagine, we are more loved in Christ than we can ever dare to hope.</div>
+            <div class="quote-sub">You are welcome here.</div>
+        </div>
     </div>
 </section>
 
-<!-- Recent Podcasts Section -->
-<section class="recent-podcasts">
+<!-- Recent Sermons & Podcasts -->
+<section class="section-band band-white">
     <div class="container">
-        <h2>Recent Sermons & Podcasts</h2>
-        <div class="podcast-preview">
-            <table id="podcasts">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Series</th>
-                        <th>Scripture</th>
-                        <th>Title</th>
-                        <th>Spotify</th>
-                        <th>Apple</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Will be populated by JavaScript -->
-                </tbody>
-            </table>
+        <h2 class="text-blue-700 mb-4">Recent Sermons & Podcasts</h2>
+        <div id="recent-media" class="media-grid fade-up">
+            <!-- Cards will be populated by JS -->
         </div>
-        <div class="podcast-links">
+        <div class="text-center mt-4">
             <a href="{{ url_for('sermons') }}" class="btn btn-primary">All Sermons</a>
             <a href="{{ url_for('podcasts') }}" class="btn btn-secondary">All Podcasts</a>
+        </div>
+    </div>
+</section>
+
+<!-- Meet the Pastors & Staff -->
+<section class="section-band band-warm">
+    <div class="container">
+        <h2 class="text-blue-700 mb-4">Meet the Pastors & Staff</h2>
+        <div class="staff-grid fade-up">
+            <div class="staff-member">
+                <div class="staff-photo">PN</div>
+                <h3>Pastor Name</h3>
+                <h4>Senior Pastor</h4>
+                <p class="glass-text-secondary">Loves preaching Christ and walking with people through the gospel.</p>
+                <a href="{{ url_for('contact') }}" class="staff-contact-btn mt-2">Contact</a>
+            </div>
+            <div class="staff-member">
+                <div class="staff-photo">AN</div>
+                <h3>Associate Name</h3>
+                <h4>Associate Pastor</h4>
+                <p class="glass-text-secondary">Helps lead worship and community outreach.</p>
+                <a href="{{ url_for('contact') }}" class="staff-contact-btn mt-2">Contact</a>
+            </div>
+            <div class="staff-member">
+                <div class="staff-photo">DN</div>
+                <h3>Director Name</h3>
+                <h4>Youth Director</h4>
+                <p class="glass-text-secondary">Investing in the next generation of the church.</p>
+                <a href="{{ url_for('contact') }}" class="staff-contact-btn mt-2">Contact</a>
+            </div>
         </div>
     </div>
 </section>
@@ -386,6 +428,67 @@
 <script>
 // Modern Highlights Grid with Advanced UI
 document.addEventListener('DOMContentLoaded', function() {
+    // Populate Recent Media Cards (sermons/podcasts)
+    (async function loadRecentMedia() {
+        const container = document.getElementById('recent-media');
+        if (!container) return;
+        try {
+            // Try podcasts first
+            let items = [];
+            try {
+                const r = await fetch('/api/podcasts');
+                if (r.ok) {
+                    const data = await r.json();
+                    // try to normalize; fallback to array
+                    items = (data.items || data.podcasts || data || []).slice(0, 6);
+                }
+            } catch (_) {}
+            // If still empty, try sermons endpoint (if exists)
+            if (!items.length) {
+                try {
+                    const r2 = await fetch('/api/sermons/recent');
+                    if (r2.ok) {
+                        const data2 = await r2.json();
+                        items = (data2.items || data2.sermons || data2 || []).slice(0, 6);
+                    }
+                } catch (_) {}
+            }
+            // If still empty, show friendly message
+            if (!items.length) {
+                container.innerHTML = '<div class="text-center text-gray-600 p-6">Recent media will appear here.</div>';
+                return;
+            }
+            // Render cards
+            items.forEach((it) => {
+                const card = document.createElement('div');
+                card.className = 'media-card';
+                const thumb = it.thumbnail || it.image || '';
+                const title = it.title || it.name || 'Untitled';
+                const date = it.date || it.published || it.pubDate || '';
+                const series = it.series || it.scripture || it.speaker || '';
+                const playUrl = it.url || it.audio || it.link || '#';
+                card.innerHTML = `
+                    ${thumb ? `<img class="media-thumb" src="${thumb}" alt="${title}">` : `<div class="media-thumb"></div>`}
+                    <div class="media-body">
+                        <div class="media-title">${title}</div>
+                        <div class="media-meta">
+                            ${date ? `<span>📅 ${new Date(date).toLocaleDateString()}</span>` : ``}
+                            ${series ? `<span>• ${series}</span>` : ``}
+                        </div>
+                        <div class="media-actions">
+                            <a href="${playUrl}" class="btn-play">▶ Play</a>
+                            <a href="{{ url_for('sermons') }}" class="btn-more">Read More</a>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            console.error('Error loading recent media:', err);
+            container.innerHTML = '<div class="text-center text-gray-600 p-6">Unable to load recent media.</div>';
+        }
+    })();
+
     // Fetch from new highlights API
     fetch('/api/highlights')
         .then(response => response.json())

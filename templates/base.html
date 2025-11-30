@@ -29,7 +29,7 @@
 
         <!-- Desktop Navigation -->
         <nav
-            class="hidden md:flex w-full max-w-6xl mx-auto rounded-lg py-3 px-6 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+            class="top-nav hidden md:flex w-full max-w-6xl mx-auto rounded-lg py-3 px-6 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
             style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
             <div class="nav-logo">
                 <a href="{{ url_for('index') }}">
@@ -43,6 +43,15 @@
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Home</a></li>
                 <li><a href="{{ url_for('about') }}"
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">About</a></li>
+                <li><a href="{{ url_for('about') }}"
+                        class="text-white hover:text-blue-200 font-semibold px-3 py-2 rounded text-sm">Plan a Visit</a></li>
+                <li class="hidden md:block">
+                    <form @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.navq.value)">
+                        <input x-ref="navq" type="search" placeholder="Search..."
+                            class="px-3 py-2 rounded-md bg-white/80 text-gray-800 focus:outline-none text-sm"
+                            autocomplete="off" style="min-width: 180px;">
+                    </form>
+                </li>
                 <li class="relative nav-dropdown">
                     <a href="#"
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">Community
@@ -75,7 +84,7 @@
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Podcasts</a></li>
                         <li><a href="{{ url_for('live') }}"
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Live
-                                Stream</a></li>
+                                Stream <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: rgba(255,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.25);">LIVE</span></a></li>
                     </ul>
                 </li>
                 <li class="relative nav-dropdown">
@@ -109,7 +118,7 @@
 
         <!-- Mobile Navigation -->
         <nav x-data="{ open: false }"
-            class="flex md:hidden w-full max-w-6xl mx-auto rounded-lg py-3 px-4 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+            class="top-nav flex md:hidden w-full max-w-6xl mx-auto rounded-lg py-3 px-4 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
             style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
             <div class="nav-logo">
                 <a href="{{ url_for('index') }}">
@@ -172,32 +181,66 @@
         </nav>
 
         <!-- Fixed Left Dashboard (Desktop) -->
-        <aside class="dashboard-sidebar dashboard-left hidden lg:block">
+        <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Quick Search</div>
+                <form @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
+                    <input x-ref="leftSearch" type="search" placeholder="Search site..."
+                        class="w-full px-3 py-2 rounded-md bg-white/80 text-gray-800 focus:outline-none"
+                        autocomplete="off">
+                </form>
+            </div>
             <div class="dashboard-section">
                 <div class="dashboard-title">Navigation</div>
                 <ul class="dashboard-list">
-                    <li><a href="{{ url_for('index') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Home</a></li>
-                    <li><a href="{{ url_for('highlights') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Highlights</a></li>
-                    <li><a href="{{ url_for('events') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Events</a></li>
-                    <li><a href="{{ url_for('announcements') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Announcements</a></li>
-                    <li><a href="{{ url_for('sermons') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Sermons</a></li>
-                    <li><a href="{{ url_for('podcasts') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Podcasts</a></li>
+                    <li><a href="{{ url_for('index') }}" class="dashboard-link" title="Home"><i class="fa-solid fa-house"></i></a></li>
+                    <li><a href="{{ url_for('highlights') }}" class="dashboard-link" title="Highlights"><i class="fa-solid fa-star"></i></a></li>
+                    <li><a href="{{ url_for('events') }}" class="dashboard-link" title="Events"><i class="fa-solid fa-calendar-days"></i></a></li>
+                    <li><a href="{{ url_for('announcements') }}" class="dashboard-link" title="Announcements"><i class="fa-solid fa-bullhorn"></i></a></li>
+                    <li><a href="{{ url_for('sermons') }}" class="dashboard-link" title="Sermons"><i class="fa-solid fa-book-bible"></i></a></li>
+                    <li><a href="{{ url_for('podcasts') }}" class="dashboard-link" title="Podcasts"><i class="fa-solid fa-podcast"></i></a></li>
+                </ul>
+            </div>
+            <div class="dashboard-section" x-show="$store.dash.showQuickLinks">
+                <div class="dashboard-title">Quick Links</div>
+                <ul class="dashboard-list">
+                    <li><a href="{{ url_for('about') }}" class="dashboard-link" title="About"><i class="fa-solid fa-circle-info"></i></a></li>
+                    <li><a href="{{ url_for('give') }}" class="dashboard-link" title="Give"><i class="fa-solid fa-hand-holding-heart"></i></a></li>
+                    <li><a href="{{ url_for('search') }}" class="dashboard-link" title="Search"><i class="fa-solid fa-magnifying-glass"></i></a></li>
+                    <li><a href="{{ url_for('archive') }}" class="dashboard-link" title="Archive"><i class="fa-solid fa-box-archive"></i></a></li>
                 </ul>
             </div>
             <div class="dashboard-section">
-                <div class="dashboard-title">Quick Links</div>
-                <ul class="dashboard-list">
-                    <li><a href="{{ url_for('about') }}" class="dashboard-link">About CPC</a></li>
-                    <li><a href="{{ url_for('give') }}" class="dashboard-link">Give</a></li>
-                    <li><a href="{{ url_for('search') }}" class="dashboard-link">Search</a></li>
-                    <li><a href="{{ url_for('archive') }}" class="dashboard-link">Archive</a></li>
-                </ul>
+                <div class="dashboard-title">Customize</div>
+                <div class="flex flex-col gap-2 text-white/90">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="accent-blue-600"
+                            :checked="$store.dash.compact"
+                            @change="$store.dash.compact = !$store.dash.compact; $store.dash.save()">
+                        <span>Compact mode</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="accent-blue-600"
+                            :checked="$store.dash.showQuickLinks"
+                            @change="$store.dash.showQuickLinks = !$store.dash.showQuickLinks; $store.dash.save()">
+                        <span>Show Quick Links</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="accent-blue-600"
+                            :checked="$store.dash.showService"
+                            @change="$store.dash.showService = !$store.dash.showService; $store.dash.save()">
+                        <span>Show Sunday Service</span>
+                    </label>
+                </div>
+                <div class="mt-3">
+                    <a href="/admin" class="glass-button w-full block text-center">Admin Login</a>
+                </div>
             </div>
         </aside>
 
         <!-- Fixed Right Dashboard (Desktop) -->
-        <aside class="dashboard-sidebar dashboard-right hidden xl:block">
-            <div class="dashboard-section">
+        <aside class="dashboard-sidebar dashboard-right hidden xl:block" :class="$store.dash.compact ? 'text-sm' : ''">
+            <div class="dashboard-section" x-show="$store.dash.showService">
                 <div class="dashboard-title">Sunday Service</div>
                 <div class="dashboard-note">
                     10:30am Worship • 135 Whitney Ave
@@ -206,28 +249,33 @@
             <div class="dashboard-section">
                 <div class="dashboard-title">Stay Connected</div>
                 <ul class="dashboard-list">
-                    <li><a href="https://www.instagram.com/cpcnewhaven" target="_blank" class="dashboard-link">Instagram</a></li>
-                    <li><a href="https://www.youtube.com/@cpcnewhaven" target="_blank" class="dashboard-link">YouTube</a></li>
-                    <li><a href="{{ url_for('contact') }}" class="dashboard-link">Contact</a></li>
+                    <li><a href="https://www.instagram.com/cpcnewhaven" target="_blank" class="dashboard-link" title="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href="https://www.youtube.com/@cpcnewhaven" target="_blank" class="dashboard-link" title="YouTube"><i class="fa-brands fa-youtube"></i></a></li>
+                    <li><a href="{{ url_for('contact') }}" class="dashboard-link" title="Contact"><i class="fa-solid fa-envelope"></i></a></li>
                 </ul>
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Manage Content</div>
+                <div class="text-white/90 mb-2">Sign in to post highlights, edit events, and manage media.</div>
+                <a href="/admin" class="glass-button w-full block text-center">Sign in to Admin</a>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="pt-8 md:pt-24 pb-20 dashboard-main">
-            {% block content %}{% endblock %}
+            <div class="dashboard-panel">
+                {% block content %}{% endblock %}
+            </div>
         </main>
 
-        <!-- Fixed Bottom Dock -->
-        <div class="dashboard-bottom hidden md:flex">
-            <div class="dock-inner">
-                <a href="{{ url_for('index') }}" class="dock-link">Home</a>
-                <a href="{{ url_for('highlights') }}" class="dock-link">Highlights</a>
-                <a href="{{ url_for('events') }}" class="dock-link">Events</a>
-                <a href="{{ url_for('sermons') }}" class="dock-link">Sermons</a>
-                <a href="{{ url_for('podcasts') }}" class="dock-link">Podcasts</a>
-                <a href="{{ url_for('give') }}" class="dock-link">Give</a>
-            </div>
+        <!-- Start Menu Bar (icon dock) -->
+        <div class="start-menu-bar">
+            <a href="{{ url_for('index') }}" title="Home"><i class="fa-solid fa-house"></i></a>
+            <a href="{{ url_for('highlights') }}" title="Highlights"><i class="fa-solid fa-star"></i></a>
+            <a href="{{ url_for('sermons') }}" title="Sermons"><i class="fa-solid fa-book-bible"></i></a>
+            <a href="{{ url_for('podcasts') }}" title="Podcasts"><i class="fa-solid fa-podcast"></i></a>
+            <a href="{{ url_for('give') }}" title="Give"><i class="fa-solid fa-hand-holding-heart"></i></a>
+            <a href="{{ url_for('search') }}" title="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
         </div>
 
         <!-- Footer -->
@@ -354,6 +402,22 @@
                     document.querySelectorAll('.dropdown-menu').forEach(m => {
                         m.classList.add('hidden');
                     });
+                }
+            });
+        });
+        </script>
+
+        <!-- Dashboard Settings Store -->
+        <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('dash', {
+                compact: JSON.parse(localStorage.getItem('dash_compact') || 'false'),
+                showQuickLinks: JSON.parse(localStorage.getItem('dash_showQuickLinks') || 'true'),
+                showService: JSON.parse(localStorage.getItem('dash_showService') || 'true'),
+                save() {
+                    localStorage.setItem('dash_compact', JSON.stringify(this.compact));
+                    localStorage.setItem('dash_showQuickLinks', JSON.stringify(this.showQuickLinks));
+                    localStorage.setItem('dash_showService', JSON.stringify(this.showService));
                 }
             });
         });

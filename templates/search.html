@@ -192,6 +192,14 @@
     }
 
     window.changePage = changePage;
-    showEmptyState();
+    // Auto-run if ?q= is present
+    const params = new URLSearchParams(window.location.search);
+    const initialQ = params.get('q');
+    if (initialQ) {
+        searchInput.value = initialQ;
+        performSearch();
+    } else {
+        showEmptyState();
+    }
 </script>
 {% endblock %}
