@@ -129,10 +129,10 @@ main {
 
 /* Dashboard Layout */
 :root {
-    --dashboard-sidebar-width: 280px;
+    --dashboard-sidebar-width: 252px; /* 10% more compact */
     --dashboard-gutter: 16px;
     --dashboard-top-offset: 90px; /* below nav */
-    --dashboard-bottom-height: 56px; /* bottom dock height */
+    --dashboard-bottom-height: 50px; /* 10% more compact */
 }
 
 .dashboard-sidebar {
@@ -146,7 +146,7 @@ main {
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    padding: 14px 14px;
+    padding: 12px 12px; /* compact */
     overflow: auto;
     z-index: 40;
 }
@@ -281,7 +281,7 @@ main {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 64px;
+    height: 58px; /* compact */
     background: rgba(15, 15, 20, 0.65);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -304,12 +304,21 @@ main {
 }
 @media (max-width: 768px) {
     .start-menu-bar {
-        height: 72px;
+        height: 68px; /* compact */
         gap: 24px;
     }
     .start-menu-bar a {
         font-size: 1.75rem;
     }
+}
+
+/* Start menu meta (right-aligned small text) */
+.start-menu-meta {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    color: rgba(255,255,255,0.75);
+    font-size: 12px;
 }
 
 /* Container - Use for page content */
@@ -890,14 +899,14 @@ a:hover {
 .main-nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px; /* compact */
 }
 .main-nav a {
     display: flex;
     align-items: center;
     gap: 10px;
     color: #eee;
-    padding: 8px 12px;
+    padding: 7px 11px; /* compact */
     border-radius: 8px;
     transition: 0.2s;
     text-decoration: none;
