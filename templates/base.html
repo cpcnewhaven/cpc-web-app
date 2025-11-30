@@ -171,10 +171,64 @@
             </div>
         </nav>
 
+        <!-- Fixed Left Dashboard (Desktop) -->
+        <aside class="dashboard-sidebar dashboard-left hidden lg:block">
+            <div class="dashboard-section">
+                <div class="dashboard-title">Navigation</div>
+                <ul class="dashboard-list">
+                    <li><a href="{{ url_for('index') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Home</a></li>
+                    <li><a href="{{ url_for('highlights') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Highlights</a></li>
+                    <li><a href="{{ url_for('events') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Events</a></li>
+                    <li><a href="{{ url_for('announcements') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Announcements</a></li>
+                    <li><a href="{{ url_for('sermons') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Sermons</a></li>
+                    <li><a href="{{ url_for('podcasts') }}" class="dashboard-link text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200">Podcasts</a></li>
+                </ul>
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Quick Links</div>
+                <ul class="dashboard-list">
+                    <li><a href="{{ url_for('about') }}" class="dashboard-link">About CPC</a></li>
+                    <li><a href="{{ url_for('give') }}" class="dashboard-link">Give</a></li>
+                    <li><a href="{{ url_for('search') }}" class="dashboard-link">Search</a></li>
+                    <li><a href="{{ url_for('archive') }}" class="dashboard-link">Archive</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Fixed Right Dashboard (Desktop) -->
+        <aside class="dashboard-sidebar dashboard-right hidden xl:block">
+            <div class="dashboard-section">
+                <div class="dashboard-title">Sunday Service</div>
+                <div class="dashboard-note">
+                    10:30am Worship • 135 Whitney Ave
+                </div>
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Stay Connected</div>
+                <ul class="dashboard-list">
+                    <li><a href="https://www.instagram.com/cpcnewhaven" target="_blank" class="dashboard-link">Instagram</a></li>
+                    <li><a href="https://www.youtube.com/@cpcnewhaven" target="_blank" class="dashboard-link">YouTube</a></li>
+                    <li><a href="{{ url_for('contact') }}" class="dashboard-link">Contact</a></li>
+                </ul>
+            </div>
+        </aside>
+
         <!-- Main Content -->
-        <main class="pt-24">
+        <main class="pt-8 md:pt-24 pb-20 dashboard-main">
             {% block content %}{% endblock %}
         </main>
+
+        <!-- Fixed Bottom Dock -->
+        <div class="dashboard-bottom hidden md:flex">
+            <div class="dock-inner">
+                <a href="{{ url_for('index') }}" class="dock-link">Home</a>
+                <a href="{{ url_for('highlights') }}" class="dock-link">Highlights</a>
+                <a href="{{ url_for('events') }}" class="dock-link">Events</a>
+                <a href="{{ url_for('sermons') }}" class="dock-link">Sermons</a>
+                <a href="{{ url_for('podcasts') }}" class="dock-link">Podcasts</a>
+                <a href="{{ url_for('give') }}" class="dock-link">Give</a>
+            </div>
+        </div>
 
         <!-- Footer -->
         <footer

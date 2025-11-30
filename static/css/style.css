@@ -117,6 +117,154 @@ main {
     margin-top: 100px;
 }
 
+/* Dashboard Layout */
+:root {
+    --dashboard-sidebar-width: 280px;
+    --dashboard-gutter: 16px;
+    --dashboard-top-offset: 90px; /* below nav */
+    --dashboard-bottom-height: 56px; /* bottom dock height */
+}
+
+.dashboard-sidebar {
+    position: fixed;
+    top: var(--dashboard-top-offset);
+    bottom: calc(var(--dashboard-gutter) + var(--dashboard-bottom-height));
+    width: var(--dashboard-sidebar-width);
+    background: var(--glass-white);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 14px 14px;
+    overflow: auto;
+    z-index: 40;
+}
+
+.dashboard-left {
+    left: var(--dashboard-gutter);
+}
+
+.dashboard-right {
+    right: var(--dashboard-gutter);
+}
+
+.dashboard-main {
+    /* leave room for fixed sidebars on large screens */
+}
+
+@media (min-width: 1024px) {
+    .dashboard-main {
+        padding-left: calc(var(--dashboard-sidebar-width) + var(--dashboard-gutter) * 2);
+        padding-right: calc(var(--dashboard-sidebar-width) + var(--dashboard-gutter) * 2);
+    }
+}
+
+@media (min-width: 1280px) {
+    :root {
+        --dashboard-sidebar-width: 300px;
+    }
+}
+
+.dashboard-section + .dashboard-section {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dashboard-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-white);
+    margin-bottom: 8px;
+    padding-left: 10px;
+    border-left: 3px solid rgba(0, 122, 255, 0.6);
+}
+
+.dashboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dashboard-link {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--text-white);
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: var(--transition-base);
+}
+
+.dashboard-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(2px);
+}
+
+.dashboard-note {
+    color: var(--text-white);
+    opacity: 0.85;
+    font-size: 0.95rem;
+}
+
+.dashboard-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - var(--dashboard-gutter) * 2);
+    height: var(--dashboard-bottom-height);
+    background: var(--glass-white);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dock-inner {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.dock-link {
+    color: var(--text-white);
+    padding: 6px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+}
+
+.dock-link:hover {
+    background: rgba(0, 122, 255, 0.15);
+    border-color: rgba(0, 122, 255, 0.35);
+}
+
+@media (max-width: 1023px) {
+    .dashboard-bottom {
+        width: calc(100% - 16px);
+        height: 52px;
+    }
+}
+
 /* Container - Use for page content */
 .container {
     max-width: 1200px;
@@ -631,18 +779,20 @@ a:hover {
 }
 
 .splash-content h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
 }
 
 .splash-content h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
 }
 
 .splash-content p {
     font-size: 1.2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     max-width: 600px;
 }
 
@@ -1402,7 +1552,7 @@ tr:hover {
     }
 
     .splash-content h1 {
-        font-size: 2rem;
+        font-size: 2.25rem;
     }
 
     .splash-content h2 {
