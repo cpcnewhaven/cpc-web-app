@@ -29,8 +29,8 @@
 
         <!-- Desktop Navigation -->
         <nav
-            class="top-nav hidden md:flex w-full max-w-6xl mx-auto rounded-lg py-3 px-6 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
-            style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
+            class="top-nav hidden md:flex w-full max-w-6xl mx-auto rounded-lg py-2.5 px-5 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+            style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); border-bottom: 1px solid rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
             <div class="nav-logo">
                 <a href="{{ url_for('index') }}">
                     <img src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
@@ -118,8 +118,8 @@
 
         <!-- Mobile Navigation -->
         <nav x-data="{ open: false }"
-            class="top-nav flex md:hidden w-full max-w-6xl mx-auto rounded-lg py-3 px-4 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
-            style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
+            class="top-nav flex md:hidden w-full max-w-6xl mx-auto rounded-lg py-2.5 px-4 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+            style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); border-bottom: 1px solid rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
             <div class="nav-logo">
                 <a href="{{ url_for('index') }}">
                     <img src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
@@ -318,28 +318,21 @@
         <!-- Footer Ticker (announcements/highlights) -->
         <div class="footer-ticker">
             <div class="footer-ticker-inner">
-                <div class="ticker-content" id="footerTickerTrack">
-                    <!-- Filled by JS -->
+                <div class="ticker-viewport">
+                    <div class="ticker-content" id="footerTickerTrack">
+                        <!-- Filled by JS -->
                     </div>
                 </div>
+                <div class="footer-meta">
+                    <span id="footerNext">Next: Sunday 10:30am</span>
+                    <span class="sep">•</span>
+                    <span id="footerClock"></span>
+                    <span class="sep">•</span>
+                    <span id="footerDate"></span>
+                </div>
+                </div>
             </div>
-
-        <!-- Start Menu Bar (icon dock) -->
-        <div class="start-menu-bar">
-            <a href="{{ url_for('index') }}" title="Home"><i class="fa-solid fa-house"></i></a>
-            <a href="{{ url_for('highlights') }}" title="Highlights"><i class="fa-solid fa-star"></i></a>
-            <a href="{{ url_for('sermons') }}" title="Sermons"><i class="fa-solid fa-book-bible"></i></a>
-            <a href="{{ url_for('podcasts') }}" title="Podcasts"><i class="fa-solid fa-podcast"></i></a>
-            <a href="{{ url_for('give') }}" title="Give"><i class="fa-solid fa-hand-holding-heart"></i></a>
-            <a href="{{ url_for('search') }}" title="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
-            <div class="start-menu-meta">
-                <span id="footerClock"></span>
-                <span class="mx-1">•</span>
-                <span id="footerDate"></span>
-                <span class="mx-1">•</span>
-                © 2025 CPC New Haven
-            </div>
-        </div>
+        <!-- Start menu dock removed; footer ticker now carries meta -->
 
         <!-- Footer removed in favor of dashboard dock/meta -->
         <footer class="hidden"></footer>

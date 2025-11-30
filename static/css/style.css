@@ -132,7 +132,7 @@ main {
     --dashboard-sidebar-width: 252px; /* 10% more compact */
     --dashboard-gutter: 16px;
     --dashboard-top-offset: 90px; /* below nav */
-    --dashboard-bottom-height: 50px; /* 10% more compact */
+    --dashboard-bottom-height: 34px; /* footer ticker height */
 }
 
 .dashboard-sidebar {
@@ -342,6 +342,14 @@ main {
     height: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    gap: 10px;
+}
+.ticker-viewport {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 .ticker-content {
     display: inline-flex;
@@ -375,6 +383,17 @@ main {
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
 }
+
+/* Footer right meta (next service, date/time) */
+.footer-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+.footer-meta .sep { opacity: 0.6; }
 
 /* Container - Use for page content */
 .container {
