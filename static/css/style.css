@@ -321,6 +321,60 @@ main {
     font-size: 12px;
 }
 
+/* Footer Ticker (announcements) */
+.footer-ticker {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--dashboard-bottom-height);
+    height: 34px;
+    background: rgba(10, 15, 25, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    z-index: 998;
+}
+.footer-ticker-inner {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.ticker-content {
+    display: inline-flex;
+    gap: 32px;
+    align-items: center;
+    white-space: nowrap;
+    will-change: transform;
+    animation: tickerScroll 40s linear infinite;
+    padding-left: 100%;
+}
+.footer-ticker:hover .ticker-content {
+    animation-play-state: paused;
+}
+.ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
+}
+.ticker-item .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    border-radius: 999px;
+    background: rgba(0,122,255,0.2);
+    border: 1px solid rgba(0,122,255,0.35);
+    color: #dbeafe;
+}
+@keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
 /* Container - Use for page content */
 .container {
     max-width: 1200px;

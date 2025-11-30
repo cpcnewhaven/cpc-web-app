@@ -308,6 +308,15 @@
             </div>
         </main>
 
+        <!-- Footer Ticker (announcements/highlights) -->
+        <div class="footer-ticker">
+            <div class="footer-ticker-inner">
+                <div class="ticker-content" id="footerTickerTrack">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </div>
+
         <!-- Start Menu Bar (icon dock) -->
         <div class="start-menu-bar">
             <a href="{{ url_for('index') }}" title="Home"><i class="fa-solid fa-house"></i></a>
@@ -396,6 +405,49 @@
             }
             updateClock();
             setInterval(updateClock, 1000 * 30);
+        })();
+        </script>
+        <!-- Footer Ticker Script -->
+        <script>
+        (function() {
+            const track = document.getElementById('footerTickerTrack');
+            if (!track) return;
+            function sanitize(html) {
+                const tmp = document.createElement('div');
+                tmp.textContent = html;
+                return tmp.innerHTML;
+            }
+            function truncate(text, max) {
+                if (!text) return '';
+                const t = text.trim();
+                return t.length > max ? t.slice(0, max - 1) + '…' : t;
+            }
+            async function loadItems() {
+                let items = [];
+                try {
+                    const r = await fetch('/api/highlights');
+                    if (r.ok) {
+                        const data = await r.json();
+                        items = (data.announcements || []).filter(a => a && (a.active === true || a.active === "true"));
+                    }
+                } catch(e) {}
+                if (!items.length) {
+                    // Fallback blurbs
+                    items = [
+                        { type: 'News', title: 'Welcome to CPC — You are loved in Christ.' },
+                        { type: 'Event', title: 'Sunday Worship · 10:30am · 135 Whitney Ave' },
+                        { type: 'Featured', title: 'Community Dinner · Wednesday 6pm' }
+                    ];
+                }
+                const parts = items.slice(0, 12).map(it => {
+                    const type = sanitize(it.type || 'Update');
+                    const title = sanitize(truncate(it.title || it.description || '', 120));
+                    return `<span class="ticker-item"><span class="badge">${type}</span><span>${title}</span></span>`;
+                });
+                // Duplicate content to enable seamless marquee
+                track.innerHTML = parts.concat(parts).join('<span class="ticker-item">•</span>');
+            }
+            loadItems();
         })();
         </script>
 
