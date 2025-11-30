@@ -192,23 +192,27 @@
             </div>
             <div class="dashboard-section">
                 <div class="dashboard-title">Navigation</div>
-                <ul class="dashboard-list">
-                    <li><a href="{{ url_for('index') }}" class="dashboard-link" title="Home"><i class="fa-solid fa-house"></i></a></li>
-                    <li><a href="{{ url_for('highlights') }}" class="dashboard-link" title="Highlights"><i class="fa-solid fa-star"></i></a></li>
-                    <li><a href="{{ url_for('events') }}" class="dashboard-link" title="Events"><i class="fa-solid fa-calendar-days"></i></a></li>
-                    <li><a href="{{ url_for('announcements') }}" class="dashboard-link" title="Announcements"><i class="fa-solid fa-bullhorn"></i></a></li>
-                    <li><a href="{{ url_for('sermons') }}" class="dashboard-link" title="Sermons"><i class="fa-solid fa-book-bible"></i></a></li>
-                    <li><a href="{{ url_for('podcasts') }}" class="dashboard-link" title="Podcasts"><i class="fa-solid fa-podcast"></i></a></li>
-                </ul>
+                <div class="main-nav">
+                    <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+                    <a href="{{ url_for('highlights') }}"><i class="fa-solid fa-star"></i><span>Highlights</span></a>
+                    <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
+                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>Announcements</span></a>
+                    <a href="{{ url_for('sermons') }}"><i class="fa-solid fa-book-bible"></i><span>Sermons</span></a>
+                    <a href="{{ url_for('podcasts') }}"><i class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
+                </div>
             </div>
             <div class="dashboard-section" x-show="$store.dash.showQuickLinks">
                 <div class="dashboard-title">Quick Links</div>
-                <ul class="dashboard-list">
-                    <li><a href="{{ url_for('about') }}" class="dashboard-link" title="About"><i class="fa-solid fa-circle-info"></i></a></li>
-                    <li><a href="{{ url_for('give') }}" class="dashboard-link" title="Give"><i class="fa-solid fa-hand-holding-heart"></i></a></li>
-                    <li><a href="{{ url_for('search') }}" class="dashboard-link" title="Search"><i class="fa-solid fa-magnifying-glass"></i></a></li>
-                    <li><a href="{{ url_for('archive') }}" class="dashboard-link" title="Archive"><i class="fa-solid fa-box-archive"></i></a></li>
-                </ul>
+                <div class="quick-links-grid">
+                    <a href="{{ url_for('search') }}"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
+                    <a href="{{ url_for('archive') }}"><i class="fa-solid fa-box-archive"></i><span>Archive</span></a>
+                    <a href="{{ url_for('sermons') }}"><i class="fa-solid fa-book-bible"></i><span>Sermons</span></a>
+                    <a href="{{ url_for('podcasts') }}"><i class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
+                    <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
+                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>News</span></a>
+                    <a href="{{ url_for('give') }}"><i class="fa-solid fa-hand-holding-heart"></i><span>Give</span></a>
+                    <a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
+                </div>
             </div>
             <div class="dashboard-section">
                 <div class="dashboard-title">Customize</div>
