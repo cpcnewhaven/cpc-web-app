@@ -256,44 +256,78 @@
 }
 
 .sermon-links a {
-    padding: 0.4rem 0.75rem;
-    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
     text-decoration: none;
     font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.2s;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.sermon-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.sermon-links a:hover::before {
+    left: 100%;
 }
 
 .btn-spotify {
-    background: #1db954;
-    color: white;
+    background: rgba(29, 185, 84, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(29, 185, 84, 0.4);
 }
 
 .btn-spotify:hover {
-    background: #1ed760;
+    background: rgba(29, 185, 84, 0.5);
+    border-color: rgba(29, 185, 84, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3);
 }
 
 .btn-youtube {
-    background: #ff0000;
-    color: white;
+    background: rgba(255, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 0, 0, 0.4);
 }
 
 .btn-youtube:hover {
-    background: #ff3333;
+    background: rgba(255, 0, 0, 0.5);
+    border-color: rgba(255, 0, 0, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
 }
 
 .btn-apple {
-    background: #000;
-    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .btn-apple:hover {
-    background: #333;
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Table View - Styled to Match Page Vibe */
 .table-responsive {
     width: 100%;
+    max-width: 100%; /* Ensure it doesn't overflow parent */
     overflow-x: hidden; /* Prevent horizontal scroll */
     margin-top: 1rem;
     margin-bottom: 2rem;
@@ -307,11 +341,14 @@
 }
 
 .sermons-table {
-    width: 100%;
+    width: 115%; /* Increased by 15% but contained by parent */
+    max-width: 100%; /* Never exceed parent container */
     border-collapse: collapse;
     background: transparent;
     display: table;
     table-layout: fixed;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .sermons-table th:nth-child(1),
@@ -384,46 +421,76 @@
 }
 
 .sermons-table .sermon-links a {
-    padding: 0.3rem 0.6rem;
+    padding: 0.4rem 0.75rem;
     font-size: 0.7rem;
-    border-radius: 4px;
+    border-radius: 8px;
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s;
+    font-weight: 600;
+    transition: all 0.3s ease;
     white-space: nowrap;
     line-height: 1.2;
     display: inline-block;
     margin: 0.15rem 0.15rem 0.15rem 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.sermons-table .sermon-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.sermons-table .sermon-links a:hover::before {
+    left: 100%;
 }
 
 .sermons-table .sermon-links a[href*="spotify"] {
-    background: #1db954;
-    color: white;
+    background: rgba(29, 185, 84, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(29, 185, 84, 0.4);
 }
 
 .sermons-table .sermon-links a[href*="spotify"]:hover {
-    background: #1ed760;
-    transform: translateY(-1px);
+    background: rgba(29, 185, 84, 0.5);
+    border-color: rgba(29, 185, 84, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3);
 }
 
 .sermons-table .sermon-links a[href*="youtube"] {
-    background: #ff0000;
-    color: white;
+    background: rgba(255, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 0, 0, 0.4);
 }
 
 .sermons-table .sermon-links a[href*="youtube"]:hover {
-    background: #ff3333;
-    transform: translateY(-1px);
+    background: rgba(255, 0, 0, 0.5);
+    border-color: rgba(255, 0, 0, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
 }
 
 .sermons-table .sermon-links a[href*="apple"] {
-    background: #000;
-    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .sermons-table .sermon-links a[href*="apple"]:hover {
-    background: #333;
-    transform: translateY(-1px);
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Loading and Empty States */
@@ -839,8 +906,11 @@ window.sermonData = function() {
 
         filterSermons() {
             console.log('filterSermons called');
+            console.log('Selected year:', this.selectedYear, 'Type:', typeof this.selectedYear);
             const query = this.searchQuery.toLowerCase().trim();
             let filtered = [...this.sermons];
+            
+            console.log('Starting with', filtered.length, 'sermons');
             
             // Filter by search query
             if (query) {
@@ -850,14 +920,29 @@ window.sermonData = function() {
                     sermon.scripture?.toLowerCase().includes(query) ||
                     sermon.date?.toLowerCase().includes(query)
                 );
+                console.log('After search filter:', filtered.length);
             }
             
             // Filter by year
-            if (this.selectedYear) {
-                filtered = filtered.filter(sermon => sermon.year == this.selectedYear);
+            if (this.selectedYear && this.selectedYear !== '') {
+                const selectedYearNum = parseInt(this.selectedYear);
+                console.log('Filtering by year:', selectedYearNum);
+                const beforeCount = filtered.length;
+                filtered = filtered.filter(sermon => {
+                    const sermonYear = sermon.year ? (typeof sermon.year === 'number' ? sermon.year : parseInt(sermon.year)) : null;
+                    const matches = sermonYear === selectedYearNum;
+                    if (!matches && filtered.indexOf(sermon) < 3) {
+                        console.log('Sermon year mismatch:', sermonYear, 'vs', selectedYearNum, 'for sermon:', sermon.title?.substring(0, 30));
+                    }
+                    return matches;
+                });
+                console.log('After year filter:', filtered.length, '(was', beforeCount + ')');
+            } else {
+                console.log('No year filter applied');
             }
             
             this.filteredSermons = filtered;
+            console.log('Final filtered count:', this.filteredSermons.length);
             this.sortSermons();
         },
 
@@ -930,7 +1015,7 @@ window.sermonData = function() {
                     spotifyLink.target = '_blank';
                     spotifyLink.rel = 'noopener';
                     spotifyLink.textContent = 'Spotify';
-                    spotifyLink.style.cssText = 'padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px; text-decoration: none; font-weight: 500; background: #1db954; color: white; transition: all 0.2s; white-space: nowrap; display: inline-block;';
+                    spotifyLink.style.cssText = 'padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; background: rgba(29, 185, 84, 0.3); color: rgba(255, 255, 255, 0.95); border: 1px solid rgba(29, 185, 84, 0.4); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; white-space: nowrap; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);';
                     linksCell.appendChild(spotifyLink);
                 }
                 
@@ -940,7 +1025,7 @@ window.sermonData = function() {
                     youtubeLink.target = '_blank';
                     youtubeLink.rel = 'noopener';
                     youtubeLink.textContent = 'YouTube';
-                    youtubeLink.style.cssText = 'padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px; text-decoration: none; font-weight: 500; background: #ff0000; color: white; transition: all 0.2s; white-space: nowrap; display: inline-block;';
+                    youtubeLink.style.cssText = 'padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; background: rgba(255, 0, 0, 0.3); color: rgba(255, 255, 255, 0.95); border: 1px solid rgba(255, 0, 0, 0.4); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; white-space: nowrap; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);';
                     linksCell.appendChild(youtubeLink);
                 }
                 
@@ -950,7 +1035,7 @@ window.sermonData = function() {
                     appleLink.target = '_blank';
                     appleLink.rel = 'noopener';
                     appleLink.textContent = 'Apple';
-                    appleLink.style.cssText = 'padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px; text-decoration: none; font-weight: 500; background: #000; color: white; transition: all 0.2s; white-space: nowrap; display: inline-block;';
+                    appleLink.style.cssText = 'padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; background: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.95); border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; white-space: nowrap; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);';
                     linksCell.appendChild(appleLink);
                 }
                 
