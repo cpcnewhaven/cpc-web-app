@@ -54,6 +54,51 @@
     align-items: center;
 }
 
+.filter-controls {
+    display: flex;
+    align-items: center;
+}
+
+.filter-controls select,
+.year-filter {
+    min-width: 140px;
+    padding: 0.65rem 1rem;
+    border-radius: 10px;
+    background: rgba(0, 50, 120, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 50, 120, 0.2);
+    outline: none;
+}
+
+.filter-controls select:hover,
+.year-filter:hover {
+    background: rgba(0, 50, 120, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 50, 120, 0.3);
+    transform: translateY(-1px);
+}
+
+.filter-controls select:focus,
+.year-filter:focus {
+    background: rgba(0, 50, 120, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 50, 120, 0.4);
+}
+
+.filter-controls select option,
+.year-filter option {
+    background: rgba(0, 50, 120, 0.95);
+    color: rgba(255, 255, 255, 0.95);
+    padding: 0.5rem;
+}
+
 .search-container {
     flex: 1;
     min-width: 250px;
@@ -249,7 +294,7 @@
 /* Table View - Styled to Match Page Vibe */
 .table-responsive {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden; /* Prevent horizontal scroll */
     margin-top: 1rem;
     margin-bottom: 2rem;
     border-radius: 12px;
@@ -460,7 +505,8 @@
 <section class="page-hero">
     <div class="container">
         <h1>Sunday Sermons</h1>
-        <p>Weekly messages from our Sunday worship services • 25 Years of Archive</p>
+        <p>Weekly messages from our Sunday worship services • 25 Years of
+            Archive</p>
     </div>
 </section>
 
@@ -472,48 +518,81 @@
             <!-- Search and Filter Controls -->
             <div class="sermon-controls">
                 <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Search sermons..." x-model="searchQuery" @input="filterSermons()">
+                    <input type="text" id="searchInput"
+                        placeholder="Search sermons..." x-model="searchQuery"
+                        @input="filterSermons()">
+                </div>
+                <div class="filter-controls">
+                    <select x-model="selectedYear" @change="filterSermons()"
+                        class="year-filter">
+                        <option value>All Years</option>
+                        <template x-for="year in availableYears" :key="year">
+                            <option :value="year" x-text="year"></option>
+                        </template>
+                    </select>
                 </div>
                 <div class="view-controls">
-                    <button @click="viewMode = 'card'" :class="{'active': viewMode === 'card'}">Card View</button>
-                    <button @click="viewMode = 'table'" :class="{'active': viewMode === 'table'}">Table View</button>
+                    <button @click="viewMode = 'card'"
+                        :class="{'active': viewMode === 'card'}">Card
+                        View</button>
+                    <button @click="viewMode = 'table'"
+                        :class="{'active': viewMode === 'table'}">Table
+                        View</button>
                 </div>
                 <div class="sort-controls">
-                    <select @change="sortKey = $event.target.value; sortSermons()">
+                    <select
+                        @change="sortKey = $event.target.value; sortSermons()">
                         <option value="date">Sort by Date</option>
                         <option value="title">Sort by Title</option>
                         <option value="author">Sort by Speaker</option>
                     </select>
-                    <button @click="sortAsc = !sortAsc; sortSermons()" :class="{'asc': sortAsc, 'desc': !sortAsc}">
+                    <button @click="sortAsc = !sortAsc; sortSermons()"
+                        :class="{'asc': sortAsc, 'desc': !sortAsc}">
                         <span x-text="sortAsc ? '↑' : '↓'"></span>
                     </button>
                 </div>
             </div>
             <!-- Loading State -->
-            <div x-show="!loadingComplete" class="loading" style="display: none;">
+            <div x-show="!loadingComplete" class="loading"
+                style="display: none;">
                 <p>Loading sermons...</p>
             </div>
-            
+
             <!-- Card View -->
-            <div x-show="loadingComplete && viewMode === 'card' && filteredSermons.length > 0" 
-                 class="sermons-grid"
-                 x-cloak>
-                <template x-for="(sermon, index) in filteredSermons" :key="sermon?.id || index">
+            <div
+                x-show="loadingComplete && viewMode === 'card' && filteredSermons.length > 0"
+                class="sermons-grid"
+                x-cloak>
+                <template x-for="(sermon, index) in filteredSermons"
+                    :key="sermon?.id || index">
                     <div class="sermon-card">
-                        <div class="sermon-thumbnail" x-show="sermon['podcast-thumbnail_url']">
-                            <img :src="sermon['podcast-thumbnail_url']" :alt="sermon.title" loading="lazy">
+                        <div class="sermon-thumbnail"
+                            x-show="sermon['podcast-thumbnail_url']">
+                            <img :src="sermon['podcast-thumbnail_url']"
+                                :alt="sermon.title" loading="lazy">
                         </div>
                         <div class="sermon-content">
                             <h3 class="sermon-title" x-text="sermon.title"></h3>
                             <p class="sermon-meta">
-                                <span class="sermon-author" x-text="sermon.author"></span> •
-                                <span class="sermon-date" x-text="sermon.displayDate"></span>
+                                <span class="sermon-author"
+                                    x-text="sermon.author"></span> •
+                                <span class="sermon-date"
+                                    x-text="sermon.displayDate"></span>
                             </p>
-                            <p class="sermon-scripture" x-text="sermon.scripture" x-show="sermon.scripture"></p>
+                            <p class="sermon-scripture"
+                                x-text="sermon.scripture"
+                                x-show="sermon.scripture"></p>
                             <div class="sermon-links">
-                                <a :href="sermon.spotify_url" x-show="sermon.spotify_url" target="_blank" class="btn btn-spotify">Spotify</a>
-                                <a :href="sermon.youtube_url" x-show="sermon.youtube_url" target="_blank" class="btn btn-youtube">YouTube</a>
-                                <a :href="sermon.apple_podcasts_url" x-show="sermon.apple_podcasts_url" target="_blank" class="btn btn-apple">Apple</a>
+                                <a :href="sermon.spotify_url"
+                                    x-show="sermon.spotify_url" target="_blank"
+                                    class="btn btn-spotify">Spotify</a>
+                                <a :href="sermon.youtube_url"
+                                    x-show="sermon.youtube_url" target="_blank"
+                                    class="btn btn-youtube">YouTube</a>
+                                <a :href="sermon.apple_podcasts_url"
+                                    x-show="sermon.apple_podcasts_url"
+                                    target="_blank"
+                                    class="btn btn-apple">Apple</a>
                             </div>
                         </div>
                     </div>
@@ -521,8 +600,9 @@
             </div>
 
             <!-- Table View -->
-            <div x-show="loadingComplete && viewMode === 'table' && filteredSermons.length > 0" 
-                 class="table-responsive">
+            <div
+                x-show="loadingComplete && viewMode === 'table' && filteredSermons.length > 0"
+                class="table-responsive">
                 <table class="sermons-table">
                     <thead>
                         <tr>
@@ -534,17 +614,29 @@
                         </tr>
                     </thead>
                     <tbody id="sermons-tbody">
-                        <template x-for="(sermon, index) in filteredSermons" :key="sermon?.id || index">
+                        <template x-for="(sermon, index) in filteredSermons"
+                            :key="sermon?.id || index">
                             <tr>
-                                <td x-text="sermon.displayDate || sermon.date || 'N/A'"></td>
+                                <td
+                                    x-text="sermon.displayDate || sermon.date || 'N/A'"></td>
                                 <td x-text="sermon.title || 'Untitled'"></td>
                                 <td x-text="sermon.author || 'Unknown'"></td>
                                 <td x-text="sermon.scripture || '-'"></td>
                                 <td class="sermon-links">
-                                    <a x-show="sermon.spotify_url" :href="sermon.spotify_url" target="_blank" rel="noopener">Spotify</a>
-                                    <a x-show="sermon.youtube_url" :href="sermon.youtube_url" target="_blank" rel="noopener">YouTube</a>
-                                    <a x-show="sermon.apple_podcasts_url" :href="sermon.apple_podcasts_url" target="_blank" rel="noopener">Apple</a>
-                                    <span x-show="!sermon.spotify_url && !sermon.youtube_url && !sermon.apple_podcasts_url" style="color: rgba(255,255,255,0.5);">-</span>
+                                    <a x-show="sermon.spotify_url"
+                                        :href="sermon.spotify_url"
+                                        target="_blank"
+                                        rel="noopener">Spotify</a>
+                                    <a x-show="sermon.youtube_url"
+                                        :href="sermon.youtube_url"
+                                        target="_blank"
+                                        rel="noopener">YouTube</a>
+                                    <a x-show="sermon.apple_podcasts_url"
+                                        :href="sermon.apple_podcasts_url"
+                                        target="_blank" rel="noopener">Apple</a>
+                                    <span
+                                        x-show="!sermon.spotify_url && !sermon.youtube_url && !sermon.apple_podcasts_url"
+                                        style="color: rgba(255,255,255,0.5);">-</span>
                                 </td>
                             </tr>
                         </template>
@@ -553,15 +645,17 @@
             </div>
 
             <!-- No Results -->
-            <div x-show="loadingComplete && filteredSermons.length === 0" class="no-results">
+            <div x-show="loadingComplete && filteredSermons.length === 0"
+                class="no-results">
                 <p>No sermons found matching your search criteria.</p>
             </div>
 
             <!-- Results Count -->
             <div x-show="loadingComplete" class="results-count">
-                <p>Showing <span x-text="filteredSermons.length"></span> of <span x-text="sermons.length"></span> sermons</p>
+                <p>Showing <span x-text="filteredSermons.length"></span> of
+                    <span x-text="sermons.length"></span> sermons</p>
             </div>
-            
+
         </div>
     </div>
 </section>
@@ -576,6 +670,8 @@ window.sermonData = function() {
         sortKey: 'date',
         sortAsc: false,
         searchQuery: '',
+        selectedYear: '',
+        availableYears: [],
         viewMode: 'table', // Default to table view
         sermons: [],
         filteredSermons: [],
@@ -610,14 +706,27 @@ window.sermonData = function() {
                     }
                     
                     // Format dates for display - always show as Sunday sermons
-                    this.sermons = (data.episodes || []).map(sermon => ({
-                        ...sermon,
-                        displayDate: sermon.date ? this.formatSundayDate(sermon.date) : sermon.date
-                    }));
+                    this.sermons = (data.episodes || []).map(sermon => {
+                        const date = sermon.date ? new Date(sermon.date) : null;
+                        const year = date ? date.getFullYear() : null;
+                        return {
+                            ...sermon,
+                            displayDate: sermon.date ? this.formatSundayDate(sermon.date) : sermon.date,
+                            year: year
+                        };
+                    });
                     
                     console.log('Mapped sermons:', this.sermons.length);
                     console.log('First sermon:', this.sermons[0]);
                     console.log('First sermon keys:', Object.keys(this.sermons[0] || {}));
+                    
+                    // Extract available years
+                    const yearsSet = new Set();
+                    this.sermons.forEach(s => {
+                        if (s.year) yearsSet.add(s.year);
+                    });
+                    this.availableYears = Array.from(yearsSet).sort((a, b) => b - a); // Descending order
+                    console.log('Available years:', this.availableYears);
                     
                     // Ensure filteredSermons is a proper array and all items have required fields
                     this.filteredSermons = Array.isArray(this.sermons) 
@@ -721,29 +830,34 @@ window.sermonData = function() {
         formatSundayDate(dateString) {
             // Parse the date string and ensure it's treated as local time, not UTC
             const [year, month, day] = dateString.split('-').map(num => parseInt(num, 10));
-            const date = new Date(year, month - 1, day); // month is 0-indexed in JavaScript
-            
-            const options = { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            return `Sunday, ${date.toLocaleDateString('en-US', options)}`;
+            // Format as mm/dd/yy
+            const mm = String(month).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const yy = String(year).slice(-2); // Last 2 digits of year
+            return `${mm}/${dd}/${yy}`;
         },
 
         filterSermons() {
             console.log('filterSermons called');
-            if (!this.searchQuery.trim()) {
-                this.filteredSermons = [...this.sermons];
-            } else {
-                const query = this.searchQuery.toLowerCase();
-                this.filteredSermons = this.sermons.filter(sermon => 
+            const query = this.searchQuery.toLowerCase().trim();
+            let filtered = [...this.sermons];
+            
+            // Filter by search query
+            if (query) {
+                filtered = filtered.filter(sermon =>
                     sermon.title?.toLowerCase().includes(query) ||
                     sermon.author?.toLowerCase().includes(query) ||
                     sermon.scripture?.toLowerCase().includes(query) ||
                     sermon.date?.toLowerCase().includes(query)
                 );
             }
+            
+            // Filter by year
+            if (this.selectedYear) {
+                filtered = filtered.filter(sermon => sermon.year == this.selectedYear);
+            }
+            
+            this.filteredSermons = filtered;
             this.sortSermons();
         },
 
