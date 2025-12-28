@@ -15,8 +15,15 @@ logger = logging.getLogger(__name__)
 class AdvancedSearch:
     def __init__(self, sermons_file: str = "data/sermons.json"):
         self.sermons_file = sermons_file
-        self.sermons_data = self.load_sermons()
-        self.sermons = self.sermons_data.get('sermons', [])
+        try:
+            from sermon_data_helper import get_sermon_helper
+            self.helper = get_sermon_helper()
+            self.sermons = self.helper.get_all_sermons()
+        except ImportError:
+            # Fallback to old method
+            self.helper = None
+            self.sermons_data = self.load_sermons()
+            self.sermons = self.sermons_data.get('sermons', [])
     
     def load_sermons(self) -> Dict:
         """Load sermons data from JSON file."""

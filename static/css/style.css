@@ -327,13 +327,12 @@ main {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: var(--dashboard-bottom-height);
+    bottom: 0;
     height: 34px;
     background: rgba(10, 15, 25, 0.55);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid rgba(255,255,255,0.08);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
     overflow: hidden;
     z-index: 998;
 }
@@ -544,17 +543,26 @@ a:hover {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: var(--transition-base);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
     z-index: 1000;
     list-style: none;
     padding: 8px 0;
     margin: 8px 0 0 0;
+    pointer-events: none;
+}
+
+.dropdown-menu:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .nav-dropdown.active .dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .dropdown-menu li {

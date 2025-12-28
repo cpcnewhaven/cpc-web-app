@@ -26,18 +26,29 @@ def load_json_data(filename: str) -> Dict:
 @json_api.route('/api/json/sermons')
 def json_sermons():
     """Serve sermons from JSON file."""
-    sermons_data = load_json_data('sermons.json')
-    
-    if not sermons_data:
-        return jsonify({
-            'title': 'Sunday Sermons',
-            'description': 'Weekly sermons from our Sunday worship services',
-            'episodes': []
-        })
+    try:
+        from sermon_data_helper import get_sermon_helper
+        helper = get_sermon_helper()
+        metadata = helper.get_metadata()
+        sermons = helper.get_all_sermons()
+    except ImportError:
+        # Fallback to old method
+        sermons_data = load_json_data('sermons.json')
+        if not sermons_data:
+            return jsonify({
+                'title': 'Sunday Sermons',
+                'description': 'Weekly sermons from our Sunday worship services',
+                'episodes': []
+            })
+        sermons = sermons_data.get('sermons', [])
+        metadata = {
+            'title': sermons_data.get('title', 'Sunday Sermons'),
+            'description': sermons_data.get('description', 'Weekly sermons from our Sunday worship services')
+        }
     
     # Convert to the format expected by the frontend
     episodes = []
-    for sermon in sermons_data.get('sermons', []):
+    for sermon in sermons:
         episode = {
             'id': sermon.get('id', ''),
             'title': sermon.get('title', ''),
@@ -60,8 +71,8 @@ def json_sermons():
         episodes.append(episode)
     
     return jsonify({
-        'title': sermons_data.get('title', 'Sunday Sermons'),
-        'description': sermons_data.get('description', 'Weekly sermons from our Sunday worship services'),
+        'title': metadata.get('title', 'Sunday Sermons'),
+        'description': metadata.get('description', 'Weekly sermons from our Sunday worship services'),
         'episodes': episodes
     })
 

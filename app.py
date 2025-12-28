@@ -235,8 +235,37 @@ def api_ongoing_events():
 @app.route('/api/sermons')
 def api_sermons():
     """API endpoint matching your sunday-sermons.json structure"""
-    # Use JSON data instead of database
+    # Use optimized helper to avoid duplication
     try:
+        from sermon_data_helper import get_sermon_helper
+        helper = get_sermon_helper()
+        
+        metadata = helper.get_metadata()
+        sermons = helper.get_all_sermons()
+        
+        episodes = []
+        for sermon in sermons:
+            episode = {
+                'id': sermon.get('id', ''),
+                'title': sermon.get('title', ''),
+                'author': sermon.get('author', ''),
+                'scripture': sermon.get('scripture', ''),
+                'date': sermon.get('date', ''),
+                'spotify_url': sermon.get('spotify_url', ''),
+                'youtube_url': sermon.get('youtube_url', ''),
+                'apple_podcasts_url': sermon.get('apple_podcasts_url', ''),
+                'link': sermon.get('link', ''),
+                'podcast-thumbnail_url': sermon.get('podcast_thumbnail_url', '')
+            }
+            episodes.append(episode)
+        
+        return jsonify({
+            'title': metadata.get('title', 'Sunday Sermons'),
+            'description': metadata.get('description', 'Weekly sermons from our Sunday worship services'),
+            'episodes': episodes
+        })
+    except ImportError:
+        # Fallback to old method if helper not available
         import json
         with open('data/sermons.json', 'r') as f:
             sermons_data = json.load(f)
@@ -263,7 +292,7 @@ def api_sermons():
             'episodes': episodes
         })
     except Exception as e:
-        print(f"Error loading sermons from JSON: {e}")
+        print(f"Error loading sermons: {e}")
         return jsonify({
             'title': 'Sunday Sermons',
             'description': 'Weekly sermons from our Sunday worship services',
@@ -913,23 +942,49 @@ def api_archive():
     try:
         # Get old sermons
         if content_type in ['all', 'sermons']:
-            with open('data/sermons.json', 'r') as f:
-                sermons_data = json.load(f)
-                cutoff_date = datetime.now() - timedelta(days=90)  # Older than 90 days
+            try:
+                from sermon_data_helper import get_sermon_helper
+                helper = get_sermon_helper()
+                archive_sermons = helper.get_archive_sermons(cutoff_days=90)
+                
+                for sermon in archive_sermons:
+                    sermon_date = sermon.get('date')
+                    if sermon_date:
+                        # Filter by year if specified
+                        if not year or sermon_date.startswith(str(year)):
+                            results['items'].append({
+                                'type': 'sermon',
+                                'title': sermon.get('title'),
+                                'author': sermon.get('author'),
+                                'date': sermon_date,
+                                'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url') or sermon.get('apple_podcasts_url'),
+                                'scripture': sermon.get('scripture', ''),
+                                'series': sermon.get('series', ''),
+                                'description': f"{sermon.get('scripture', '')} - {sermon.get('series', '')}".strip(' - ')
+                            })
+            except ImportError:
+                # Fallback to old method
+                with open('data/sermons.json', 'r') as f:
+                    sermons_data = json.load(f)
+                cutoff_date = datetime.now() - timedelta(days=90)
                 
                 for sermon in sermons_data.get('sermons', []):
                     sermon_date = sermon.get('date')
                     if sermon_date:
                         try:
                             serm_dt = datetime.strptime(sermon_date, '%Y-%m-%d')
-                            if serm_dt < cutoff_date:
+                            is_archive = sermon.get('source') == 'archive'
+                            if serm_dt < cutoff_date or is_archive:
                                 if not year or sermon_date.startswith(str(year)):
                                     results['items'].append({
                                         'type': 'sermon',
                                         'title': sermon.get('title'),
                                         'author': sermon.get('author'),
                                         'date': sermon_date,
-                                        'url': sermon.get('link') or sermon.get('spotify_url')
+                                        'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url') or sermon.get('apple_podcasts_url'),
+                                        'scripture': sermon.get('scripture', ''),
+                                        'series': sermon.get('series', ''),
+                                        'description': f"{sermon.get('scripture', '')} - {sermon.get('series', '')}".strip(' - ')
                                     })
                         except:
                             pass
