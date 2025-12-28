@@ -401,6 +401,52 @@ main {
     padding: 0 20px;
 }
 
+/* Dashboard container - 25% narrower, then another 15% */
+.dashboard-section .container {
+    max-width: 765px;
+}
+
+/* Make Customize section way more compact */
+.customize-section {
+    padding: 6px 0 !important;
+}
+
+.customize-section .dashboard-title {
+    font-size: 0.7rem !important;
+    margin-bottom: 4px !important;
+    padding-left: 6px !important;
+}
+
+.customize-section .flex.flex-col {
+    gap: 3px !important;
+}
+
+.customize-section label {
+    font-size: 0.75rem !important;
+    padding: 1px 0 !important;
+    margin: 0 !important;
+}
+
+.customize-section label span {
+    font-size: 0.75rem !important;
+}
+
+.customize-section input[type="checkbox"] {
+    width: 14px !important;
+    height: 14px !important;
+    margin: 0 !important;
+}
+
+.customize-section .mt-3 {
+    margin-top: 6px !important;
+}
+
+.customize-section .glass-button {
+    padding: 4px 6px !important;
+    font-size: 0.7rem !important;
+    line-height: 1.2 !important;
+}
+
 /* Typography */
 h1,
 h2,
@@ -2002,6 +2048,365 @@ tr:hover {
 
     .search-box {
         width: 100%;
+    }
+}
+
+/* ========================================
+   LIVE STREAM PAGE STYLES
+   ======================================== */
+.live-stream-section {
+    padding: 2rem 0;
+    min-height: auto;
+    width: 100%;
+    display: block;
+}
+
+.live-stream-section .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.live-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    align-items: start;
+    width: 100%;
+    visibility: visible;
+    opacity: 1;
+}
+
+@media (min-width: 1200px) {
+    .live-content {
+        grid-template-columns: 1.75fr 1fr;
+    }
+}
+
+.live-video-container {
+    position: relative;
+    width: 100%;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    min-height: 400px;
+}
+
+@media (min-width: 768px) {
+    .live-video-container {
+        min-height: 500px;
+    }
+}
+
+.live-video-wrapper {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-strong);
+    width: 100%;
+    display: block;
+}
+
+.live-indicator {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 0, 0, 0.95);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.4;
+        transform: scale(0.9);
+    }
+}
+
+.youtube-embed-container {
+    position: relative;
+    width: 100%;
+    background: #000;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    min-height: 400px;
+}
+
+@media (min-width: 768px) {
+    .youtube-embed-container {
+        min-height: 500px;
+    }
+}
+
+.youtube-embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    min-height: 400px;
+}
+
+@media (min-width: 768px) {
+    .youtube-embed {
+        min-height: 500px;
+    }
+}
+
+.live-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 120px;
+    min-height: fit-content;
+    height: fit-content;
+}
+
+.live-info h2 {
+    color: var(--text-white);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.service-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    padding: 1.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: var(--shadow-medium);
+    min-height: 200px;
+}
+
+.service-time,
+.service-location {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    color: var(--text-white);
+    font-size: 1.05rem;
+}
+
+.service-time i,
+.service-location i {
+    font-size: 1.35rem;
+    opacity: 0.95;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.live-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.live-actions .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.page-hero.live-hero {
+    padding: 3rem 0 2rem;
+    text-align: center;
+    background: transparent;
+}
+
+.page-hero.live-hero h1 {
+    color: var(--text-white);
+    font-size: 2.75rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.page-hero.live-hero p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.2rem;
+}
+
+@media (max-width: 1024px) {
+    .live-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .live-info {
+        position: static;
+    }
+    
+    .live-info h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .live-stream-section {
+        padding: 1.5rem 0;
+    }
+    
+    .live-content {
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .live-info h2 {
+        font-size: 1.5rem;
+    }
+    
+    .service-details {
+        padding: 1.25rem;
+    }
+    
+    .page-hero.live-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .page-hero.live-hero p {
+        font-size: 1rem;
+    }
+    
+    .live-indicator {
+        top: 0.75rem;
+        right: 0.75rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Service Schedule Section */
+.service-schedule-section {
+    padding: 3rem 0;
+    margin-top: 3rem;
+}
+
+.service-schedule-section h2 {
+    color: var(--text-white);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.schedule-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.schedule-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all var(--transition-base);
+}
+
+.schedule-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.schedule-item.featured {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-medium);
+}
+
+.schedule-time {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+}
+
+.schedule-content h3 {
+    color: var(--text-white);
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.schedule-content p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.live-badge {
+    display: inline-block;
+    background: rgba(255, 0, 0, 0.9);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .service-schedule-section {
+        padding: 2rem 0;
+        margin-top: 2rem;
+    }
+    
+    .schedule-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .schedule-time {
+        font-size: 1rem;
     }
 }
 

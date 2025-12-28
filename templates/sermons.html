@@ -4,6 +4,11 @@
 
 {% block head %}
 <style>
+/* Alpine.js x-cloak - hide elements until Alpine processes them */
+[x-cloak] {
+    display: none !important;
+}
+
 /* Sermons Page - Maximized Layout for 25 Years of Content */
 .sermons-page {
     min-height: calc(100vh - 200px);
@@ -239,58 +244,102 @@
     background: #333;
 }
 
-/* Table View - Compact for Maximum Content */
+/* Table View - Styled to Match Page Vibe */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
     margin-top: 1rem;
+    border-radius: 12px;
+    background: rgba(0, 50, 120, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 50, 120, 0.2);
 }
 
 .sermons-table {
     width: 100%;
     border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    overflow: hidden;
+    background: transparent;
 }
 
 .sermons-table thead {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 50, 120, 0.25);
+    backdrop-filter: blur(10px);
 }
 
 .sermons-table th {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     text-align: left;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
 }
 
 .sermons-table td {
-    padding: 0.75rem 1rem;
-    color: rgba(255, 255, 255, 0.8);
+    padding: 1rem;
+    color: rgba(255, 255, 255, 0.85);
     font-size: 0.9rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sermons-table tbody tr {
-    transition: background 0.2s;
+    transition: all 0.2s ease;
 }
 
 .sermons-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(2px);
 }
 
 .sermons-table .sermon-links {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .sermons-table .sermon-links a {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.sermons-table .sermon-links a[href*="spotify"] {
+    background: #1db954;
+    color: white;
+}
+
+.sermons-table .sermon-links a[href*="spotify"]:hover {
+    background: #1ed760;
+    transform: translateY(-1px);
+}
+
+.sermons-table .sermon-links a[href*="youtube"] {
+    background: #ff0000;
+    color: white;
+}
+
+.sermons-table .sermon-links a[href*="youtube"]:hover {
+    background: #ff3333;
+    transform: translateY(-1px);
+}
+
+.sermons-table .sermon-links a[href*="apple"] {
+    background: #000;
+    color: white;
+}
+
+.sermons-table .sermon-links a[href*="apple"]:hover {
+    background: #333;
+    transform: translateY(-1px);
 }
 
 /* Loading and Empty States */
@@ -379,38 +428,38 @@
 <!-- Sermons Section -->
 <section class="sermons-section sermons-page">
     <div class="container" style="max-width: 100%; padding: 0 2rem;">
-        <!-- Search and Filter Controls -->
-        <div class="sermon-controls">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search sermons..." x-model="searchQuery" @input="filterSermons()">
-            </div>
-            <div class="view-controls">
-                <button @click="viewMode = 'card'" :class="{'active': viewMode === 'card'}">Card View</button>
-                <button @click="viewMode = 'table'" :class="{'active': viewMode === 'table'}">Table View</button>
-            </div>
-            <div class="sort-controls">
-                <select @change="sortKey = $event.target.value; sortSermons()">
-                    <option value="date">Sort by Date</option>
-                    <option value="title">Sort by Title</option>
-                    <option value="author">Sort by Speaker</option>
-                </select>
-                <button @click="sortAsc = !sortAsc; sortSermons()" :class="{'asc': sortAsc, 'desc': !sortAsc}">
-                    <span x-text="sortAsc ? '↑' : '↓'"></span>
-                </button>
-            </div>
-        </div>
-
         <!-- Alpine.js Component -->
         <div x-data="sermonData()" x-init="init()">
+            <!-- Search and Filter Controls -->
+            <div class="sermon-controls">
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search sermons..." x-model="searchQuery" @input="filterSermons()">
+                </div>
+                <div class="view-controls">
+                    <button @click="viewMode = 'card'" :class="{'active': viewMode === 'card'}">Card View</button>
+                    <button @click="viewMode = 'table'" :class="{'active': viewMode === 'table'}">Table View</button>
+                </div>
+                <div class="sort-controls">
+                    <select @change="sortKey = $event.target.value; sortSermons()">
+                        <option value="date">Sort by Date</option>
+                        <option value="title">Sort by Title</option>
+                        <option value="author">Sort by Speaker</option>
+                    </select>
+                    <button @click="sortAsc = !sortAsc; sortSermons()" :class="{'asc': sortAsc, 'desc': !sortAsc}">
+                        <span x-text="sortAsc ? '↑' : '↓'"></span>
+                    </button>
+                </div>
+            </div>
             <!-- Loading State -->
             <div x-show="!loadingComplete" class="loading" style="display: none;">
                 <p>Loading sermons...</p>
             </div>
             
             <!-- Card View -->
-            <div x-show="loadingComplete && viewMode === 'card'" 
-                 class="sermons-grid">
-                <template x-for="sermon in filteredSermons" :key="sermon.id">
+            <div x-show="loadingComplete && viewMode === 'card' && filteredSermons.length > 0" 
+                 class="sermons-grid"
+                 x-cloak>
+                <template x-for="(sermon, index) in filteredSermons" :key="sermon?.id || index">
                     <div class="sermon-card">
                         <div class="sermon-thumbnail" x-show="sermon['podcast-thumbnail_url']">
                             <img :src="sermon['podcast-thumbnail_url']" :alt="sermon.title" loading="lazy">
@@ -428,11 +477,12 @@
                                 <a :href="sermon.apple_podcasts_url" x-show="sermon.apple_podcasts_url" target="_blank" class="btn btn-apple">Apple</a>
                             </div>
                         </div>
-                    </template>
+                    </div>
+                </template>
             </div>
 
             <!-- Table View -->
-            <div x-show="loadingComplete && viewMode === 'table'" 
+            <div x-show="loadingComplete && viewMode === 'table' && filteredSermons.length > 0" 
                  class="table-responsive" 
                  style="max-height: calc(100vh - 400px); overflow-y: auto;">
                 <table class="sermons-table">
@@ -445,17 +495,18 @@
                             <th>Links</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <template x-for="sermon in filteredSermons" :key="sermon.id">
+                    <tbody id="sermons-tbody">
+                        <template x-for="(sermon, index) in filteredSermons" :key="sermon?.id || index">
                             <tr>
-                                <td x-text="sermon.displayDate"></td>
-                                <td x-text="sermon.title"></td>
-                                <td x-text="sermon.author"></td>
-                                <td x-text="sermon.scripture"></td>
+                                <td x-text="sermon.displayDate || sermon.date || 'N/A'"></td>
+                                <td x-text="sermon.title || 'Untitled'"></td>
+                                <td x-text="sermon.author || 'Unknown'"></td>
+                                <td x-text="sermon.scripture || '-'"></td>
                                 <td class="sermon-links">
-                                    <a :href="sermon.spotify_url" x-show="sermon.spotify_url" target="_blank">Spotify</a>
-                                    <a :href="sermon.youtube_url" x-show="sermon.youtube_url" target="_blank">YouTube</a>
-                                    <a :href="sermon.apple_podcasts_url" x-show="sermon.apple_podcasts_url" target="_blank">Apple</a>
+                                    <a x-show="sermon.spotify_url" :href="sermon.spotify_url" target="_blank" rel="noopener">Spotify</a>
+                                    <a x-show="sermon.youtube_url" :href="sermon.youtube_url" target="_blank" rel="noopener">YouTube</a>
+                                    <a x-show="sermon.apple_podcasts_url" :href="sermon.apple_podcasts_url" target="_blank" rel="noopener">Apple</a>
+                                    <span x-show="!sermon.spotify_url && !sermon.youtube_url && !sermon.apple_podcasts_url" style="color: rgba(255,255,255,0.5);">-</span>
                                 </td>
                             </tr>
                         </template>
@@ -472,6 +523,7 @@
             <div x-show="loadingComplete" class="results-count">
                 <p>Showing <span x-text="filteredSermons.length"></span> of <span x-text="sermons.length"></span> sermons</p>
             </div>
+            
         </div>
     </div>
 </section>
@@ -486,7 +538,7 @@ window.sermonData = function() {
         sortKey: 'date',
         sortAsc: false,
         searchQuery: '',
-        viewMode: 'card', // Default to card view
+        viewMode: 'table', // Default to table view
         sermons: [],
         filteredSermons: [],
         loadingComplete: false,
@@ -527,9 +579,22 @@ window.sermonData = function() {
                     
                     console.log('Mapped sermons:', this.sermons.length);
                     console.log('First sermon:', this.sermons[0]);
+                    console.log('First sermon keys:', Object.keys(this.sermons[0] || {}));
                     
-                    this.filteredSermons = [...this.sermons];
+                    // Ensure filteredSermons is a proper array and all items have required fields
+                    this.filteredSermons = Array.isArray(this.sermons) 
+                        ? this.sermons.filter(s => s != null).map(s => ({
+                            ...s,
+                            id: s.id || `sermon-${s.date || 'unknown'}-${s.title?.substring(0, 10) || 'untitled'}`
+                        }))
+                        : [];
                     this.sortSermons();
+                    
+                    console.log('After sort - Filtered sermons:', this.filteredSermons.length);
+                    console.log('First filtered sermon:', this.filteredSermons[0]);
+                    console.log('First sermon has ID:', !!this.filteredSermons[0]?.id);
+                    
+                    // Use $nextTick to ensure Alpine.js processes the data
                     this.loadingComplete = true;
                     
                     console.log('Sermons loaded:', this.sermons.length);
@@ -537,26 +602,59 @@ window.sermonData = function() {
                     console.log('View mode:', this.viewMode);
                     console.log('Loading complete:', this.loadingComplete);
                     
-                    // Force display update after Alpine.js processes
+                    // Force display update and check if rows rendered
                     setTimeout(() => {
-                        console.log('Checking display state...');
+                        console.log('=== DISPLAY CHECK ===');
+                        console.log('View mode:', this.viewMode);
+                        console.log('Loading complete:', this.loadingComplete);
+                        console.log('Sermons count:', this.sermons.length);
+                        console.log('Filtered count:', this.filteredSermons.length);
+                        
                         const grid = document.querySelector('.sermons-grid');
                         const table = document.querySelector('.table-responsive');
+                        const tbody = document.querySelector('.sermons-table tbody');
                         
-                        console.log('Grid element:', grid);
-                        console.log('Table element:', table);
-                        console.log('Grid display:', grid ? window.getComputedStyle(grid).display : 'not found');
+                        console.log('Grid element found:', !!grid);
+                        console.log('Table element found:', !!table);
+                        console.log('Tbody element found:', !!tbody);
                         
-                        if (this.loadingComplete && this.viewMode === 'card' && grid && this.filteredSermons.length > 0) {
-                            // Force grid display
-                            grid.style.setProperty('display', 'grid', 'important');
-                            console.log('Forced grid display');
+                        const tbody = document.getElementById('sermons-tbody');
+                        if (tbody) {
+                            const rows = tbody.querySelectorAll('tr');
+                            console.log('Number of rows in tbody:', rows.length);
+                            console.log('Expected rows:', this.filteredSermons.length);
+                            console.log('Tbody innerHTML length:', tbody.innerHTML.length);
+                            
+                            // If no rows rendered but we have data, manually render
+                            if (rows.length === 0 && this.filteredSermons.length > 0 && this.viewMode === 'table') {
+                                console.log('⚠️ No rows rendered by Alpine.js! Manually rendering...');
+                                this.renderTableManually(tbody);
+                            } else if (rows.length > 0) {
+                                console.log('✓ Rows rendered successfully by Alpine.js');
+                            }
                         }
-                        if (this.loadingComplete && this.viewMode === 'table' && table && this.filteredSermons.length > 0) {
-                            table.style.setProperty('display', 'block', 'important');
-                            console.log('Forced table display');
+                        
+                        if (grid) {
+                            const computed = window.getComputedStyle(grid);
+                            console.log('Grid computed display:', computed.display);
+                            const shouldShow = this.loadingComplete && this.viewMode === 'card' && this.filteredSermons.length > 0;
+                            if (shouldShow && computed.display === 'none') {
+                                grid.style.setProperty('display', 'grid', 'important');
+                                console.log('✓ Grid forced to display: grid');
+                            }
                         }
-                    }, 200);
+                        
+                        if (table) {
+                            const computed = window.getComputedStyle(table);
+                            console.log('Table computed display:', computed.display);
+                            const shouldShow = this.loadingComplete && this.viewMode === 'table' && this.filteredSermons.length > 0;
+                            if (shouldShow && computed.display === 'none') {
+                                table.style.setProperty('display', 'block', 'important');
+                                console.log('✓ Table forced to display: block');
+                            }
+                        }
+                        console.log('=== END DISPLAY CHECK ===');
+                    }, 1000);
                 })
                 .catch(error => {
                     console.error('Error loading sermons:', error);
@@ -620,6 +718,74 @@ window.sermonData = function() {
                 }
                 return 0;
             });
+        },
+        
+        renderTableManually(tbody) {
+            // Clear existing content
+            tbody.innerHTML = '';
+            
+            // Render each sermon as a table row
+            this.filteredSermons.forEach(sermon => {
+                const tr = document.createElement('tr');
+                
+                const dateCell = document.createElement('td');
+                dateCell.textContent = sermon.displayDate || sermon.date || 'N/A';
+                tr.appendChild(dateCell);
+                
+                const titleCell = document.createElement('td');
+                titleCell.textContent = sermon.title || 'Untitled';
+                tr.appendChild(titleCell);
+                
+                const authorCell = document.createElement('td');
+                authorCell.textContent = sermon.author || 'Unknown';
+                tr.appendChild(authorCell);
+                
+                const scriptureCell = document.createElement('td');
+                scriptureCell.textContent = sermon.scripture || '-';
+                tr.appendChild(scriptureCell);
+                
+                const linksCell = document.createElement('td');
+                linksCell.className = 'sermon-links';
+                
+                if (sermon.spotify_url) {
+                    const spotifyLink = document.createElement('a');
+                    spotifyLink.href = sermon.spotify_url;
+                    spotifyLink.target = '_blank';
+                    spotifyLink.rel = 'noopener';
+                    spotifyLink.textContent = 'Spotify';
+                    linksCell.appendChild(spotifyLink);
+                }
+                
+                if (sermon.youtube_url) {
+                    const youtubeLink = document.createElement('a');
+                    youtubeLink.href = sermon.youtube_url;
+                    youtubeLink.target = '_blank';
+                    youtubeLink.rel = 'noopener';
+                    youtubeLink.textContent = 'YouTube';
+                    linksCell.appendChild(youtubeLink);
+                }
+                
+                if (sermon.apple_podcasts_url) {
+                    const appleLink = document.createElement('a');
+                    appleLink.href = sermon.apple_podcasts_url;
+                    appleLink.target = '_blank';
+                    appleLink.rel = 'noopener';
+                    appleLink.textContent = 'Apple';
+                    linksCell.appendChild(appleLink);
+                }
+                
+                if (!sermon.spotify_url && !sermon.youtube_url && !sermon.apple_podcasts_url) {
+                    const span = document.createElement('span');
+                    span.style.color = 'rgba(255,255,255,0.5)';
+                    span.textContent = '-';
+                    linksCell.appendChild(span);
+                }
+                
+                tr.appendChild(linksCell);
+                tbody.appendChild(tr);
+            });
+            
+            console.log('✓ Manually rendered', this.filteredSermons.length, 'rows');
         }
     };
 };

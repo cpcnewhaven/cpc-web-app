@@ -191,30 +191,21 @@
                 </form>
             </div>
             <div class="dashboard-section">
-                <div class="dashboard-title">Navigation</div>
-                <div class="main-nav">
+                <div class="dashboard-title">Quick Links</div>
+                <div class="quick-links-grid">
                     <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i><span>Home</span></a>
                     <a href="{{ url_for('highlights') }}"><i class="fa-solid fa-star"></i><span>Highlights</span></a>
                     <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
-                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>Announcements</span></a>
+                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>News</span></a>
                     <a href="{{ url_for('sermons') }}"><i class="fa-solid fa-book-bible"></i><span>Sermons</span></a>
                     <a href="{{ url_for('podcasts') }}"><i class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
-                </div>
-            </div>
-            <div class="dashboard-section" x-show="$store.dash.showQuickLinks">
-                <div class="dashboard-title">Quick Links</div>
-                <div class="quick-links-grid">
                     <a href="{{ url_for('search') }}"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
                     <a href="{{ url_for('archive') }}"><i class="fa-solid fa-box-archive"></i><span>Archive</span></a>
-                    <a href="{{ url_for('sermons') }}"><i class="fa-solid fa-book-bible"></i><span>Sermons</span></a>
-                    <a href="{{ url_for('podcasts') }}"><i class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
-                    <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
-                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>News</span></a>
                     <a href="{{ url_for('give') }}"><i class="fa-solid fa-hand-holding-heart"></i><span>Give</span></a>
                     <a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
                 </div>
             </div>
-            <div class="dashboard-section">
+            <div class="dashboard-section customize-section">
                 <div class="dashboard-title">Customize</div>
                 <div class="flex flex-col gap-2 text-white/90">
                     <label class="flex items-center gap-2">
@@ -222,12 +213,6 @@
                             :checked="$store.dash.compact"
                             @change="$store.dash.compact = !$store.dash.compact; $store.dash.save()">
                         <span>Compact mode</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" class="accent-blue-600"
-                            :checked="$store.dash.showQuickLinks"
-                            @change="$store.dash.showQuickLinks = !$store.dash.showQuickLinks; $store.dash.save()">
-                        <span>Show Quick Links</span>
                     </label>
                     <label class="flex items-center gap-2">
                         <input type="checkbox" class="accent-blue-600"
@@ -249,7 +234,7 @@
         </aside>
 
         <!-- Fixed Right Dashboard (Desktop) -->
-        <aside class="dashboard-sidebar dashboard-right hidden xl:block" :class="$store.dash.compact ? 'text-sm' : ''">
+        <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''">
             <div class="dashboard-section">
                 <div class="dashboard-title">Account</div>
                 <div class="text-white/90" x-data>

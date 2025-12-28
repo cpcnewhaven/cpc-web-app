@@ -16,14 +16,20 @@
     <div class="container">
         <div class="live-content">
             <div class="live-video-container">
-                <div class="live-video-placeholder">
+                <div class="live-video-wrapper">
                     <div class="live-indicator">
                         <span class="live-dot"></span>
                         <span>LIVE</span>
                     </div>
-                    <div class="video-placeholder">
-                        <i class="fas fa-video"></i>
-                        <p>Live stream will appear here during worship services</p>
+                    <div class="youtube-embed-container">
+                        <iframe 
+                            class="youtube-embed"
+                            src="https://www.youtube.com/embed/videoseries?list=PL7xij5KggExvD0S8Aq3oTT0XhMqFCyZ2l&index=1&autoplay=0&rel=0&modestbranding=1&playsinline=1"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen
+                            title="CPC New Haven Worship Service - Live Stream">
+                        </iframe>
                     </div>
                 </div>
             </div>
@@ -42,9 +48,9 @@
                 </div>
                 
                 <div class="live-actions">
-                    <button class="btn btn-primary" onclick="joinLive()">
-                        <i class="fas fa-play"></i> Join Live Stream
-                    </button>
+                    <a href="https://www.youtube.com/playlist?list=PL7xij5KggExvD0S8Aq3oTT0XhMqFCyZ2l" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt"></i> Open on YouTube
+                    </a>
                     <button class="btn btn-secondary" onclick="openChat()">
                         <i class="fas fa-comments"></i> Live Chat
                     </button>
@@ -194,8 +200,10 @@ function checkServiceTime() {
     
     // Check if it's Sunday between 10:30 AM and 12:00 PM
     if (day === 0 && hour >= 10 && hour < 12) {
-        document.querySelector('.live-indicator').style.display = 'flex';
-        document.querySelector('.video-placeholder p').textContent = 'Live stream is currently active';
+        const liveIndicator = document.querySelector('.live-indicator');
+        if (liveIndicator) {
+            liveIndicator.style.display = 'flex';
+        }
     }
 }
 
@@ -209,8 +217,11 @@ function updateLiveIndicator() {
 }
 
 function joinLive() {
-    // In a real implementation, this would start the live stream
-    alert('Live stream functionality would be implemented here. This would connect to your streaming service (YouTube Live, Facebook Live, etc.)');
+    // Scroll to video if needed
+    const videoContainer = document.querySelector('.live-video-container');
+    if (videoContainer) {
+        videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 function openChat() {
