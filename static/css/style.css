@@ -129,7 +129,7 @@ main {
 
 /* Dashboard Layout */
 :root {
-    --dashboard-sidebar-width: 252px; /* 10% more compact */
+    --dashboard-sidebar-width: 217px; /* 15% wider */
     --dashboard-gutter: 16px;
     --dashboard-top-offset: 90px; /* below nav */
     --dashboard-bottom-height: 34px; /* footer ticker height */
@@ -143,13 +143,14 @@ main {
     background: var(--glass-white);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
     padding: 12px 12px; /* compact */
     overflow-y: auto;
     overflow-x: hidden; /* prevent horizontal scroll */
     z-index: 40;
+    transition: all 0.3s ease;
 }
 
 .dashboard-left {
@@ -173,7 +174,7 @@ main {
 
 @media (min-width: 1280px) {
     :root {
-        --dashboard-sidebar-width: 300px;
+        --dashboard-sidebar-width: 259px; /* 15% wider */
     }
 }
 
@@ -1071,8 +1072,8 @@ a:hover {
 .quick-links-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* fit without horizontal scroll */
-    gap: 10px;
-    padding: 10px 0;
+    gap: 6px;
+    padding: 6px 0;
 }
 .quick-links-grid a {
     display: flex;
@@ -1080,9 +1081,9 @@ a:hover {
     align-items: center;
     color: #ddd;
     text-decoration: none;
-    padding: 6px; /* compact */
+    padding: 4px; /* more compact */
     background: rgba(255,255,255,0.03);
-    border-radius: 10px;
+    border-radius: 8px;
     transition: 0.25s;
     border: 1px solid rgba(255,255,255,0.06);
 }
@@ -1091,13 +1092,14 @@ a:hover {
     transform: translateY(-2px);
 }
 .quick-links-grid i {
-    font-size: 1.3rem; /* compact */
-    margin-bottom: 4px;
+    font-size: 1.1rem; /* more compact */
+    margin-bottom: 2px;
 }
 .quick-links-grid span {
-    font-size: 0.78rem; /* compact */
+    font-size: 0.7rem; /* more compact */
     text-align: center;
     opacity: 0.9;
+    line-height: 1.1;
 }
 @media (max-width: 768px) {
     .quick-links-grid {
