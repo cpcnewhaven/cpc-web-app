@@ -24,7 +24,7 @@ class PodcastAnalytics:
     def load_sermons(self) -> Dict:
         """Load sermons data from JSON file."""
         try:
-            with open(self.sermons_file, 'r') as f:
+            with open(self.sermons_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             logger.error(f"Sermons file {self.sermons_file} not found")
@@ -343,7 +343,7 @@ def main():
     
     # Generate report
     report = analytics.generate_report()
-    with open("podcast_analytics_report.md", "w") as f:
+    with open("podcast_analytics_report.md", "w", encoding='utf-8') as f:
         f.write(report)
     
     print(f"\nAnalytics report saved to podcast_analytics_report.md")

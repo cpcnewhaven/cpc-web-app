@@ -29,29 +29,22 @@
 
         <!-- Desktop Navigation -->
         <nav
-            class="top-nav hidden md:flex w-full max-w-6xl mx-auto rounded-lg py-2.5 px-5 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+            class="top-nav hidden md:flex w-full max-w-6xl mx-auto rounded-lg py-2.5 px-5 items-center fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
             style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); border-bottom: 1px solid rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
-            <div class="nav-logo">
+            <div class="nav-logo absolute left-5">
                 <a href="{{ url_for('index') }}">
                     <img src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png"
                         alt="CPC New Haven"
                         class="h-10 filter brightness-0 invert">
                 </a>
             </div>
-            <ul class="flex items-center gap-2">
+            <ul class="flex items-center gap-2 mx-auto">
                 <li><a href="{{ url_for('index') }}"
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Home</a></li>
                 <li><a href="{{ url_for('about') }}"
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">About</a></li>
                 <li><a href="{{ url_for('about') }}"
                         class="text-white hover:text-blue-200 font-semibold px-3 py-2 rounded text-sm">Plan a Visit</a></li>
-                <li class="hidden md:block">
-                    <form @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.navq.value)">
-                        <input x-ref="navq" type="search" placeholder="Search..."
-                            class="px-3 py-2 rounded-md bg-white/80 text-gray-800 focus:outline-none text-sm"
-                            autocomplete="off" style="min-width: 180px;">
-                    </form>
-                </li>
                 <li class="relative nav-dropdown">
                     <a href="#"
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">Community
@@ -281,7 +274,7 @@
             </div>
             <div class="dashboard-section">
                 <div class="dashboard-title">Stay Connected</div>
-                <ul class="dashboard-list">
+                <ul class="dashboard-list flex flex-row gap-3 justify-center">
                     <li><a href="https://www.instagram.com/cpcnewhaven" target="_blank" class="dashboard-link" title="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
                     <li><a href="https://www.youtube.com/@cpcnewhaven" target="_blank" class="dashboard-link" title="YouTube"><i class="fa-brands fa-youtube"></i></a></li>
                     <li><a href="{{ url_for('contact') }}" class="dashboard-link" title="Contact"><i class="fa-solid fa-envelope"></i></a></li>

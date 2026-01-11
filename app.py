@@ -795,27 +795,42 @@ def api_search():
     try:
         # Search sermons
         if content_type in ['all', 'sermons']:
-            with open('data/sermons.json', 'r') as f:
-                sermons_data = json.load(f)
-                for sermon in sermons_data.get('sermons', []):
-                    search_text = f"{sermon.get('title', '')} {sermon.get('author', '')} {sermon.get('scripture', '')}".lower()
-                    if query in search_text:
-                        results['results'].append({
-                            'type': 'sermon',
-                            'title': sermon.get('title'),
-                            'description': sermon.get('scripture', ''),
-                            'author': sermon.get('author'),
-                            'date': sermon.get('date'),
-                            'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url'),
-                            'thumbnail': sermon.get('podcast_thumbnail_url')
-                        })
+            try:
+                with open('data/sermons.json', 'r', encoding='utf-8') as f:
+                    sermons_data = json.load(f)
+                    for sermon in sermons_data.get('sermons', []):
+                        # Search across multiple fields
+                        search_fields = [
+                            sermon.get('title', ''),
+                            sermon.get('author', ''),
+                            sermon.get('scripture', ''),
+                            sermon.get('series', ''),
+                            sermon.get('sermon_type', ''),
+                            ', '.join(sermon.get('tags', [])) if isinstance(sermon.get('tags'), list) else ''
+                        ]
+                        search_text = ' '.join([str(f) for f in search_fields if f]).lower()
+                        if query in search_text:
+                            results['results'].append({
+                                'type': 'sermon',
+                                'title': sermon.get('title'),
+                                'description': sermon.get('scripture', '') or sermon.get('series', ''),
+                                'author': sermon.get('author'),
+                                'date': sermon.get('date'),
+                                'series': sermon.get('series', ''),
+                                'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url') or sermon.get('apple_podcasts_url'),
+                                'thumbnail': sermon.get('podcast_thumbnail_url')
+                            })
+            except FileNotFoundError:
+                pass  # Sermons file not found, skip
         
         # Search announcements
         if content_type in ['all', 'announcements']:
             announcements = Announcement.query.filter(
                 db.or_(
                     Announcement.title.ilike(f'%{query}%'),
-                    Announcement.description.ilike(f'%{query}%')
+                    Announcement.description.ilike(f'%{query}%'),
+                    Announcement.category.ilike(f'%{query}%'),
+                    Announcement.tag.ilike(f'%{query}%')
                 )
             ).all()
             for a in announcements:
@@ -825,6 +840,7 @@ def api_search():
                     'description': a.description[:200] if a.description else '',
                     'date': a.date_entered.strftime('%Y-%m-%d') if a.date_entered else None,
                     'category': a.category,
+                    'tag': a.tag,
                     'url': url_for('announcements')
                 })
         
