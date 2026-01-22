@@ -14,9 +14,6 @@
     max-width: 100%;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 0.75rem;
 }
 
 /* Compact Hero */
@@ -41,19 +38,17 @@
     margin: 0;
 }
 
-/* Navigation Sidebar */
-.community-nav-sidebar {
+/* Page Submenu - Vertical List Format */
+.page-submenu {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 0.75rem;
-    height: fit-content;
-    position: sticky;
-    top: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
-.nav-section-title {
+.submenu-title {
     font-size: 0.85rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
@@ -64,30 +59,37 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.nav-links {
+.submenu-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
-.nav-links li {
-    margin-bottom: 0.25rem;
+.submenu-list li {
+    margin: 0;
 }
 
-.nav-links a {
+.submenu-list a {
     display: block;
-    padding: 0.4rem 0.5rem;
+    padding: 0.4rem 0.75rem;
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     font-size: 0.85rem;
     border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
-    background: rgba(255, 255, 255, 0.1);
+.submenu-list a:hover,
+.submenu-list a.active {
+    background: rgba(255, 255, 255, 0.15);
     color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Content Area */
@@ -95,6 +97,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    max-width: 100%;
 }
 
 .community-section {
@@ -348,16 +351,6 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
-    .community-main-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .community-nav-sidebar {
-        position: relative;
-        top: 0;
-        margin-bottom: 0.75rem;
-    }
-    
     .groups-grid,
     .stories-grid {
         grid-template-columns: 1fr;
@@ -365,6 +358,14 @@
     
     .new-member-content {
         grid-template-columns: 1fr;
+    }
+    
+    .submenu-list {
+        flex-direction: column;
+    }
+    
+    .submenu-list a {
+        width: 100%;
     }
 }
 </style>
@@ -380,16 +381,16 @@
             <p>Join our vibrant community of believers and seekers</p>
         </div>
 
-        <!-- Navigation Sidebar -->
-        <aside class="community-nav-sidebar">
-            <div class="nav-section-title">Quick Navigation</div>
-            <ul class="nav-links">
-                <li><a href="#groups" class="nav-link">Community Groups</a></li>
-                <li><a href="#service" class="nav-link">Service Opportunities</a></li>
-                <li><a href="#new-member" class="nav-link">New to CPC?</a></li>
-                <li><a href="#stories" class="nav-link">Community Stories</a></li>
+        <!-- Page Submenu -->
+        <nav class="page-submenu">
+            <div class="submenu-title">Quick Navigation</div>
+            <ul class="submenu-list">
+                <li><a href="#groups" class="submenu-link">Community Groups</a></li>
+                <li><a href="#service" class="submenu-link">Service Opportunities</a></li>
+                <li><a href="#new-member" class="submenu-link">New to CPC?</a></li>
+                <li><a href="#stories" class="submenu-link">Community Stories</a></li>
             </ul>
-        </aside>
+        </nav>
 
         <!-- Content Area -->
         <div class="community-content-area">
@@ -599,12 +600,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    document.querySelectorAll('.nav-link').forEach(link => {
+    document.querySelectorAll('.submenu-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             smoothScrollTo(targetId);
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.submenu-link').forEach(l => l.classList.remove('active'));
             this.classList.add('active');
         });
     });
@@ -618,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 current = section.getAttribute('id');
             }
         });
-        document.querySelectorAll('.nav-link').forEach(link => {
+        document.querySelectorAll('.submenu-link').forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === `#${current}`) {
                 link.classList.add('active');

@@ -14,9 +14,6 @@
     max-width: 100%;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 0.75rem;
 }
 
 /* Compact Hero */
@@ -60,27 +57,25 @@
     color: white;
 }
 
-/* Navigation Sidebar */
-.about-nav-sidebar {
+/* Page Submenu - Vertical List Format */
+.page-submenu {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 0.75rem;
-    height: fit-content;
-    position: sticky;
-    top: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
-.nav-section {
-    margin-bottom: 1rem;
+.submenu-section {
+    margin-bottom: 0.75rem;
 }
 
-.nav-section:last-child {
+.submenu-section:last-child {
     margin-bottom: 0;
 }
 
-.nav-section-title {
+.submenu-title {
     font-size: 0.85rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
@@ -91,30 +86,37 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.nav-links {
+.submenu-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
-.nav-links li {
-    margin-bottom: 0.25rem;
+.submenu-list li {
+    margin: 0;
 }
 
-.nav-links a {
+.submenu-list a {
     display: block;
-    padding: 0.4rem 0.5rem;
+    padding: 0.4rem 0.75rem;
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     font-size: 0.85rem;
     border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
-    background: rgba(255, 255, 255, 0.1);
+.submenu-list a:hover,
+.submenu-list a.active {
+    background: rgba(255, 255, 255, 0.15);
     color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Content Area */
@@ -122,6 +124,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    max-width: 100%;
 }
 
 .about-section {
@@ -408,10 +411,12 @@
         grid-template-columns: 1fr;
     }
     
-    .about-nav-sidebar {
-        position: relative;
-        top: 0;
-        margin-bottom: 0.75rem;
+    .submenu-list {
+        flex-direction: column;
+    }
+    
+    .submenu-list a {
+        width: 100%;
     }
     
     .two-column-grid {
@@ -449,29 +454,29 @@
             <a href="#mission" class="hero-cta">Explore Our Mission</a>
         </div>
 
-        <!-- Navigation Sidebar -->
-        <aside class="about-nav-sidebar">
-            <div class="nav-section">
-                <div class="nav-section-title">Who We Are</div>
-                <ul class="nav-links">
-                    <li><a href="#mission" class="toc-link">Our Mission</a></li>
-                    <li><a href="#totalChrist" class="toc-link">Total Christ</a></li>
-                    <li><a href="#fiveMarks" class="toc-link">Five Marks</a></li>
+        <!-- Page Submenu -->
+        <nav class="page-submenu">
+            <div class="submenu-section">
+                <div class="submenu-title">Who We Are</div>
+                <ul class="submenu-list">
+                    <li><a href="#mission" class="submenu-link">Our Mission</a></li>
+                    <li><a href="#totalChrist" class="submenu-link">Total Christ</a></li>
+                    <li><a href="#fiveMarks" class="submenu-link">Five Marks</a></li>
                 </ul>
             </div>
-            <div class="nav-section">
-                <div class="nav-section-title">Leadership</div>
-                <ul class="nav-links">
-                    <li><a href="#staff" class="toc-link">Staff Team</a></li>
+            <div class="submenu-section">
+                <div class="submenu-title">Leadership</div>
+                <ul class="submenu-list">
+                    <li><a href="#staff" class="submenu-link">Staff Team</a></li>
                 </ul>
             </div>
-            <div class="nav-section">
-                <div class="nav-section-title">Our Story</div>
-                <ul class="nav-links">
-                    <li><a href="#ourStory" class="toc-link">Church History</a></li>
+            <div class="submenu-section">
+                <div class="submenu-title">Our Story</div>
+                <ul class="submenu-list">
+                    <li><a href="#ourStory" class="submenu-link">Church History</a></li>
                 </ul>
             </div>
-        </aside>
+        </nav>
 
         <!-- Content Area -->
         <div class="about-content-area">
@@ -722,21 +727,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Add click handlers for navigation links
-    document.querySelectorAll('.toc-link, .nav-links a').forEach(link => {
+    document.querySelectorAll('.submenu-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             smoothScrollTo(targetId);
             
             // Update active state
-            document.querySelectorAll('.toc-link, .nav-links a').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.submenu-link').forEach(l => l.classList.remove('active'));
             this.classList.add('active');
         });
     });
 
     // Update active nav link on scroll
     const sections = document.querySelectorAll('.about-section');
-    const navLinks = document.querySelectorAll('.nav-links a, .toc-link');
+    const navLinks = document.querySelectorAll('.submenu-link');
 
     function updateActiveNav() {
         let current = '';
