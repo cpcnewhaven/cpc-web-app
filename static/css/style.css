@@ -2800,6 +2800,78 @@ tr:hover {
     margin-bottom: 0;
 }
 
+/* Global Page Submenu - Vertical List Format */
+.page-submenu {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.submenu-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submenu-section {
+    margin-bottom: 0.75rem;
+}
+
+.submenu-section:last-child {
+    margin-bottom: 0;
+}
+
+.submenu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.submenu-list li {
+    margin: 0;
+}
+
+.submenu-list a {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.submenu-list a:hover,
+.submenu-list a.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .submenu-list {
+        flex-direction: column;
+    }
+    
+    .submenu-list a {
+        width: 100%;
+    }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .compact-hero h1 {
