@@ -6,48 +6,162 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
 
+{% block head %}
+<style>
+.search-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
+
+.search-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0.75rem;
+}
+
+.search-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.search-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.search-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.search-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.search-section label {
+    display: block;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.search-section input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.search-section button {
+    padding: 0.5rem 1rem;
+    background: rgba(0, 82, 163, 0.4);
+    border: 1px solid rgba(0, 82, 163, 0.6);
+    border-radius: 6px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.search-section button:hover {
+    background: rgba(0, 82, 163, 0.5);
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+.filter-tab {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.filter-tab.active,
+.filter-tab:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.result-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.result-card h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.result-card p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="max-w-3xl mx-auto px-4 py-10">
-    <h1 class="text-4xl font-bold mb-4">Search</h1>
-    <p class="text-lg text-gray-600 mb-10">Find sermons, podcasts,
-        announcements, and more</p>
-
-    <!-- Search Bar -->
-    <div class="mt-12">
-        <label class="block text-gray-700 font-medium mb-2">Search</label>
-        <div class="flex gap-2">
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Search for anything... (e.g., 'Luke', 'grace', 'worship')"
-                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
-                autocomplete="off">
-            <button id="searchButton"
-                class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Go
-            </button>
+<div class="search-page compact-page">
+    <div class="search-container compact-content">
+        <div class="search-hero compact-hero">
+            <h1>Search</h1>
+            <p>Find sermons, podcasts, announcements, and more</p>
         </div>
-    </div>
 
-    <!-- Filter Tabs -->
-    <div class="mt-6 flex gap-2 flex-wrap">
-        <button
-            class="filter-tab active px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-            data-type="all">All Content</button>
-        <button
-            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
-            data-type="sermons">Sermons</button>
-        <button
-            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
-            data-type="podcasts">Podcasts</button>
-        <button
-            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
-            data-type="announcements">Announcements</button>
-        <button
-            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
-            data-type="events">Events</button>
-        <button
-            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+        <!-- Search Bar -->
+        <div class="search-section">
+            <label>Search</label>
+            <div style="display: flex; gap: 0.5rem;">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search for anything... (e.g., 'Luke', 'grace', 'worship')"
+                    autocomplete="off">
+                <button id="searchButton">Go</button>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-type="all">All Content</button>
+            <button class="filter-tab" data-type="sermons">Sermons</button>
+            <button class="filter-tab" data-type="podcasts">Podcasts</button>
+            <button class="filter-tab" data-type="announcements">Announcements</button>
+            <button class="filter-tab" data-type="events">Events</button>
+            <button class="filter-tab" data-type="gallery">Gallery</button>
             data-type="papers">Papers</button>
         <button
             class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
@@ -55,8 +169,9 @@
     </div>
 
     <!-- Search Results -->
-    <div class="search-results mt-8" id="searchResults">
-        <!-- Results will be populated here -->
+        <div class="results-container" id="searchResults">
+            <!-- Results will be populated here -->
+        </div>
     </div>
 </div>
 

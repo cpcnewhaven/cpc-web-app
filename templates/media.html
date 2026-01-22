@@ -8,14 +8,62 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
+{% block head %}
+<style>
+.media-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
+
+.media-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.media-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.media-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.stat {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.media-nav {
+    margin-bottom: 0.75rem;
+}
+
+.media-nav .container {
+    max-width: 100%;
+    padding: 0 0.75rem;
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero media-hero">
-    <div class="container">
-        <div class="hero-content">
+<div class="media-page compact-page">
+    <div class="compact-content">
+        <div class="media-hero compact-hero">
             <h1>Media Center</h1>
-            <p>Explore our photo gallery and digital yearbook - moments of
-                faith, fellowship, and celebration</p>
+            <p>Explore our photo gallery and digital yearbook - moments of faith, fellowship, and celebration</p>
             <div class="hero-stats">
                 <div class="stat">
                     <span class="stat-number" id="total-photos">0</span>
@@ -31,12 +79,9 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
 
-<!-- Media Navigation Tabs -->
-<section class="media-nav">
-    <div class="container">
+        <section class="media-nav">
+            <div class="container">
         <div class="media-tabs">
             <button class="media-tab active" data-tab="gallery">
                 <i class="fas fa-images"></i>

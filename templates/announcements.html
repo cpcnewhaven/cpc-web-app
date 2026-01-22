@@ -2,64 +2,158 @@
 
 {% block title %}Announcements - CPC New Haven{% endblock %}
 
-{% block content %}
-<div class="max-w-6xl mx-auto px-4 py-10">
-    <h1 class="text-4xl font-bold mb-4">Announcements</h1>
-    <p class="text-lg text-gray-600 mb-10">Latest news and announcements from
-        CPC New Haven</p>
+{% block head %}
+<style>
+.announcements-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
 
-    <div id="announcements-container"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Announcements will be populated by JavaScript -->
-    </div>
-</div>
+.announcements-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.announcements-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.announcements-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.announcements-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.announcements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+.announcement-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.announcement-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.announcement-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.announcement-card h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.announcement-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.announcement-badge {
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 82, 163, 0.3);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.announcement-description {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.5rem 0;
+    flex-grow: 1;
+}
+
+.announcement-date {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: auto;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    grid-column: 1 / -1;
+}
+</style>
 {% endblock %}
 
-{% block scripts %}
+{% block content %}
+<div class="announcements-page compact-page">
+    <div class="announcements-container compact-content">
+        <div class="announcements-hero compact-hero">
+            <h1>Announcements</h1>
+            <p>Latest news and announcements from CPC New Haven</p>
+        </div>
+
+        <div id="announcements-container" class="announcements-grid">
+            <div class="empty-state">Loading announcements...</div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Load announcements
     fetch('/api/announcements')
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('announcements-container');
             
             if (data.announcements && data.announcements.length > 0) {
-                let html = '';
-                
-                data.announcements.forEach(announcement => {
-                    html += `
-                        <div class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white flex flex-col h-full">
-                            ${announcement.featuredImage ? `
-                                <img src="${announcement.featuredImage}" alt="${announcement.title}" class="w-full h-48 object-cover rounded-lg mb-4">
-                            ` : ''}
-                            <h3 class="text-xl font-semibold mb-2">${announcement.title}</h3>
-                            <div class="flex gap-3 mb-4 text-sm text-gray-500 flex-wrap">
-                                ${announcement.type ? `<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">${announcement.type}</span>` : ''}
-                                ${announcement.category ? `<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full">${announcement.category}</span>` : ''}
-                            </div>
-                            <p class="text-base leading-relaxed text-gray-700 mb-4 flex-grow">${announcement.description}</p>
-                            ${announcement.dateEntered ? `<p class="text-sm text-gray-500 mt-auto">${announcement.dateEntered}</p>` : ''}
+                container.innerHTML = data.announcements.map(announcement => `
+                    <div class="announcement-card">
+                        ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image">` : ''}
+                        <h3>${announcement.title}</h3>
+                        <div class="announcement-badges">
+                            ${announcement.type ? `<span class="announcement-badge">${announcement.type}</span>` : ''}
+                            ${announcement.category ? `<span class="announcement-badge">${announcement.category}</span>` : ''}
                         </div>
-                    `;
-                });
-                
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = `
-                    <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
-                        No announcements at this time.
+                        <p class="announcement-description">${announcement.description}</p>
+                        ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
                     </div>
-                `;
+                `).join('');
+            } else {
+                container.innerHTML = '<div class="empty-state">No announcements at this time.</div>';
             }
         })
         .catch(error => {
             console.error('Error loading announcements:', error);
-            document.getElementById('announcements-container').innerHTML = `
-                <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
-                    Error loading announcements.
-                </div>
-            `;
+            document.getElementById('announcements-container').innerHTML = '<div class="empty-state">Error loading announcements.</div>';
         });
 });
 </script>

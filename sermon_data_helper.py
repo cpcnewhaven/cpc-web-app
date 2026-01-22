@@ -160,6 +160,84 @@ class SermonDataHelper:
                     pass
         
         return archive_sermons
+    
+    def get_latest_luke_chapter(self) -> Optional[Dict]:
+        """
+        Find the latest Luke chapter from all sermons.
+        Returns dict with chapter number, reference, date, and sermon title.
+        """
+        import re
+        sermons = self.get_all_sermons()
+        luke_sermons = []
+        
+        # Pattern to match Luke references: "luke 24:36-53", "Luke 23.26-43", etc.
+        luke_pattern = re.compile(r'luke\s+(\d+)[:\.]', re.IGNORECASE)
+        
+        for sermon in sermons:
+            scripture = sermon.get('scripture', '').strip()
+            title = sermon.get('title', '')
+            date = sermon.get('date', '')
+            
+            # Check scripture field first
+            if scripture:
+                match = luke_pattern.search(scripture)
+                if match:
+                    chapter = int(match.group(1))
+                    luke_sermons.append({
+                        'chapter': chapter,
+                        'reference': scripture,
+                        'date': date,
+                        'title': sermon.get('title', ''),
+                        'sermon': sermon
+                    })
+                    continue
+            
+            # Also check title if scripture field is empty
+            if not scripture and title:
+                match = luke_pattern.search(title)
+                if match:
+                    chapter = int(match.group(1))
+                    # Try to extract full reference from title
+                    ref_match = re.search(r'luke\s+(\d+)[:\.]?\d*[-\.]?\d*', title, re.IGNORECASE)
+                    reference = ref_match.group(0) if ref_match else f"Luke {chapter}"
+                    luke_sermons.append({
+                        'chapter': chapter,
+                        'reference': reference,
+                        'date': date,
+                        'title': title,
+                        'sermon': sermon
+                    })
+        
+        if not luke_sermons:
+            return None
+        
+        # Sort by date (most recent first), then by chapter number
+        luke_sermons.sort(key=lambda x: (
+            x['date'] if x['date'] else '0000-00-00',
+            -x['chapter']  # Negative for descending
+        ), reverse=True)
+        
+        # Get the most recent sermon
+        latest = luke_sermons[0]
+        
+        # Find the highest chapter number overall (in case we want the latest chapter regardless of date)
+        max_chapter_sermon = max(luke_sermons, key=lambda x: x['chapter'])
+        
+        return {
+            'latest_by_date': {
+                'chapter': latest['chapter'],
+                'reference': latest['reference'],
+                'date': latest['date'],
+                'title': latest['title']
+            },
+            'latest_by_chapter': {
+                'chapter': max_chapter_sermon['chapter'],
+                'reference': max_chapter_sermon['reference'],
+                'date': max_chapter_sermon['date'],
+                'title': max_chapter_sermon['title']
+            },
+            'total_luke_sermons': len(luke_sermons)
+        }
 
 # Global instance for easy access
 _sermon_helper = None

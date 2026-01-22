@@ -2,18 +2,56 @@
 
 {% block title %}Sundays - CPC New Haven{% endblock %}
 
-{% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Sundays at CPC</h1>
-        <p>Join us for worship, fellowship, and community every Sunday</p>
-    </div>
-</section>
+{% block head %}
+<style>
+.sundays-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
 
-<!-- Service Schedule Section -->
-<section class="service-schedule-section">
-    <div class="container">
+.sundays-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.sundays-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.sundays-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.service-schedule-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.service-schedule-section .container {
+    max-width: 100%;
+    padding: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sundays-page compact-page">
+    <div class="compact-content">
+        <div class="sundays-hero compact-hero">
+            <h1>Sundays at CPC</h1>
+            <p>Join us for worship, fellowship, and community every Sunday</p>
+        </div>
+
+        <section class="service-schedule-section">
+            <div class="container">
         <h2>Sunday Service Schedule</h2>
         <div class="schedule-grid">
             <div class="schedule-item">

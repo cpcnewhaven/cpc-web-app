@@ -5,71 +5,62 @@
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <style>
+    .archive-page {
+        min-height: calc(100vh - 200px);
+        padding: 0;
+        margin: 0;
+    }
+
     .archive-container {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 0 20px;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
     }
 
     .archive-header {
         text-align: center;
-        margin-bottom: 60px;
+        padding: 0.5rem 0;
+        margin-bottom: 0.75rem;
         position: relative;
     }
 
-    .archive-header::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(155, 89, 182, 0.1) 0%, transparent 70%);
-        border-radius: 50%;
-        filter: blur(60px);
-        z-index: -1;
-    }
-
     .archive-header h1 {
-        font-size: 3rem;
-        font-weight: 300;
+        font-size: 1.75rem;
+        font-weight: 600;
         color: rgba(255, 255, 255, 0.95);
-        margin-bottom: 10px;
-        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-        letter-spacing: 2px;
+        margin: 0 0 0.25rem 0;
     }
 
     .archive-header p {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1.2rem;
-        font-weight: 300;
-        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin: 0;
     }
 
     .filter-tabs {
         display: flex;
         justify-content: center;
-        gap: 12px;
-        margin: 40px 0;
+        gap: 0.5rem;
+        margin: 0 0 0.75rem 0;
         flex-wrap: wrap;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.75rem;
     }
 
     .filter-tab {
-        padding: 12px 28px;
+        padding: 0.5rem 1rem;
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
         cursor: pointer;
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.8);
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.2s ease;
         font-size: 0.85rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .filter-tab:hover {
@@ -77,20 +68,22 @@
         border-color: rgba(255, 255, 255, 0.3);
     }
 
-    .filter-tab.active {
-        background: rgba(255, 255, 255, 0.25);
+    .filter-tab.active,
+    .filter-tab:hover {
+        background: rgba(255, 255, 255, 0.2);
         color: rgba(255, 255, 255, 1);
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
-        font-weight: 600;
+        border-color: rgba(255, 255, 255, 0.3);
     }
 
     .archive-content {
-        margin-top: 50px;
+        margin-top: 0.75rem;
     }
 
     .archive-section {
-        margin-bottom: 60px;
+        margin-bottom: 0.75rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 1rem;
     }
 
     .section-header {
@@ -277,11 +270,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="archive-container">
-    <div class="archive-header">
-        <h1>Archive</h1>
-        <p>Browse historical content and older materials</p>
-    </div>
+<div class="archive-page compact-page">
+    <div class="archive-container compact-content">
+        <div class="archive-header compact-hero">
+            <h1>Archive</h1>
+            <p>Browse historical content and older materials</p>
+        </div>
 
     <div class="filter-tabs">
         <div class="filter-tab active" data-type="all">All Content</div>

@@ -4,8 +4,35 @@
 
 {% block head %}
 <style>
+.newsletter-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
+
+.newsletter-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.newsletter-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.newsletter-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
 .newsletter-section {
-    padding: 2rem 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
 }
 
 .newsletter-item {
@@ -68,17 +95,15 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Latest Newsletter</h1>
-        <p>Stay updated with our latest news and announcements.</p>
-    </div>
-</section>
+<div class="newsletter-page compact-page">
+    <div class="compact-content">
+        <div class="newsletter-hero compact-hero">
+            <h1>Latest Newsletter</h1>
+            <p>Stay updated with our latest news and announcements.</p>
+        </div>
 
-<!-- Newsletter Section -->
-<section class="newsletter-section">
-    <div class="container">
+        <section class="newsletter-section">
+            <div style="max-width: 100%; padding: 0;">
         <div id="newsletter-container">
             <div class="loading-message">
                 <h3>📧 Loading Newsletter...</h3>

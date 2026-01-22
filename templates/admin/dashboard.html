@@ -315,6 +315,21 @@
             <div class="stat-label">Gallery Images</div>
             <div class="stat-sub">Total Photos</div>
         </div>
+        
+        {% if latest_luke %}
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--cpc-blue), var(--cpc-blue-dark)); border: 2px solid var(--cpc-blue-light);">
+            <div class="stat-number" style="font-size: 2.5rem;">Luke {{ latest_luke.latest_by_date.chapter }}</div>
+            <div class="stat-label">Latest Luke Chapter</div>
+            <div class="stat-sub" style="color: rgba(255, 255, 255, 0.9); margin-top: 0.5rem;">
+                <i class="fas fa-book-open"></i> {{ latest_luke.latest_by_date.reference }}
+            </div>
+            {% if latest_luke.latest_by_date.date %}
+            <div class="stat-sub" style="color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; margin-top: 0.25rem;">
+                <i class="fas fa-calendar"></i> {{ latest_luke.latest_by_date.date }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 
     <!-- Content Wizards -->

@@ -9,44 +9,26 @@
     display: none !important;
 }
 
-/* Sermons Page - Maximized Layout for 25 Years of Content */
+/* Sermons Page - Compact Layout */
 .sermons-page {
     min-height: calc(100vh - 200px);
-    padding: 2rem 0;
-    /* Allow natural page scrolling */
+    padding: 0;
+    margin: 0;
     overflow: visible;
-}
-
-.page-hero {
-    padding: 2rem 0;
-    text-align: center;
-    background: transparent;
-    height: auto;
-}
-
-.page-hero h1 {
-    font-size: 2.5rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 0.5rem;
-}
-
-.page-hero p {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1rem;
 }
 
 .sermons-section {
     max-width: 100%;
-    padding: 0 1rem;
-    margin: 0 auto;
+    padding: 0;
+    margin: 0;
 }
 
 .sermon-controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     border-radius: 12px;
@@ -568,18 +550,15 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Sunday Sermons</h1>
-        <p>Weekly messages from our Sunday worship services • 25 Years of
-            Archive</p>
-    </div>
-</section>
+<!-- Compact Hero -->
+<div class="compact-hero">
+    <h1>Sunday Sermons</h1>
+    <p>Weekly messages from our Sunday worship services • 25 Years of Archive</p>
+</div>
 
 <!-- Sermons Section -->
-<section class="sermons-section sermons-page">
-    <div class="container" style="max-width: 100%; padding: 0 2rem;">
+<section class="sermons-section sermons-page compact-page">
+    <div class="compact-content" style="max-width: 100%; padding: 0 0.75rem;">
         <!-- Alpine.js Component -->
         <div x-data="sermonData()" x-init="init()">
             <!-- Search and Filter Controls -->

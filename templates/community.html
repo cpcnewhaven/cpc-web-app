@@ -2,239 +2,631 @@
 
 {% block title %}Community - CPC New Haven{% endblock %}
 
-{% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Community</h1>
-        <p>Join our vibrant community of believers and seekers</p>
-    </div>
-</section>
+{% block head %}
+<style>
+.community-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
 
-<!-- Community Groups Section -->
-<section class="community-groups-section">
-    <div class="container">
-        <h2>Community Groups</h2>
-        <p class="section-intro">Connect with others through our various community groups and ministries.</p>
-        
-        <div class="groups-grid">
-            <div class="group-card">
-                <div class="group-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3>Small Groups</h3>
-                <p>Join a small group for Bible study, prayer, and fellowship in a more intimate setting.</p>
-                <ul>
-                    <li>Westville Group - Thursdays at 7:00pm</li>
-                    <li>Orange Group - Wednesdays at 7:00pm</li>
-                    <li>Guilford Group - Fridays at 7:00pm</li>
-                </ul>
-            </div>
-            
-            <div class="group-card">
-                <div class="group-icon">
-                    <i class="fas fa-child"></i>
-                </div>
-                <h3>Children's Ministry</h3>
-                <p>Nurturing the faith of our youngest members through age-appropriate programs.</p>
-                <ul>
-                    <li>Sunday School (ages 3-12)</li>
-                    <li>Children's Church during worship</li>
-                    <li>Vacation Bible School</li>
-                    <li>Special events and activities</li>
-                </ul>
-            </div>
-            
-            <div class="group-card">
-                <div class="group-icon">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <h3>Youth Ministry</h3>
-                <p>Engaging middle and high school students in their faith journey.</p>
-                <ul>
-                    <li>Youth Group - Fridays at 7:00pm</li>
-                    <li>Summer mission trips</li>
-                    <li>Retreats and conferences</li>
-                    <li>Service projects</li>
-                </ul>
-            </div>
-            
-            <div class="group-card">
-                <div class="group-icon">
-                    <i class="fas fa-male"></i>
-                </div>
-                <h3>Men's Ministry</h3>
-                <p>Building strong Christian men through fellowship and study.</p>
-                <ul>
-                    <li>Men's Fellowship - Saturdays at 8:00am</li>
-                    <li>Men's Bible Study</li>
-                    <li>Service projects</li>
-                    <li>Annual retreat</li>
-                </ul>
-            </div>
-            
-            <div class="group-card">
-                <div class="group-icon">
-                    <i class="fas fa-female"></i>
-                </div>
-                <h3>Women's Ministry</h3>
-                <p>Encouraging women in their walk with Christ and relationships with each other.</p>
-                <ul>
-                    <li>Women's Bible Study</li>
-                    <li>Women's Retreat</li>
-                    <li>Mentoring program</li>
-                    <li>Service opportunities</li>
-                </ul>
-            </div>
-            
-            <div class="group-card">
-                <div class="group-icon">
-                    <i class="fas fa-music"></i>
-                </div>
-                <h3>Music Ministry</h3>
-                <p>Using musical gifts to glorify God and lead in worship.</p>
-                <ul>
-                    <li>Choir participation</li>
-                    <li>Instrumental ensembles</li>
-                    <li>Special music opportunities</li>
-                    <li>Music education programs</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
+.community-main-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0.75rem;
+}
 
-<!-- Service Opportunities Section -->
-<section class="service-opportunities-section">
-    <div class="container">
-        <h2>Service Opportunities</h2>
-        <p class="section-intro">Get involved in serving our church and community.</p>
-        
-        <div class="service-grid">
-            <div class="service-card">
-                <h3>Welcome Team</h3>
-                <p>Help welcome visitors and new members to our church family.</p>
-                <span class="service-tag">Hospitality</span>
-            </div>
-            
-            <div class="service-card">
-                <h3>Children's Ministry</h3>
-                <p>Teach, assist, or help with children's programs and activities.</p>
-                <span class="service-tag">Teaching</span>
-            </div>
-            
-            <div class="service-card">
-                <h3>Audio/Visual</h3>
-                <p>Support our worship services with technical assistance.</p>
-                <span class="service-tag">Technical</span>
-            </div>
-            
-            <div class="service-card">
-                <h3>Facilities</h3>
-                <p>Help maintain and improve our church building and grounds.</p>
-                <span class="service-tag">Maintenance</span>
-            </div>
-            
-            <div class="service-card">
-                <h3>Community Outreach</h3>
-                <p>Participate in local service projects and community events.</p>
-                <span class="service-tag">Outreach</span>
-            </div>
-            
-            <div class="service-card">
-                <h3>Prayer Ministry</h3>
-                <p>Join our prayer team and intercede for our church and community.</p>
-                <span class="service-tag">Prayer</span>
-            </div>
-        </div>
-    </div>
-</section>
+/* Compact Hero */
+.community-hero {
+    grid-column: 1 / -1;
+    padding: 0.5rem 0;
+    text-align: center;
+    background: transparent;
+    margin: 0 0 0.75rem 0;
+}
 
-<!-- New Member Information -->
-<section class="new-member-section">
-    <div class="container">
-        <h2>New to CPC?</h2>
-        <div class="new-member-content">
-            <div class="new-member-info">
-                <h3>Getting Connected</h3>
-                <p>We're excited that you're interested in joining our community! Here's how you can get started:</p>
-                <ol>
-                    <li><strong>Visit us on Sunday</strong> - Join us for worship at 10:30am</li>
-                    <li><strong>Stay for fellowship</strong> - Meet people at our fellowship lunch after service</li>
-                    <li><strong>Join a small group</strong> - Connect with others in a more intimate setting</li>
-                    <li><strong>Get involved</strong> - Find a service opportunity that matches your gifts</li>
-                    <li><strong>Consider membership</strong> - Learn about becoming a member of CPC</li>
-                </ol>
-            </div>
-            
-            <div class="new-member-contact">
-                <h3>Questions?</h3>
-                <p>If you have questions about getting involved or becoming a member, we'd love to help!</p>
-                <div class="contact-methods">
-                    <a href="mailto:admin@cpcnewhaven.org" class="contact-link">
-                        <i class="fas fa-envelope"></i> Email Us
-                    </a>
-                    <a href="tel:+12035550123" class="contact-link">
-                        <i class="fas fa-phone"></i> Call Us
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+.community-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
 
-<!-- Community Stories -->
-<section class="community-stories-section">
-    <div class="container">
-        <h2>Community Stories</h2>
-        <div class="stories-grid">
-            <div class="story-card">
-                <div class="story-content">
-                    <h3>Finding Family at CPC</h3>
-                    <p>"When I moved to New Haven for graduate school, I was looking for a church that would feel like home. CPC welcomed me with open arms and helped me find my place in the community."</p>
-                    <span class="story-author">- Sarah, Graduate Student</span>
-                </div>
-            </div>
-            
-            <div class="story-card">
-                <div class="story-content">
-                    <h3>Growing in Faith Together</h3>
-                    <p>"Through our small group, I've been able to grow deeper in my faith while building meaningful relationships with other believers. It's been a blessing to journey together."</p>
-                    <span class="story-author">- Michael, Small Group Member</span>
-                </div>
-            </div>
-            
-            <div class="story-card">
-                <div class="story-content">
-                    <h3>Serving Our Community</h3>
-                    <p>"I love how CPC encourages us to serve not just within the church, but in our broader community. It's been amazing to see God at work through our outreach efforts."</p>
-                    <span class="story-author">- Jennifer, Community Outreach Volunteer</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+.community-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Navigation Sidebar */
+.community-nav-sidebar {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    height: fit-content;
+    position: sticky;
+    top: 0.5rem;
+}
+
+.nav-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    margin-bottom: 0.25rem;
+}
+
+.nav-links a {
+    display: block;
+    padding: 0.4rem 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Content Area */
+.community-content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.community-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
+    scroll-margin-top: 1rem;
+}
+
+.section-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-header h2 {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.section-intro {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+/* Groups Grid */
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.group-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.group-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.group-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 82, 163, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.25rem;
+}
+
+.group-card h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.group-card p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.5rem 0;
+}
+
+.group-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.group-card li {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.25rem 0;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.group-card li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: rgba(0, 82, 163, 0.6);
+}
+
+/* Service Grid */
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.service-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.service-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.service-card h3 {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.service-card p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.5rem 0;
+}
+
+.service-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 82, 163, 0.3);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* New Member Section */
+.new-member-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.new-member-info h3,
+.new-member-contact h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.new-member-info p,
+.new-member-contact p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.75rem 0;
+}
+
+.new-member-info ol {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.new-member-info li {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.contact-methods {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.contact-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* Stories Grid */
+.stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.story-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.story-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.story-content h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.story-content p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.5rem 0;
+    font-style: italic;
+}
+
+.story-author {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    display: block;
+    margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .community-main-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .community-nav-sidebar {
+        position: relative;
+        top: 0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .groups-grid,
+    .stories-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .new-member-content {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}
 
-{% block scripts %}
+{% block content %}
+<!-- Community Page -->
+<div class="community-page compact-page">
+    <div class="community-main-container compact-content">
+        <!-- Compact Hero -->
+        <div class="community-hero">
+            <h1>Community</h1>
+            <p>Join our vibrant community of believers and seekers</p>
+        </div>
+
+        <!-- Navigation Sidebar -->
+        <aside class="community-nav-sidebar">
+            <div class="nav-section-title">Quick Navigation</div>
+            <ul class="nav-links">
+                <li><a href="#groups" class="nav-link">Community Groups</a></li>
+                <li><a href="#service" class="nav-link">Service Opportunities</a></li>
+                <li><a href="#new-member" class="nav-link">New to CPC?</a></li>
+                <li><a href="#stories" class="nav-link">Community Stories</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="community-content-area">
+            <!-- Community Groups Section -->
+            <section id="groups" class="community-section">
+                <div class="section-header">
+                    <h2>Community Groups</h2>
+                    <p class="section-intro">Connect with others through our various community groups and ministries.</p>
+                </div>
+                <div class="groups-grid">
+                    <div class="group-card">
+                        <div class="group-icon"><i class="fas fa-users"></i></div>
+                        <h3>Small Groups</h3>
+                        <p>Join a small group for Bible study, prayer, and fellowship in a more intimate setting.</p>
+                        <ul>
+                            <li>Westville Group - Thursdays at 7:00pm</li>
+                            <li>Orange Group - Wednesdays at 7:00pm</li>
+                            <li>Guilford Group - Fridays at 7:00pm</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="group-card">
+                        <div class="group-icon"><i class="fas fa-child"></i></div>
+                        <h3>Children's Ministry</h3>
+                        <p>Nurturing the faith of our youngest members through age-appropriate programs.</p>
+                        <ul>
+                            <li>Sunday School (ages 3-12)</li>
+                            <li>Children's Church during worship</li>
+                            <li>Vacation Bible School</li>
+                            <li>Special events and activities</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="group-card">
+                        <div class="group-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h3>Youth Ministry</h3>
+                        <p>Engaging middle and high school students in their faith journey.</p>
+                        <ul>
+                            <li>Youth Group - Fridays at 7:00pm</li>
+                            <li>Summer mission trips</li>
+                            <li>Retreats and conferences</li>
+                            <li>Service projects</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="group-card">
+                        <div class="group-icon"><i class="fas fa-male"></i></div>
+                        <h3>Men's Ministry</h3>
+                        <p>Building strong Christian men through fellowship and study.</p>
+                        <ul>
+                            <li>Men's Fellowship - Saturdays at 8:00am</li>
+                            <li>Men's Bible Study</li>
+                            <li>Service projects</li>
+                            <li>Annual retreat</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="group-card">
+                        <div class="group-icon"><i class="fas fa-female"></i></div>
+                        <h3>Women's Ministry</h3>
+                        <p>Encouraging women in their walk with Christ and relationships with each other.</p>
+                        <ul>
+                            <li>Women's Bible Study</li>
+                            <li>Women's Retreat</li>
+                            <li>Mentoring program</li>
+                            <li>Service opportunities</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="group-card">
+                        <div class="group-icon"><i class="fas fa-music"></i></div>
+                        <h3>Music Ministry</h3>
+                        <p>Using musical gifts to glorify God and lead in worship.</p>
+                        <ul>
+                            <li>Choir participation</li>
+                            <li>Instrumental ensembles</li>
+                            <li>Special music opportunities</li>
+                            <li>Music education programs</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Opportunities Section -->
+            <section id="service" class="community-section">
+                <div class="section-header">
+                    <h2>Service Opportunities</h2>
+                    <p class="section-intro">Get involved in serving our church and community.</p>
+                </div>
+                <div class="service-grid">
+                    <div class="service-card">
+                        <h3>Welcome Team</h3>
+                        <p>Help welcome visitors and new members to our church family.</p>
+                        <span class="service-tag">Hospitality</span>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>Children's Ministry</h3>
+                        <p>Teach, assist, or help with children's programs and activities.</p>
+                        <span class="service-tag">Teaching</span>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>Audio/Visual</h3>
+                        <p>Support our worship services with technical assistance.</p>
+                        <span class="service-tag">Technical</span>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>Facilities</h3>
+                        <p>Help maintain and improve our church building and grounds.</p>
+                        <span class="service-tag">Maintenance</span>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>Community Outreach</h3>
+                        <p>Participate in local service projects and community events.</p>
+                        <span class="service-tag">Outreach</span>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>Prayer Ministry</h3>
+                        <p>Join our prayer team and intercede for our church and community.</p>
+                        <span class="service-tag">Prayer</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Member Information -->
+            <section id="new-member" class="community-section">
+                <div class="section-header">
+                    <h2>New to CPC?</h2>
+                </div>
+                <div class="new-member-content">
+                    <div class="new-member-info">
+                        <h3>Getting Connected</h3>
+                        <p>We're excited that you're interested in joining our community! Here's how you can get started:</p>
+                        <ol>
+                            <li><strong>Visit us on Sunday</strong> - Join us for worship at 10:30am</li>
+                            <li><strong>Stay for fellowship</strong> - Meet people at our fellowship lunch after service</li>
+                            <li><strong>Join a small group</strong> - Connect with others in a more intimate setting</li>
+                            <li><strong>Get involved</strong> - Find a service opportunity that matches your gifts</li>
+                            <li><strong>Consider membership</strong> - Learn about becoming a member of CPC</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="new-member-contact">
+                        <h3>Questions?</h3>
+                        <p>If you have questions about getting involved or becoming a member, we'd love to help!</p>
+                        <div class="contact-methods">
+                            <a href="mailto:admin@cpcnewhaven.org" class="contact-link">
+                                <i class="fas fa-envelope"></i> Email Us
+                            </a>
+                            <a href="tel:+12035550123" class="contact-link">
+                                <i class="fas fa-phone"></i> Call Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Community Stories -->
+            <section id="stories" class="community-section">
+                <div class="section-header">
+                    <h2>Community Stories</h2>
+                </div>
+                <div class="stories-grid">
+                    <div class="story-card">
+                        <div class="story-content">
+                            <h3>Finding Family at CPC</h3>
+                            <p>"When I moved to New Haven for graduate school, I was looking for a church that would feel like home. CPC welcomed me with open arms and helped me find my place in the community."</p>
+                            <span class="story-author">- Sarah, Graduate Student</span>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card">
+                        <div class="story-content">
+                            <h3>Growing in Faith Together</h3>
+                            <p>"Through our small group, I've been able to grow deeper in my faith while building meaningful relationships with other believers. It's been a blessing to journey together."</p>
+                            <span class="story-author">- Michael, Small Group Member</span>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card">
+                        <div class="story-content">
+                            <h3>Serving Our Community</h3>
+                            <p>"I love how CPC encourages us to serve not just within the church, but in our broader community. It's been amazing to see God at work through our outreach efforts."</p>
+                            <span class="story-author">- Jennifer, Community Outreach Volunteer</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Add any community-specific JavaScript here
-    console.log('Community page loaded');
-    
-    // Add smooth scrolling for internal links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+    // Smooth scroll for navigation links
+    function smoothScrollTo(targetId) {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            const headerOffset = 80;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+    }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+            const targetId = this.getAttribute('href').substring(1);
+            smoothScrollTo(targetId);
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
         });
     });
+
+    // Update active nav on scroll
+    const sections = document.querySelectorAll('.community-section');
+    function updateActiveNav() {
+        let current = '';
+        sections.forEach(section => {
+            if (section.getBoundingClientRect().top <= 100) {
+                current = section.getAttribute('id');
+            }
+        });
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    }
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav();
 });
 </script>
 {% endblock %}

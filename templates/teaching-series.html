@@ -1,0 +1,1040 @@
+{% extends "base.html" %}
+
+{% block title %}Teaching Series - CPC New Haven{% endblock %}
+
+{% block head %}
+<style>
+.teaching-series-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
+
+.main-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+/* Search and Controls */
+.search-controls {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    grid-column: 1 / -1;
+}
+
+.search-bar {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.search-bar input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.search-bar i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.controls-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.sort-select {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.sort-select option {
+    background: #1a1a2e;
+    color: white;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.view-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.results-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+/* Filter Sidebar */
+.filter-sidebar {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    height: fit-content;
+    position: sticky;
+    top: 0.5rem;
+}
+
+.filter-section {
+    margin-bottom: 1.5rem;
+}
+
+.filter-section:last-child {
+    margin-bottom: 0;
+}
+
+.filter-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-title i {
+    font-size: 0.8rem;
+}
+
+.filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.filter-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.filter-option label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    cursor: pointer;
+    flex: 1;
+}
+
+.filter-count {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.date-range-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.date-range-inputs input {
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.date-range-inputs input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.clear-filters {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.clear-filters:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Content Area */
+.content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.series-category {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-header h2 {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    font-weight: 600;
+}
+
+.category-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* Series Grid/List Views */
+.series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.75rem;
+}
+
+.series-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.series-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.series-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.series-card.list-view {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    align-items: start;
+}
+
+.series-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.5rem;
+}
+
+.series-header h3 {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+.series-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.series-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.series-meta-item i {
+    font-size: 0.75rem;
+}
+
+.series-count {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.series-authors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.author-tag {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.series-scriptures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.scripture-tag {
+    background: rgba(0, 82, 163, 0.3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Libre Baskerville', serif;
+}
+
+.series-sermons {
+    margin-top: 0.5rem;
+}
+
+.series-sermons.collapsed {
+    max-height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.series-sermons.collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.05));
+}
+
+.series-sermon-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 0.75rem;
+}
+
+.series-sermon-item:last-child {
+    border-bottom: none;
+}
+
+.sermon-info {
+    flex: 1;
+}
+
+.sermon-info a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.25rem;
+    transition: color 0.2s;
+}
+
+.sermon-info a:hover {
+    color: white;
+}
+
+.sermon-meta {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.sermon-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.sermon-action-btn {
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.sermon-action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.expand-btn {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.expand-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .filter-sidebar {
+        position: relative;
+        top: 0;
+    }
+    
+    .series-card.list-view {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .view-toggle {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .series-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Teaching Series Section -->
+<section class="teaching-series-page compact-page">
+    <!-- Compact Hero -->
+    <div class="compact-hero" style="grid-column: 1 / -1; margin-bottom: 0.5rem;">
+        <h1>Teaching Series</h1>
+        <p>Academic research tool for exploring sermon series and Sunday school teachings</p>
+    </div>
+    
+    <div class="main-container compact-content">
+        <!-- Search and Controls -->
+        <div class="search-controls">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search series, sermons, authors, scripture..." autocomplete="off">
+            </div>
+            <div class="controls-row">
+                <select id="sort-select" class="sort-select">
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                    <option value="date-newest">Date (Newest First)</option>
+                    <option value="date-oldest">Date (Oldest First)</option>
+                    <option value="count-desc">Most Episodes</option>
+                    <option value="count-asc">Fewest Episodes</option>
+                </select>
+                <div class="results-count" id="results-count">Loading...</div>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid" title="Grid View">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-btn" data-view="list" title="List View">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-filter"></i>
+                    <span>Filters</span>
+                </div>
+                <button class="clear-filters" id="clear-filters">Clear All Filters</button>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-book"></i>
+                    <span>Series Type</span>
+                </div>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-sermon" checked>
+                        <label for="filter-sermon">Sermon Series</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="filter-sunday-school" checked>
+                        <label for="filter-sunday-school">Sunday School</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-user"></i>
+                    <span>Author</span>
+                </div>
+                <div class="filter-options" id="author-filters">
+                    <div class="loading" style="padding: 1rem; font-size: 0.85rem;">Loading...</div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-calendar"></i>
+                    <span>Date Range</span>
+                </div>
+                <div class="date-range-inputs">
+                    <input type="date" id="date-from" placeholder="From">
+                    <input type="date" id="date-to" placeholder="To">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-tags"></i>
+                    <span>Tags</span>
+                </div>
+                <div class="filter-options" id="tag-filters">
+                    <div class="loading" style="padding: 1rem; font-size: 0.85rem;">Loading...</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Sunday School Series -->
+            <div class="series-category" id="sunday-school-section">
+                <div class="category-header">
+                    <h2>Sunday School Series</h2>
+                    <div class="category-actions">
+                        <button class="action-btn" onclick="exportSeries('sunday-school')" title="Export to CSV">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div id="sunday-school-container" class="series-grid">
+                    <div class="loading">Loading Sunday School series...</div>
+                </div>
+            </div>
+
+            <!-- Sermon Series -->
+            <div class="series-category" id="sermon-series-section">
+                <div class="category-header">
+                    <h2>Sermon Series</h2>
+                    <div class="category-actions">
+                        <button class="action-btn" onclick="exportSeries('sermon')" title="Export to CSV">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div id="sermon-series-container" class="series-grid">
+                    <div class="loading">Loading sermon series...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+let allData = null;
+let filteredData = { sermon_series: [], sunday_school_series: [] };
+let currentView = 'grid';
+let activeFilters = {
+    search: '',
+    seriesType: { sermon: true, sundaySchool: true },
+    authors: [],
+    dateFrom: '',
+    dateTo: '',
+    tags: []
+};
+
+// Load data
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/teaching-series')
+        .then(response => response.json())
+        .then(data => {
+            allData = data;
+            filteredData = {
+                sermon_series: [...data.sermon_series],
+                sunday_school_series: [...data.sunday_school_series]
+            };
+            setupFilters(data.metadata);
+            renderSeries();
+        })
+        .catch(error => {
+            console.error('Error loading teaching series:', error);
+            document.getElementById('sunday-school-container').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading data</p></div>';
+            document.getElementById('sermon-series-container').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading data</p></div>';
+        });
+
+    // Search input
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        activeFilters.search = e.target.value.toLowerCase();
+        applyFilters();
+    });
+
+    // Sort select
+    document.getElementById('sort-select').addEventListener('change', (e) => {
+        sortSeries(e.target.value);
+    });
+
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentView = btn.dataset.view;
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderSeries();
+        });
+    });
+
+    // Series type filters
+    document.getElementById('filter-sermon').addEventListener('change', (e) => {
+        activeFilters.seriesType.sermon = e.target.checked;
+        applyFilters();
+    });
+    document.getElementById('filter-sunday-school').addEventListener('change', (e) => {
+        activeFilters.seriesType.sundaySchool = e.target.checked;
+        applyFilters();
+    });
+
+    // Date filters
+    document.getElementById('date-from').addEventListener('change', (e) => {
+        activeFilters.dateFrom = e.target.value;
+        applyFilters();
+    });
+    document.getElementById('date-to').addEventListener('change', (e) => {
+        activeFilters.dateTo = e.target.value;
+        applyFilters();
+    });
+
+    // Clear filters
+    document.getElementById('clear-filters').addEventListener('click', () => {
+        activeFilters = {
+            search: '',
+            seriesType: { sermon: true, sundaySchool: true },
+            authors: [],
+            dateFrom: '',
+            dateTo: '',
+            tags: []
+        };
+        document.getElementById('search-input').value = '';
+        document.getElementById('date-from').value = '';
+        document.getElementById('date-to').value = '';
+        document.getElementById('filter-sermon').checked = true;
+        document.getElementById('filter-sunday-school').checked = true;
+        document.querySelectorAll('#author-filters input[type="checkbox"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('#tag-filters input[type="checkbox"]').forEach(cb => cb.checked = false);
+        applyFilters();
+    });
+});
+
+function setupFilters(metadata) {
+    // Setup author filters
+    const authorContainer = document.getElementById('author-filters');
+    if (metadata.all_authors && metadata.all_authors.length > 0) {
+        authorContainer.innerHTML = metadata.all_authors.slice(0, 20).map(author => `
+            <div class="filter-option">
+                <input type="checkbox" id="author-${author.replace(/\s+/g, '-')}" data-author="${author}">
+                <label for="author-${author.replace(/\s+/g, '-')}">${author}</label>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('#author-filters input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                updateAuthorFilters();
+            });
+        });
+    } else {
+        authorContainer.innerHTML = '<div style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">No authors available</div>';
+    }
+
+    // Setup tag filters
+    const tagContainer = document.getElementById('tag-filters');
+    if (metadata.all_tags && metadata.all_tags.length > 0) {
+        tagContainer.innerHTML = metadata.all_tags.slice(0, 20).map(tag => `
+            <div class="filter-option">
+                <input type="checkbox" id="tag-${tag.replace(/\s+/g, '-')}" data-tag="${tag}">
+                <label for="tag-${tag.replace(/\s+/g, '-')}">${tag}</label>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('#tag-filters input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                updateTagFilters();
+            });
+        });
+    } else {
+        tagContainer.innerHTML = '<div style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">No tags available</div>';
+    }
+}
+
+function updateAuthorFilters() {
+    activeFilters.authors = Array.from(document.querySelectorAll('#author-filters input[type="checkbox"]:checked'))
+        .map(cb => cb.dataset.author);
+    applyFilters();
+}
+
+function updateTagFilters() {
+    activeFilters.tags = Array.from(document.querySelectorAll('#tag-filters input[type="checkbox"]:checked'))
+        .map(cb => cb.dataset.tag);
+    applyFilters();
+}
+
+function applyFilters() {
+    filteredData = {
+        sermon_series: filterSeries(allData.sermon_series),
+        sunday_school_series: filterSeries(allData.sunday_school_series)
+    };
+    renderSeries();
+}
+
+function filterSeries(seriesList) {
+    return seriesList.filter(series => {
+        // Series type filter
+        const isSundaySchool = series.name.includes('Sunday School') || 
+                               series.sermons.some(s => s.title.includes('Sunday School'));
+        if (isSundaySchool && !activeFilters.seriesType.sundaySchool) return false;
+        if (!isSundaySchool && !activeFilters.seriesType.sermon) return false;
+
+        // Search filter
+        if (activeFilters.search) {
+            const searchLower = activeFilters.search.toLowerCase();
+            const matchesSearch = 
+                series.name.toLowerCase().includes(searchLower) ||
+                series.sermons.some(s => 
+                    s.title.toLowerCase().includes(searchLower) ||
+                    (s.author && s.author.toLowerCase().includes(searchLower)) ||
+                    (s.scripture && s.scripture.toLowerCase().includes(searchLower))
+                );
+            if (!matchesSearch) return false;
+        }
+
+        // Author filter
+        if (activeFilters.authors.length > 0) {
+            const hasAuthor = activeFilters.authors.some(author => 
+                series.authors.includes(author)
+            );
+            if (!hasAuthor) return false;
+        }
+
+        // Date range filter
+        if (activeFilters.dateFrom && series.date_range.max) {
+            if (series.date_range.max < activeFilters.dateFrom) return false;
+        }
+        if (activeFilters.dateTo && series.date_range.min) {
+            if (series.date_range.min > activeFilters.dateTo) return false;
+        }
+
+        // Tag filter
+        if (activeFilters.tags.length > 0) {
+            const hasTag = series.sermons.some(sermon => 
+                activeFilters.tags.some(tag => 
+                    sermon.tags && sermon.tags.some(st => st.toLowerCase() === tag.toLowerCase())
+                )
+            );
+            if (!hasTag) return false;
+        }
+
+        return true;
+    });
+}
+
+function sortSeries(sortType) {
+    const sortFuncs = {
+        'name-asc': (a, b) => a.name.localeCompare(b.name),
+        'name-desc': (a, b) => b.name.localeCompare(a.name),
+        'date-newest': (a, b) => {
+            const dateA = a.date_range.max || '';
+            const dateB = b.date_range.max || '';
+            return dateB.localeCompare(dateA);
+        },
+        'date-oldest': (a, b) => {
+            const dateA = a.date_range.min || '';
+            const dateB = b.date_range.min || '';
+            return dateA.localeCompare(dateB);
+        },
+        'count-desc': (a, b) => b.count - a.count,
+        'count-asc': (a, b) => a.count - b.count
+    };
+
+    if (sortFuncs[sortType]) {
+        filteredData.sermon_series.sort(sortFuncs[sortType]);
+        filteredData.sunday_school_series.sort(sortFuncs[sortType]);
+        renderSeries();
+    }
+}
+
+function renderSeries() {
+    const totalCount = filteredData.sermon_series.length + filteredData.sunday_school_series.length;
+    document.getElementById('results-count').textContent = `${totalCount} series found`;
+
+    // Render Sunday School Series
+    const sundaySchoolContainer = document.getElementById('sunday-school-container');
+    sundaySchoolContainer.className = currentView === 'grid' ? 'series-grid' : 'series-list';
+    
+    if (filteredData.sunday_school_series.length > 0) {
+        sundaySchoolContainer.innerHTML = filteredData.sunday_school_series.map(series => 
+            renderSeriesCard(series, true)
+        ).join('');
+    } else {
+        sundaySchoolContainer.innerHTML = '<div class="empty-state"><i class="fas fa-book-open"></i><p>No Sunday School series match your filters</p></div>';
+    }
+
+    // Render Sermon Series
+    const sermonSeriesContainer = document.getElementById('sermon-series-container');
+    sermonSeriesContainer.className = currentView === 'grid' ? 'series-grid' : 'series-list';
+    
+    if (filteredData.sermon_series.length > 0) {
+        sermonSeriesContainer.innerHTML = filteredData.sermon_series.map(series => 
+            renderSeriesCard(series, false)
+        ).join('');
+    } else {
+        sermonSeriesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><p>No sermon series match your filters</p></div>';
+    }
+
+    // Attach expand/collapse handlers
+    document.querySelectorAll('.expand-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const sermonsDiv = this.previousElementSibling;
+            const isCollapsed = sermonsDiv.classList.contains('collapsed');
+            if (isCollapsed) {
+                sermonsDiv.classList.remove('collapsed');
+                this.textContent = 'Show Less';
+            } else {
+                sermonsDiv.classList.add('collapsed');
+                this.textContent = 'Show More';
+            }
+        });
+    });
+}
+
+function renderSeriesCard(series, isSundaySchool) {
+    const viewClass = currentView === 'list' ? 'list-view' : '';
+    const sermonsHtml = series.sermons.slice(0, 10).map(sermon => `
+        <div class="series-sermon-item">
+            <div class="sermon-info">
+                <a href="${sermon.link || '#'}" target="_blank">${sermon.title}</a>
+                <div class="sermon-meta">
+                    ${sermon.author ? `<span><i class="fas fa-user"></i> ${sermon.author}</span>` : ''}
+                    ${sermon.date ? `<span><i class="fas fa-calendar"></i> ${sermon.date}</span>` : ''}
+                    ${sermon.scripture ? `<span><i class="fas fa-book-bible"></i> ${sermon.scripture}</span>` : ''}
+                </div>
+            </div>
+            <div class="sermon-actions">
+                ${sermon.spotify_url ? `<a href="${sermon.spotify_url}" target="_blank" class="sermon-action-btn" title="Spotify"><i class="fab fa-spotify"></i></a>` : ''}
+                ${sermon.youtube_url ? `<a href="${sermon.youtube_url}" target="_blank" class="sermon-action-btn" title="YouTube"><i class="fab fa-youtube"></i></a>` : ''}
+                ${sermon.apple_podcasts_url ? `<a href="${sermon.apple_podcasts_url}" target="_blank" class="sermon-action-btn" title="Apple Podcasts"><i class="fas fa-podcast"></i></a>` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    const dateRange = series.date_range.min && series.date_range.max 
+        ? `${series.date_range.min} to ${series.date_range.max}`
+        : series.date_range.min || series.date_range.max || 'Date range unavailable';
+
+    return `
+        <div class="series-card ${viewClass}">
+            <div class="series-header">
+                <div>
+                    <h3>${series.name}</h3>
+                    <div class="series-meta">
+                        <div class="series-meta-item">
+                            <i class="fas fa-list"></i>
+                            <span>${series.count} ${series.count === 1 ? 'episode' : 'episodes'}</span>
+                        </div>
+                        <div class="series-meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>${dateRange}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="series-count">${series.count}</div>
+            </div>
+            
+            ${series.authors.length > 0 ? `
+                <div class="series-authors">
+                    ${series.authors.map(author => `<span class="author-tag">${author}</span>`).join('')}
+                </div>
+            ` : ''}
+            
+            ${series.scriptures.length > 0 ? `
+                <div class="series-scriptures">
+                    ${series.scriptures.slice(0, 5).map(scripture => 
+                        `<span class="scripture-tag">${scripture}</span>`
+                    ).join('')}
+                    ${series.scriptures.length > 5 ? `<span class="scripture-tag">+${series.scriptures.length - 5} more</span>` : ''}
+                </div>
+            ` : ''}
+            
+            <div class="series-sermons ${series.sermons.length > 10 ? 'collapsed' : ''}">
+                ${sermonsHtml}
+            </div>
+            ${series.sermons.length > 10 ? '<button class="expand-btn">Show More</button>' : ''}
+        </div>
+    `;
+}
+
+function exportSeries(type) {
+    const series = type === 'sunday-school' ? filteredData.sunday_school_series : filteredData.sermon_series;
+    if (series.length === 0) {
+        alert('No series to export');
+        return;
+    }
+
+    let csv = 'Series Name,Episodes,Date Range,Authors,Scriptures\n';
+    series.forEach(s => {
+        const authors = s.authors.join('; ');
+        const scriptures = s.scriptures.slice(0, 5).join('; ');
+        const dateRange = s.date_range.min && s.date_range.max 
+            ? `${s.date_range.min} to ${s.date_range.max}`
+            : s.date_range.min || s.date_range.max || '';
+        csv += `"${s.name}",${s.count},"${dateRange}","${authors}","${scriptures}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${type}-series-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

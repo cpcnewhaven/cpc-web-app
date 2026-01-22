@@ -2,55 +2,175 @@
 
 {% block title %}Give - CPC New Haven{% endblock %}
 
+{% block head %}
+<style>
+.give-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
+
+.give-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.give-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.give-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.give-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.give-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.giving-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.giving-option {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.giving-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.giving-option h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.giving-option p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.5rem 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 82, 163, 0.4);
+    border: 1px solid rgba(0, 82, 163, 0.6);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: rgba(0, 82, 163, 0.5);
+    color: white;
+}
+
+.giving-info {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.giving-info h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.giving-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.giving-info li {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.25rem 0;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.giving-info li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: rgba(0, 82, 163, 0.6);
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Give</h1>
-        <p>Support the ministry of Christ Presbyterian Church</p>
-    </div>
-</section>
+<div class="give-page compact-page">
+    <div class="give-container compact-content">
+        <div class="give-hero compact-hero">
+            <h1>Give</h1>
+            <p>Support the ministry of Christ Presbyterian Church</p>
+        </div>
 
-<!-- Give Section -->
-<section class="give-section">
-    <div class="container">
-        <div class="give-content">
-
+        <section class="give-section">
             <div class="giving-options">
                 <div class="giving-option">
                     <h3>Online Giving</h3>
-                    <p>Make a secure online donation using our giving
-                        platform.</p>
-                    <a href="#" class="btn btn-primary">Give Online</a>
+                    <p>Make a secure online donation using our giving platform.</p>
+                    <a href="#" class="btn">Give Online</a>
                 </div>
 
                 <div class="giving-option">
                     <h3>In Person</h3>
-                    <p>Bring your offering to worship service on Sunday
-                        mornings.</p>
+                    <p>Bring your offering to worship service on Sunday mornings.</p>
                 </div>
 
                 <div class="giving-option">
                     <h3>Mail</h3>
-                    <p>Send your donation to: 135 Whitney Ave, New Haven, CT
-                        06510</p>
+                    <p>Send your donation to: 135 Whitney Ave, New Haven, CT 06510</p>
                 </div>
             </div>
 
             <div class="giving-info">
                 <h3>Ways to Give</h3>
                 <ul>
-                    <li>General Fund - Supports our ongoing ministry and
-                        operations</li>
-                    <li>Missions - Supports our local and global mission
-                        work</li>
-                    <li>Building Fund - Supports facility maintenance and
-                        improvements</li>
-                    <li>Special Offerings - Supports specific ministry
-                        initiatives</li>
+                    <li>General Fund - Supports our ongoing ministry and operations</li>
+                    <li>Missions - Supports our local and global mission work</li>
+                    <li>Building Fund - Supports facility maintenance and improvements</li>
+                    <li>Special Offerings - Supports specific ministry initiatives</li>
                 </ul>
             </div>
-        </div>
+        </section>
     </div>
-</section>
+</div>
 {% endblock %}

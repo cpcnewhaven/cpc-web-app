@@ -163,6 +163,184 @@ def contact():
     """Contact page"""
     return render_template('contact.html')
 
+@app.route('/teaching-series')
+def teaching_series():
+    """Teaching series page showing sermon series and Sunday school series"""
+    return render_template('teaching-series.html')
+
+@app.route('/api/teaching-series')
+def api_teaching_series():
+    """API endpoint for teaching series - sermon series and Sunday school series with enhanced metadata"""
+    try:
+        from sermon_data_helper import get_sermon_helper
+        helper = get_sermon_helper()
+        sermons = helper.get_all_sermons()
+    except ImportError:
+        # Fallback to old method
+        import json
+        with open('data/sermons.json', 'r') as f:
+            sermons_data = json.load(f)
+        sermons = sermons_data.get('sermons', [])
+    
+    # Extract unique sermon series (excluding "The Sunday Sermon" as it's the default)
+    sermon_series = {}
+    sunday_school_series = {}
+    all_authors = set()
+    all_scriptures = set()
+    all_tags = set()
+    date_range = {'min': None, 'max': None}
+    
+    for sermon in sermons:
+        series_name = sermon.get('series', '')
+        title = sermon.get('title', '')
+        author = sermon.get('author', '')
+        scripture = sermon.get('scripture', '')
+        date = sermon.get('date', '')
+        tags = sermon.get('tags', [])
+        
+        # Collect metadata
+        if author:
+            all_authors.add(author)
+        if scripture:
+            all_scriptures.add(scripture)
+        if tags:
+            if isinstance(tags, list):
+                all_tags.update(tags)
+            else:
+                all_tags.add(str(tags))
+        
+        # Track date range
+        if date:
+            try:
+                from datetime import datetime
+                date_obj = datetime.strptime(date, '%Y-%m-%d')
+                if date_range['min'] is None or date_obj < date_range['min']:
+                    date_range['min'] = date_obj
+                if date_range['max'] is None or date_obj > date_range['max']:
+                    date_range['max'] = date_obj
+            except:
+                pass
+        
+        sermon_data = {
+            'id': sermon.get('id'),
+            'title': sermon.get('title'),
+            'author': author,
+            'date': date,
+            'scripture': scripture,
+            'link': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url'),
+            'spotify_url': sermon.get('spotify_url'),
+            'youtube_url': sermon.get('youtube_url'),
+            'apple_podcasts_url': sermon.get('apple_podcasts_url'),
+            'tags': tags if isinstance(tags, list) else [tags] if tags else [],
+            'sermon_type': sermon.get('sermon_type', 'sermon'),
+            'search_keywords': sermon.get('search_keywords', '')
+        }
+        
+        # Check if it's a Sunday School series
+        if 'Sunday School' in series_name or 'Sunday School' in title or 'The Sunday School' in title:
+            if series_name and series_name not in sunday_school_series:
+                sunday_school_series[series_name] = {
+                    'name': series_name,
+                    'count': 0,
+                    'sermons': [],
+                    'authors': set(),
+                    'date_range': {'min': None, 'max': None},
+                    'scriptures': set()
+                }
+            if series_name in sunday_school_series:
+                sunday_school_series[series_name]['count'] += 1
+                sunday_school_series[series_name]['sermons'].append(sermon_data)
+                if author:
+                    sunday_school_series[series_name]['authors'].add(author)
+                if scripture:
+                    sunday_school_series[series_name]['scriptures'].add(scripture)
+                if date:
+                    try:
+                        from datetime import datetime
+                        date_obj = datetime.strptime(date, '%Y-%m-%d')
+                        s_range = sunday_school_series[series_name]['date_range']
+                        if s_range['min'] is None or date_obj < s_range['min']:
+                            s_range['min'] = date_obj
+                        if s_range['max'] is None or date_obj > s_range['max']:
+                            s_range['max'] = date_obj
+                    except:
+                        pass
+        # Regular sermon series (exclude default "The Sunday Sermon")
+        elif series_name and series_name != 'The Sunday Sermon' and series_name not in ['', None]:
+            if series_name not in sermon_series:
+                sermon_series[series_name] = {
+                    'name': series_name,
+                    'count': 0,
+                    'sermons': [],
+                    'authors': set(),
+                    'date_range': {'min': None, 'max': None},
+                    'scriptures': set()
+                }
+            sermon_series[series_name]['count'] += 1
+            sermon_series[series_name]['sermons'].append(sermon_data)
+            if author:
+                sermon_series[series_name]['authors'].add(author)
+            if scripture:
+                sermon_series[series_name]['scriptures'].add(scripture)
+            if date:
+                try:
+                    from datetime import datetime
+                    date_obj = datetime.strptime(date, '%Y-%m-%d')
+                    s_range = sermon_series[series_name]['date_range']
+                    if s_range['min'] is None or date_obj < s_range['min']:
+                        s_range['min'] = date_obj
+                    if s_range['max'] is None or date_obj > s_range['max']:
+                        s_range['max'] = date_obj
+                except:
+                    pass
+    
+    # Convert sets to lists and format date ranges
+    def format_series(series_dict):
+        result = []
+        for name, data in series_dict.items():
+            series_item = {
+                'name': name,
+                'count': data['count'],
+                'sermons': data['sermons'],
+                'authors': sorted(list(data['authors'])),
+                'scriptures': sorted(list(data['scriptures']))[:10],  # Limit to 10 for display
+                'date_range': {
+                    'min': data['date_range']['min'].strftime('%Y-%m-%d') if data['date_range']['min'] else None,
+                    'max': data['date_range']['max'].strftime('%Y-%m-%d') if data['date_range']['max'] else None
+                }
+            }
+            result.append(series_item)
+        return result
+    
+    sermon_series_list = format_series(sermon_series)
+    sunday_school_series_list = format_series(sunday_school_series)
+    
+    # Sort sermons within each series by date (newest first)
+    for series in sermon_series_list:
+        series['sermons'].sort(key=lambda x: x.get('date', ''), reverse=True)
+    for series in sunday_school_series_list:
+        series['sermons'].sort(key=lambda x: x.get('date', ''), reverse=True)
+    
+    # Convert date range for response
+    date_range_response = {
+        'min': date_range['min'].strftime('%Y-%m-%d') if date_range['min'] else None,
+        'max': date_range['max'].strftime('%Y-%m-%d') if date_range['max'] else None
+    }
+    
+    return jsonify({
+        'sermon_series': sermon_series_list,
+        'sunday_school_series': sunday_school_series_list,
+        'metadata': {
+            'total_series': len(sermon_series_list) + len(sunday_school_series_list),
+            'total_sermon_series': len(sermon_series_list),
+            'total_sunday_school_series': len(sunday_school_series_list),
+            'all_authors': sorted(list(all_authors)),
+            'all_scriptures': sorted(list(all_scriptures))[:50],  # Top 50 for filter
+            'all_tags': sorted(list(all_tags)),
+            'date_range': date_range_response
+        }
+    })
+
 # API Routes
 @app.route('/api/announcements')
 def api_announcements():
@@ -1566,11 +1744,21 @@ class DashboardView(BaseView):
         recent_sermons = Sermon.query.order_by(Sermon.date.desc()).limit(5).all()
         today = datetime.now()
         
+        # Get latest Luke chapter information
+        latest_luke = None
+        try:
+            from sermon_data_helper import get_sermon_helper
+            helper = get_sermon_helper()
+            latest_luke = helper.get_latest_luke_chapter()
+        except Exception as e:
+            print(f"Error getting latest Luke chapter: {e}")
+        
         return self.render('admin/dashboard.html', 
                          stats=stats, 
                          recent_announcements=recent_announcements,
                          recent_sermons=recent_sermons,
-                         today=today)
+                         today=today,
+                         latest_luke=latest_luke)
 
 # Setup admin with enhanced organization
 admin = Admin(app, name='CPC Admin')

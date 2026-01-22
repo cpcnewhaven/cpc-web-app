@@ -2,65 +2,331 @@
 
 {% block title %}Resources - CPC New Haven{% endblock %}
 
-{% block content %}
-<!-- Hero Section -->
-<section class="page-hero">
-    <div class="container">
-        <h1>Resources</h1>
-        <p>Helpful resources for your spiritual journey</p>
-    </div>
-</section>
+{% block head %}
+<style>
+.resources-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
 
-<!-- Resources Section -->
-<section class="resources-section">
-    <div class="container">
-        <div class="resources-content">
-            <h2>Spiritual Resources</h2>
-            <p>Find helpful resources to support your spiritual growth and understanding of the Christian faith.</p>
-            
-            <div class="resource-categories">
-                <div class="resource-category">
-                    <h3>Bible Study</h3>
-                    <ul>
-                        <li><a href="#">Weekly Bible Study Materials</a></li>
-                        <li><a href="#">Study Guides</a></li>
-                        <li><a href="#">Recommended Commentaries</a></li>
-                    </ul>
+.resources-main-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0.75rem;
+}
+
+/* Compact Hero */
+.resources-hero {
+    grid-column: 1 / -1;
+    padding: 0.5rem 0;
+    text-align: center;
+    background: transparent;
+    margin: 0 0 0.75rem 0;
+}
+
+.resources-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.resources-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Navigation Sidebar */
+.resources-nav-sidebar {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    height: fit-content;
+    position: sticky;
+    top: 0.5rem;
+}
+
+.nav-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    margin-bottom: 0.25rem;
+}
+
+.nav-links a {
+    display: block;
+    padding: 0.4rem 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Content Area */
+.resources-content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.resources-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.section-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-header h2 {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.section-header p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+/* Resource Categories Grid */
+.resource-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.resource-category {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.resource-category:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.resource-category h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.75rem 0;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resource-category ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.resource-category li {
+    margin-bottom: 0.5rem;
+}
+
+.resource-category a {
+    display: block;
+    padding: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.resource-category a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+    padding-left: 0.75rem;
+}
+
+/* Contact Resources */
+.contact-resources {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-resources h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.contact-resources p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.contact-resources a {
+    color: rgba(0, 82, 163, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact-resources a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .resources-main-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .resources-nav-sidebar {
+        position: relative;
+        top: 0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .resource-categories {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Resources Page -->
+<div class="resources-page compact-page">
+    <div class="resources-main-container compact-content">
+        <!-- Compact Hero -->
+        <div class="resources-hero">
+            <h1>Resources</h1>
+            <p>Helpful resources for your spiritual journey</p>
+        </div>
+
+        <!-- Navigation Sidebar -->
+        <aside class="resources-nav-sidebar">
+            <div class="nav-section-title">Resource Categories</div>
+            <ul class="nav-links">
+                <li><a href="#bible-study" class="nav-link">Bible Study</a></li>
+                <li><a href="#prayer" class="nav-link">Prayer</a></li>
+                <li><a href="#ministry" class="nav-link">Ministry</a></li>
+                <li><a href="#education" class="nav-link">Education</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="resources-content-area">
+            <section class="resources-section">
+                <div class="section-header">
+                    <h2>Spiritual Resources</h2>
+                    <p>Find helpful resources to support your spiritual growth and understanding of the Christian faith.</p>
                 </div>
                 
-                <div class="resource-category">
-                    <h3>Prayer</h3>
-                    <ul>
-                        <li><a href="#">Prayer Requests</a></li>
-                        <li><a href="#">Prayer Guide</a></li>
-                        <li><a href="#">Prayer Meeting Schedule</a></li>
-                    </ul>
+                <div class="resource-categories">
+                    <div id="bible-study" class="resource-category">
+                        <h3>Bible Study</h3>
+                        <ul>
+                            <li><a href="#">Weekly Bible Study Materials</a></li>
+                            <li><a href="#">Study Guides</a></li>
+                            <li><a href="#">Recommended Commentaries</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div id="prayer" class="resource-category">
+                        <h3>Prayer</h3>
+                        <ul>
+                            <li><a href="#">Prayer Requests</a></li>
+                            <li><a href="#">Prayer Guide</a></li>
+                            <li><a href="#">Prayer Meeting Schedule</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div id="ministry" class="resource-category">
+                        <h3>Ministry</h3>
+                        <ul>
+                            <li><a href="#">Volunteer Opportunities</a></li>
+                            <li><a href="#">Ministry Descriptions</a></li>
+                            <li><a href="#">Leadership Resources</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div id="education" class="resource-category">
+                        <h3>Education</h3>
+                        <ul>
+                            <li><a href="#">Sunday School Curriculum</a></li>
+                            <li><a href="#">Theological Resources</a></li>
+                            <li><a href="#">Recommended Reading</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="resource-category">
-                    <h3>Ministry</h3>
-                    <ul>
-                        <li><a href="#">Volunteer Opportunities</a></li>
-                        <li><a href="#">Ministry Descriptions</a></li>
-                        <li><a href="#">Leadership Resources</a></li>
-                    </ul>
+                <div class="contact-resources">
+                    <h3>Need More Information?</h3>
+                    <p>Contact us at <a href="mailto:admin@cpcnewhaven.org">admin@cpcnewhaven.org</a> for more information about any of these resources.</p>
                 </div>
-                
-                <div class="resource-category">
-                    <h3>Education</h3>
-                    <ul>
-                        <li><a href="#">Sunday School Curriculum</a></li>
-                        <li><a href="#">Theological Resources</a></li>
-                        <li><a href="#">Recommended Reading</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="contact-resources">
-                <h3>Need More Information?</h3>
-                <p>Contact us at <a href="mailto:admin@cpcnewhaven.org">admin@cpcnewhaven.org</a> for more information about any of these resources.</p>
-            </div>
+            </section>
         </div>
     </div>
-</section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function smoothScrollTo(targetId) {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            const headerOffset = 80;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+    }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            smoothScrollTo(targetId);
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+});
+</script>
 {% endblock %}

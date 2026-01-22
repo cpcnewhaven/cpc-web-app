@@ -2,18 +2,55 @@
 
 {% block title %}Live - CPC New Haven{% endblock %}
 
-{% block content %}
-<!-- Hero Section -->
-<section class="page-hero live-hero">
-    <div class="container">
-        <h1>Live Worship</h1>
-        <p>Join us for live worship services and events</p>
-    </div>
-</section>
+{% block head %}
+<style>
+.live-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
 
-<!-- Live Stream Section -->
-<section class="live-stream-section">
-    <div class="container">
+.live-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.live-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.live-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.live-stream-section {
+    padding: 0;
+    margin: 0;
+}
+
+.live-stream-section .container {
+    max-width: 100%;
+    padding: 0 0.75rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="live-page compact-page">
+    <div class="compact-content">
+        <div class="live-hero compact-hero">
+            <h1>Live Worship</h1>
+            <p>Join us for live worship services and events</p>
+        </div>
+
+        <section class="live-stream-section">
+            <div class="container">
         <div class="live-content">
             <div class="live-video-container">
                 <div class="live-video-wrapper">

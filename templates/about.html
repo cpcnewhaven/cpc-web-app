@@ -3,522 +3,714 @@
 {% block title %}About CPC New Haven{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+.about-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
+
+.about-main-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0.75rem;
+}
+
+/* Compact Hero */
+.about-hero {
+    grid-column: 1 / -1;
+    padding: 0.5rem 0;
+    text-align: center;
+    background: transparent;
+    margin: 0 0 0.75rem 0;
+}
+
+.about-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.about-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
+}
+
+.about-hero .hero-cta {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.about-hero .hero-cta:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* Navigation Sidebar */
+.about-nav-sidebar {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    height: fit-content;
+    position: sticky;
+    top: 0.5rem;
+}
+
+.nav-section {
+    margin-bottom: 1rem;
+}
+
+.nav-section:last-child {
+    margin-bottom: 0;
+}
+
+.nav-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    margin-bottom: 0.25rem;
+}
+
+.nav-links a {
+    display: block;
+    padding: 0.4rem 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Content Area */
+.about-content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.about-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
+    scroll-margin-top: 1rem;
+}
+
+.section-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.section-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+.section-content {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+/* Mission Section */
+.mission-statement {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+}
+
+.highlight-word {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    background: rgba(0, 82, 163, 0.3);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+}
+
+.two-column-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.mission-image-container {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.mission-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Total Christ Section */
+.augustine-quote {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-left: 3px solid rgba(0, 82, 163, 0.6);
+    border-radius: 6px;
+}
+
+.augustine-quote p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+}
+
+.augustine-quote cite {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-style: normal;
+}
+
+/* Five Marks Grid */
+.five-marks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.mark-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.mark-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.mark-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.mark-icon {
+    width: 24px;
+    height: 24px;
+    color: rgba(0, 82, 163, 0.8);
+}
+
+.mark-card-header h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    font-weight: 600;
+}
+
+.mark-description {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.mark-think {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mark-think strong {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Staff Grid */
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.staff-member {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.staff-member:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.staff-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0, 82, 163, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.25rem;
+}
+
+.staff-member h3 {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.staff-member h4 {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 0.5rem 0;
+    font-weight: 400;
+}
+
+.staff-contact-btn {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.staff-contact-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* Story Timeline */
+.story-timeline {
+    margin-top: 0.75rem;
+}
+
+.story-milestone {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.story-milestone:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.milestone-year {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(0, 82, 163, 0.8);
+    background: rgba(0, 82, 163, 0.15);
+    padding: 0.5rem;
+    border-radius: 6px;
+    text-align: center;
+    height: fit-content;
+}
+
+.milestone-content h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.milestone-content p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.story-conclusion {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.conclusion-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .about-main-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .about-nav-sidebar {
+        position: relative;
+        top: 0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .two-column-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .five-marks-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .staff-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .story-milestone {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .milestone-year {
+        width: fit-content;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<!-- Prompt 4: Better Hero Section -->
-<section class="about-hero-full">
-    <div class="about-hero-content">
-        <h1>About Christ Presbyterian Church</h1>
-        <p>We are a community of believers in New Haven, Connecticut, committed
-            to growing in the truth and grace of Jesus Christ, acting as
-            faithful witnesses in our community and world, and trusting in the
-            grace and power of the Holy Spirit.</p>
-        <a href="#mission" class="hero-cta-button">Join Us Sunday</a>
-    </div>
-</section>
-
-<!-- Table of Contents -->
-<section class="toc-section">
-    <div class="container">
-        <div class="toc-container">
-            <h2>Table of Contents</h2>
-            <div class="toc-grid">
-                <div class="toc-column">
-                    <h3>Who We Are</h3>
-                    <ul class="toc-list">
-                        <li><a href="#mission" class="toc-link">Our
-                                Mission</a></li>
-                        <li><a href="#totalChrist" class="toc-link">Total Christ
-                                Spirituality</a></li>
-                        <li><a href="#fiveMarks" class="toc-link">The Five
-                                Marks</a></li>
-                    </ul>
-                </div>
-                <div class="toc-column">
-                    <h3>Leadership</h3>
-                    <ul class="toc-list">
-                        <li><a href="#staff" class="toc-link">Staff
-                                Team</a></li>
-                        <li><a href="#session" class="toc-link">Session</a></li>
-                        <li><a href="#wlb" class="toc-link">Women's
-                                Leadership</a></li>
-                        <li><a href="#slb" class="toc-link">Servant
-                                Leadership</a></li>
-                    </ul>
-                </div>
-                <div class="toc-column">
-                    <h3>Our Story</h3>
-                    <ul class="toc-list">
-                        <li><a href="#ourStory" class="toc-link">Church
-                                History</a></li>
-                        <li><a href="#missionAnabaino" class="toc-link">Mission
-                                Anabaino</a></li>
-                    </ul>
-                </div>
-            </div>
+<!-- About Page -->
+<div class="about-page compact-page">
+    <div class="about-main-container compact-content">
+        <!-- Compact Hero -->
+        <div class="about-hero">
+            <h1>About Christ Presbyterian Church</h1>
+            <p>We are a community of believers in New Haven, Connecticut, committed to growing in the truth and grace of Jesus Christ, acting as faithful witnesses in our community and world, and trusting in the grace and power of the Holy Spirit.</p>
+            <a href="#mission" class="hero-cta">Explore Our Mission</a>
         </div>
-    </div>
-</section>
 
-<!-- Floating Navigation -->
-<nav class="about-floating-nav">
-    <div class="floating-nav-content">
-        <h4>Quick Navigation</h4>
-        <ul>
-            <li><a href="#mission">Mission</a></li>
-            <li><a href="#totalChrist">Total Christ</a></li>
-            <li><a href="#fiveMarks">Five Marks</a></li>
-            <li><a href="#staff">Staff</a></li>
-            <li><a href="#ourStory">Our Story</a></li>
-        </ul>
-    </div>
-</nav>
-
-<!-- Main Content Container -->
-<div class="about-main-container">
-    <!-- Mission Section -->
-    <section id="mission" class="about-content-section mission-section">
-        <div class="section-wrapper">
-            <div class="section-header">
-                <h2 class="section-title">Our Mission</h2>
-                <p class="section-subtitle">Ambitious for the glory of God</p>
+        <!-- Navigation Sidebar -->
+        <aside class="about-nav-sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Who We Are</div>
+                <ul class="nav-links">
+                    <li><a href="#mission" class="toc-link">Our Mission</a></li>
+                    <li><a href="#totalChrist" class="toc-link">Total Christ</a></li>
+                    <li><a href="#fiveMarks" class="toc-link">Five Marks</a></li>
+                </ul>
             </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Leadership</div>
+                <ul class="nav-links">
+                    <li><a href="#staff" class="toc-link">Staff Team</a></li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Our Story</div>
+                <ul class="nav-links">
+                    <li><a href="#ourStory" class="toc-link">Church History</a></li>
+                </ul>
+            </div>
+        </aside>
 
-            <div class="two-column-grid">
-                <div class="mission-text">
-                    <p class="mission-statement">
-                        We are a church that is ambitious for the glory of God
-                        by
-                        <span class="highlight-word">GROWING</span> in the truth
-                        and grace of Jesus Christ,
-                        <span class="highlight-word">ACTING</span> as a faithful
-                        witness in the
-                        greater New Haven community and world,
-                        <span class="highlight-word">TRUSTING</span> in the
-                        grace and power of
-                        the Holy Spirit.
-                    </p>
+        <!-- Content Area -->
+        <div class="about-content-area">
+            <!-- Mission Section -->
+            <section id="mission" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Our Mission</h2>
+                    <p class="section-subtitle">Ambitious for the glory of God</p>
                 </div>
-
-                <div class="mission-image-container">
-                    <img
-                        src="https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG"
-                        class="mission-church-image"
-                        alt="Christ Presbyterian Church building">
+                <div class="two-column-grid">
+                    <div class="section-content">
+                        <p class="mission-statement">
+                            We are a church that is ambitious for the glory of God by
+                            <span class="highlight-word">GROWING</span> in the truth and grace of Jesus Christ,
+                            <span class="highlight-word">ACTING</span> as a faithful witness in the greater New Haven community and world,
+                            <span class="highlight-word">TRUSTING</span> in the grace and power of the Holy Spirit.
+                        </p>
+                    </div>
+                    <div class="mission-image-container">
+                        <img src="https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG" alt="Christ Presbyterian Church" style="width: 100%; height: auto; border-radius: 6px;">
+                    </div>
                 </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <!-- Total Christ Section -->
-    <section id="totalChrist"
-        class="about-content-section total-christ-section">
-        <div class="section-wrapper">
-            <div class="section-header">
-                <h2 class="section-title">Our Total Christ Spirituality</h2>
-                <p class="section-subtitle">All about Christ—his work, not
-                    ours</p>
-            </div>
-
-            <div class="total-christ-content">
-                <div class="total-christ-intro">
-                    <p class="intro-text">
-                        We want this to be all about Christ—his work, not
-                        ours, as the basis of our relationship to God and one
-                        another,
-                        and his glory, not ours or any popular leader, as the
-                        object of our
-                        ultimate affection and respect. It is our desire to
-                        experience total Christ, not just one or another brand
-                        of Christ.
+            <!-- Total Christ Section -->
+            <section id="totalChrist" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Our Total Christ Spirituality</h2>
+                    <p class="section-subtitle">All about Christ—his work, not ours</p>
+                </div>
+                <div class="section-content">
+                    <p style="margin-bottom: 1rem;">
+                        We want this to be all about Christ—his work, not ours, as the basis of our relationship to God and one another, and his glory, not ours or any popular leader, as the object of our ultimate affection and respect. It is our desire to experience total Christ, not just one or another brand of Christ.
                     </p>
-
-                    <blockquote class="augustine-quote"
-                        style="margin: 2rem 0; padding: 2rem; background: var(--glass-white); backdrop-filter: blur(20px); border-left: 4px solid var(--cpc-blue); border-radius: var(--radius-md);">
-                        <p
-                            style="font-size: 1.25rem; line-height: 1.75; color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem; font-style: italic;">"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."</p>
-                        <cite
-                            style="color: rgba(255, 255, 255, 0.7); font-size: 1rem;">—
-                            St. Augustine, 5th century
-                            pastor-theologian</cite>
+                    <blockquote class="augustine-quote">
+                        <p>"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."</p>
+                        <cite>— St. Augustine, 5th century pastor-theologian</cite>
                     </blockquote>
                 </div>
-            </div>
+            </section>
+
+            <!-- Five Marks Section -->
+            <section id="fiveMarks" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">The Five Marks</h2>
+                    <p class="section-subtitle">Our distinctive approach to church life</p>
+                </div>
+                <div class="five-marks-grid">
+                    <div class="mark-card">
+                        <div class="mark-card-header">
+                            <svg class="mark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3>Gospel-Centered</h3>
+                        </div>
+                        <p class="mark-description">
+                            Trust in the gospel motivates us to be humble because we know Christ's work to us is purely a gift, but also boldly confident in the face of shame and sin because it's based in God's power! This grounds us in God's finished work on the cross, where he forgave our sins and reconciled us to himself. Everything we do is motivated from and by the gospel.
+                        </p>
+                        <div class="mark-think">
+                            <strong>Think:</strong> Humble, honest, authentic, gracious, safe, desire to be truly known and loved by God and others
+                        </div>
+                    </div>
+
+                    <div class="mark-card">
+                        <div class="mark-card-header">
+                            <svg class="mark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3>Missional</h3>
+                        </div>
+                        <p class="mark-description">
+                            More (though not less!) than being evangelistic, we strive to be missional because God promises to dwell with His people in all their God-given cultures, languages, and demographics through the church. This grounds us in God's global presence, where the church is the evangelist for a whole new way of life, showing the world who Jesus is and what it means to follow Him in all our relationships.
+                        </p>
+                        <div class="mark-think">
+                            <strong>Think:</strong> Culturally self-aware, open & inviting, purposeful, holistic evangelism
+                        </div>
+                    </div>
+
+                    <div class="mark-card">
+                        <div class="mark-card-header">
+                            <svg class="mark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            <h3>Confessional</h3>
+                        </div>
+                        <p class="mark-description">
+                            We are not the first ones to consider what church should be (thank God!). We humbly submit to God's revelation in the Word as it has been historically interpreted, seeking to be united in belief across generations and cultures. Officially, we subscribe to the documents of Westminster (c.1630) as the summary of our faith. This grounds us in Christ as our Prophet who still speaks.
+                        </p>
+                        <div class="mark-think">
+                            <strong>Think:</strong> Doctrine that is alive and an unwillingness to be distracted by cultural fads
+                        </div>
+                    </div>
+
+                    <div class="mark-card">
+                        <div class="mark-card-header">
+                            <svg class="mark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            <h3>Sacramental</h3>
+                        </div>
+                        <p class="mark-description">
+                            Christ is "fleshed out" in a carefully designed four movement worship service that follows the logic of the gospel and culminates every week in a participation in eucharistic communion with Christ. Jesus is experienced in the body of Christ through different cultural styles specific to each local community (1 Cor. 10:14-17, Heb. 12:22-24, Rev. 4-5).
+                        </p>
+                        <div class="mark-think">
+                            <strong>Think:</strong> Friendly, worshipful, mysterious
+                        </div>
+                    </div>
+
+                    <div class="mark-card">
+                        <div class="mark-card-header">
+                            <svg class="mark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <h3>Communal</h3>
+                        </div>
+                        <p class="mark-description">
+                            Christ did not leave us as orphans, but joined us with Himself to the church, so to be a Christian is to be a part of the redeemed community. Many of us experience Christ first through the love of his body. We also take church government as an instrument of mercy seriously. This grounds us in Christ as our King.
+                        </p>
+                        <div class="mark-think">
+                            <strong>Think:</strong> Loving, humble accountability and one-anothering
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Staff Section -->
+            <section id="staff" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Our Staff Team</h2>
+                    <p class="section-subtitle">Meet the people who serve our congregation</p>
+                </div>
+                <div class="staff-grid">
+                    <div class="staff-member">
+                        <div class="staff-photo">CL</div>
+                        <h3>Craig Luekens</h3>
+                        <h4>Senior Pastor</h4>
+                        <a href="#contact" class="staff-contact-btn">Contact</a>
+                    </div>
+                    <div class="staff-member">
+                        <div class="staff-photo">JO</div>
+                        <h3>Jerry Ornelas</h3>
+                        <h4>Assistant Pastor</h4>
+                        <a href="#contact" class="staff-contact-btn">Contact</a>
+                    </div>
+                    <div class="staff-member">
+                        <div class="staff-photo">AV</div>
+                        <h3>Alexis Vano</h3>
+                        <h4>Administrative Coordinator</h4>
+                        <a href="#contact" class="staff-contact-btn">Contact</a>
+                    </div>
+                    <div class="staff-member">
+                        <div class="staff-photo">AG</div>
+                        <h3>Alex Gonzalez</h3>
+                        <h4>AV Director</h4>
+                        <a href="#contact" class="staff-contact-btn">Contact</a>
+                    </div>
+                    <div class="staff-member">
+                        <div class="staff-photo">CB</div>
+                        <h3>Christopher Battista</h3>
+                        <h4>Audio and IT Specialist</h4>
+                        <a href="#contact" class="staff-contact-btn">Contact</a>
+                    </div>
+                    <div class="staff-member">
+                        <div class="staff-photo">PW</div>
+                        <h3>Paul Wildey</h3>
+                        <h4>Sexton</h4>
+                        <a href="#contact" class="staff-contact-btn">Contact</a>
+                    </div>
+                    <div class="staff-member">
+                        <div class="staff-photo">JC</div>
+                        <h3>Jennifer Cheng</h3>
+                        <h4>Music Coordinator</h4>
+                        <a href="#contact" class="staff-contact-btn">Contact</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Our Story Section -->
+            <section id="ourStory" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Our Story</h2>
+                    <p class="section-subtitle">From a small Bible study to a thriving congregation</p>
+                </div>
+                <div class="story-timeline">
+                    <div class="story-milestone">
+                        <div class="milestone-year">1991</div>
+                        <div class="milestone-content">
+                            <h3>The Beginning</h3>
+                            <p>It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY. Their purpose was to meet up with several church planters and pastors from the Presbyterian Church in America (Tim Keller, Skip Ryan and Charlie Drew) to discuss a possible church plant in New Haven.</p>
+                        </div>
+                    </div>
+
+                    <div class="story-milestone">
+                        <div class="milestone-year">1991-1992</div>
+                        <div class="milestone-content">
+                            <h3>The Vision Takes Shape</h3>
+                            <p>Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale. After being introduced to one of the families, Preston was invited to join their providential ferry ride to "Port Jeff." After a three-hour conversation on Long Island, Preston accepted an invitation to lead a Bible Study while at Yale until the group could locate a church planter.</p>
+                        </div>
+                    </div>
+
+                    <div class="story-milestone">
+                        <div class="milestone-year">1991-1992</div>
+                        <div class="milestone-content">
+                            <h3>Thursday Evening Gatherings</h3>
+                            <p>During the '91-'92 academic year, the group was joined by a few others (about 8 in all) and met every Thursday evening in the Westville area of New Haven. As the year progressed, the group began to discern a vision for a church in New Haven that would blend together a progressive, gospel-centered and missional-oriented emphasis ("High Gospel") coupled with a classically defined confessional, sacramental and communal-oriented emphasis ("High Church") in church planting.</p>
+                        </div>
+                    </div>
+
+                    <div class="story-milestone">
+                        <div class="milestone-year">1992</div>
+                        <div class="milestone-content">
+                            <h3>First Worship Service</h3>
+                            <p>On October 11, 1992 at 9:30 am, the "mission" stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT. The sermon text that morning was Matthew 28 coupled with Christ's promise "I will build my church" (Mt 16). In attendance were 28 people, children and adults combined (more children than adults). A high gospel, high church congregation was born!</p>
+                        </div>
+                    </div>
+
+                    <div class="story-milestone">
+                        <div class="milestone-year">2017</div>
+                        <div class="milestone-content">
+                            <h3>Mission Anabaino</h3>
+                            <p>As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting. At present, Mission Anabaino consists of five local church plants, 12 global church plants with 3 anchor churches including CPC New Haven. The congregation at 135 Whitney Ave. continues to flourish, engaging the increasing challenge and opportunities of the post-Christian, and yet post-secular, context of our postmodern city.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="story-conclusion">
+                    <p class="conclusion-text">This is our story and testimony!</p>
+                </div>
+            </section>
         </div>
-    </section>
-
-    <!-- Five Marks Section -->
-    <section id="fiveMarks" class="about-content-section five-marks-section">
-        <div class="section-wrapper">
-            <div class="section-header">
-                <h2 class="section-title">The Five Marks</h2>
-                <p class="section-subtitle">Our distinctive approach to church
-                    life</p>
-            </div>
-
-            <div class="five-marks-grid">
-                <div class="mark-card">
-                    <div class="mark-card-header">
-                        <svg class="mark-icon" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <h3>Gospel-Centered</h3>
-                    </div>
-                    <p class="mark-description">
-                        Trust in the gospel motivates us to be humble
-                        because we know Christ's work to us
-                        is purely a gift, but also boldly confident in the
-                        face of shame
-                        and sin because it's based in God's power! This
-                        grounds us
-                        in God's finished work on the cross, where he
-                        forgave our
-                        sins and reconciled us to himself. Everything we do
-                        is
-                        motivated from and by the gospel.
-                    </p>
-                    <div class="mark-think">
-                        <strong>Think:</strong> Humble,
-                        honest, authentic, gracious, safe, desire
-                        to be truly known and loved by God and
-                        others
-                    </div>
-                </div>
-
-                <div class="mark-card">
-                    <div class="mark-card-header">
-                        <svg class="mark-icon" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <h3>Missional</h3>
-                    </div>
-                    <p class="mark-description">
-                        More (though not less!) than being evangelistic, we
-                        strive to be missional because God
-                        promises to dwell with His people in all their
-                        God-given
-                        cultures, languages, and demographics through the
-                        church. This grounds us
-                        in God's global presence, where the church is the
-                        evangelist
-                        for a whole new way of life, showing the world who
-                        Jesus is and
-                        what it means to follow Him in all our
-                        relationships.
-                    </p>
-                    <div class="mark-think">
-                        <strong>Think:</strong> Culturally
-                        self-aware, open & inviting, purposeful,
-                        holistic evangelism
-                    </div>
-                </div>
-
-                <div class="mark-card">
-                    <div class="mark-card-header">
-                        <svg class="mark-icon" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                        <h3>Confessional - Christ as our Prophet</h3>
-                    </div>
-                    <p class="mark-description">
-                        We are not the first ones to consider what church
-                        should be
-                        (thank God!). We humbly submit to God's revelation
-                        in the Word as
-                        it has been historically interpreted, seeking to be
-                        united in
-                        belief across generations and cultures. Officially,
-                        we subscribe
-                        to the documents of Westminster (c.1630) as the
-                        summary of
-                        our faith. This grounds us in Christ as our Prophet
-                        who still
-                        speaks.
-                    </p>
-                    <div class="mark-think">
-                        <strong>Think:</strong> doctrine
-                        that is alive and an unwillingness to be
-                        distracted by cultural fads
-                    </div>
-                </div>
-
-                <div class="mark-card">
-                    <div class="mark-card-header">
-                        <svg class="mark-icon" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                        <h3>Sacramental - Christ as our Priest</h3>
-                    </div>
-                    <p class="mark-description">
-                        Christ is "fleshed out" in a carefully
-                        designed four movement worship service that follows
-                        the logic of the gospel and culminates every week in
-                        a participation in eucharistic communion with
-                        Christ. Jesus is experienced in the body of Christ
-                        through different cultural styles specific to each
-                        local community (1 Cor. 10:14-17, Heb. 12:22-24,
-                        Rev. 4-5).
-                    </p>
-                    <div class="mark-think">
-                        <strong>Think:</strong> Friendly,
-                        worshipful, mysterious
-                    </div>
-                </div>
-
-                <div class="mark-card">
-                    <div class="mark-card-header">
-                        <svg class="mark-icon" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                        <h3>Communal - Christ as our King</h3>
-                    </div>
-                    <p class="mark-description">
-                        Christ did not leave us as orphans, but joined us
-                        with Himself to
-                        the church, so to be a Christian is to be a part of
-                        the redeemed
-                        community. Many of us experience Christ first
-                        through the love of
-                        his body. We also take church government as an
-                        instrument of
-                        mercy seriously. This grounds us in Christ as our
-                        King.
-                    </p>
-                    <div class="mark-think">
-                        <strong>Think:</strong> loving,
-                        humble accountability and
-                        one-anothering
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Staff Section -->
-    <section id="staff" class="about-content-section staff-section">
-        <div class="section-wrapper">
-            <div class="section-header">
-                <h2 class="section-title">Our Staff Team</h2>
-                <p class="section-subtitle">Meet the people who serve our
-                    congregation</p>
-            </div>
-
-            <div class="staff-grid">
-                <div class="staff-member">
-                    <div class="staff-photo">CL</div>
-                    <h3>Craig Luekens</h3>
-                    <h4>Senior Pastor</h4>
-                    <a href="#contact" class="staff-contact-btn">Contact</a>
-                </div>
-                <div class="staff-member">
-                    <div class="staff-photo">JO</div>
-                    <h3>Jerry Ornelas</h3>
-                    <h4>Assistant Pastor</h4>
-                    <a href="#contact" class="staff-contact-btn">Contact</a>
-                </div>
-                <div class="staff-member">
-                    <div class="staff-photo">AV</div>
-                    <h3>Alexis Vano</h3>
-                    <h4>Administrative Coordinator</h4>
-                    <a href="#contact" class="staff-contact-btn">Contact</a>
-                </div>
-                <div class="staff-member">
-                    <div class="staff-photo">AG</div>
-                    <h3>Alex Gonzalez</h3>
-                    <h4>AV Director</h4>
-                    <a href="#contact" class="staff-contact-btn">Contact</a>
-                </div>
-                <div class="staff-member">
-                    <div class="staff-photo">CB</div>
-                    <h3>Christopher Battista</h3>
-                    <h4>Audio and IT Specialist</h4>
-                    <a href="#contact" class="staff-contact-btn">Contact</a>
-                </div>
-                <div class="staff-member">
-                    <div class="staff-photo">PW</div>
-                    <h3>Paul Wildey</h3>
-                    <h4>Sexton</h4>
-                    <a href="#contact" class="staff-contact-btn">Contact</a>
-                </div>
-                <div class="staff-member">
-                    <div class="staff-photo">JC</div>
-                    <h3>Jennifer Cheng</h3>
-                    <h4>Music Coordinator</h4>
-                    <a href="#contact" class="staff-contact-btn">Contact</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Our Story Section -->
-    <section id="ourStory" class="about-content-section our-story-section">
-        <div class="section-wrapper">
-            <div class="section-header">
-                <h2 class="section-title">Our Story</h2>
-                <p class="section-subtitle">From a small Bible study to a
-                    thriving congregation</p>
-            </div>
-
-            <div class="story-timeline">
-                <div class="story-milestone">
-                    <div class="milestone-year">1991</div>
-                    <div class="milestone-content">
-                        <h3>The Beginning</h3>
-                        <p>It all began in the summer of 1991 when three young
-                            families and a graduate student at Yale scheduled a
-                            ferry ride from Bridgeport, CT to Port Jefferson,
-                            NY. Their purpose was to meet up with several church
-                            planters and pastors from the Presbyterian Church in
-                            America (Tim Keller, Skip Ryan and Charlie Drew) to
-                            discuss a possible church plant in New Haven.</p>
-                    </div>
-                </div>
-
-                <div class="story-milestone">
-                    <div class="milestone-year">1991-1992</div>
-                    <div class="milestone-content">
-                        <h3>The Vision Takes Shape</h3>
-                        <p>Recent Gordon Conwell Seminary graduate Preston
-                            Graham was scheduled to visit New Haven to locate
-                            housing for his family while studying American
-                            Religious History at Yale. After being introduced to
-                            one of the families, Preston was invited to join
-                            their providential ferry ride to "Port Jeff." After
-                            a three-hour conversation on Long Island, Preston
-                            accepted an invitation to lead a Bible Study while
-                            at Yale until the group could locate a church
-                            planter.</p>
-                    </div>
-                </div>
-
-                <div class="story-milestone">
-                    <div class="milestone-year">1991-1992</div>
-                    <div class="milestone-content">
-                        <h3>Thursday Evening Gatherings</h3>
-                        <p>During the '91-'92 academic year, the group was
-                            joined by a few others (about 8 in all) and met
-                            every Thursday evening in the Westville area of New
-                            Haven. As the year progressed, the group began to
-                            discern a vision for a church in New Haven that
-                            would blend together a progressive, gospel-centered
-                            and missional-oriented emphasis ("High Gospel")
-                            coupled with a classically defined confessional,
-                            sacramental and communal-oriented emphasis
-                            ("High Church") in church planting.</p>
-                    </div>
-                </div>
-
-                <div class="story-milestone">
-                    <div class="milestone-year">1992</div>
-                    <div class="milestone-content">
-                        <h3>First Worship Service</h3>
-                        <p>On October 11, 1992 at 9:30 am, the "mission" stage
-                            of church planting was initiated with a first
-                            worship service held at the Amity Regional Junior
-                            High in Orange, CT. The sermon text that morning was
-                            Matthew 28 coupled with Christ's promise
-                            "I will build my church" (Mt 16). In attendance were
-                            28 people, children and adults combined (more
-                            children than adults). A high gospel, high church
-                            congregation was born!</p>
-                    </div>
-                </div>
-
-                <div class="story-milestone">
-                    <div class="milestone-year">2017</div>
-                    <div class="milestone-content">
-                        <h3>Mission Anabaino</h3>
-                        <p>As of the Spring of 2017, Mission Anabaino is
-                            inspiring a multiplying momentum for both an
-                            engagement in theological collaboration in missional
-                            ecclesiology and church planting. At present,
-                            Mission Anabaino consists of five local church
-                            plants, 12 global church plants with 3 anchor
-                            churches including CPC New Haven. The congregation
-                            at 135 Whitney Ave. continues to flourish, engaging
-                            the increasing challenge and opportunities of the
-                            post-Christian, and yet post-secular, context of our
-                            postmodern city.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="story-conclusion">
-                <p class="conclusion-text">This is our story and testimony!</p>
-            </div>
-        </div>
-    </section>
+    </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if device is mobile
-    const isMobile = window.innerWidth <= 768;
-    const isTouch = 'ontouchstart' in window;
-    
-    // Throttle function for better performance
-    function throttle(func, limit) {
-        let inThrottle;
-        return function() {
-            const args = arguments;
-            const context = this;
-            if (!inThrottle) {
-                func.apply(context, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
-            }
-        }
-    }
-
-    // Intersection Observer for scroll animations with mobile optimization
-    const aboutObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Update active nav link
-                const id = entry.target.getAttribute('id');
-                document.querySelectorAll('.about-floating-nav a, .toc-link').forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${id}`) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    }, {
-        threshold: isMobile ? 0.05 : 0.1,
-        rootMargin: isMobile ? '-50px 0px' : '-100px 0px'
-    });
-
-    // Observe all content sections
-    document.querySelectorAll('.about-content-section').forEach(section => {
-        aboutObserver.observe(section);
-    });
-
-    // Enhanced smooth scrolling with mobile support
+    // Smooth scroll for navigation links
     function smoothScrollTo(targetId) {
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-            const headerOffset = isMobile ? 80 : 100;
+            const headerOffset = 80;
             const elementPosition = targetElement.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -530,138 +722,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Add click handlers for navigation links
-    document.querySelectorAll('.about-floating-nav a, .toc-link').forEach(link => {
+    document.querySelectorAll('.toc-link, .nav-links a').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             smoothScrollTo(targetId);
-        });
-    });
-
-    // Animate mark cards on scroll with staggered animation
-    const markObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('animate-in');
-                }, index * 100); // Stagger animation
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-
-    document.querySelectorAll('.mark-card').forEach(card => {
-        markObserver.observe(card);
-    });
-
-    // Animate story milestones with staggered animation
-    const milestoneObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('animate-in');
-                }, index * 150); // Stagger animation
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-
-    document.querySelectorAll('.story-milestone').forEach(milestone => {
-        milestoneObserver.observe(milestone);
-    });
-
-    // Mobile-specific optimizations
-    if (isMobile) {
-        // Add touch feedback for interactive elements
-        document.querySelectorAll('.toc-link, .mark-card, .staff-member').forEach(element => {
-            element.addEventListener('touchstart', function() {
-                this.style.transform = 'scale(0.98)';
-            });
             
-            element.addEventListener('touchend', function() {
-                this.style.transform = '';
-            });
+            // Update active state
+            document.querySelectorAll('.toc-link, .nav-links a').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Update active nav link on scroll
+    const sections = document.querySelectorAll('.about-section');
+    const navLinks = document.querySelectorAll('.nav-links a, .toc-link');
+
+    function updateActiveNav() {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top;
+            if (sectionTop <= 100) {
+                current = section.getAttribute('id');
+            }
         });
 
-        // Optimize scroll performance on mobile
-        let ticking = false;
-        function updateScrollPosition() {
-            // Update floating nav visibility based on scroll position
-            const scrollY = window.pageYOffset;
-            const floatingNav = document.querySelector('.about-floating-nav');
-            
-            if (floatingNav) {
-                if (scrollY > 300) {
-                    floatingNav.classList.add('visible');
-                } else {
-                    floatingNav.classList.remove('visible');
-                }
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
             }
-            
-            ticking = false;
-        }
-
-        function requestTick() {
-            if (!ticking) {
-                requestAnimationFrame(updateScrollPosition);
-                ticking = true;
-            }
-        }
-
-        window.addEventListener('scroll', throttle(requestTick, 16), { passive: true });
+        });
     }
 
-    // Add keyboard navigation support
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-            // Add focus styles for keyboard navigation
-            document.querySelectorAll('.toc-link, .about-floating-nav a').forEach(link => {
-                link.addEventListener('focus', function() {
-                    this.style.outline = '2px solid #3498db';
-                    this.style.outlineOffset = '2px';
-                });
-                
-                link.addEventListener('blur', function() {
-                    this.style.outline = '';
-                    this.style.outlineOffset = '';
-                });
-            });
-        }
-    });
-
-    // Preload images for better mobile performance
-    const images = document.querySelectorAll('img[data-src]');
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-
-    images.forEach(img => imageObserver.observe(img));
-
-    // Add loading states for better UX
-    window.addEventListener('load', function() {
-        document.body.classList.add('loaded');
-    });
-
-    // Handle orientation change on mobile
-    if (isMobile) {
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                // Recalculate layout after orientation change
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
-        });
-    }
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav(); // Initial call
 });
 </script>
 {% endblock %}
