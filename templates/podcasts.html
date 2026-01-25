@@ -3,185 +3,555 @@
 {% block title %}Podcasts - CPC New Haven{% endblock %}
 
 {% block head %}
+<style>
+.podcasts-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.podcasts-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: visible;
+}
+
+/* Compact Hero */
+.podcasts-hero {
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.podcasts-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.podcasts-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Glass Card Styling */
+.podcast-series-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.podcast-series-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.podcast-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.podcast-card-icon {
+    display: none;
+}
+
+.podcast-card-info {
+    flex: 1;
+}
+
+.podcast-card-title {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.podcast-card-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.podcast-card-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+    flex: 1;
+}
+
+.podcast-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.podcast-episode-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 82, 163, 0.3);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.podcast-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.podcast-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-align: center;
+}
+
+.podcast-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.podcast-btn-primary {
+    background: rgba(0, 82, 163, 0.4);
+    border-color: rgba(0, 82, 163, 0.5);
+}
+
+.podcast-btn-primary:hover {
+    background: rgba(0, 82, 163, 0.6);
+    border-color: rgba(0, 82, 163, 0.7);
+}
+
+/* Grid Layout */
+.podcast-series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Episodes Preview */
+.episodes-preview {
+    margin: 1rem 0;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.episodes-preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.preview-episode {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.preview-episode:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.preview-episode-info {
+    flex: 1;
+}
+
+.preview-episode-info h4 {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 0.25rem 0;
+    font-weight: 500;
+}
+
+.preview-episode-meta {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+.preview-episode-actions {
+    margin-left: 0.5rem;
+}
+
+/* Full Episodes View */
+.full-episodes-view {
+    margin-top: 1.5rem;
+}
+
+.episodes-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.back-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.episodes-header h2 {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    font-weight: 600;
+}
+
+.episodes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.podcast-episode {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.podcast-episode:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.episode-thumbnail {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.play-button {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.play-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.episode-info {
+    flex: 1;
+}
+
+.episode-title {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.episode-meta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+}
+
+.episode-details {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.episode-actions {
+    flex-shrink: 0;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.error-message {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 100, 100, 0.8);
+    background: rgba(255, 100, 100, 0.1);
+    border-radius: 8px;
+}
+
+/* RSS Episodes Section */
+.rss-episodes-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rss-episodes-section h2 {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+}
+
+#episodes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#episodes li {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s;
+}
+
+#episodes li:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Ensure scrolling works */
+.podcasts-page,
+.podcasts-container,
+.podcast-series-grid,
+.episodes-container {
+    overflow-y: visible;
+}
+
+@media (max-width: 768px) {
+    .podcast-series-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .podcast-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .podcast-episode {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<!-- Compact Hero -->
-<div class="compact-hero">
-    <h1>Explore Our Podcasts</h1>
-    <p>Discover our collection of sermons, discussions and classes.</p>
-</div>
+<div class="podcasts-page compact-page">
+    <div class="podcasts-container compact-content">
+        <!-- Compact Hero -->
+        <div class="podcasts-hero">
+            <h1>Explore Our Podcasts</h1>
+            <p>Discover our collection of sermons, discussions, and teaching series</p>
+        </div>
 
-<!-- Podcasts Section -->
-<section class="podcasts-section compact-page">
-    <div class="compact-content" style="max-width: 100%; padding: 0 0.75rem;">
-        <!-- Podcast Shows Grid -->
-        <div class="podcast-shows-grid">
-            <!-- The Sunday Sermon -->
-            <div class="podcast-show-card">
-                <div class="show-header">
-                    <div class="show-icon">📖</div>
-                    <div class="show-info">
-                        <h2>The Sunday Sermon</h2>
-                        <h3>Sunday Sermons</h3>
-                    </div>
+        <!-- Sunday Sermons Card -->
+        <div class="podcast-series-card" style="margin-bottom: 1rem;">
+            <div class="podcast-card-header">
+                <div class="podcast-card-info">
+                    <h2 class="podcast-card-title">The Sunday Sermon</h2>
+                    <p class="podcast-card-subtitle">Sunday Sermons</p>
                 </div>
-                <p class="show-description">Weekly sermons from our Sunday
-                    worship services. Explore our archive of biblical teaching
-                    and preaching.</p>
-                <a href="/sermons" class="browse-btn">Browse Sermons</a>
             </div>
-
-            <!-- Beyond the Sunday Sermon -->
-            <div class="podcast-show-card">
-                <div class="show-header">
-                    <div class="show-icon">🎙️</div>
-                    <div class="show-info">
-                        <h2>Beyond the Sunday Sermon</h2>
-                        <h3>Beyond the Sunday Sermon</h3>
-                    </div>
-                </div>
-                <p class="show-description">Discussions with Pastors about the
-                    Sunday Sermon and deeper biblical topics.</p>
-                <div id="beyond-podcast-container" class="episodes-preview">
-                    <div class="loading-message">
-                        <p>Loading episodes...</p>
-                    </div>
-                </div>
-                <a href="#" class="browse-btn"
-                    onclick="showAllEpisodes('beyond-podcast')">Browse
-                    Episodes</a>
-            </div>
-
-            <!-- Classes -->
-            <div class="podcast-show-card">
-                <div class="show-header">
-                    <div class="show-icon">🎓</div>
-                    <div class="show-info">
-                        <h2>Classes</h2>
-                        <h3>Classes</h3>
-                    </div>
-                </div>
-                <p class="show-description">Educational content from our various
-                    classes including Biblical Interpretation, Confessional
-                    Theology, and more.</p>
-                <div class="classes-grid">
-                    <div class="class-item">
-                        <h4>Biblical Interpretation</h4>
-                        <p>Teaching series on how to read and understand
-                            Scripture</p>
-                    </div>
-                    <div class="class-item">
-                        <h4>Confessional Theology</h4>
-                        <p>Exploring Reformed theology and doctrine</p>
-                    </div>
-                    <div class="class-item">
-                        <h4>Membership Seminar</h4>
-                        <p>Understanding church membership and Christian
-                            life</p>
-                    </div>
-                </div>
-                <a href="#" class="browse-btn">Browse Classes</a>
+            <p class="podcast-card-description">Weekly sermons from our Sunday worship services. Explore our archive of biblical teaching and preaching.</p>
+            <div class="podcast-card-actions">
+                <a href="/sermons" class="podcast-btn podcast-btn-primary">Browse Sermons</a>
             </div>
         </div>
 
+        <!-- Podcast Series Grid -->
+        <div id="podcast-series-container" class="podcast-series-grid">
+            <div class="loading-message">Loading podcast series...</div>
+        </div>
+
         <!-- Full Episodes View (hidden by default) -->
-        <div id="full-episodes-view" class="full-episodes-view"
-            style="display: none;">
+        <div id="full-episodes-view" class="full-episodes-view" style="display: none;">
             <div class="episodes-header">
-                <button onclick="hideFullEpisodes()" class="back-btn">← Back to
-                    Shows</button>
+                <button onclick="hideFullEpisodes()" class="back-btn">← Back to Series</button>
                 <h2 id="episodes-title">Episodes</h2>
             </div>
-            <div id="full-episodes-container"
-                class="episodes-container list-view">
+            <div id="full-episodes-container" class="episodes-container">
                 <!-- Episodes will be loaded here -->
             </div>
         </div>
 
         <!-- RSS Feed Episodes List -->
-        <div class="rss-episodes-section" style="margin-top: 2rem;">
+        <div class="rss-episodes-section">
             <h2>Latest Episodes from RSS Feed</h2>
             <ul id="episodes" class="divide-y"></ul>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-// Load preview episodes for Beyond the Sunday Sermon
-function loadPreviewEpisodes() {
-    const container = document.getElementById('beyond-podcast-container');
+// Load all podcast series
+function loadPodcastSeries() {
+    const container = document.getElementById('podcast-series-container');
     if (!container) return;
     
-    fetch('/api/json/podcasts/beyond-podcast')
+    fetch('/api/json/podcasts')
         .then(response => response.json())
-        .then(data => {
-            if (data.episodes && data.episodes.length > 0) {
-                const episodes = data.episodes.slice(0, 3); // Show first 3 episodes
-                let html = '<div class="episodes-preview-list">';
+        .then(seriesList => {
+            if (!seriesList || seriesList.length === 0) {
+                container.innerHTML = '<div class="error-message">No podcast series available.</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            seriesList.forEach(series => {
+                const episodeCount = series.episodes ? series.episodes.length : 0;
+                const seriesId = series.id || 'series_001';
                 
-                episodes.forEach(episode => {
-                    html += `
-                        <div class="preview-episode">
-                            <div class="preview-episode-info">
-                                <h4>${episode.title}</h4>
-                                <p class="preview-episode-meta">
-                                    ${episode.date_added ? new Date(episode.date_added).toLocaleDateString() : ''}
-                                    ${episode.guest ? ` • Guest: ${episode.guest}` : ''}
-                                </p>
-                            </div>
-                            <div class="preview-episode-actions">
-                                ${episode.link ? `<a href="${episode.link}" target="_blank" class="btn btn-sm">Listen</a>` : ''}
+                html += `
+                    <div class="podcast-series-card">
+                        <div class="podcast-card-header">
+                            <div class="podcast-card-info">
+                                <h2 class="podcast-card-title">${series.title || 'Untitled Series'}</h2>
                             </div>
                         </div>
-                    `;
-                });
-                
-                html += '</div>';
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = '<p>No episodes available</p>';
-            }
+                        <p class="podcast-card-description">${series.description || 'No description available.'}</p>
+                        <div class="podcast-card-meta">
+                            <span class="podcast-episode-count">
+                                <span>${episodeCount} episode${episodeCount !== 1 ? 's' : ''}</span>
+                            </span>
+                        </div>
+                        <div class="podcast-card-actions">
+                            <button onclick="showAllEpisodes('${seriesId}', '${series.title.replace(/'/g, "\\'")}')" class="podcast-btn podcast-btn-primary">
+                                Browse Episodes
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         })
         .catch(error => {
-            console.error('Error loading preview episodes:', error);
-            container.innerHTML = '<p>Error loading episodes</p>';
+            console.error('Error loading podcast series:', error);
+            container.innerHTML = '<div class="error-message">Error loading podcast series. Please try again.</div>';
         });
 }
 
 // Show all episodes for a specific series
-function showAllEpisodes(seriesId) {
-    const showsGrid = document.querySelector('.podcast-shows-grid');
+function showAllEpisodes(seriesId, seriesTitle) {
+    const seriesContainer = document.getElementById('podcast-series-container');
     const fullView = document.getElementById('full-episodes-view');
     const episodesTitle = document.getElementById('episodes-title');
     const episodesContainer = document.getElementById('full-episodes-container');
     
-    // Hide shows grid and show full episodes view
-    showsGrid.style.display = 'none';
+    // Hide series grid and show full episodes view
+    if (seriesContainer) seriesContainer.style.display = 'none';
     fullView.style.display = 'block';
     
-    // Set title based on series
-    const seriesNames = {
-        'beyond-podcast': 'Beyond the Sunday Sermon',
-        'biblical-interpretation': 'Biblical Interpretation',
-        'confessional-theology': 'Confessional Theology',
-        'membership-seminar': 'Membership Seminar'
-    };
-    
-    episodesTitle.textContent = seriesNames[seriesId] || 'Episodes';
+    episodesTitle.textContent = seriesTitle || 'Episodes';
     
     // Load episodes
-    episodesContainer.innerHTML = '<div class="loading-message"><h3>🎧 Loading Episodes...</h3><p>Please wait...</p></div>';
+    episodesContainer.innerHTML = '<div class="loading-message"><h3>Loading Episodes...</h3><p>Please wait...</p></div>';
     
-    fetch(`/api/json/podcasts/${seriesId}`)
+    // Try different API endpoints
+    const endpoints = [
+        `/api/json/podcasts/${seriesId}`,
+        `/api/json/podcasts/${seriesId.replace('series_', '').replace('_', '-')}`
+    ];
+    
+    let fetchPromise = null;
+    for (const endpoint of endpoints) {
+        fetchPromise = fetch(endpoint)
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('Not found');
+            })
+            .catch(() => null);
+    }
+    
+    // Also try loading from main podcasts endpoint
+    fetch('/api/json/podcasts')
         .then(response => response.json())
-        .then(data => {
-            if (data.episodes && data.episodes.length > 0) {
-                renderFullEpisodes(data);
+        .then(seriesList => {
+            const series = seriesList.find(s => s.id === seriesId);
+            if (series && series.episodes) {
+                renderFullEpisodes({
+                    title: series.title,
+                    description: series.description,
+                    episodes: series.episodes
+                });
             } else {
-                episodesContainer.innerHTML = '<div class="error-message">No episodes found.</div>';
+                episodesContainer.innerHTML = '<div class="error-message">No episodes found for this series.</div>';
             }
         })
         .catch(error => {
@@ -190,12 +560,12 @@ function showAllEpisodes(seriesId) {
         });
 }
 
-// Hide full episodes view and return to shows
+// Hide full episodes view and return to series
 function hideFullEpisodes() {
-    const showsGrid = document.querySelector('.podcast-shows-grid');
+    const seriesContainer = document.getElementById('podcast-series-container');
     const fullView = document.getElementById('full-episodes-view');
     
-    showsGrid.style.display = 'grid';
+    if (seriesContainer) seriesContainer.style.display = 'grid';
     fullView.style.display = 'none';
 }
 
@@ -206,17 +576,12 @@ function renderFullEpisodes(data) {
     
     const episodes = data.episodes || [];
     
-    let html = `
-        <div class="podcast-series">
-            <div class="series-header">
-                <h2 class="series-title">${data.title || 'Episodes'}</h2>
-                <p class="series-description">${data.description || ''}</p>
-                <div class="series-stats">
-                    <span class="episode-count">${episodes.length} episode${episodes.length !== 1 ? 's' : ''}</span>
-                </div>
-            </div>
-            <div class="episodes-container list-view">
-    `;
+    if (episodes.length === 0) {
+        container.innerHTML = '<div class="error-message">No episodes available for this series.</div>';
+        return;
+    }
+    
+    let html = '';
     
     episodes.forEach(episode => {
         html += `
@@ -229,11 +594,10 @@ function renderFullEpisodes(data) {
                     </div>
                 </div>
                 <div class="episode-info">
-                    <div class="episode-header">
-                        <h3 class="episode-title">${episode.title}</h3>
-                        <div class="episode-meta">
-                            ${episode.date_added ? `<span class="episode-date">${new Date(episode.date_added).toLocaleDateString()}</span>` : ''}
-                        </div>
+                    <h3 class="episode-title">${episode.title || 'Untitled Episode'}</h3>
+                    <div class="episode-meta">
+                        ${episode.date_added ? `<span class="episode-date">${new Date(episode.date_added).toLocaleDateString()}</span>` : ''}
+                        ${episode.number ? `<span>Episode ${episode.number}</span>` : ''}
                     </div>
                     <div class="episode-details">
                         ${episode.guest ? `<span class="episode-guest">Guest: ${episode.guest}</span>` : ''}
@@ -241,50 +605,58 @@ function renderFullEpisodes(data) {
                     </div>
                 </div>
                 <div class="episode-actions">
-                    ${episode.link ? `<a href="${episode.link}" target="_blank" class="btn btn-primary">Listen</a>` : ''}
+                    ${episode.link ? `<a href="${episode.link}" target="_blank" class="podcast-btn podcast-btn-primary">Listen</a>` : ''}
+                    ${episode.listen_url ? `<a href="${episode.listen_url}" target="_blank" class="podcast-btn podcast-btn-primary">Listen</a>` : ''}
                 </div>
             </div>
         `;
     });
-    
-    html += `
-            </div>
-        </div>
-    `;
     
     container.innerHTML = html;
 }
 
 // Load podcast from RSS feed
 async function loadPodcast() {
-  const r = await fetch('/api/podcast/cpc', { cache: 'no-store' });
-  const data = await r.json();
-  const list = document.querySelector('#episodes');
-  if (!list) return;
-  
-  list.innerHTML = '';
+    try {
+        const r = await fetch('/api/podcast/cpc', { cache: 'no-store' });
+        const data = await r.json();
+        const list = document.querySelector('#episodes');
+        if (!list) return;
+        
+        list.innerHTML = '';
 
-  if (data.error) {
-    list.innerHTML = `<li class="text-red-600">${data.error}</li>`;
-    return;
-  }
+        if (data.error) {
+            list.innerHTML = `<li style="color: rgba(255, 100, 100, 0.8); padding: 1rem;">${data.error}</li>`;
+            return;
+        }
 
-  for (const ep of data.episodes) {
-    const li = document.createElement('li');
-    li.className = 'py-3 border-b';
-    li.innerHTML = `
-      <div class="font-semibold">${ep.title ?? 'Untitled'}</div>
-      <div class="text-sm opacity-70">${ep.published ?? ''}</div>
-      ${ep.audio?.url ? `<audio controls preload="none" src="${ep.audio.url}"></audio>` : ''}
-      <p class="mt-2 text-sm">${(ep.summary || '').slice(0, 240)}&hellip;</p>
-    `;
-    list.appendChild(li);
-  }
+        if (!data.episodes || data.episodes.length === 0) {
+            list.innerHTML = '<li style="color: rgba(255, 255, 255, 0.6); padding: 1rem;">No episodes available.</li>';
+            return;
+        }
+
+        for (const ep of data.episodes) {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div style="font-weight: 600; color: rgba(255, 255, 255, 0.95); margin-bottom: 0.5rem;">${ep.title ?? 'Untitled'}</div>
+                <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 0.75rem;">${ep.published ?? ''}</div>
+                ${ep.audio?.url ? `<audio controls preload="none" src="${ep.audio.url}" style="width: 100%; margin-bottom: 0.5rem;"></audio>` : ''}
+                <p style="margin-top: 0.5rem; font-size: 0.875rem; color: rgba(255, 255, 255, 0.8); line-height: 1.6;">${(ep.summary || '').slice(0, 240)}${(ep.summary || '').length > 240 ? '&hellip;' : ''}</p>
+            `;
+            list.appendChild(li);
+        }
+    } catch (error) {
+        console.error('Error loading RSS podcast:', error);
+        const list = document.querySelector('#episodes');
+        if (list) {
+            list.innerHTML = '<li style="color: rgba(255, 100, 100, 0.8); padding: 1rem;">Error loading podcast feed.</li>';
+        }
+    }
 }
 
 // Start loading when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    loadPreviewEpisodes();
+    loadPodcastSeries();
     loadPodcast();
 });
 </script>

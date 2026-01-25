@@ -2,159 +2,441 @@
 
 {% block title %}Events - CPC New Haven{% endblock %}
 
+{% block head %}
+<style>
+.events-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+}
+
+.events-main-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Compact Hero */
+.events-hero {
+    grid-column: 1 / -1;
+    padding: 0.5rem 0;
+    text-align: center;
+    background: transparent;
+    margin: 0 0 0.75rem 0;
+}
+
+.events-hero h1 {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.events-hero p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Glass Card Styling - Matching about.html */
+.evt-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    transition: all 0.3s ease;
+}
+
+.evt-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.evt-head {
+    margin-bottom: 0.5rem;
+}
+
+.evt-cat {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 82, 163, 0.3);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.evt-title {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0.5rem 0 0.25rem 0;
+    font-weight: 600;
+}
+
+.evt-meta {
+    margin: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.evt-when {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.evt-loc {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.evt-desc {
+    margin: 0.75rem 0;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+.evt-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.evt-actions .btn {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.evt-actions .btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.evt-month {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 1.5rem 0 0.75rem 0;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.evt-month:first-child {
+    margin-top: 0;
+}
+
+/* Controls Styling */
+.evt-controls {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.evt-input {
+    flex: 1;
+    min-width: 240px;
+    padding: 0.6rem 0.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.evt-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.evt-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.chip {
+    padding: 0.35rem 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.chip.active,
+.chip:hover {
+    background: rgba(0, 82, 163, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 82, 163, 0.5);
+}
+
+/* Section Styling */
+.events-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Scrollable Events List Container */
+#evt-list {
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+    margin-top: 0.75rem;
+    /* Firefox Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 82, 163, 0.6) rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar Styling for Events List (Webkit browsers) */
+#evt-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#evt-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+#evt-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 82, 163, 0.6);
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+#evt-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 82, 163, 0.8);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.75rem 0;
+    font-weight: 600;
+}
+
+/* Category Cards */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.category-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.category-icon {
+    font-size: 2rem;
+    color: rgba(0, 82, 163, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.category-card h3 {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.category-card p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+/* Regular Schedule */
+.schedule-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.schedule-day {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(0, 82, 163, 0.8);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.schedule-item {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.schedule-time {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    min-width: 80px;
+}
+
+.schedule-activity {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Contact Section */
+.contact-section {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+}
+
+.contact-icon {
+    color: rgba(0, 82, 163, 0.8);
+    width: 20px;
+}
+
+@media (max-width: 1024px) {
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="compact-page compact-content">
-    <!-- Compact Hero -->
-    <div class="compact-hero">
-        <h1>Events & Activities</h1>
-        <p>Join us for fellowship, learning, and community events</p>
+<div class="events-page compact-page">
+    <div class="events-main-container compact-content">
+        <!-- Compact Hero -->
+        <div class="events-hero">
+            <h1>Events & Activities</h1>
+            <p>Join us for fellowship, learning, and community events</p>
+        </div>
+
+        <!-- Events Content -->
+        <section class="events-section">
+            <h2 class="section-title">Upcoming Events</h2>
+            <div id="events-app"></div>
+        </section>
+
+        <!-- Event Categories -->
+        <section class="events-section">
+            <h2 class="section-title">Event Categories</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Weekly Events</h3>
+                    <p>Regular weekly gatherings including Bible studies, prayer meetings, and fellowship groups.</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Educational</h3>
+                    <p>Classes, seminars, and educational programs for spiritual growth and learning.</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Fellowship</h3>
+                    <p>Community building events, social gatherings, and fellowship opportunities.</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Service</h3>
+                    <p>Outreach events, service projects, and opportunities to serve our community.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Regular Schedule -->
+        <section class="events-section">
+            <h2 class="section-title">Regular Schedule</h2>
+            <div class="schedule-card">
+                <div class="schedule-day">Sunday</div>
+                <div class="schedule-item">
+                    <span class="schedule-time">8:30am</span>
+                    <span class="schedule-activity">Prayer in the Parlor</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="schedule-time">9:30am</span>
+                    <span class="schedule-activity">Children's Sunday School & Adult Sunday Studies</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="schedule-time">10:30am</span>
+                    <span class="schedule-activity">Sunday Worship Service</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="schedule-time">12:00pm</span>
+                    <span class="schedule-activity">Fellowship Lunch</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <h2 class="section-title">Questions About Events?</h2>
+            <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 0.75rem; font-size: 0.9rem;">If you have questions about any of our events or would like to get involved, please don't hesitate to contact us.</p>
+            <div class="contact-item">
+                <i class="fas fa-envelope contact-icon"></i>
+                <span>admin@cpcnewhaven.org</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt contact-icon"></i>
+                <span>135 Whitney Ave, New Haven, CT 06510</span>
+            </div>
+        </section>
     </div>
-
-    <!-- Events Content -->
-    <section class="compact-section">
-        <h2 class="text-2xl font-semibold mb-4">Upcoming Events</h2>
-        <div id="events-app"></div>
-    </section>
-
-    <!-- Event Categories -->
-    <section class="compact-section">
-        <h2 class="text-2xl font-semibold mb-4">Event Categories</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div
-                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
-                <div class="text-4xl text-blue-600 mb-4">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-2">Weekly Events</h3>
-                <p class="text-base leading-relaxed text-gray-700">Regular
-                    weekly gatherings including Bible studies, prayer meetings,
-                    and fellowship groups.</p>
-            </div>
-            <div
-                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
-                <div class="text-4xl text-blue-600 mb-4">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-2">Educational</h3>
-                <p class="text-base leading-relaxed text-gray-700">Classes,
-                    seminars, and educational programs for spiritual growth and
-                    learning.</p>
-            </div>
-            <div
-                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
-                <div class="text-4xl text-blue-600 mb-4">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-2">Fellowship</h3>
-                <p class="text-base leading-relaxed text-gray-700">Community
-                    building events, social gatherings, and fellowship
-                    opportunities.</p>
-            </div>
-            <div
-                class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
-                <div class="text-4xl text-blue-600 mb-4">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-2">Service</h3>
-                <p class="text-base leading-relaxed text-gray-700">Outreach
-                    events, service projects, and opportunities to serve our
-                    community.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Regular Schedule -->
-    <section class="mt-16">
-        <h2 class="text-2xl font-semibold mb-4">Regular Schedule</h2>
-        <div class="space-y-4">
-            <div class="p-6 border rounded-lg bg-white">
-                <div
-                    class="text-xl font-semibold mb-4 text-blue-600">Sunday</div>
-                <div class="space-y-2">
-                    <div class="flex gap-4">
-                        <span
-                            class="font-medium text-gray-700 w-20">8:30am</span>
-                        <span
-                            class="text-base leading-relaxed text-gray-700">Prayer
-                            in the Parlor</span>
-                    </div>
-                    <div class="flex gap-4">
-                        <span
-                            class="font-medium text-gray-700 w-20">9:30am</span>
-                        <span
-                            class="text-base leading-relaxed text-gray-700">Sunday
-                            School & Adult Studies</span>
-                    </div>
-                    <div class="flex gap-4">
-                        <span
-                            class="font-medium text-gray-700 w-20">10:30am</span>
-                        <span
-                            class="text-base leading-relaxed text-gray-700">Sunday
-                            Worship Service</span>
-                    </div>
-                    <div class="flex gap-4">
-                        <span
-                            class="font-medium text-gray-700 w-20">12:00pm</span>
-                        <span
-                            class="text-base leading-relaxed text-gray-700">Fellowship
-                            Lunch</span>
-                    </div>
-                </div>
-            </div>
-            <div class="p-6 border rounded-lg bg-white">
-                <div
-                    class="text-xl font-semibold mb-4 text-blue-600">Wednesday</div>
-                <div class="flex gap-4">
-                    <span class="font-medium text-gray-700 w-20">7:00pm</span>
-                    <span class="text-base leading-relaxed text-gray-700">Bible
-                        Study</span>
-                </div>
-            </div>
-            <div class="p-6 border rounded-lg bg-white">
-                <div
-                    class="text-xl font-semibold mb-4 text-blue-600">Friday</div>
-                <div class="flex gap-4">
-                    <span class="font-medium text-gray-700 w-20">7:00pm</span>
-                    <span class="text-base leading-relaxed text-gray-700">Youth
-                        Group Meeting</span>
-                </div>
-            </div>
-            <div class="p-6 border rounded-lg bg-white">
-                <div
-                    class="text-xl font-semibold mb-4 text-blue-600">Saturday</div>
-                <div class="flex gap-4">
-                    <span class="font-medium text-gray-700 w-20">8:00am</span>
-                    <span class="text-base leading-relaxed text-gray-700">Men's
-                        Fellowship</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="mt-16 mb-32">
-        <h2 class="text-2xl font-semibold mb-4">Questions About Events?</h2>
-        <p class="text-base leading-relaxed text-gray-700 mb-6">If you have
-            questions about any of our events or would like to get involved,
-            please don't hesitate to contact us.</p>
-        <div class="space-y-4">
-            <div class="flex items-center gap-3">
-                <i class="fas fa-envelope text-blue-600"></i>
-                <span
-                    class="text-base leading-relaxed text-gray-700">admin@cpcnewhaven.org</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <i class="fas fa-phone text-blue-600"></i>
-                <span class="text-base leading-relaxed text-gray-700">(203)
-                    555-0123</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <i class="fas fa-map-marker-alt text-blue-600"></i>
-                <span class="text-base leading-relaxed text-gray-700">135
-                    Whitney Ave, New Haven, CT 06510</span>
-            </div>
-        </div>
-    </section>
 </div>
 {% endblock %}
 

@@ -31,15 +31,19 @@
       "note": "73 sermons from 2023"
     },
     "2024": {
-      "count": 114,
-      "note": "114 sermons from 2024"
+      "count": 115,
+      "note": "115 sermons from 2024"
     },
     "2025": {
-      "count": 66,
-      "note": "66 sermons from 2025"
+      "count": 89,
+      "note": "89 sermons from 2025"
+    },
+    "2026": {
+      "count": 4,
+      "note": "4 sermons from 2026"
     }
   },
-  "_total_sermons": 514,
+  "_total_sermons": 542,
   "_organized_by": "year (oldest to newest)",
   "_note": "Scroll through 'sermons_by_year' to see sermons organized by year. The 'sermons' array at the end is for API compatibility.",
   "sermons_by_year": {
@@ -7995,6 +7999,26 @@
         "search_keywords": "sunday exodus you may heart Grace craig that that you may know: unconditional grace and the hardening of pharaoh’s heart rev pharaoh sermon grace unconditional know hardening rev. craig luekens luekens"
       },
       {
+        "id": "24-06-15",
+        "title": "Wedding 2024",
+        "author": "Rev. Craig Luekens",
+        "scripture": "",
+        "date": "2024-06-15",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Special Events",
+        "episode_title": "Wedding 2024",
+        "sermon_type": "sermon",
+        "tags": [
+          "Special Events"
+        ],
+        "search_keywords": "wedding 2024  special events"
+      },
+      {
         "id": "24-06-10",
         "title": "Who is Yahweh?: The Gospel in Exodus | The Sunday Sermon | Exodus 6:1-30 | Rev. Jerry Ornelas | 06.09.24",
         "author": "Rev. Craig Luekens",
@@ -9347,6 +9371,306 @@
     ],
     "2025": [
       {
+        "id": "25-12-28",
+        "title": "Audacity, Assurance, & the Man Inside the House",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 10:41-11:13",
+        "date": "2025-12-28",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Audacity, Assurance, & the Man Inside the House",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "audacity, assurance, & the man inside the house luke 10:41-11:13 luke"
+      },
+      {
+        "id": "25-12-25",
+        "title": "The Covenant Promises of Christmas",
+        "author": "Rev. Craig Luekens",
+        "scripture": "",
+        "date": "2025-12-25",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Christmas",
+        "episode_title": "The Covenant Promises of Christmas",
+        "sermon_type": "sermon",
+        "tags": [
+          "Christmas"
+        ],
+        "search_keywords": "the covenant promises of christmas  christmas"
+      },
+      {
+        "id": "25-12-21",
+        "title": "Love Redefined: Jesus, the Good Samaritan, and Uprooting Selfishness",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 10:25-42",
+        "date": "2025-12-21",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Love Redefined: Jesus, the Good Samaritan, and Uprooting Selfishness",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "love redefined: jesus, the good samaritan, and uprooting selfishness luke 10:25-42 luke"
+      },
+      {
+        "id": "25-12-14",
+        "title": "The Kingdom Has Come: The Grace, Acceptance, and Rejection of the Gospel",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 10:14-21",
+        "date": "2025-12-14",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "The Kingdom Has Come: The Grace, Acceptance, and Rejection of the Gospel",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "the kingdom has come: the grace, acceptance, and rejection of the gospel luke 10:14-21 luke"
+      },
+      {
+        "id": "25-12-07",
+        "title": "The Eden-Temple-Church Connection",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Genesis 1:1-2, 26-28",
+        "date": "2025-12-07",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Genesis",
+        "episode_title": "The Eden-Temple-Church Connection",
+        "sermon_type": "sermon",
+        "tags": [
+          "Genesis"
+        ],
+        "search_keywords": "the eden-temple-church connection genesis 1:1-2, 26-28 genesis"
+      },
+      {
+        "id": "25-11-30",
+        "title": "A House Full of Condiments With No Real Food",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 9:43-62",
+        "date": "2025-11-30",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "A House Full of Condiments With No Real Food",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "a house full of condiments with no real food luke 9:43-62 luke"
+      },
+      {
+        "id": "25-11-23",
+        "title": "Listen to Him! The Glory of the Suffering Savior",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 9:28-45",
+        "date": "2025-11-23",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Listen to Him! The Glory of the Suffering Savior",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "listen to him! the glory of the suffering savior luke 9:28-45 luke"
+      },
+      {
+        "id": "25-11-16",
+        "title": "The Call to Die: Life, Death, and Following Jesus the Christ",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 9:18-27",
+        "date": "2025-11-16",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "The Call to Die: Life, Death, and Following Jesus the Christ",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "the call to die: life, death, and following jesus the christ luke 9:18-27 luke"
+      },
+      {
+        "id": "25-11-09",
+        "title": "In Which Kingdom Do We Live?",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 9:1-17",
+        "date": "2025-11-09",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "In Which Kingdom Do We Live?",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "in which kingdom do we live? luke 9:1-17 luke"
+      },
+      {
+        "id": "25-11-02",
+        "title": "Who Then Is This? The Marvel of Jesus' Compassionate Power",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 8:22-56",
+        "date": "2025-11-02",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Who Then Is This? The Marvel of Jesus' Compassionate Power",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "who then is this? the marvel of jesus' compassionate power luke 8:22-56 luke"
+      },
+      {
+        "id": "25-10-26",
+        "title": "Fertile Ears",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 8:4-21",
+        "date": "2025-10-26",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Fertile Ears",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "fertile ears luke 8:4-21 luke"
+      },
+      {
+        "id": "25-10-19",
+        "title": "Extravagant Love & Forgiveness in the Face of Calloused Hearts",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 7:36-8:3",
+        "date": "2025-10-19",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Extravagant Love & Forgiveness in the Face of Calloused Hearts",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "extravagant love & forgiveness in the face of calloused hearts luke 7:36-8:3 luke"
+      },
+      {
+        "id": "25-10-12",
+        "title": "Living as the Family of God",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Ephesians 4:1-6, 17-32",
+        "date": "2025-10-12",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Ephesians",
+        "episode_title": "Living as the Family of God",
+        "sermon_type": "sermon",
+        "tags": [
+          "Ephesians"
+        ],
+        "search_keywords": "living as the family of god ephesians 4:1-6, 17-32 ephesians"
+      },
+      {
+        "id": "25-10-05",
+        "title": "Are You the One?",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 7:1-35",
+        "date": "2025-10-05",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Are You the One?",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "are you the one? luke 7:1-35 luke"
+      },
+      {
+        "id": "25-09-28",
+        "title": "The Fruit of the Church: Obedience",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 6:39-49",
+        "date": "2025-09-28",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "The Character of the Church",
+        "episode_title": "The Fruit of the Church: Obedience",
+        "sermon_type": "sermon",
+        "tags": [
+          "The Character of the Church"
+        ],
+        "search_keywords": "the fruit of the church: obedience luke 6:39-49 the character of the church"
+      },
+      {
         "id": "25-09-25",
         "title": "Beyond the Sunday Sermon | Luke 6:37-42",
         "author": "Rev. Craig Luekens",
@@ -9392,6 +9716,26 @@
           "Church"
         ],
         "search_keywords": "sunday luke luke 6:37-42 craig rev sermon humility church Luke the character of the church: humility rev. craig luekens Church luekens character"
+      },
+      {
+        "id": "25-09-21",
+        "title": "The Character of the Church: Humility",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 6:37-42",
+        "date": "2025-09-21",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "The Character of the Church",
+        "episode_title": "The Character of the Church: Humility",
+        "sermon_type": "sermon",
+        "tags": [
+          "The Character of the Church"
+        ],
+        "search_keywords": "the character of the church: humility luke 6:37-42 the character of the church"
       },
       {
         "id": "25-09-18",
@@ -9443,6 +9787,46 @@
         "search_keywords": "sunday luke Love Church craig luke 6:20-36 the ethic of the church: love ethic sermon rev church Luke love rev. craig luekens luekens"
       },
       {
+        "id": "25-09-15",
+        "title": "Congregational Meeting September 2025",
+        "author": "Rev. Craig Luekens",
+        "scripture": "",
+        "date": "2025-09-15",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Church Business",
+        "episode_title": "Congregational Meeting September 2025",
+        "sermon_type": "sermon",
+        "tags": [
+          "Church Business"
+        ],
+        "search_keywords": "congregational meeting september 2025  church business"
+      },
+      {
+        "id": "25-09-14",
+        "title": "The Ethic of the Church: Love",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 6:20-36",
+        "date": "2025-09-14",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "The Character of the Church",
+        "episode_title": "The Ethic of the Church: Love",
+        "sermon_type": "sermon",
+        "tags": [
+          "The Character of the Church"
+        ],
+        "search_keywords": "the ethic of the church: love luke 6:20-36 the character of the church"
+      },
+      {
         "id": "25-09-09",
         "title": "Beyond the Sunday Sermon | Luke 6",
         "author": "Rev. Craig Luekens",
@@ -9485,6 +9869,26 @@
         "search_keywords": "sunday luke Church sermon identity church the identity of the church: poor rev. craig luekens poor"
       },
       {
+        "id": "25-09-07",
+        "title": "The Identity of the Church: Poor",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 6:12-26",
+        "date": "2025-09-07",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "The Character of the Church",
+        "episode_title": "The Identity of the Church: Poor",
+        "sermon_type": "sermon",
+        "tags": [
+          "The Character of the Church"
+        ],
+        "search_keywords": "the identity of the church: poor luke 6:12-26 the character of the church"
+      },
+      {
         "id": "25-09-02",
         "title": "Christ at the Center of It All | The Sunday Sermon | Revelation 1:1-20 | Rev. Jerry Ornelas",
         "author": "Rev. Craig Luekens",
@@ -9505,6 +9909,26 @@
           "Christ"
         ],
         "search_keywords": "sunday jerry revelation christ rev sermon all revelation 1:1-20 christ at the center of it all Christ ornelas rev. craig luekens center"
+      },
+      {
+        "id": "25-08-31",
+        "title": "Christ at the Center of It All",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Revelation 1:1-20",
+        "date": "2025-08-31",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Revelation",
+        "episode_title": "Christ at the Center of It All",
+        "sermon_type": "sermon",
+        "tags": [
+          "Revelation"
+        ],
+        "search_keywords": "christ at the center of it all revelation 1:1-20 revelation"
       },
       {
         "id": "25-08-27",
@@ -9529,6 +9953,26 @@
         "search_keywords": "sunday luke who life craig who is the lord of your life? rev sermon luke 6:1-11 lord your Luke rev. craig luekens luekens"
       },
       {
+        "id": "25-08-24",
+        "title": "Who is the Lord of Your Life?",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 6:1-11",
+        "date": "2025-08-24",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Who is the Lord of Your Life?",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "who is the lord of your life? luke 6:1-11 luke"
+      },
+      {
         "id": "25-08-21",
         "title": "The Doctor Is In | The Sunday Sermon | Rev. Craig Luekens | Luke 5: 27-39 |",
         "author": "Rev. Craig Luekens",
@@ -9547,6 +9991,26 @@
         "sermon_type": "sermon",
         "tags": [],
         "search_keywords": "sunday luke doctor the doctor is in craig rev sermon rev. craig luekens luekens"
+      },
+      {
+        "id": "25-08-17",
+        "title": "The Doctor Is In",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 5:27-39",
+        "date": "2025-08-17",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "The Doctor Is In",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "the doctor is in luke 5:27-39 luke"
       },
       {
         "id": "25-08-11",
@@ -9571,6 +10035,26 @@
           "Christ"
         ],
         "search_keywords": "sunday jerry luke becoming a christian, part 2: forgiven luke 5:17-26 forgiven part rev sermon christian becoming Christ Luke ornelas rev. craig luekens"
+      },
+      {
+        "id": "25-08-10",
+        "title": "Becoming a Christian, Part 2: Forgiven",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 5:17-26",
+        "date": "2025-08-10",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "Becoming a Christian, Part 2: Forgiven",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "becoming a christian, part 2: forgiven luke 5:17-26 luke"
       },
       {
         "id": "25-08-07",
@@ -10793,6 +11277,88 @@
           "God"
         ],
         "search_keywords": "sunday jerry glory when exodus god rev sermon when god comes: glory, as it was in the beginning beginning God comes ornelas rev. craig luekens"
+      }
+    ],
+    "2026": [
+      {
+        "id": "26-01-25",
+        "title": "A Life of Readiness",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 12:35-59",
+        "date": "2026-01-25",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "A Life of Readiness",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "a life of readiness luke 12:35-59 luke"
+      },
+      {
+        "id": "26-01-18",
+        "title": "The Rich Fool and The Heart's Treasure",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 12:13-34",
+        "date": "2026-01-18",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "The Rich Fool and The Heart's Treasure",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "the rich fool and the heart's treasure luke 12:13-34 luke"
+      },
+      {
+        "id": "26-01-11",
+        "title": "What Do You Fear? Who Do You Love?",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 11:37-12:12",
+        "date": "2026-01-11",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "What Do You Fear? Who Do You Love?",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "what do you fear? who do you love? luke 11:37-12:12 luke"
+      },
+      {
+        "id": "26-01-04",
+        "title": "But Something Greater Is Here",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 11:14-36",
+        "date": "2026-01-04",
+        "apple_podcasts_url": "",
+        "spotify_url": "",
+        "youtube_url": "",
+        "link": "",
+        "podcast_thumbnail_url": "",
+        "source": "youtube",
+        "series": "Luke",
+        "episode_title": "But Something Greater Is Here",
+        "sermon_type": "sermon",
+        "tags": [
+          "Luke"
+        ],
+        "search_keywords": "but something greater is here luke 11:14-36 luke"
       }
     ]
   },
@@ -18734,6 +19300,26 @@
       "search_keywords": "sunday exodus you may heart Grace craig that that you may know: unconditional grace and the hardening of pharaoh’s heart rev pharaoh sermon grace unconditional know hardening rev. craig luekens luekens"
     },
     {
+      "id": "24-06-15",
+      "title": "Wedding 2024",
+      "author": "Rev. Craig Luekens",
+      "scripture": "",
+      "date": "2024-06-15",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Special Events",
+      "episode_title": "Wedding 2024",
+      "sermon_type": "sermon",
+      "tags": [
+        "Special Events"
+      ],
+      "search_keywords": "wedding 2024  special events"
+    },
+    {
       "id": "24-06-10",
       "title": "Who is Yahweh?: The Gospel in Exodus | The Sunday Sermon | Exodus 6:1-30 | Rev. Jerry Ornelas | 06.09.24",
       "author": "Rev. Craig Luekens",
@@ -20084,6 +20670,306 @@
       "search_keywords": "sunday ephesians jerry Ephesians myths ephesians 3:1-13 that rev sermon \"the church: the mystery that debunks all myths\" debunks mystery all church ornelas rev. craig luekens Church"
     },
     {
+      "id": "25-12-28",
+      "title": "Audacity, Assurance, & the Man Inside the House",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 10:41-11:13",
+      "date": "2025-12-28",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Audacity, Assurance, & the Man Inside the House",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "audacity, assurance, & the man inside the house luke 10:41-11:13 luke"
+    },
+    {
+      "id": "25-12-25",
+      "title": "The Covenant Promises of Christmas",
+      "author": "Rev. Craig Luekens",
+      "scripture": "",
+      "date": "2025-12-25",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Christmas",
+      "episode_title": "The Covenant Promises of Christmas",
+      "sermon_type": "sermon",
+      "tags": [
+        "Christmas"
+      ],
+      "search_keywords": "the covenant promises of christmas  christmas"
+    },
+    {
+      "id": "25-12-21",
+      "title": "Love Redefined: Jesus, the Good Samaritan, and Uprooting Selfishness",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 10:25-42",
+      "date": "2025-12-21",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Love Redefined: Jesus, the Good Samaritan, and Uprooting Selfishness",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "love redefined: jesus, the good samaritan, and uprooting selfishness luke 10:25-42 luke"
+    },
+    {
+      "id": "25-12-14",
+      "title": "The Kingdom Has Come: The Grace, Acceptance, and Rejection of the Gospel",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 10:14-21",
+      "date": "2025-12-14",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "The Kingdom Has Come: The Grace, Acceptance, and Rejection of the Gospel",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "the kingdom has come: the grace, acceptance, and rejection of the gospel luke 10:14-21 luke"
+    },
+    {
+      "id": "25-12-07",
+      "title": "The Eden-Temple-Church Connection",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Genesis 1:1-2, 26-28",
+      "date": "2025-12-07",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Genesis",
+      "episode_title": "The Eden-Temple-Church Connection",
+      "sermon_type": "sermon",
+      "tags": [
+        "Genesis"
+      ],
+      "search_keywords": "the eden-temple-church connection genesis 1:1-2, 26-28 genesis"
+    },
+    {
+      "id": "25-11-30",
+      "title": "A House Full of Condiments With No Real Food",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 9:43-62",
+      "date": "2025-11-30",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "A House Full of Condiments With No Real Food",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "a house full of condiments with no real food luke 9:43-62 luke"
+    },
+    {
+      "id": "25-11-23",
+      "title": "Listen to Him! The Glory of the Suffering Savior",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 9:28-45",
+      "date": "2025-11-23",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Listen to Him! The Glory of the Suffering Savior",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "listen to him! the glory of the suffering savior luke 9:28-45 luke"
+    },
+    {
+      "id": "25-11-16",
+      "title": "The Call to Die: Life, Death, and Following Jesus the Christ",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 9:18-27",
+      "date": "2025-11-16",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "The Call to Die: Life, Death, and Following Jesus the Christ",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "the call to die: life, death, and following jesus the christ luke 9:18-27 luke"
+    },
+    {
+      "id": "25-11-09",
+      "title": "In Which Kingdom Do We Live?",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 9:1-17",
+      "date": "2025-11-09",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "In Which Kingdom Do We Live?",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "in which kingdom do we live? luke 9:1-17 luke"
+    },
+    {
+      "id": "25-11-02",
+      "title": "Who Then Is This? The Marvel of Jesus' Compassionate Power",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 8:22-56",
+      "date": "2025-11-02",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Who Then Is This? The Marvel of Jesus' Compassionate Power",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "who then is this? the marvel of jesus' compassionate power luke 8:22-56 luke"
+    },
+    {
+      "id": "25-10-26",
+      "title": "Fertile Ears",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 8:4-21",
+      "date": "2025-10-26",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Fertile Ears",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "fertile ears luke 8:4-21 luke"
+    },
+    {
+      "id": "25-10-19",
+      "title": "Extravagant Love & Forgiveness in the Face of Calloused Hearts",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 7:36-8:3",
+      "date": "2025-10-19",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Extravagant Love & Forgiveness in the Face of Calloused Hearts",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "extravagant love & forgiveness in the face of calloused hearts luke 7:36-8:3 luke"
+    },
+    {
+      "id": "25-10-12",
+      "title": "Living as the Family of God",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Ephesians 4:1-6, 17-32",
+      "date": "2025-10-12",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Ephesians",
+      "episode_title": "Living as the Family of God",
+      "sermon_type": "sermon",
+      "tags": [
+        "Ephesians"
+      ],
+      "search_keywords": "living as the family of god ephesians 4:1-6, 17-32 ephesians"
+    },
+    {
+      "id": "25-10-05",
+      "title": "Are You the One?",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 7:1-35",
+      "date": "2025-10-05",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Are You the One?",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "are you the one? luke 7:1-35 luke"
+    },
+    {
+      "id": "25-09-28",
+      "title": "The Fruit of the Church: Obedience",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 6:39-49",
+      "date": "2025-09-28",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "The Character of the Church",
+      "episode_title": "The Fruit of the Church: Obedience",
+      "sermon_type": "sermon",
+      "tags": [
+        "The Character of the Church"
+      ],
+      "search_keywords": "the fruit of the church: obedience luke 6:39-49 the character of the church"
+    },
+    {
       "id": "25-09-25",
       "title": "Beyond the Sunday Sermon | Luke 6:37-42",
       "author": "Rev. Craig Luekens",
@@ -20129,6 +21015,26 @@
         "Church"
       ],
       "search_keywords": "sunday luke luke 6:37-42 craig rev sermon humility church Luke the character of the church: humility rev. craig luekens Church luekens character"
+    },
+    {
+      "id": "25-09-21",
+      "title": "The Character of the Church: Humility",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 6:37-42",
+      "date": "2025-09-21",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "The Character of the Church",
+      "episode_title": "The Character of the Church: Humility",
+      "sermon_type": "sermon",
+      "tags": [
+        "The Character of the Church"
+      ],
+      "search_keywords": "the character of the church: humility luke 6:37-42 the character of the church"
     },
     {
       "id": "25-09-18",
@@ -20180,6 +21086,46 @@
       "search_keywords": "sunday luke Love Church craig luke 6:20-36 the ethic of the church: love ethic sermon rev church Luke love rev. craig luekens luekens"
     },
     {
+      "id": "25-09-15",
+      "title": "Congregational Meeting September 2025",
+      "author": "Rev. Craig Luekens",
+      "scripture": "",
+      "date": "2025-09-15",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Church Business",
+      "episode_title": "Congregational Meeting September 2025",
+      "sermon_type": "sermon",
+      "tags": [
+        "Church Business"
+      ],
+      "search_keywords": "congregational meeting september 2025  church business"
+    },
+    {
+      "id": "25-09-14",
+      "title": "The Ethic of the Church: Love",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 6:20-36",
+      "date": "2025-09-14",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "The Character of the Church",
+      "episode_title": "The Ethic of the Church: Love",
+      "sermon_type": "sermon",
+      "tags": [
+        "The Character of the Church"
+      ],
+      "search_keywords": "the ethic of the church: love luke 6:20-36 the character of the church"
+    },
+    {
       "id": "25-09-09",
       "title": "Beyond the Sunday Sermon | Luke 6",
       "author": "Rev. Craig Luekens",
@@ -20222,6 +21168,26 @@
       "search_keywords": "sunday luke Church sermon identity church the identity of the church: poor rev. craig luekens poor"
     },
     {
+      "id": "25-09-07",
+      "title": "The Identity of the Church: Poor",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 6:12-26",
+      "date": "2025-09-07",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "The Character of the Church",
+      "episode_title": "The Identity of the Church: Poor",
+      "sermon_type": "sermon",
+      "tags": [
+        "The Character of the Church"
+      ],
+      "search_keywords": "the identity of the church: poor luke 6:12-26 the character of the church"
+    },
+    {
       "id": "25-09-02",
       "title": "Christ at the Center of It All | The Sunday Sermon | Revelation 1:1-20 | Rev. Jerry Ornelas",
       "author": "Rev. Craig Luekens",
@@ -20242,6 +21208,26 @@
         "Christ"
       ],
       "search_keywords": "sunday jerry revelation christ rev sermon all revelation 1:1-20 christ at the center of it all Christ ornelas rev. craig luekens center"
+    },
+    {
+      "id": "25-08-31",
+      "title": "Christ at the Center of It All",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Revelation 1:1-20",
+      "date": "2025-08-31",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Revelation",
+      "episode_title": "Christ at the Center of It All",
+      "sermon_type": "sermon",
+      "tags": [
+        "Revelation"
+      ],
+      "search_keywords": "christ at the center of it all revelation 1:1-20 revelation"
     },
     {
       "id": "25-08-27",
@@ -20266,6 +21252,26 @@
       "search_keywords": "sunday luke who life craig who is the lord of your life? rev sermon luke 6:1-11 lord your Luke rev. craig luekens luekens"
     },
     {
+      "id": "25-08-24",
+      "title": "Who is the Lord of Your Life?",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 6:1-11",
+      "date": "2025-08-24",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Who is the Lord of Your Life?",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "who is the lord of your life? luke 6:1-11 luke"
+    },
+    {
       "id": "25-08-21",
       "title": "The Doctor Is In | The Sunday Sermon | Rev. Craig Luekens | Luke 5: 27-39 |",
       "author": "Rev. Craig Luekens",
@@ -20284,6 +21290,26 @@
       "sermon_type": "sermon",
       "tags": [],
       "search_keywords": "sunday luke doctor the doctor is in craig rev sermon rev. craig luekens luekens"
+    },
+    {
+      "id": "25-08-17",
+      "title": "The Doctor Is In",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 5:27-39",
+      "date": "2025-08-17",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "The Doctor Is In",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "the doctor is in luke 5:27-39 luke"
     },
     {
       "id": "25-08-11",
@@ -20308,6 +21334,26 @@
         "Christ"
       ],
       "search_keywords": "sunday jerry luke becoming a christian, part 2: forgiven luke 5:17-26 forgiven part rev sermon christian becoming Christ Luke ornelas rev. craig luekens"
+    },
+    {
+      "id": "25-08-10",
+      "title": "Becoming a Christian, Part 2: Forgiven",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 5:17-26",
+      "date": "2025-08-10",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "Becoming a Christian, Part 2: Forgiven",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "becoming a christian, part 2: forgiven luke 5:17-26 luke"
     },
     {
       "id": "25-08-07",
@@ -21530,6 +22576,86 @@
         "God"
       ],
       "search_keywords": "sunday jerry glory when exodus god rev sermon when god comes: glory, as it was in the beginning beginning God comes ornelas rev. craig luekens"
+    },
+    {
+      "id": "26-01-25",
+      "title": "A Life of Readiness",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 12:35-59",
+      "date": "2026-01-25",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "A Life of Readiness",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "a life of readiness luke 12:35-59 luke"
+    },
+    {
+      "id": "26-01-18",
+      "title": "The Rich Fool and The Heart's Treasure",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 12:13-34",
+      "date": "2026-01-18",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "The Rich Fool and The Heart's Treasure",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "the rich fool and the heart's treasure luke 12:13-34 luke"
+    },
+    {
+      "id": "26-01-11",
+      "title": "What Do You Fear? Who Do You Love?",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 11:37-12:12",
+      "date": "2026-01-11",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "What Do You Fear? Who Do You Love?",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "what do you fear? who do you love? luke 11:37-12:12 luke"
+    },
+    {
+      "id": "26-01-04",
+      "title": "But Something Greater Is Here",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 11:14-36",
+      "date": "2026-01-04",
+      "apple_podcasts_url": "",
+      "spotify_url": "",
+      "youtube_url": "",
+      "link": "",
+      "podcast_thumbnail_url": "",
+      "source": "youtube",
+      "series": "Luke",
+      "episode_title": "But Something Greater Is Here",
+      "sermon_type": "sermon",
+      "tags": [
+        "Luke"
+      ],
+      "search_keywords": "but something greater is here luke 11:14-36 luke"
     }
   ]
 }

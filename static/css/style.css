@@ -84,6 +84,177 @@
     --font-primary: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
 }
 
+/* White Theme Variables */
+body.theme-white {
+    --cpc-blue: #0052a3;
+    --cpc-blue-dark: #003d7a;
+    --cpc-blue-light: #e8f2ff;
+    --cpc-blue-medium: #0066cc;
+
+    /* Glass Effects - White theme */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-bg-hover: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-white: rgba(255, 255, 255, 0.9);
+    --glass-white-strong: rgba(255, 255, 255, 0.95);
+
+    /* Surface Colors for Cards */
+    --surface-blue: rgba(0, 50, 120, 0.08);
+    --border-blue: rgba(0, 50, 120, 0.15);
+
+    /* Background - White theme */
+    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 50%, #dde2e8 100%);
+    --background-color: #ffffff;
+
+    /* Text Colors - White theme */
+    --text-primary: #1d1d1f;
+    --text-secondary: #6c757d;
+    --text-white: rgba(30, 30, 35, 0.95);
+    --heading-color: #2c3e50;
+
+    /* Shadows - White theme */
+    --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.12);
+    --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.15);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-white {
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+}
+
+/* White theme navigation adjustments */
+body.theme-white .top-nav {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.theme-white .top-nav a,
+body.theme-white .top-nav .text-white {
+    color: var(--text-primary) !important;
+}
+
+body.theme-white .top-nav a:hover {
+    color: var(--cpc-blue) !important;
+}
+
+body.theme-white .nav-logo img {
+    filter: brightness(0) !important;
+}
+
+body.theme-white .dropdown-menu {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.theme-white .dropdown-menu a {
+    color: var(--text-primary) !important;
+}
+
+body.theme-white .dropdown-menu a:hover {
+    background: rgba(0, 50, 120, 0.1) !important;
+    color: var(--cpc-blue) !important;
+}
+
+/* White theme dashboard adjustments */
+body.theme-white .dashboard-title {
+    color: var(--text-primary);
+    border-left: 2px solid rgba(0, 82, 163, 0.5);
+}
+
+body.theme-white .dashboard-note {
+    color: var(--text-primary);
+    opacity: 0.85;
+}
+
+body.theme-white .dashboard-link {
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.theme-white .dashboard-link:hover {
+    background: rgba(0, 50, 120, 0.1);
+    color: var(--cpc-blue);
+}
+
+body.theme-white .quick-links-grid a {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+}
+
+body.theme-white .quick-links-grid a:hover {
+    background: rgba(0, 50, 120, 0.1);
+    color: var(--cpc-blue);
+}
+
+body.theme-white .quick-links-grid a i,
+body.theme-white .quick-links-grid a span {
+    color: var(--text-primary);
+}
+
+body.theme-white .quick-links-grid a:hover i,
+body.theme-white .quick-links-grid a:hover span {
+    color: var(--cpc-blue);
+}
+
+body.theme-white .glass-button {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: var(--text-primary);
+}
+
+body.theme-white .glass-button:hover {
+    background: rgba(0, 50, 120, 0.1);
+    color: var(--cpc-blue);
+}
+
+body.theme-white .study-text,
+body.theme-white .study-reference,
+body.theme-white .study-title,
+body.theme-white .study-date {
+    color: var(--text-primary);
+}
+
+body.theme-white .study-link {
+    background: rgba(0, 82, 163, 0.15);
+    border: 1px solid rgba(0, 82, 163, 0.3);
+    color: var(--cpc-blue);
+}
+
+body.theme-white .study-link:hover {
+    background: rgba(0, 82, 163, 0.25);
+    border-color: rgba(0, 82, 163, 0.4);
+}
+
+/* White theme footer ticker */
+body.theme-white .footer-ticker {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.theme-white .ticker-item {
+    color: var(--text-primary) !important;
+}
+
+body.theme-white .footer-meta {
+    color: var(--text-primary) !important;
+}
+
+body.theme-white .ticker-item .badge {
+    background: rgba(0, 82, 163, 0.15) !important;
+    border: 1px solid rgba(0, 82, 163, 0.3) !important;
+    color: var(--cpc-blue) !important;
+}
+
+/* Scroll progress bar white theme */
+body.theme-white .scroll-progress-bar {
+    background: var(--cpc-blue) !important;
+}
+
 /* ========================================
    2. RESET & BASE STYLES
    ======================================== */
@@ -98,6 +269,11 @@
 html {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    /* Prevent iOS bounce effect for native app feel */
+    overscroll-behavior-y: contain;
+    /* Better text rendering on mobile */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 /* Hide scrollbar but allow scroll */
@@ -109,12 +285,37 @@ html {
     scrollbar-width: none; /* Firefox */
 }
 
+/* Native app-like page transitions */
+@media (max-width: 768px) {
+    * {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    
+    /* Smooth transitions for native feel */
+    a, button, .mobile-nav-item {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Prevent text selection during scroll (native app behavior) */
+    body {
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    
+    /* Allow text selection in content areas */
+    main, .dashboard-panel, p, h1, h2, h3, h4, h5, h6 {
+        -webkit-user-select: text;
+        user-select: text;
+    }
+}
+
 body {
     font-family: var(--font-primary);
     line-height: 1.5;
     color: var(--text-primary);
     background: var(--bg-gradient);
     min-height: 100vh;
+    min-height: -webkit-fill-available; /* iOS Safari fix */
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
@@ -122,6 +323,9 @@ body {
     -moz-osx-font-smoothing: grayscale;
     font-size: 15px;
     letter-spacing: -0.01em;
+    /* Native app feel */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 main {
@@ -155,6 +359,11 @@ main {
     transition: all 0.3s ease;
 }
 
+body.theme-white .dashboard-sidebar {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
 .dashboard-left {
     left: var(--dashboard-gutter);
 }
@@ -184,6 +393,10 @@ main {
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+body.theme-white .dashboard-section + .dashboard-section {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-title {
@@ -392,6 +605,14 @@ main {
     overflow: hidden;
     z-index: 998;
 }
+
+/* Adjust footer ticker position on mobile to be above bottom nav */
+@media (max-width: 767px) {
+    .footer-ticker {
+        bottom: 70px;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
 .footer-ticker-inner {
     position: relative;
     height: 100%;
@@ -565,6 +786,21 @@ a {
 
 a:hover {
     color: var(--cpc-blue-dark);
+}
+
+/* ========================================
+   SCROLL PROGRESS BAR
+   ======================================== */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: rgba(0, 82, 163, 0.9);
+    z-index: 9999;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 2px 4px rgba(0, 82, 163, 0.3);
 }
 
 /* ========================================
@@ -1001,6 +1237,29 @@ a:hover {
 .glass-button:hover {
     background: var(--glass-bg-hover);
     transform: translateY(-1px);
+}
+
+.glass-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--glass-white);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+    font-size: 1.25rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.glass-icon-button:hover {
+    background: var(--glass-bg-hover);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
 }
 
 .glass-link {
@@ -2588,6 +2847,140 @@ tr:hover {
     }
 }
 
+/* ========================================
+   MOBILE BOTTOM NAVIGATION BAR
+   ======================================== */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(0, 50, 120, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    animation: slideUpNav 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+}
+
+@keyframes slideUpNav {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    min-width: 60px;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-item i {
+    font-size: 1.5rem;
+    transition: transform 0.2s ease;
+}
+
+.mobile-nav-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.mobile-nav-item:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav-item.active {
+    color: rgba(255, 255, 255, 1);
+}
+
+.mobile-nav-item.active i {
+    transform: scale(1.1);
+    color: rgba(255, 255, 255, 1);
+}
+
+.mobile-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0 0 3px 3px;
+}
+
+/* White theme mobile bottom nav */
+body.theme-white .mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.theme-white .mobile-nav-item {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body.theme-white .mobile-nav-item.active {
+    color: var(--cpc-blue);
+}
+
+body.theme-white .mobile-nav-item.active i {
+    color: var(--cpc-blue);
+}
+
+body.theme-white .mobile-nav-item.active::before {
+    background: var(--cpc-blue);
+}
+
+body.theme-white .mobile-nav-item:active {
+    background: rgba(0, 50, 120, 0.1);
+}
+
+/* Adjust main content padding for mobile bottom nav */
+.mobile-main-content {
+    padding-bottom: 90px !important;
+}
+
+@media (min-width: 768px) {
+    .mobile-main-content {
+        padding-bottom: 20px !important;
+    }
+}
+
+/* Safe area support for iOS */
+@supports (padding: max(0px)) {
+    .mobile-bottom-nav {
+        padding-bottom: max(env(safe-area-inset-bottom), 0px);
+    }
+}
+
 /* Touch optimizations */
 @media (max-width: 768px) {
 
@@ -2606,6 +2999,28 @@ tr:hover {
     select {
         font-size: 16px;
         /* Prevents zoom on iOS */
+    }
+    
+    /* Native app-like smooth scrolling */
+    html {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    
+    /* Prevent text selection on tap (native app feel) */
+    .mobile-nav-item,
+    .mobile-bottom-nav {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Better touch targets */
+    a, button {
+        min-height: 44px;
+        min-width: 44px;
     }
 
     /* About Page Mobile Styles */

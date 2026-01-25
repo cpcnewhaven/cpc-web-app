@@ -1,6 +1,94 @@
 {
   "announcements": [
     {
+      "id": "2026-001",
+      "title": "INCLEMENT WEATHER ANNOUNCEMENT",
+      "description": "In the event of the need to cancel or delay the worship service and/or Sunday School, the call will be made at least 2.5 hours in advance of the service. We will update the website, email the congregation, and update the voicemail message. If the in-person service is canceled, we will host an online prayer service at 10:30am, and will provide the link. There is also a chance of cancelling Sunday school and Lunch, but continuing with the worship service at 10:30am as usual. Please check your email or the website if you're in doubt. No communication means everything is on as planned.",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "announcement",
+      "category": "announcement",
+      "tag": "weather",
+      "superfeatured": false
+    },
+    {
+      "id": "2026-002",
+      "title": "Women's Fellowship and Service Event | Saturday, January 24 | 9am | Fellowship Hall",
+      "description": "Please join us for breakfast and a time to connect and re-connect as we love one another and love others through service. Breakfast will be served and then we'll be making a meal for about 40 folks. We'll also be putting together cookie packages for our covenant children who are away at school. Feel free to just show up and bring a friend, however if you'd like to bake cookies or help with the breakfast, you can use the sign up sheet in the foyer or contact Diane Miller (auntie.diane@comcast.net)",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "women",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-003",
+      "title": "Newcomer's Lunch | Sunday, February 1 | During Lunch",
+      "description": "For those who are new, or new-ish, join us for a \"Newcomer's Lunch\" today in the Lecture Room to learn more about CPC and to meet some of our leadership teams. Lunch will be provided in the Lecture Room for you, just head there! Also, fill out a Welcome Card from the pew and return it to the Welcome Bar in the foyer where you can pick up a gift just for you.",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "fellowship",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-004",
+      "title": "College Game Night | Sunday, 5-7pm in CPC Fellowship Hall",
+      "description": "If you're an undergraduate student and enjoy playing an assortment of games, come join us for a bit of fun and fellowship. Be sure to grab our new brochure in the foyer to see what college events are coming up!",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "college",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-005",
+      "title": "Christian Leadership Training is back Friday, January 30",
+      "description": "For all those interested in shaping the future culture of our church! We're holding monthly training sessions on key topics such as: Gospel-centered community, Small Group Leadership, Missional Living & Hospitality, and Lay Counseling. This class builds on the Total Christ vision from Sunday School. It is especially for small group leaders and anyone aspiring to grow in their faith and service to the church. All are welcome. Continues this Friday, Jan. 30, 6:30-8:30pm, meal provided. Will continue in 2026. See website for readings.",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "training",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-006",
+      "title": "Youth Winter Camp | February 28 | 10am-2pm",
+      "description": "Join students from across southern New England in a joint youth event with our Presbytery! We will be in Whitinsville Christian School in eastern Massachusetts for a half day of fun, fellowship, food and worship. Cost is $10 per student. Age range, 6th to 12th grade. Be on the lookout for registration. If you have any questions, contact Pastor Jerry.",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "youth",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-007",
+      "title": "New Pastor's Book Pick | Life Together, by Dietrich Bonhoeffer",
+      "description": "A modern classic, we're treading into deep waters with this one! Written by pastor-theologian and martyr, Life Together is Bonhoeffer's vision for the Christian life, both individually and communally. Though dense, this book is certainly worth our time and has the potential to spur on genuine gospel transformation. Copies in the foyer - suggested donation of $15.",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "announcement",
+      "category": "announcement",
+      "tag": "resources",
+      "superfeatured": false
+    },
+    {
+      "id": "2026-008",
+      "title": "Life Groups and Discipleship Groups",
+      "description": "Life Groups and Discipleship Groups are our way of doing \"church in the small\" where we meet throughout Greater New Haven to be engaged in prayer, teaching, fellowship and care. For information on which Life Group may be a good fit, check the cards in the foyer or contact Alexis, admin@cpcnewhaven.org.",
+      "dateEntered": "2026-01-23",
+      "active": "true",
+      "type": "ongoing",
+      "category": "ongoing",
+      "tag": "groups",
+      "superfeatured": false
+    },
+    {
       "id": "2025-043",
       "title": "Interested in Joining CPC?",
       "description": "We consider the church an essential element of the gospel, so joining CPC as a member is a way to truly join the body of Christ, in all its blessings and with all its flaws! Before joining, you'll meet one-on-one with a pastor and then discuss how you've come to know Christ with the Shepherd Leaders. Contact Alexis Vano (admin@cpcnewhaven.org) to begin the process.",
@@ -80,8 +168,8 @@
     {
       "id": "2025-042",
       "title": "Regular Sunday Schedule",
-      "description": "<strong>8:30am | Prayer in the Parlor</strong><br><br><strong>9:30am | Children's Sunday School</strong><br><br><strong>9:30am | Adult Sunday Studies</strong><br>\"Roots to the Reformed Tradition\" | Fellowship Hall<br><br><strong>10:30am | Worship Service</strong><br><br><strong>12:00pm | Fellowship Lunch</strong><br><br><em>Worship Service only on Nov. 30, Dec. 21, 28, Jan. 4</em>",
-      "dateEntered": "2025-09-19",
+      "description": "<strong>8:30am | Prayer in the Parlor</strong><br><br><strong>9:30am | Children's Sunday School</strong><br><br><strong>9:30am | Adult Sunday Studies</strong><br>\"Biblical Overview of Redemptive-History\" | Fellowship Hall<br><br><strong>10:30am | Worship Service</strong><br><br><strong>12:00pm | Fellowship Lunch</strong>",
+      "dateEntered": "2026-01-23",
       "active": "true",
       "type": "ongoing",
       "category": "ongoing",

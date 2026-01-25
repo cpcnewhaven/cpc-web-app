@@ -1,38 +1,61 @@
 [
   {
     "id": "event_001",
+    "title": "Women's Fellowship and Service Event",
+    "description": "Please join us for breakfast and a time to connect and re-connect as we love one another and love others through service. Breakfast will be served and then we'll be making a meal for about 40 folks. We'll also be putting together cookie packages for our covenant children who are away at school. Feel free to just show up and bring a friend, however if you'd like to bake cookies or help with the breakfast, you can use the sign up sheet in the foyer or contact Diane Miller (auntie.diane@comcast.net)",
+    "type": "event",
+    "category": "fellowship",
+    "active": true,
+    "date_entered": "2026-01-24T09:00:00Z",
+    "location": "Fellowship Hall"
+  },
+  {
+    "id": "event_002",
+    "title": "Newcomer's Lunch",
+    "description": "For those who are new, or new-ish, join us for a \"Newcomer's Lunch\" in the Lecture Room to learn more about CPC and to meet some of our leadership teams. Lunch will be provided in the Lecture Room for you, just head there! Also, fill out a Welcome Card from the pew and return it to the Welcome Bar in the foyer where you can pick up a gift just for you.",
+    "type": "event",
+    "category": "fellowship",
+    "active": true,
+    "date_entered": "2026-02-01T12:00:00Z",
+    "location": "Lecture Room"
+  },
+  {
+    "id": "event_003",
+    "title": "College Game Night",
+    "description": "If you're an undergraduate student and enjoy playing an assortment of games, come join us for a bit of fun and fellowship. Be sure to grab our new brochure in the foyer to see what college events are coming up!",
+    "type": "event",
+    "category": "college",
+    "active": true,
+    "date_entered": "2026-01-25T17:00:00Z",
+    "location": "CPC Fellowship Hall"
+  },
+  {
+    "id": "event_004",
+    "title": "Christian Leadership Training",
+    "description": "For all those interested in shaping the future culture of our church! We're holding monthly training sessions on key topics such as: Gospel-centered community, Small Group Leadership, Missional Living & Hospitality, and Lay Counseling. This class builds on the Total Christ vision from Sunday School. It is especially for small group leaders and anyone aspiring to grow in their faith and service to the church. All are welcome. Continues Friday, Jan. 30, 6:30-8:30pm, meal provided. Will continue in 2026. See website for readings.",
+    "type": "event",
+    "category": "education",
+    "active": true,
+    "date_entered": "2026-01-30T18:30:00Z",
+    "location": "CPC"
+  },
+  {
+    "id": "event_005",
+    "title": "Youth Winter Camp",
+    "description": "Join students from across southern New England in a joint youth event with our Presbytery! We will be in Whitinsville Christian School in eastern Massachusetts for a half day of fun, fellowship, food and worship. Cost is $10 per student. Age range, 6th to 12th grade. Be on the lookout for registration. If you have any questions, contact Pastor Jerry.",
+    "type": "event",
+    "category": "youth",
+    "active": true,
+    "date_entered": "2026-02-28T10:00:00Z",
+    "location": "Whitinsville Christian School, MA"
+  },
+  {
+    "id": "event_006",
     "title": "Prayer in the Parlor",
     "description": "Join us for prayer every Sunday at 8:30am in the parlor.",
     "type": "ongoing",
     "category": "prayer",
     "active": true,
     "date_entered": "2024-01-01T08:30:00Z"
-  },
-  {
-    "id": "event_002",
-    "title": "Bible Study",
-    "description": "Weekly Bible study on Wednesdays at 7:00pm.",
-    "type": "ongoing",
-    "category": "education",
-    "active": true,
-    "date_entered": "2024-01-01T19:00:00Z"
-  },
-  {
-    "id": "event_003",
-    "title": "Men's Fellowship",
-    "description": "Men's fellowship group meets every Saturday at 8:00am.",
-    "type": "ongoing",
-    "category": "fellowship",
-    "active": true,
-    "date_entered": "2024-01-01T08:00:00Z"
-  },
-  {
-    "id": "event_004",
-    "title": "Youth Group Meeting",
-    "description": "High school and middle school students meet every Friday at 7:00pm for fellowship and study.",
-    "type": "ongoing",
-    "category": "youth",
-    "active": true,
-    "date_entered": "2024-01-01T19:00:00Z"
   }
 ]

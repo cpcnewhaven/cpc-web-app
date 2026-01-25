@@ -2,7 +2,10 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="theme-color" content="#0052a3">
         <title>{% block title %}CPC New Haven{% endblock %}</title>
 
         <!-- Tailwind CSS -->
@@ -22,7 +25,10 @@
 
         {% block head %}{% endblock %}
     </head>
-    <body>
+    <body class="theme-blue">
+        <!-- Scroll Progress Bar -->
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+
         <!-- Warning Banner -->
         <div id="warningBanner" class="warning-banner"
             style="display: none;"></div>
@@ -202,17 +208,16 @@
                     <a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
                 </div>
             </div>
-        </aside>
-
-        <!-- Fixed Right Dashboard (Desktop) -->
-        <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''">
-            <div class="dashboard-section" id="luke-chapter-section">
-                <div class="dashboard-title flex items-center justify-between">
-                    <span>Current Teaching Series</span>
-                    <a href="{{ url_for('teaching_series') }}" class="text-sm text-blue-200 hover:text-blue-100 underline">View All</a>
-                </div>
-                <div class="dashboard-note" id="luke-chapter-content">
-                    <div class="study-text">Loading...</div>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Theme</div>
+                <div class="flex items-center justify-between gap-2" x-data>
+                    <span class="text-white/90 text-xs" x-text="$store.dash.theme === 'white' ? 'White' : 'Blue'"></span>
+                    <button 
+                        class="glass-button px-2 py-1 text-xs flex items-center gap-1.5"
+                        @click="$store.dash.theme = $store.dash.theme === 'blue' ? 'white' : 'blue'; $store.dash.save(); $store.dash.applyTheme()"
+                        :title="$store.dash.theme === 'blue' ? 'Switch to White Theme' : 'Switch to Blue Theme'">
+                        <i class="fa-solid text-xs" :class="$store.dash.theme === 'blue' ? 'fa-sun' : 'fa-moon'"></i>
+                    </button>
                 </div>
             </div>
             <div class="dashboard-section">
@@ -235,6 +240,18 @@
                     <div class="mt-2" x-show="$store.dash.showAdminCTA">
                         <a href="/admin" class="glass-button w-full block text-center text-sm py-2">Admin Login</a>
                     </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Fixed Right Dashboard (Desktop) -->
+        <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''">
+            <div class="dashboard-section" id="luke-chapter-section">
+                <div class="dashboard-title" style="border-left: none;">Current Teaching Series</div>
+                <div class="dashboard-note" id="luke-chapter-content">
+                    <div class="study-reference">Luke 12:35-59</div>
+                    <div class="study-title">A Life of Readiness</div>
+                    <div class="study-date">Rev. Jerry Ornelas • 1.25.26</div>
                 </div>
             </div>
             <div class="dashboard-section">
@@ -274,11 +291,35 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="pt-8 md:pt-24 pb-20 dashboard-main">
+        <main class="pt-8 md:pt-24 pb-20 md:pb-20 mobile-main-content dashboard-main">
             <div class="dashboard-panel">
                 {% block content %}{% endblock %}
             </div>
         </main>
+
+        <!-- Mobile Bottom Navigation Bar -->
+        <nav class="mobile-bottom-nav md:hidden">
+            <a href="{{ url_for('index') }}" class="mobile-nav-item" data-route="index">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="{{ url_for('live') }}" class="mobile-nav-item" data-route="live">
+                <i class="fa-solid fa-video"></i>
+                <span>Live</span>
+            </a>
+            <a href="{{ url_for('sermons') }}" class="mobile-nav-item" data-route="sermons">
+                <i class="fa-solid fa-book-bible"></i>
+                <span>Sermons</span>
+            </a>
+            <a href="{{ url_for('events') }}" class="mobile-nav-item" data-route="events">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Events</span>
+            </a>
+            <a href="{{ url_for('search') }}" class="mobile-nav-item" data-route="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+            </a>
+        </nav>
 
         <!-- Footer Ticker (announcements/highlights) -->
         <div class="footer-ticker">
@@ -289,8 +330,8 @@
                     </div>
                 </div>
                 <div class="footer-meta">
-                    <span id="footerNext">Next: Sunday 10:30am</span>
-                    <span class="sep">•</span>
+                    <span id="footerNext" class="hidden md:inline">Next: Sunday 10:30am</span>
+                    <span class="sep hidden md:inline">•</span>
                     <span id="footerClock"></span>
                     <span class="sep">•</span>
                     <span id="footerDate"></span>
@@ -352,6 +393,19 @@
 
         <!-- Dashboard Settings Store -->
         <script>
+        // Apply theme immediately on page load (before Alpine initializes)
+        (function() {
+            const savedTheme = localStorage.getItem('dash_theme') || 'blue';
+            if (savedTheme === 'white') {
+                document.body.classList.add('theme-white');
+                document.body.classList.remove('theme-blue');
+            } else {
+                document.body.classList.add('theme-blue');
+                document.body.classList.remove('theme-white');
+            }
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+        
         document.addEventListener('alpine:init', () => {
             Alpine.store('dash', {
                 compact: JSON.parse(localStorage.getItem('dash_compact') || 'false'),
@@ -359,12 +413,24 @@
                 showService: JSON.parse(localStorage.getItem('dash_showService') || 'true'),
                 showAdminCTA: JSON.parse(localStorage.getItem('dash_showAdminCTA') || 'false'),
                 userName: localStorage.getItem('dash_userName') || '',
+                theme: localStorage.getItem('dash_theme') || 'blue',
                 save() {
                     localStorage.setItem('dash_compact', JSON.stringify(this.compact));
                     localStorage.setItem('dash_showQuickLinks', JSON.stringify(this.showQuickLinks));
                     localStorage.setItem('dash_showService', JSON.stringify(this.showService));
                     localStorage.setItem('dash_showAdminCTA', JSON.stringify(this.showAdminCTA));
                     localStorage.setItem('dash_userName', this.userName || '');
+                    localStorage.setItem('dash_theme', this.theme);
+                },
+                applyTheme() {
+                    document.documentElement.setAttribute('data-theme', this.theme);
+                    if (this.theme === 'white') {
+                        document.body.classList.add('theme-white');
+                        document.body.classList.remove('theme-blue');
+                    } else {
+                        document.body.classList.add('theme-blue');
+                        document.body.classList.remove('theme-white');
+                    }
                 }
             });
         });
@@ -437,56 +503,6 @@
         })();
         </script>
         <!-- Latest Luke Chapter -->
-        <script>
-        (function() {
-            const lukeSection = document.getElementById('luke-chapter-section');
-            const lukeContent = document.getElementById('luke-chapter-content');
-            if (!lukeSection || !lukeContent) return;
-            
-            async function loadLatestLukeChapter() {
-                try {
-                    const response = await fetch('/api/json/sermons', { cache: 'no-store' });
-                    if (!response.ok) throw new Error('Failed to fetch sermons');
-                    const data = await response.json();
-                    
-                    // Find latest sermon with Luke in scripture
-                    const lukeSermons = (data.episodes || []).filter(s => {
-                        const scripture = (s.scripture || '').toLowerCase();
-                        return scripture.includes('luke');
-                    });
-                    
-                    if (lukeSermons.length === 0) {
-                        lukeContent.innerHTML = '<div class="study-text">No Luke teaching found</div>';
-                        return;
-                    }
-                    
-                    // Get the most recent one
-                    const latest = lukeSermons[0];
-                    const scripture = latest.scripture || 'Luke';
-                    const title = latest.title || '';
-                    const date = latest.date ? new Date(latest.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-                    
-                    // Extract chapter number if possible
-                    const chapterMatch = scripture.match(/luke\s+(\d+)/i);
-                    const chapterNum = chapterMatch ? chapterMatch[1] : '';
-                    
-                    lukeContent.innerHTML = `
-                        <div class="study-reference">${scripture}</div>
-                        ${title ? `<div class="study-title">${title}</div>` : ''}
-                        ${date ? `<div class="study-date">${date}</div>` : ''}
-                        ${latest.link ? `<a href="${latest.link}" target="_blank" class="study-link">Listen</a>` : ''}
-                    `;
-                } catch (e) {
-                    console.error('Error loading Luke chapter:', e);
-                    lukeContent.innerHTML = '<div class="study-text">Unable to load</div>';
-                }
-            }
-            
-            loadLatestLukeChapter();
-            // Refresh every 5 minutes
-            setInterval(loadLatestLukeChapter, 1000 * 60 * 5);
-        })();
-        </script>
         <!-- Weather (New Haven) -->
         <script>
         (function() {
@@ -541,6 +557,73 @@
         </script>
 
         {% block scripts %}{% endblock %}
+
+        <!-- Scroll Progress Bar Script -->
+        <script>
+        (function() {
+            const scrollProgressBar = document.getElementById('scrollProgressBar');
+            if (!scrollProgressBar) return;
+            
+            function updateScrollProgress() {
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const scrollableHeight = documentHeight - windowHeight;
+                
+                if (scrollableHeight <= 0) {
+                    scrollProgressBar.style.width = '0%';
+                    return;
+                }
+                
+                const scrollProgress = (scrollTop / scrollableHeight) * 100;
+                scrollProgressBar.style.width = Math.min(100, Math.max(0, scrollProgress)) + '%';
+            }
+            
+            window.addEventListener('scroll', updateScrollProgress, { passive: true });
+            window.addEventListener('resize', updateScrollProgress);
+            updateScrollProgress(); // Initial call
+        })();
+        </script>
+
+        <!-- Mobile Bottom Nav Active State -->
+        <script>
+        (function() {
+            // Get current route from URL
+            const currentPath = window.location.pathname;
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            
+            // Map routes to data-route values
+            const routeMap = {
+                '/': 'index',
+                '/index': 'index',
+                '/live': 'live',
+                '/sermons': 'sermons',
+                '/events': 'events',
+                '/search': 'search'
+            };
+            
+            // Determine current route
+            let currentRoute = routeMap[currentPath] || '';
+            
+            // If no exact match, check if path starts with route
+            if (!currentRoute) {
+                for (const [path, route] of Object.entries(routeMap)) {
+                    if (currentPath.startsWith(path) && path !== '/') {
+                        currentRoute = route;
+                        break;
+                    }
+                }
+            }
+            
+            // Set active state
+            mobileNavItems.forEach(item => {
+                const itemRoute = item.getAttribute('data-route');
+                if (itemRoute === currentRoute) {
+                    item.classList.add('active');
+                }
+            });
+        })();
+        </script>
 
     </body>
 </html>

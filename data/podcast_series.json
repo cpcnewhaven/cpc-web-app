@@ -18,5 +18,35 @@
     "id": "series_004",
     "title": "Membership Seminar",
     "description": "Understanding church membership and the Christian life through our comprehensive membership course."
+  },
+  {
+    "id": "series_005",
+    "title": "The Gospel according to Luke",
+    "description": "A verse-by-verse study through the Gospel of Luke, exploring the life, ministry, and teachings of Jesus Christ."
+  },
+  {
+    "id": "series_006",
+    "title": "Smokin' Theologians",
+    "description": "Engaging discussions with theologians and scholars on important theological topics and biblical interpretation."
+  },
+  {
+    "id": "series_007",
+    "title": "What We Believe: Knowing and Loving Our Doctrines",
+    "description": "An exploration of core Christian doctrines, helping believers understand and embrace what we believe and why."
+  },
+  {
+    "id": "series_008",
+    "title": "The Book of Exodus",
+    "description": "A study through the Book of Exodus, examining God's deliverance of His people and the establishment of the covenant."
+  },
+  {
+    "id": "series_009",
+    "title": "Why Do We Worship?",
+    "description": "Exploring the purpose, meaning, and practice of worship in the Christian life and church community."
+  },
+  {
+    "id": "series_010",
+    "title": "The Narrow Road to New Life",
+    "description": "A series on the Christian journey, following Christ on the narrow path that leads to new life in Him."
   }
 ]

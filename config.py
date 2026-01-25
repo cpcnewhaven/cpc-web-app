@@ -25,7 +25,7 @@ CACHE_DEFAULT_TIMEOUT = 900  # 15 minutes
 # Using public feeds for testing - replace with your actual feeds later
 NEWSLETTER_FEED_URL = "https://feeds.feedburner.com/desiringgod"  # Public feed for testing
 EVENTS_ICS_URL = "https://calendar.google.com/calendar/ical/baf2h147ghi7nu8ifijjrt994k%40group.calendar.google.com/public/basic.ics"  # Your CPC calendar
-YOUTUBE_CHANNEL_ID = "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # Desiring God YouTube for testing
+YOUTUBE_CHANNEL_ID = "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # TODO: Replace with actual CPC New Haven channel ID (handle: @CPCNewHaven)
 BIBLE_API_KEY = "not_needed"  # Uses free public API
 
 # === Events (Google Calendar ICS) ===
