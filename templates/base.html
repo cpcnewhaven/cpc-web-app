@@ -43,8 +43,6 @@
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Home</a></li>
                 <li><a href="{{ url_for('about') }}"
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">About</a></li>
-                <li><a href="{{ url_for('about') }}"
-                        class="text-white hover:text-blue-200 font-semibold px-3 py-2 rounded text-sm">Plan a Visit</a></li>
                 <li class="relative nav-dropdown">
                     <a href="#"
                         class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">Community
@@ -209,7 +207,10 @@
         <!-- Fixed Right Dashboard (Desktop) -->
         <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''">
             <div class="dashboard-section" id="luke-chapter-section">
-                <div class="dashboard-title">Current Teaching Series</div>
+                <div class="dashboard-title flex items-center justify-between">
+                    <span>Current Teaching Series</span>
+                    <a href="{{ url_for('teaching_series') }}" class="text-sm text-blue-200 hover:text-blue-100 underline">View All</a>
+                </div>
                 <div class="dashboard-note" id="luke-chapter-content">
                     <div class="study-text">Loading...</div>
                 </div>
@@ -421,10 +422,13 @@
                         { type: 'Featured', title: 'Community Dinner · Wednesday 6pm' }
                     ];
                 }
+                // Add snow announcement at the beginning
+                items.unshift({ type: 'Alert', title: 'No Sunday School or Fellowship Lunch due to snow • Regular 10:30a service is on' });
                 const parts = items.slice(0, 12).map(it => {
                     const type = sanitize(it.type || 'Update');
                     const title = sanitize(truncate(it.title || it.description || '', 120));
-                    return `<span class="ticker-item"><span class="badge">${type}</span><span>${title}</span></span>`;
+                    const alertClass = (it.type === 'Alert') ? ' alert-item' : '';
+                    return `<span class="ticker-item${alertClass}"><span class="badge">${type}</span><span>${title}</span></span>`;
                 });
                 // Duplicate content to enable seamless marquee
                 track.innerHTML = parts.concat(parts).join('<span class="ticker-item">•</span>');

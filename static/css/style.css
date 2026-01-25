@@ -434,6 +434,14 @@ main {
     border: 1px solid rgba(0,122,255,0.35);
     color: #dbeafe;
 }
+.ticker-item.alert-item {
+    color: #ff4444;
+}
+.ticker-item.alert-item .badge {
+    background: rgba(255,68,68,0.2);
+    border: 1px solid rgba(255,68,68,0.5);
+    color: #ff8888;
+}
 @keyframes tickerScroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
