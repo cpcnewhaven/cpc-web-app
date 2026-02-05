@@ -1480,9 +1480,19 @@ class AnnouncementView(AuthenticatedModelView):
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered')
     column_default_sort = ('date_entered', True)
     
-    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'show_in_banner', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
-        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
+        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
+        'banner_type': SelectField(
+            'Top bar banner',
+            choices=[
+                ('', 'No banner'),
+                ('weather', 'Weather'),
+                ('parking', 'Parking'),
+                ('alert', 'Alert'),
+                ('info', 'Info')
+            ]
+        )
     }
     
     form_widget_args = {
@@ -1507,7 +1517,8 @@ class AnnouncementView(AuthenticatedModelView):
             ('highlight', 'Highlight'),
             ('weather', 'Weather Alert'),
             ('parking', 'Parking Update'),
-            ('alert', 'General Alert')
+            ('alert', 'General Alert'),
+            ('info', 'Info')
         ],
         'category': [
             ('general', 'General'),
@@ -1519,6 +1530,27 @@ class AnnouncementView(AuthenticatedModelView):
             ('children', 'Children')
         ]
     }
+
+    def on_form_prefill(self, form, id):
+        announcement = self.get_one(id)
+        if not announcement or not hasattr(form, 'banner_type'):
+            return
+        if getattr(announcement, 'show_in_banner', False):
+            current_type = (announcement.type or '').strip().lower()
+            if current_type not in {'weather', 'parking', 'alert', 'info'}:
+                current_type = 'alert'
+            form.banner_type.data = current_type
+        else:
+            form.banner_type.data = ''
+
+    def on_model_change(self, form, model, is_created):
+        banner_field = getattr(form, 'banner_type', None)
+        banner_choice = banner_field.data.strip().lower() if banner_field and banner_field.data else ''
+        if banner_choice:
+            model.show_in_banner = True
+            model.type = banner_choice
+        else:
+            model.show_in_banner = False
     
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):

@@ -461,17 +461,36 @@
     }
     .id-builder-panel .btn-apply-id:hover { background: var(--cpc-blue-dark); }
     .id-builder-panel .id-preview { font-size: 0.85rem; color: rgba(255,255,255,0.75); margin-left: 0.5rem; }
+
+    /* Banner quick add (twitter-like) */
+    .banner-quick-note {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 0.25rem;
+    }
+    .banner-char-count {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin-top: 0.5rem;
+        text-align: right;
+    }
 </style>
 <script>
 (function() {
     function slugify(s) {
         return (s || '').toString().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'item';
     }
+    function trimWords(text, maxWords) {
+        var words = (text || '').trim().split(/\s+/).filter(Boolean);
+        return words.slice(0, maxWords).join(' ');
+    }
     document.addEventListener('DOMContentLoaded', function() {
         var idInput = document.querySelector('input[name="id"]');
         if (!idInput || idInput.disabled || idInput.readOnly) return;
         var form = idInput.closest('form');
         if (!form) return;
+        var params = new URLSearchParams(window.location.search);
+        var isBanner = params.get('banner') === '1';
         var now = new Date();
         var years = [];
         for (var y = now.getFullYear() - 2; y <= now.getFullYear() + 1; y++) years.push(y);
@@ -501,7 +520,9 @@
             '<label>Slug</label><select id="idb-slug">' + slugs.map(function(s){ return '<option value="'+s[0]+'">'+s[1]+'</option>'; }).join('') + '</select>' +
             '<button type="button" class="btn-apply-id" id="idb-apply">Apply as ID</button>' +
             '<span class="id-preview" id="idb-preview"></span></div>';
-        idInput.parentNode.insertBefore(panel, idInput);
+        if (!isBanner) {
+            idInput.parentNode.insertBefore(panel, idInput);
+        }
         function buildId() {
             var y = document.getElementById('idb-year').value;
             var m = document.getElementById('idb-month').value;
@@ -516,29 +537,86 @@
             var el = document.getElementById('idb-preview');
             if (el) el.textContent = '→ ' + buildId();
         }
-        document.getElementById('idb-apply').addEventListener('click', function() {
-            idInput.value = buildId();
-            idInput.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-        ['idb-year','idb-month','idb-type','idb-cat','idb-slug'].forEach(function(id) {
-            var el = document.getElementById(id);
-            if (el) el.addEventListener('change', updatePreview);
-        });
-        updatePreview();
-        var titleInput = form.querySelector('input[name="title"]');
-        if (titleInput) {
-            titleInput.addEventListener('blur', function() {
-                var slug = slugify(titleInput.value);
-                if (slug && slug !== 'item') {
-                    var sel = document.getElementById('idb-slug');
-                    for (var i = 0; i < sel.options.length; i++) {
-                        if (sel.options[i].value === slug) { sel.selectedIndex = i; updatePreview(); return; }
-                    }
-                    var opt = document.createElement('option'); opt.value = slug; opt.textContent = slug; sel.appendChild(opt);
-                    sel.selectedIndex = sel.options.length - 1;
-                    updatePreview();
-                }
+        if (!isBanner) {
+            document.getElementById('idb-apply').addEventListener('click', function() {
+                idInput.value = buildId();
+                idInput.dispatchEvent(new Event('change', { bubbles: true }));
             });
+            ['idb-year','idb-month','idb-type','idb-cat','idb-slug'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('change', updatePreview);
+            });
+            updatePreview();
+        }
+        var titleInput = form.querySelector('input[name="title"]');
+        var bannerTypeInput = form.querySelector('select[name="banner_type"]');
+        var descriptionInput = form.querySelector('textarea[name="description"]');
+        function setBannerIdFromTitle() {
+            if (!isBanner) return;
+            if (!idInput) return;
+            var titleSource = (titleInput && titleInput.value) ? titleInput.value : (descriptionInput ? descriptionInput.value : '');
+            var slug = slugify(titleSource);
+            if (!slug || slug === 'item') return;
+            var typeVal = bannerTypeInput ? bannerTypeInput.value : '';
+            var safeType = typeVal ? typeVal : 'alert';
+            var month = (now.getMonth() + 1);
+            var mm = month < 10 ? '0' + month : '' + month;
+            var id = now.getFullYear() + '-' + mm + '-banner-' + safeType + '-' + slug;
+            idInput.value = id;
+            idInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        if (isBanner) {
+            var fieldNamesToHide = [
+                'type',
+                'category',
+                'tag',
+                'title',
+                'id',
+                'active',
+                'show_in_banner',
+                'superfeatured',
+                'featured_image',
+                'image_display_type'
+            ];
+            fieldNamesToHide.forEach(function(name) {
+                var input = form.querySelector('[name="' + name + '"]');
+                if (!input) return;
+                var group = input.closest('.form-group');
+                if (group) group.style.display = 'none';
+            });
+            if (bannerTypeInput && !bannerTypeInput.value) {
+                bannerTypeInput.value = 'alert';
+            }
+            if (descriptionInput) {
+                descriptionInput.setAttribute('maxlength', '280');
+                descriptionInput.setAttribute('placeholder', 'Type the banner message (tweet length).');
+                descriptionInput.style.minHeight = '120px';
+                var note = document.createElement('div');
+                note.className = 'banner-quick-note';
+                note.textContent = 'Keep it short and scannable. Title and ID are auto-generated.';
+                descriptionInput.parentNode.appendChild(note);
+                var count = document.createElement('div');
+                count.className = 'banner-char-count';
+                descriptionInput.parentNode.appendChild(count);
+                var updateCount = function() {
+                    var len = descriptionInput.value.length;
+                    count.textContent = len + '/280';
+                    if (titleInput) {
+                        var autoTitle = trimWords(descriptionInput.value, 6);
+                        if (autoTitle) {
+                            titleInput.value = autoTitle;
+                            titleInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }
+                    setBannerIdFromTitle();
+                };
+                descriptionInput.addEventListener('input', updateCount);
+                updateCount();
+            }
+            if (bannerTypeInput) {
+                bannerTypeInput.addEventListener('change', setBannerIdFromTitle);
+            }
+            setBannerIdFromTitle();
         }
     });
 })();

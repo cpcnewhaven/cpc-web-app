@@ -88,6 +88,43 @@
     color: rgba(255, 255, 255, 0.9);
 }
 
+.announcement-badge.clickable-badge {
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.announcement-badge.clickable-badge:hover {
+    background: rgba(245, 158, 11, 0.35);
+    transform: translateY(-1px);
+}
+
+.announcement-badge.clickable-badge.active {
+    background: rgba(245, 158, 11, 0.6);
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.announcement-filter-bar {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 0.75rem 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.announcement-filter-bar button {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.announcement-filter-bar button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 .announcement-description {
     font-size: 0.85rem;
     line-height: 1.6;
@@ -121,6 +158,11 @@
             <p>Latest news and announcements from CPC New Haven</p>
         </div>
 
+        <div id="announcement-filter-bar" class="announcement-filter-bar">
+            <span id="announcement-filter-label"></span>
+            <button id="announcement-filter-clear" type="button">Clear filter</button>
+        </div>
+
         <div id="announcements-container" class="announcements-grid">
             <div class="empty-state">Loading announcements...</div>
         </div>
@@ -129,27 +171,88 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('announcements-container');
+    const filterBar = document.getElementById('announcement-filter-bar');
+    const filterLabel = document.getElementById('announcement-filter-label');
+    const filterClear = document.getElementById('announcement-filter-clear');
+    let allAnnouncements = [];
+    let activeFilter = null;
+
+    function normalize(value) {
+        return (value || '').toString().trim().toLowerCase();
+    }
+
+    function renderAnnouncements(announcements) {
+        if (announcements && announcements.length > 0) {
+            const badge = (kind, value) => {
+                const isActive = activeFilter &&
+                    activeFilter.type === kind &&
+                    normalize(activeFilter.value) === normalize(value);
+                return `<span class="announcement-badge clickable-badge${isActive ? ' active' : ''}" data-filter-type="${kind}" data-filter-value="${value}">${value}</span>`;
+            };
+            container.innerHTML = announcements.map(announcement => `
+                <div class="announcement-card">
+                    ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image">` : ''}
+                    <h3>${announcement.title}</h3>
+                    <div class="announcement-badges">
+                        ${announcement.type ? badge('type', announcement.type) : ''}
+                        ${announcement.category ? badge('category', announcement.category) : ''}
+                        ${announcement.tag ? badge('tag', announcement.tag) : ''}
+                    </div>
+                    <p class="announcement-description">${announcement.description}</p>
+                    ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="empty-state">No announcements at this time.</div>';
+        }
+    }
+
+    function applyFilter() {
+        let filtered = allAnnouncements;
+        if (activeFilter) {
+            filtered = allAnnouncements.filter(item => {
+                return normalize(item[activeFilter.type]) === normalize(activeFilter.value);
+            });
+        }
+        renderAnnouncements(filtered);
+        updateFilterBar();
+    }
+
+    function updateFilterBar() {
+        if (activeFilter) {
+            const label = `${activeFilter.type}: ${activeFilter.value}`;
+            filterLabel.textContent = `Filter — ${label}`;
+            filterBar.style.display = 'flex';
+        } else {
+            filterBar.style.display = 'none';
+        }
+    }
+
+    container.addEventListener('click', function(event) {
+        const badge = event.target.closest('.announcement-badge.clickable-badge');
+        if (!badge) return;
+        const type = badge.dataset.filterType;
+        const value = badge.dataset.filterValue;
+        if (!type || !value) return;
+        if (activeFilter && activeFilter.type === type && activeFilter.value === value) {
+            activeFilter = null;
+        } else {
+            activeFilter = { type, value };
+        }
+        applyFilter();
+    });
+
+    filterClear.addEventListener('click', function() {
+        activeFilter = null;
+        applyFilter();
+    });
+
     fetch('/api/announcements')
         .then(response => response.json())
         .then(data => {
-            const container = document.getElementById('announcements-container');
-            
-            if (data.announcements && data.announcements.length > 0) {
-                container.innerHTML = data.announcements.map(announcement => `
-                    <div class="announcement-card">
-                        ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image">` : ''}
-                        <h3>${announcement.title}</h3>
-                        <div class="announcement-badges">
-                            ${announcement.type ? `<span class="announcement-badge">${announcement.type}</span>` : ''}
-                            ${announcement.category ? `<span class="announcement-badge">${announcement.category}</span>` : ''}
-                        </div>
-                        <p class="announcement-description">${announcement.description}</p>
-                        ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
-                    </div>
-                `).join('');
-            } else {
-                container.innerHTML = '<div class="empty-state">No announcements at this time.</div>';
-            }
+            allAnnouncements = (data.announcements || []);
+            applyFilter();
         })
         .catch(error => {
             console.error('Error loading announcements:', error);
