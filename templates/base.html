@@ -121,6 +121,44 @@
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Admin</a></li>
                     </ul>
                 </li>
+                <!-- Settings Gear -->
+                <li class="relative nav-dropdown" x-data>
+                    <a href="#"
+                        class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">
+                        <i class="fas fa-cog"></i></a>
+                    <ul
+                        class="dropdown-menu absolute top-full right-0 mt-2 rounded-lg shadow-lg py-3 px-3 min-w-[220px] hidden backdrop-blur-lg"
+                        style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
+                        <li class="px-1 pb-2 mb-2 border-b border-white/20">
+                            <span class="text-white/70 text-xs uppercase tracking-wider font-semibold">Layout</span>
+                        </li>
+                        <li class="flex items-center justify-between py-1.5 px-1">
+                            <span class="text-white text-sm">Left Panel</span>
+                            <button class="px-3 py-1 rounded text-xs font-medium transition-all"
+                                :class="$store.dash.showLeftSidebar ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                                @click="$store.dash.showLeftSidebar = !$store.dash.showLeftSidebar; $store.dash.save()"
+                                x-text="$store.dash.showLeftSidebar ? 'On' : 'Off'"></button>
+                        </li>
+                        <li class="flex items-center justify-between py-1.5 px-1">
+                            <span class="text-white text-sm">Right Panel</span>
+                            <button class="px-3 py-1 rounded text-xs font-medium transition-all"
+                                :class="$store.dash.showRightSidebar ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                                @click="$store.dash.showRightSidebar = !$store.dash.showRightSidebar; $store.dash.save()"
+                                x-text="$store.dash.showRightSidebar ? 'On' : 'Off'"></button>
+                        </li>
+                        <li class="px-1 pt-2 mt-2 border-t border-white/20 pb-2 mb-2 border-b border-white/20">
+                            <span class="text-white/70 text-xs uppercase tracking-wider font-semibold">Theme</span>
+                        </li>
+                        <li class="flex items-center justify-between py-1.5 px-1">
+                            <span class="text-white text-sm">Color</span>
+                            <button class="px-3 py-1 rounded text-xs font-medium transition-all bg-white/20 text-white flex items-center gap-1.5"
+                                @click="$store.dash.theme = $store.dash.theme === 'blue' ? 'white' : 'blue'; $store.dash.save(); $store.dash.applyTheme()">
+                                <i class="fa-solid text-xs" :class="$store.dash.theme === 'blue' ? 'fa-sun' : 'fa-moon'"></i>
+                                <span x-text="$store.dash.theme === 'blue' ? 'Light' : 'Dark'"></span>
+                            </button>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </nav>
 
@@ -189,11 +227,36 @@
                     <a href="/admin/dashboard/"
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Admin</a>
                 </div>
+                <div class="border-t border-white border-opacity-20 pt-2 mt-2" x-data>
+                    <p class="text-sm font-semibold text-white text-opacity-70 mb-2"><i class="fas fa-cog mr-1"></i> Settings</p>
+                    <div class="flex items-center justify-between py-1 pl-4 pr-2">
+                        <span class="text-white text-sm">Left Panel</span>
+                        <button class="px-3 py-1 rounded text-xs font-medium"
+                            :class="$store.dash.showLeftSidebar ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                            @click="$store.dash.showLeftSidebar = !$store.dash.showLeftSidebar; $store.dash.save()"
+                            x-text="$store.dash.showLeftSidebar ? 'On' : 'Off'"></button>
+                    </div>
+                    <div class="flex items-center justify-between py-1 pl-4 pr-2">
+                        <span class="text-white text-sm">Right Panel</span>
+                        <button class="px-3 py-1 rounded text-xs font-medium"
+                            :class="$store.dash.showRightSidebar ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                            @click="$store.dash.showRightSidebar = !$store.dash.showRightSidebar; $store.dash.save()"
+                            x-text="$store.dash.showRightSidebar ? 'On' : 'Off'"></button>
+                    </div>
+                    <div class="flex items-center justify-between py-1 pl-4 pr-2">
+                        <span class="text-white text-sm">Theme</span>
+                        <button class="px-3 py-1 rounded text-xs font-medium bg-white/20 text-white flex items-center gap-1"
+                            @click="$store.dash.theme = $store.dash.theme === 'blue' ? 'white' : 'blue'; $store.dash.save(); $store.dash.applyTheme()">
+                            <i class="fa-solid text-xs" :class="$store.dash.theme === 'blue' ? 'fa-sun' : 'fa-moon'"></i>
+                            <span x-text="$store.dash.theme === 'blue' ? 'Light' : 'Dark'"></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </nav>
 
         <!-- Fixed Left Dashboard (Desktop) -->
-        <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data>
+        <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data x-show="$store.dash.showLeftSidebar">
             <div class="dashboard-section">
                 <div class="dashboard-title">Quick Search</div>
                 <form @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
@@ -217,18 +280,6 @@
                     <a href="{{ url_for('archive') }}"><i class="fa-solid fa-box-archive"></i><span>Archive</span></a>
                     <a href="{{ url_for('give') }}"><i class="fa-solid fa-hand-holding-heart"></i><span>Give</span></a>
                     <a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
-                </div>
-            </div>
-            <div class="dashboard-section">
-                <div class="dashboard-title">Theme</div>
-                <div class="flex items-center justify-between gap-2" x-data>
-                    <span class="text-white/90 text-xs" x-text="$store.dash.theme === 'white' ? 'White' : 'Blue'"></span>
-                    <button 
-                        class="glass-button px-2 py-1 text-xs flex items-center gap-1.5"
-                        @click="$store.dash.theme = $store.dash.theme === 'blue' ? 'white' : 'blue'; $store.dash.save(); $store.dash.applyTheme()"
-                        :title="$store.dash.theme === 'blue' ? 'Switch to White Theme' : 'Switch to Blue Theme'">
-                        <i class="fa-solid text-xs" :class="$store.dash.theme === 'blue' ? 'fa-sun' : 'fa-moon'"></i>
-                    </button>
                 </div>
             </div>
             <div class="dashboard-section">
@@ -256,7 +307,7 @@
         </aside>
 
         <!-- Fixed Right Dashboard (Desktop) -->
-        <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''">
+        <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''" x-show="$store.dash.showRightSidebar">
             <div class="dashboard-section" id="luke-chapter-section">
                 <div class="dashboard-title" style="border-left: none;">Current Teaching Series</div>
                 <div class="dashboard-note" id="luke-chapter-content">
@@ -285,19 +336,6 @@
                 <div class="dashboard-note">
                     10:30am Worship • 135 Whitney Ave
                 </div>
-            </div>
-            <div class="dashboard-section">
-                <div class="dashboard-title">Stay Connected</div>
-                <ul class="dashboard-list flex flex-row gap-3 justify-center">
-                    <li><a href="https://www.instagram.com/cpcnewhaven" target="_blank" class="dashboard-link" title="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
-                    <li><a href="https://www.youtube.com/@cpcnewhaven" target="_blank" class="dashboard-link" title="YouTube"><i class="fa-brands fa-youtube"></i></a></li>
-                    <li><a href="{{ url_for('contact') }}" class="dashboard-link" title="Contact"><i class="fa-solid fa-envelope"></i></a></li>
-                </ul>
-            </div>
-            <div class="dashboard-section" x-show="$store.dash.showAdminCTA">
-                <div class="dashboard-title">Manage Content</div>
-                <div class="text-white/90 mb-2">Sign in to post highlights, edit events, and manage media.</div>
-                <a href="/admin/dashboard/" class="glass-button w-full block text-center">Admin</a>
             </div>
         </aside>
 
@@ -407,6 +445,13 @@
         // Apply theme immediately on page load (before Alpine initializes)
         (function() {
             const savedTheme = localStorage.getItem('dash_theme') || 'blue';
+            // Default: left sidebar ON, right sidebar OFF
+            const leftSidebarStored = localStorage.getItem('dash_showLeftSidebar');
+            const rightSidebarStored = localStorage.getItem('dash_showRightSidebar');
+            const showLeftSidebar = leftSidebarStored !== null ? JSON.parse(leftSidebarStored) : true;
+            const showRightSidebar = rightSidebarStored !== null ? JSON.parse(rightSidebarStored) : false;
+            const leftSidebarMax = JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false');
+            const rightSidebarMax = JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false');
             if (savedTheme === 'white') {
                 document.body.classList.add('theme-white');
                 document.body.classList.remove('theme-blue');
@@ -415,6 +460,10 @@
                 document.body.classList.remove('theme-white');
             }
             document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.classList.toggle('sidebar-left-hidden', !showLeftSidebar);
+            document.body.classList.toggle('sidebar-right-hidden', !showRightSidebar);
+            document.body.classList.toggle('sidebar-left-max', leftSidebarMax);
+            document.body.classList.toggle('sidebar-right-max', rightSidebarMax);
         })();
         
         document.addEventListener('alpine:init', () => {
@@ -423,6 +472,15 @@
                 showQuickLinks: JSON.parse(localStorage.getItem('dash_showQuickLinks') || 'true'),
                 showService: JSON.parse(localStorage.getItem('dash_showService') || 'true'),
                 showAdminCTA: JSON.parse(localStorage.getItem('dash_showAdminCTA') || 'false'),
+                // Default: left sidebar ON, right sidebar OFF
+                showLeftSidebar: localStorage.getItem('dash_showLeftSidebar') !== null
+                    ? JSON.parse(localStorage.getItem('dash_showLeftSidebar'))
+                    : true,
+                showRightSidebar: localStorage.getItem('dash_showRightSidebar') !== null
+                    ? JSON.parse(localStorage.getItem('dash_showRightSidebar'))
+                    : false,
+                leftSidebarMax: JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false'),
+                rightSidebarMax: JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false'),
                 userName: localStorage.getItem('dash_userName') || '',
                 theme: localStorage.getItem('dash_theme') || 'blue',
                 save() {
@@ -430,8 +488,19 @@
                     localStorage.setItem('dash_showQuickLinks', JSON.stringify(this.showQuickLinks));
                     localStorage.setItem('dash_showService', JSON.stringify(this.showService));
                     localStorage.setItem('dash_showAdminCTA', JSON.stringify(this.showAdminCTA));
+                    localStorage.setItem('dash_showLeftSidebar', JSON.stringify(this.showLeftSidebar));
+                    localStorage.setItem('dash_showRightSidebar', JSON.stringify(this.showRightSidebar));
+                    localStorage.setItem('dash_leftSidebarMax', JSON.stringify(this.leftSidebarMax));
+                    localStorage.setItem('dash_rightSidebarMax', JSON.stringify(this.rightSidebarMax));
                     localStorage.setItem('dash_userName', this.userName || '');
                     localStorage.setItem('dash_theme', this.theme);
+                    this.applyLayout();
+                },
+                applyLayout() {
+                    document.body.classList.toggle('sidebar-left-hidden', !this.showLeftSidebar);
+                    document.body.classList.toggle('sidebar-right-hidden', !this.showRightSidebar);
+                    document.body.classList.toggle('sidebar-left-max', this.leftSidebarMax);
+                    document.body.classList.toggle('sidebar-right-max', this.rightSidebarMax);
                 },
                 applyTheme() {
                     document.documentElement.setAttribute('data-theme', this.theme);
@@ -444,6 +513,7 @@
                     }
                 }
             });
+            Alpine.store('dash').applyLayout();
         });
         </script>
 

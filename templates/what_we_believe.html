@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}What We Believe — CPC New Haven{% endblock %}
+
+{% block head %}
+<style>
+.about-page { min-height: calc(100vh - 200px); padding: 0; margin: 0; }
+.about-main-container { max-width: 100%; margin: 0; padding: 0; }
+.about-hero {
+    grid-column: 1 / -1;
+    padding: 0.5rem 0;
+    text-align: center;
+    background: transparent;
+    margin: 0 0 0.75rem 0;
+}
+.about-hero h1 { font-size: 1.75rem; color: rgba(255, 255, 255, 0.95); margin: 0 0 0.25rem 0; font-weight: 600; }
+.about-hero p { color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin: 0; line-height: 1.5; }
+.about-hero .hero-cta {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+.about-hero .hero-cta:hover { background: rgba(255, 255, 255, 0.15); color: white; }
+
+.page-submenu {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+.submenu-section { margin-bottom: 0.75rem; }
+.submenu-section:last-child { margin-bottom: 0; }
+.submenu-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.submenu-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.submenu-list li { margin: 0; }
+.submenu-list a {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.submenu-list a:hover,
+.submenu-list a.active { background: rgba(255, 255, 255, 0.15); color: rgba(255, 255, 255, 0.95); border-color: rgba(255, 255, 255, 0.2); }
+
+.about-content-area { display: flex; flex-direction: column; gap: 0.75rem; max-width: 100%; }
+.about-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 1rem;
+    scroll-margin-top: 1rem;
+}
+.section-header { margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.section-title { font-size: 1.25rem; color: rgba(255, 255, 255, 0.95); margin: 0 0 0.25rem 0; font-weight: 600; }
+.section-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); margin: 0; }
+.section-content { color: rgba(255, 255, 255, 0.85); line-height: 1.6; font-size: 0.9rem; }
+.highlight-word { font-weight: 700; color: rgba(255, 255, 255, 1); background: rgba(0, 82, 163, 0.3); padding: 0.1rem 0.4rem; border-radius: 4px; }
+
+.class-schedule { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 0.5rem; }
+.class-schedule strong { color: rgba(255, 255, 255, 0.95); }
+.class-note { font-size: 0.85rem; color: rgba(255, 255, 255, 0.65); margin-bottom: 1rem; font-style: italic; }
+.lesson-list { list-style: none; padding: 0; margin: 0.75rem 0 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.4rem; }
+.lesson-list li { padding: 0.35rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.9rem; color: rgba(255, 255, 255, 0.88); }
+.lesson-list li:last-child { border-bottom: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-page compact-page">
+    <div class="about-main-container compact-content">
+        <div class="about-hero">
+            <h1>What We Believe</h1>
+            <p>Christ Presbyterian Church holds to the historic Christian faith as summarized in the Scriptures and expressed in the Reformed confessions.</p>
+            <a href="{{ url_for('about') }}" class="hero-cta">About CPC</a>
+        </div>
+
+        <nav class="page-submenu">
+            <div class="submenu-section">
+                <div class="submenu-title">About</div>
+                <ul class="submenu-list">
+                    <li><a href="{{ url_for('about') }}" class="submenu-link">About CPC</a></li>
+                    <li><a href="{{ url_for('what_we_believe') }}" class="submenu-link active">What We Believe</a></li>
+                </ul>
+            </div>
+            <div class="submenu-section">
+                <div class="submenu-title">On this page</div>
+                <ul class="submenu-list">
+                    <li><a href="#beliefs" class="submenu-link">Our Beliefs</a></li>
+                    <li><a href="#class" class="submenu-link">What We Believe Class</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="about-content-area" id="beliefs">
+            <section id="scripture" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Scripture</h2>
+                    <p class="section-subtitle">Our final authority</p>
+                </div>
+                <div class="section-content">
+                    <p>We believe the <span class="highlight-word">Bible</span> is the inspired, inerrant, and sufficient Word of God. It is our supreme authority in all matters of faith and life.</p>
+                </div>
+            </section>
+
+            <section id="god" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">God</h2>
+                    <p class="section-subtitle">One God in three persons</p>
+                </div>
+                <div class="section-content">
+                    <p>We believe in one God, eternally existing in three persons—<span class="highlight-word">Father</span>, <span class="highlight-word">Son</span>, and <span class="highlight-word">Holy Spirit</span>—equal in power and glory, and worthy of the same worship and obedience.</p>
+                </div>
+            </section>
+
+            <section id="christ" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Christ</h2>
+                    <p class="section-subtitle">Lord and Savior</p>
+                </div>
+                <div class="section-content">
+                    <p>We believe Jesus Christ is the eternal Son of God, who became man, lived a sinless life, died for our sins, rose from the dead, and will return in glory. Salvation is found in <span class="highlight-word">him alone</span>.</p>
+                </div>
+            </section>
+
+            <section id="church" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">The Church</h2>
+                    <p class="section-subtitle">God’s people in the world</p>
+                </div>
+                <div class="section-content">
+                    <p>We believe the church is the body of Christ, called to worship, grow in grace, and make disciples. Christ Presbyterian Church is a congregation of the <span class="highlight-word">Presbyterian Church in America (PCA)</span>, committed to the Westminster Standards.</p>
+                </div>
+            </section>
+
+            <section id="confession" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Confessional Standards</h2>
+                    <p class="section-subtitle">What we teach and confess</p>
+                </div>
+                <div class="section-content">
+                    <p>Our pastors and elders subscribe to the <span class="highlight-word">Westminster Confession of Faith</span> and the <span class="highlight-word">Larger and Shorter Catechisms</span> as faithful summaries of biblical doctrine. We welcome anyone seeking to know more—visit, ask questions, and explore with us.</p>
+                    <p style="margin-top: 0.75rem;"><a href="{{ url_for('resources') }}" class="hero-cta">Resources</a></p>
+                </div>
+            </section>
+
+            <section id="class" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">What We Believe: Knowing and Loving Our Doctrines</h2>
+                    <p class="section-subtitle">School of Discipleship class</p>
+                </div>
+                <div class="section-content">
+                    <p class="class-schedule"><strong>Sundays 9/17/23 – 5/19/24</strong> at 9:30am in the Fellowship Hall.</p>
+                    <p class="class-note">No class: Thanksgiving weekend 11/26/23, winter recess 12/17/23 – 12/31/23, or Easter Sunday 3/31/24.</p>
+                    <p>We’re called to not just know about God, but to know God personally. This class walks through the historic Christian beliefs we hold to at CPC—grappling with why they’re important, where they come from, and how we can grow in our love for the Lord and His Word. Much more than just a lecture, we discuss real-life implications of how our theology can inform our spiritual, emotional, and relational health, to the glory of God and the building of His Church. This class also serves as the requirement for teaching Sunday School and other leadership roles at CPC.</p>
+                    <h3 class="section-title" style="margin-top: 1.25rem; font-size: 1rem;">Overall Schedule &amp; Lessons</h3>
+                    <ul class="lesson-list">
+                        <li>Lesson 1: Intro – Why Theology?</li>
+                        <li>Lesson 2: How Could the Finite ever Know the Infinite?</li>
+                        <li>Lesson 3: What is the Bible?</li>
+                        <li>Lesson 4: How do we Interpret the Bible?</li>
+                        <li>Lesson 5: Beholding Who God is</li>
+                        <li>Lesson 6: Beholding Who God Is, cont. (Attributes &amp; Trinity)</li>
+                        <li>Lesson 7: Beholding Who God Is, cont. (Trinity)</li>
+                        <li>Lesson 8: Doctrine of God the Creator</li>
+                        <li>Lesson 9: Doctrine of Humanity – What is a Human?</li>
+                        <li>Lesson 10: Doctrine of Sin – What Have We Done?!</li>
+                        <li>Lesson 11: Implications of our Doctrine of Sin</li>
+                        <li>Lesson 12: Review &amp; Preview thru Covenant Theology</li>
+                        <li>Lesson 13: The Person of Christ</li>
+                        <li>Lesson 14: The Person of Christ, cont.</li>
+                        <li>Lesson 15: The Work of Christ</li>
+                        <li>Lesson 16: The Work of Christ, cont.</li>
+                        <li>Lesson 17: The Work of Christ in Judgment and Consummation</li>
+                        <li>Lesson 18: The Church and Total Christ</li>
+                        <li>Lesson 19: The Church as Communion and Institution</li>
+                        <li>Lesson 20: Church Government</li>
+                        <li>Lesson 21: Sacraments</li>
+                        <li>Lesson 22: Election and Effectual Calling</li>
+                        <li>Lesson 23: Faith and Repentance</li>
+                        <li>Lesson 24: Justification and Adoption</li>
+                        <li>Lesson 25: Sanctification</li>
+                        <li>Lesson 26: Assurance &amp; Perseverance</li>
+                        <li>Lesson 27: Good Works &amp; Law of God</li>
+                        <li>Lesson 28: Vocations</li>
+                        <li>Lesson 29: Marriage, Sex &amp; Gender</li>
+                        <li>Lesson 30: Marriage, Sex &amp; Gender, cont.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

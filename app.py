@@ -122,6 +122,10 @@ def index():
 def about():
     return render_template('about.html')
 
+@app.route('/about/what-we-believe')
+def what_we_believe():
+    return render_template('what_we_believe.html')
+
 @app.route('/sermons')
 def sermons():
     return render_template('sermons.html')
@@ -366,6 +370,44 @@ def api_teaching_series():
     for series in sunday_school_series_list:
         series['sermons'].sort(key=lambda x: x.get('date', ''), reverse=True)
     
+    # Merge curated teaching series (e.g. "What We Believe") from config for long-term data use
+    _curated_path = os.path.join(os.path.dirname(__file__), 'data', 'teaching_series_config.json')
+    if os.path.exists(_curated_path):
+        try:
+            with open(_curated_path, 'r', encoding='utf-8') as f:
+                curated_config = json.load(f)
+            for curated in curated_config.get('curated_series', []):
+                name = curated.get('name')
+                if not name:
+                    continue
+                existing = next((s for s in sermon_series_list if s['name'] == name), None)
+                if existing:
+                    if curated.get('description') is not None:
+                        existing['description'] = curated['description']
+                    if curated.get('external_url') is not None:
+                        existing['external_url'] = curated['external_url']
+                    if curated.get('slug') is not None:
+                        existing['slug'] = curated['slug']
+                else:
+                    sermon_series_list.append({
+                        'name': name,
+                        'count': 0,
+                        'sermons': [],
+                        'authors': [],
+                        'scriptures': [],
+                        'date_range': {'min': None, 'max': None},
+                        'description': curated.get('description', ''),
+                        'external_url': curated.get('external_url', ''),
+                        'slug': curated.get('slug', ''),
+                    })
+            # Sort so curated series (with sort_order) appear first; preserve order otherwise
+            def _series_sort_key(s):
+                idx = next((i for i, c in enumerate(curated_config.get('curated_series', [])) if c.get('name') == s['name']), None)
+                return (0, idx) if idx is not None else (1, 0)
+            sermon_series_list.sort(key=_series_sort_key)
+        except (json.JSONDecodeError, IOError):
+            pass
+    
     # Convert date range for response
     date_range_response = {
         'min': date_range['min'].strftime('%Y-%m-%d') if date_range['min'] else None,
@@ -472,6 +514,34 @@ def api_ongoing_events():
             } for e in events
         ]
     })
+
+@app.route('/api/papers/latest')
+def api_papers_latest():
+    """Latest paper (e.g. bulletin) for homepage. Prefer category 'bulletin'."""
+    bulletin = Paper.query.filter_by(active=True).filter(
+        Paper.category.in_(['bulletin', 'Bulletin'])
+    ).order_by(Paper.date_entered.desc()).first()
+    if bulletin:
+        return jsonify({
+            'id': bulletin.id,
+            'title': bulletin.title,
+            'author': bulletin.author,
+            'file_url': bulletin.file_url,
+            'date_published': bulletin.date_published.isoformat() if bulletin.date_published else None,
+            'date_entered': bulletin.date_entered.strftime('%Y-%m-%d') if bulletin.date_entered else None,
+        })
+    # Fallback: any latest paper
+    latest = Paper.query.filter_by(active=True).order_by(Paper.date_entered.desc()).first()
+    if latest:
+        return jsonify({
+            'id': latest.id,
+            'title': latest.title,
+            'author': latest.author,
+            'file_url': latest.file_url,
+            'date_published': latest.date_published.isoformat() if latest.date_published else None,
+            'date_entered': latest.date_entered.strftime('%Y-%m-%d') if latest.date_entered else None,
+        })
+    return jsonify({})
 
 @app.route('/api/sermons')
 def api_sermons():

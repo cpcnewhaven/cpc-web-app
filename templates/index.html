@@ -4,249 +4,340 @@
 
 {% block head %}
 <style>
-    /* Modern Highlights Card Grid Styles */
-    .highlights-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2rem;
-        width: 100%;
-        padding: 0.5rem;
+    /* ===== UNIFIED DARK THEME (matching Teaching Series) ===== */
+    .section-dark {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 20, 35, 0.95) 100%);
     }
-    
-    .highlight-card {
-        position: relative;
-        display: flex;
-        flex-direction: column;
+    .section-heading {
+        font-size: 2rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.98);
+    }
+    .section-subheading {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+    }
+    /* Dark cards matching teaching series */
+    .dark-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .dark-card:hover {
         background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(30px);
-        -webkit-backdrop-filter: blur(30px);
-        border-radius: 24px;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 
-            0 4px 20px rgba(0, 0, 0, 0.15),
-            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-        cursor: pointer;
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
-    
-    .highlight-card:hover {
-        transform: translateY(-12px) scale(1.02);
-        box-shadow: 
-            0 24px 60px rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(255, 255, 255, 0.2) inset,
-            0 0 40px rgba(0, 122, 255, 0.2);
+    .dark-card h3 {
+        color: rgba(255, 255, 255, 0.95);
     }
-    
-    .highlight-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #007AFF, #5AC8FA, #007AFF);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+    .dark-card-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
     }
-    
-    .highlight-card:hover::before {
-        opacity: 1;
+    /* Service info dark theme */
+    .service-info.section-dark {
+        padding: 3rem 0;
     }
-    
-    /* Superfeatured cards */
-    .highlight-card.superfeatured {
-        border: 2px solid rgba(255, 215, 0, 0.5);
-        box-shadow: 
-            0 4px 20px rgba(0, 0, 0, 0.15),
-            0 0 30px rgba(255, 215, 0, 0.3),
-            0 0 0 1px rgba(255, 215, 0, 0.2) inset;
+    .service-times {
+        max-width: 900px;
+        margin: 0 auto;
     }
-    
-    .highlight-card.superfeatured:hover {
-        box-shadow: 
-            0 24px 60px rgba(0, 0, 0, 0.3),
-            0 0 50px rgba(255, 215, 0, 0.5),
-            0 0 0 2px rgba(255, 215, 0, 0.4) inset;
+    .service-schedule {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
     }
-    
-    .highlight-card.superfeatured::before {
-        background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
-        opacity: 1;
+    .time-slot {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
     }
-    
-    /* Responsive Grid */
-    @media (max-width: 640px) {
-        .highlights-grid {
-            grid-template-columns: 1fr;
-            gap: 1.25rem;
-            padding: 0;
-        }
-        
-        .highlight-card:hover {
-            transform: translateY(-8px);
-        }
+    .time-slot:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
     }
-    
-    @media (min-width: 641px) and (max-width: 1024px) {
-        .highlights-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
+    .time-slot h3 {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
     }
-    
-    @media (min-width: 1025px) {
-        .highlights-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
+    .time-slot p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin: 0;
     }
-    
-    /* Fade in animation */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(40px) scale(0.95);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+    .time-slot.featured {
+        background: rgba(0, 102, 204, 0.15);
+        border: 1px solid rgba(0, 102, 204, 0.3);
     }
-    
-    /* Button hover effect */
-    .btn-primary:hover {
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 15px 40px rgba(0, 122, 255, 0.4);
+    .time-slot.featured:hover {
+        background: rgba(0, 102, 204, 0.2);
+        border-color: rgba(0, 102, 204, 0.4);
     }
-    
-    /* Learn More Arrow Animation */
-    .highlight-card:hover .read-more-arrow {
-        transform: translateX(4px);
+    /* Pull quote dark theme */
+    .section-dark .pull-quote {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
-    
-    /* Card Content Styles */
-    .highlight-image-container {
+    .section-dark .pull-quote .quote-text {
+        color: rgba(255, 255, 255, 0.95);
+    }
+    .section-dark .pull-quote .quote-sub {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Fading rotating banner */
+    .hero-banner {
         position: relative;
+        width: 100%;
+        min-height: 420px;
+        overflow: hidden;
+        background: #0a1628;
+    }
+    .hero-banner .banner-slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 1.2s ease-in-out;
+        z-index: 0;
+    }
+    .hero-banner .banner-slide.active {
+        opacity: 1;
+        z-index: 1;
+    }
+    .hero-banner .banner-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.35), rgba(0,0,0,0.55));
+        z-index: 2;
+        pointer-events: none;
+    }
+    .hero-banner .splash-content {
+        position: relative;
+        z-index: 3;
+        color: white;
+    }
+    .hero-banner .splash-content h1,
+    .hero-banner .splash-content h2 {
+        color: rgba(255, 255, 255, 0.98);
+    }
+    .hero-banner .splash-content p {
+        color: rgba(255, 255, 255, 0.85);
+    }
+    .hero-banner .banner-dots {
+        position: absolute;
+        bottom: 1.25rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        display: flex;
+        gap: 0.5rem;
+    }
+    .hero-banner .banner-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        cursor: pointer;
+        transition: background 0.3s, transform 0.3s;
+    }
+    .hero-banner .banner-dots span.active {
+        background: #fff;
+        transform: scale(1.2);
+    }
+
+    /* Latest & Greatest grid */
+    .latest-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+        width: 100%;
+    }
+    .latest-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        border-radius: 16px;
+        padding: 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .latest-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+    .latest-card h3 {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.65);
+        margin-bottom: 0.5rem;
+    }
+    .latest-card .latest-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.98);
+        margin-bottom: 0.35rem;
+        line-height: 1.3;
+    }
+    .latest-card .latest-meta {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 0.75rem;
+    }
+    .latest-card a.cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #5AC8FA;
+        text-decoration: none;
+    }
+    .latest-card a.cta:hover { color: #7dd8ff; }
+
+    .section-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.5rem;
+    }
+    .events-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .events-list li {
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .events-list li:last-child { border-bottom: none; }
+    .events-list .event-date {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
         flex-shrink: 0;
     }
-    
-    /* Type Badge Glow Effects */
-    .type-badge {
-        position: relative;
-        overflow: hidden;
+    .events-list .event-title {
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
     }
-    
-    .type-badge::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.5s ease;
+    .contact-strip {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem 2rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    
-    .highlight-card:hover .type-badge::after {
-        left: 100%;
+    .contact-strip a, .contact-strip span {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: 0.95rem;
     }
-    
-    /* Smooth text rendering */
-    .highlight-card h3,
-    .highlight-card p {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-    
-    /* Card Loading State */
-    @keyframes shimmer {
-        0% {
-            background-position: -1000px 0;
-        }
-        100% {
-            background-position: 1000px 0;
-        }
-    }
-    
-    /* Mobile Responsiveness for Section */
+    .contact-strip a:hover { color: #5AC8FA; }
+
+    /* Latest card styles consistent with dark theme */
+
     @media (max-width: 768px) {
-        .highlights-section {
-            padding: 3rem 0 !important;
-        }
-        
-        .section-header h2 {
-            font-size: 2rem !important;
-        }
-        
-        .section-header p {
-            font-size: 1rem !important;
-        }
-        
-        .highlight-card {
-            border-radius: 18px;
-        }
-        
-        .highlight-image-container {
-            height: 200px !important;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .section-header h2 {
-            font-size: 1.75rem !important;
-        }
-        
-        .btn-primary {
-            width: 100%;
-            max-width: 300px;
-        }
+        .hero-banner { min-height: 320px; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section with Dynamic Background -->
-<section id="home-image" class="splash-image relative">
-    <video class="hero-video-bg" autoplay muted loop playsinline poster="" aria-hidden="true"></video>
-    <div class="pointer-events-none absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.25), rgba(0,0,0,0.45));"></div>
-    <div class="splash-content mx-auto max-w-3xl px-4 md:px-6 text-center relative">
+<!-- Fading rotating banner -->
+<section class="hero-banner" id="home-image" aria-label="Welcome banner">
+    <div class="banner-slide active" data-index="0" style="background-image: url('https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG');"></div>
+    <div class="banner-slide" data-index="1" style="background-image: url('https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/89c3ea3b-e196-4318-bee8-08b5e66e728d.JPG');"></div>
+    <div class="banner-slide" data-index="2" style="background-image: url('https://storage.googleapis.com/cpc-public-website/events/Hill%20Christmas%20Store%202023/IMG_0244.JPG');"></div>
+    <div class="banner-slide" data-index="3" style="background-image: url('https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/2.jpg');"></div>
+    <div class="banner-slide" data-index="4" style="background-image: url('https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/4.jpg');"></div>
+    <div class="banner-overlay"></div>
+    <div class="splash-content mx-auto max-w-3xl px-4 md:px-6 py-16 md:py-20 text-center relative">
         <h1>Christ Presbyterian Church</h1>
         <h2>New Haven, CT</h2>
         <p>Everyone is truly welcomed into God's presence because there is no limit to God's grace as accomplished for us by Christ.</p>
         <div class="splash-buttons mt-4 md:mt-6">
             <a href="{{ url_for('live') }}" class="btn btn-primary">Watch Live</a>
             <a href="{{ url_for('about') }}" class="btn btn-secondary">Plan a Visit</a>
+            <a href="{{ url_for('what_we_believe') }}" class="btn btn-secondary">What We Believe</a>
             <a href="{{ url_for('sermons') }}" class="btn btn-secondary">Latest Sermon</a>
         </div>
     </div>
+    <div class="banner-dots" id="bannerDots" aria-hidden="true"></div>
 </section>
 
-<!-- This Week at CPC -->
-<section class="section-band band-gray">
+<!-- What you need -->
+<section class="section-band section-dark" style="padding: 3rem 0;">
     <div class="container">
-        <div x-data="{ i: 0, items: [
-            { icon: '⛪', text: 'Next Sunday Service · 10:30am · 135 Whitney Ave' },
-            { icon: '📖', text: 'This Week’s Sermon · Grace Without Limit' },
-            { icon: '⭐', text: 'Featured · Community Dinner Wednesday 6pm' }
-        ] }" class="week-strip relative">
-            <button class="ticker-arrow left" @click="i = (i + items.length - 1) % items.length">‹</button>
-            <div class="ticker" x-transition>
-                <template x-for="(item, idx) in items" :key="idx">
-                    <div class="ticker-item" x-show="idx === i">
-                        <span x-text="item.icon"></span>
-                        <span x-text="item.text"></span>
-                    </div>
-                </template>
+        <h2 class="section-heading mb-1">What you need</h2>
+        <p class="section-subheading mb-6 max-w-2xl">Your next steps — latest sermon, this Sunday, and resources from our pastors.</p>
+
+        <div class="latest-grid" id="latestGrid">
+            <div class="latest-card" id="card-sermon">
+                <h3>Latest Sermon</h3>
+                <div class="latest-title" id="latestSermonTitle">—</div>
+                <div class="latest-meta" id="latestSermonMeta"></div>
+                <a href="{{ url_for('sermons') }}" class="cta" id="latestSermonLink">Listen / Watch →</a>
             </div>
-            <button class="ticker-arrow right" @click="i = (i + 1) % items.length">›</button>
+            <div class="latest-card" id="card-sunday">
+                <h3>Upcoming Sunday</h3>
+                <div class="latest-title" id="upcomingSundayDate">—</div>
+                <div class="latest-meta" id="upcomingSundayMeta">10:30am Worship · 135 Whitney Ave</div>
+                <a href="{{ url_for('index') }}#service-info" class="cta">Service info →</a>
+            </div>
+            <div class="latest-card" id="card-book">
+                <h3>Pastor’s Book</h3>
+                <div class="latest-title">Resources from our pastors</div>
+                <div class="latest-meta">Books, articles, and recommended reading.</div>
+                <a href="{{ url_for('resources') }}" class="cta">Resources →</a>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 mt-10">
+            <div>
+                <div class="section-label" id="eventsMonthLabel">Upcoming events this month</div>
+                <ul class="events-list" id="eventsThisMonth">
+                    <li><span class="event-title">Loading…</span></li>
+                </ul>
+                <a href="{{ url_for('events') }}" class="cta mt-2 inline-block">All events →</a>
+            </div>
+            <div>
+                <div class="section-label">Contact</div>
+                <div class="contact-strip">
+                    <span>135 Whitney Ave, New Haven, CT 06510</span>
+                    <a href="mailto:admin@cpcnewhaven.org">admin@cpcnewhaven.org</a>
+                    <a href="{{ url_for('contact') }}">Contact form</a>
+                    <span>Sunday Worship: 10:30am</span>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Service Info Section -->
-<section class="service-info -mt-4">
+<!-- Service Info -->
+<section id="service-info" class="service-info section-dark -mt-4">
     <div class="container">
         <div class="service-times">
-            <h2 class="text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200 border-l-4 border-blue-500 pl-3">Sunday Service Information</h2>
+            <h2 class="section-heading border-l-4 border-blue-400 pl-3">Sunday Service Information</h2>
             <div class="service-schedule leading-relaxed">
                 <div class="time-slot">
                     <h3>8:30am</h3>
@@ -254,7 +345,7 @@
                 </div>
                 <div class="time-slot">
                     <h3>9:30am</h3>
-                    <p>Children's Sunday School & Adult Sunday Studies</p>
+                    <p>Children's Sunday School &amp; Adult Sunday Studies</p>
                 </div>
                 <div class="time-slot featured">
                     <h3>10:30am</h3>
@@ -270,100 +361,48 @@
 </section>
 
 <!-- Welcome / New Here -->
-<section class="section-band band-white">
+<section class="section-band section-dark">
     <div class="container">
         <div class="text-center mb-6">
-            <h2 class="text-blue-700 mb-2">New Here? Start with These</h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">A simple way to plan your first visit, learn what we believe, and meet people who can help you feel at home.</p>
+            <h2 class="section-heading mb-2">New Here? Start with These</h2>
+            <p class="section-subheading max-w-2xl mx-auto">Plan your first visit, learn what we believe, and meet people who can help you feel at home.</p>
         </div>
         <div class="grid md:grid-cols-3 gap-4">
-            <div class="glass-card p-6">
+            <div class="dark-card p-6">
                 <h3 class="text-lg font-semibold mb-2">Plan a Visit</h3>
-                <p class="glass-text-secondary mb-4">Service times, parking tips, and what to expect on Sunday.</p>
+                <p class="dark-card-text mb-4">Service times, parking tips, and what to expect on Sunday.</p>
                 <a href="{{ url_for('about') }}" class="btn btn-primary">Start Here</a>
             </div>
-            <div class="glass-card p-6">
+            <div class="dark-card p-6">
                 <h3 class="text-lg font-semibold mb-2">What We Believe</h3>
-                <p class="glass-text-secondary mb-4">Discover our mission, values, and the heart of CPC.</p>
-                <a href="{{ url_for('community') }}" class="btn btn-secondary">Learn More</a>
+                <p class="dark-card-text mb-4">Our faith, confessional standards, and what we teach from Scripture.</p>
+                <a href="{{ url_for('what_we_believe') }}" class="btn btn-secondary">What We Believe</a>
             </div>
-            <div class="glass-card p-6">
+            <div class="dark-card p-6">
                 <h3 class="text-lg font-semibold mb-2">Meet the Team</h3>
-                <p class="glass-text-secondary mb-4">Connect with our pastors and staff and reach out with questions.</p>
+                <p class="dark-card-text mb-4">Connect with our pastors and staff.</p>
                 <a href="{{ url_for('contact') }}" class="btn btn-secondary">Contact Us</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Highlights Section -->
-<section class="highlights-section" style="
-    padding: 5rem 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 20, 35, 0.95) 50%, rgba(0, 10, 25, 0.95) 100%);
-    position: relative;
-    overflow: hidden;
-">
-    <!-- Decorative Background Elements -->
-    <div style="
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(0, 122, 255, 0.1) 0%, transparent 70%);
-        border-radius: 50%;
-        pointer-events: none;
-    "></div>
-    <div style="
-        position: absolute;
-        bottom: -40%;
-        left: -5%;
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
-        border-radius: 50%;
-        pointer-events: none;
-    "></div>
-    
+<!-- Highlights Section (compact) -->
+<section class="highlights-section section-dark" style="padding: 4rem 0; position: relative;">
     <div class="container" style="position: relative; z-index: 1;">
-        <div class="section-header" style="text-align: center; margin-bottom: 4rem;">
-            <h2 style="
-                font-size: 2.75rem;
-                font-weight: 800;
-                color: rgba(255, 255, 255, 0.98);
-                margin-bottom: 0.75rem;
-                letter-spacing: -0.5px;
-                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            ">Highlights & Featured Events</h2>
-            <p style="
-                color: rgba(255, 255, 255, 0.7);
-                font-size: 1.15rem;
-                max-width: 600px;
-                margin: 0 auto 1.5rem;
-                line-height: 1.6;
-            ">Stay connected with what's happening at CPC</p>
-            <div style="
-                width: 80px;
-                height: 4px;
-                background: linear-gradient(90deg, #007AFF, #5AC8FA, #007AFF);
-                margin: 0 auto;
-                border-radius: 2px;
-                box-shadow: 0 2px 15px rgba(0, 122, 255, 0.5);
-            "></div>
+        <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+            <h2 class="section-heading" style="margin-bottom: 0.5rem;">Highlights &amp; Featured</h2>
+            <p class="section-subheading">Stay connected with what's happening at CPC</p>
         </div>
-        <div id="highlights" class="highlights-grid">
-            <!-- Highlights will be populated by JavaScript -->
-        </div>
-        <div style="text-align: center; margin-top: 4rem;">
-            <a href="{{ url_for('highlights') }}" class="glass-icon-button">
-                <i class="fas fa-arrow-right"></i>
-            </a>
+        <div id="highlights" class="highlights-grid"></div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{{ url_for('highlights') }}" class="glass-icon-button"><i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 </section>
 
-<!-- Pull Quote Section -->
-<section class="section-band band-warm">
+<!-- Pull Quote -->
+<section class="section-band section-dark">
     <div class="container">
         <div class="pull-quote fade-up">
             <div class="quote-text">Though we may be more sinful than we're even willing to imagine, we are more loved in Christ than we can ever dare to hope.</div>
@@ -371,399 +410,168 @@
         </div>
     </div>
 </section>
-
-<!-- Recent Sermons & Podcasts -->
-<section class="section-band band-white">
-    <div class="container">
-        <h2 class="text-blue-700 mb-4">Recent Sermons & Podcasts</h2>
-        <div id="recent-media" class="media-grid fade-up">
-            <!-- Cards will be populated by JS -->
-        </div>
-        <div class="text-center mt-4">
-            <a href="{{ url_for('sermons') }}" class="btn btn-primary">All Sermons</a>
-            <a href="{{ url_for('podcasts') }}" class="btn btn-secondary">All Podcasts</a>
-        </div>
-    </div>
-</section>
-
-<!-- Get Connected -->
-<section class="section-band band-warm">
-    <div class="container">
-        <h2 class="text-blue-700 mb-4">Get Connected</h2>
-        <div class="grid md:grid-cols-3 gap-4">
-            <div class="glass-card p-6">
-                <h3 class="text-lg font-semibold mb-2">Community & Events</h3>
-                <p class="glass-text-secondary mb-4">Find gatherings, meals, and ways to build relationships.</p>
-                <a href="{{ url_for('events') }}" class="btn btn-primary">See Events</a>
-            </div>
-            <div class="glass-card p-6">
-                <h3 class="text-lg font-semibold mb-2">Serve & Volunteer</h3>
-                <p class="glass-text-secondary mb-4">Use your gifts to bless the city and support the church.</p>
-                <a href="{{ url_for('community') }}" class="btn btn-secondary">Get Involved</a>
-            </div>
-            <div class="glass-card p-6">
-                <h3 class="text-lg font-semibold mb-2">Give</h3>
-                <p class="glass-text-secondary mb-4">Partner with us to support ministry and mission.</p>
-                <a href="{{ url_for('give') }}" class="btn btn-secondary">Give Online</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Contact Section -->
-<section class="contact-section">
-    <div class="container">
-        <div class="contact-grid">
-            <div class="contact-info">
-                <h3>Visit Us</h3>
-                <p>135 Whitney Ave<br>New Haven, CT 06510</p>
-                <p>Sunday Worship: 10:30am</p>
-            </div>
-            <div class="contact-info">
-                <h3>Contact Us</h3>
-                <p>Email: admin@cpcnewhaven.org</p>
-                <p>Phone: (203) 555-0123</p>
-            </div>
-            <div class="contact-info">
-                <h3>Follow Our Media</h3>
-                <p><a href="https://youtube.com/c/CPCNewHaven" target="_blank">YouTube Channel</a></p>
-                <p><a href="https://open.spotify.com/show/your-show-id" target="_blank">Spotify Podcasts</a></p>
-            </div>
-        </div>
-    </div>
-</section>
 {% endblock %}
 
 {% block scripts %}
-<!-- Your existing JavaScript with modified fetch URLs -->
 <script>
-// Modern Highlights Grid with Advanced UI
-document.addEventListener('DOMContentLoaded', function() {
-    // Populate Recent Media Cards (sermons/podcasts)
-    (async function loadRecentMedia() {
-        const container = document.getElementById('recent-media');
-        if (!container) return;
-        try {
-            // Try podcasts first
-            let items = [];
-            try {
-                const r = await fetch('/api/podcasts');
-                if (r.ok) {
-                    const data = await r.json();
-                    // try to normalize; fallback to array
-                    items = (data.items || data.podcasts || data || []).slice(0, 6);
-                }
-            } catch (_) {}
-            // If still empty, try sermons endpoint (if exists)
-            if (!items.length) {
-                try {
-                    const r2 = await fetch('/api/sermons/recent');
-                    if (r2.ok) {
-                        const data2 = await r2.json();
-                        items = (data2.items || data2.sermons || data2 || []).slice(0, 6);
-                    }
-                } catch (_) {}
-            }
-            // If still empty, show friendly message
-            if (!items.length) {
-                container.innerHTML = '<div class="text-center text-gray-600 p-6">Recent media will appear here.</div>';
-                return;
-            }
-            // Render cards
-            items.forEach((it) => {
-                const card = document.createElement('div');
-                card.className = 'media-card';
-                const thumb = it.thumbnail || it.image || '';
-                const title = it.title || it.name || 'Untitled';
-                const date = it.date || it.published || it.pubDate || '';
-                const series = it.series || it.scripture || it.speaker || '';
-                const playUrl = it.url || it.audio || it.link || '#';
-                card.innerHTML = `
-                    ${thumb ? `<img class="media-thumb" src="${thumb}" alt="${title}">` : `<div class="media-thumb"></div>`}
-                    <div class="media-body">
-                        <div class="media-title">${title}</div>
-                        <div class="media-meta">
-                            ${date ? `<span>📅 ${new Date(date).toLocaleDateString()}</span>` : ``}
-                            ${series ? `<span>• ${series}</span>` : ``}
-                        </div>
-                        <div class="media-actions">
-                            <a href="${playUrl}" class="btn-play">▶ Play</a>
-                            <a href="{{ url_for('sermons') }}" class="btn-more">Read More</a>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
+(function() {
+    // ----- Fading rotating banner -----
+    var slides = document.querySelectorAll('.hero-banner .banner-slide');
+    var dotsContainer = document.getElementById('bannerDots');
+    var current = 0;
+    var interval = 5500;
+
+    if (slides.length && dotsContainer) {
+        slides.forEach(function(_, i) {
+            var dot = document.createElement('span');
+            dot.setAttribute('role', 'button');
+            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', function() {
+                current = i;
+                goTo(current);
+                clearInterval(timer);
+                timer = setInterval(next, interval);
             });
-        } catch (err) {
-            console.error('Error loading recent media:', err);
-            container.innerHTML = '<div class="text-center text-gray-600 p-6">Unable to load recent media.</div>';
+            dotsContainer.appendChild(dot);
+        });
+    }
+
+    function goTo(index) {
+        current = (index + slides.length) % slides.length;
+        slides.forEach(function(s, i) {
+            s.classList.toggle('active', i === current);
+        });
+        var dots = dotsContainer ? dotsContainer.querySelectorAll('span') : [];
+        dots.forEach(function(d, i) {
+            d.classList.toggle('active', i === current);
+        });
+    }
+
+    function next() {
+        goTo(current + 1);
+    }
+
+    var timer = setInterval(next, interval);
+
+    // ----- Latest & Greatest data -----
+    var eventsMonthLabel = document.getElementById('eventsMonthLabel');
+    var eventsThisMonth = document.getElementById('eventsThisMonth');
+
+    function formatEventDate(iso) {
+        if (!iso) return '';
+        var d = new Date(iso);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function setEventsThisMonth(events, monthName) {
+        eventsMonthLabel.textContent = 'Upcoming events — ' + (monthName || 'this month');
+        if (!events || events.length === 0) {
+            eventsThisMonth.innerHTML = '<li><span class="event-title">No events this month. <a href="{{ url_for("events") }}">View all events</a></span></li>';
+            return;
         }
+        eventsThisMonth.innerHTML = events.slice(0, 8).map(function(ev) {
+            return '<li><span class="event-date">' + formatEventDate(ev.start) + '</span><span class="event-title">' + (ev.title || 'Event') + '</span></li>';
+        }).join('');
+    }
+
+    // Upcoming Sunday: this or next Sunday's date
+    (function() {
+        var el = document.getElementById('upcomingSundayDate');
+        if (!el) return;
+        var d = new Date();
+        var day = d.getDay();
+        var daysUntilSunday = day === 0 ? 0 : 7 - day;
+        var nextSunday = new Date(d);
+        nextSunday.setDate(d.getDate() + daysUntilSunday);
+        el.textContent = nextSunday.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     })();
 
-    // Fetch from new highlights API
-    fetch('/api/highlights')
-        .then(response => response.json())
-        .then(data => {
-            const highlightsContainer = document.getElementById('highlights');
-            
-            // Filter for active highlights only
-            const activeHighlights = data.announcements.filter(
-                h => h.active === "true" || h.active === true
-            );
-            
-            // Sort: superfeatured first, then by date
-            activeHighlights.sort((a, b) => {
-                if (a.superfeatured && !b.superfeatured) return -1;
-                if (!a.superfeatured && b.superfeatured) return 1;
-                return new Date(b.dateEntered) - new Date(a.dateEntered);
-            });
-            
-            // Show only the first 6 highlights on homepage
-            const displayedHighlights = activeHighlights.slice(0, 6);
-            
-            if (displayedHighlights.length === 0) {
-                highlightsContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1 / -1;">No highlights available at this time.</p>';
-                return;
+    // Fetch sermons -> latest = first episode
+    fetch('/api/sermons').then(function(r) { return r.json(); }).then(function(data) {
+        var episodes = (data && data.episodes) || [];
+        var latest = episodes[0];
+        var el = document.getElementById('latestSermonTitle');
+        var meta = document.getElementById('latestSermonMeta');
+        var link = document.getElementById('latestSermonLink');
+        if (el && latest) {
+            el.textContent = latest.title || 'Latest sermon';
+            meta.textContent = (latest.author ? latest.author + ' · ' : '') + (latest.date ? formatEventDate(latest.date) : '');
+            var url = latest.youtube_url || latest.spotify_url || latest.link || latest.apple_podcasts_url;
+            if (link && url) {
+                link.href = url;
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener');
             }
+        }
+    }).catch(function() {});
 
-            // Create modern card elements
-            displayedHighlights.forEach((highlight, index) => {
-                const card = document.createElement('div');
-                card.className = 'highlight-card';
-                if (highlight.superfeatured) {
-                    card.classList.add('superfeatured');
-                }
-                card.style.animation = `fadeInUp 0.6s ease ${index * 0.1}s both`;
-                
-                let cardHTML = '';
-                
-                // Featured Image with modern overlay
-                if (highlight.featuredImage) {
-                    const imageClass = highlight.imageDisplayType === 'poster' ? 'poster-style' : '';
-                    cardHTML += `
-                        <div class="highlight-image-container" style="position: relative; height: 240px; overflow: hidden; ${imageClass ? 'background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));' : 'background: rgba(0, 0, 0, 0.2);'}">
-                            <img src="${highlight.featuredImage}" 
-                                 alt="${highlight.title}" 
-                                 loading="lazy"
-                                 style="
-                                    width: 100%; 
-                                    height: 100%; 
-                                    object-fit: ${imageClass ? 'contain' : 'cover'}; 
-                                    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-                                 "
-                                 onmouseover="this.style.transform='scale(1.08)'"
-                                 onmouseout="this.style.transform='scale(1)'">
-                            ${highlight.superfeatured ? `
-                                <div style="
-                                    position: absolute; 
-                                    top: 16px; 
-                                    right: 16px; 
-                                    background: linear-gradient(135deg, #FFD700, #FFA500); 
-                                    padding: 8px 16px; 
-                                    border-radius: 50px; 
-                                    font-weight: 700; 
-                                    font-size: 0.7rem; 
-                                    color: #000; 
-                                    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5); 
-                                    letter-spacing: 0.5px;
-                                    text-transform: uppercase;
-                                    backdrop-filter: blur(10px);
-                                ">⭐ Featured</div>` : ''}
-                            <div style="
-                                position: absolute;
-                                bottom: 0;
-                                left: 0;
-                                right: 0;
-                                height: 100px;
-                                background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-                            "></div>
-                        </div>
-                    `;
-                } else if (highlight.superfeatured) {
-                    cardHTML += `
-                        <div style="position: absolute; top: 16px; right: 16px; background: linear-gradient(135deg, #FFD700, #FFA500); padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 0.7rem; color: #000; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5); letter-spacing: 0.5px; z-index: 10; text-transform: uppercase; backdrop-filter: blur(10px);">⭐ Featured</div>
-                    `;
-                }
-                
-                // Card Content
-                cardHTML += `
-                    <div style="
-                        padding: 2rem;
-                        display: flex;
-                        flex-direction: column;
-                        flex: 1;
-                        gap: 0.75rem;
-                    ">
-                        <!-- Type Badge -->
-                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                            <span style="
-                                display: inline-flex;
-                                align-items: center;
-                                padding: 6px 14px;
-                                background: ${getTypeBadgeColor(highlight.type)};
-                                color: ${getTypeBadgeTextColor(highlight.type)};
-                                border-radius: 50px;
-                                font-size: 0.7rem;
-                                font-weight: 700;
-                                text-transform: uppercase;
-                                letter-spacing: 1px;
-                                box-shadow: 0 2px 10px ${getTypeBadgeColor(highlight.type).replace('0.15', '0.3')};
-                            ">${highlight.type || 'Announcement'}</span>
-                        </div>
-                        
-                        <!-- Title -->
-                        <h3 style="
-                            color: rgba(255, 255, 255, 0.98);
-                            font-size: 1.35rem;
-                            font-weight: 700;
-                            margin: 0;
-                            line-height: 1.3;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-                        ">${highlight.title}</h3>
-                        
-                        <!-- Description -->
-                        <p style="
-                            color: rgba(255, 255, 255, 0.75);
-                            font-size: 0.95rem;
-                            line-height: 1.65;
-                            margin: 0;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 3;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                            flex: 1;
-                        ">${stripHtml(highlight.description)}</p>
-                        
-                        <!-- Footer with Date -->
-                        <div style="
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            margin-top: auto;
-                            padding-top: 1rem;
-                            border-top: 1px solid rgba(255, 255, 255, 0.12);
-                        ">
-                            ${highlight.dateEntered ? `
-                                <div style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 8px;
-                                    color: rgba(255, 255, 255, 0.6);
-                                    font-size: 0.85rem;
-                                    font-weight: 500;
-                                ">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                    </svg>
-                                    <span>${formatDate(highlight.dateEntered)}</span>
-                                </div>
-                            ` : '<div></div>'}
-                            <div style="
-                                display: flex;
-                                align-items: center;
-                                gap: 4px;
-                                color: rgba(0, 122, 255, 0.9);
-                                font-size: 0.85rem;
-                                font-weight: 600;
-                                transition: transform 0.3s ease;
-                            " class="read-more-arrow">
-                                Learn More
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    <polyline points="12 5 19 12 12 19"></polyline>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                card.innerHTML = cardHTML;
-                highlightsContainer.appendChild(card);
-            });
-        })
-        .catch(error => {
-            console.error('Error loading highlights:', error);
-            document.getElementById('highlights').innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1 / -1;">Unable to load highlights.</p>';
+    // Fetch events -> filter by current month
+    fetch('/api/events').then(function(r) { return r.json(); }).then(function(data) {
+        var events = (data && data.events) || [];
+        var now = new Date();
+        var thisMonth = now.getMonth();
+        var thisYear = now.getFullYear();
+        var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        var inMonth = events.filter(function(ev) {
+            if (!ev.start) return false;
+            var d = new Date(ev.start);
+            return d.getMonth() === thisMonth && d.getFullYear() === thisYear && d >= now;
         });
-    
-    // Helper functions
+        inMonth.sort(function(a, b) {
+            return (a.start || '').localeCompare(b.start || '');
+        });
+        setEventsThisMonth(inMonth, monthNames[thisMonth]);
+    }).catch(function() {
+        eventsThisMonth.innerHTML = '<li><span class="event-title">Unable to load events. <a href="{{ url_for("events") }}">View events</a></span></li>';
+    });
+})();
+</script>
+<script>
+// Highlights grid (same as before)
+document.addEventListener('DOMContentLoaded', function() {
     function getTypeBadgeColor(type) {
-        const colors = {
-            'event': 'rgba(0, 122, 255, 0.15)',
-            'announcement': 'rgba(255, 215, 0, 0.15)',
-            'ongoing': 'rgba(52, 199, 89, 0.15)',
-            'upcoming': 'rgba(255, 149, 0, 0.15)'
-        };
-        return colors[type] || 'rgba(255, 255, 255, 0.1)';
+        var c = { 'event': 'rgba(0, 122, 255, 0.15)', 'announcement': 'rgba(255, 215, 0, 0.15)', 'ongoing': 'rgba(52, 199, 89, 0.15)', 'upcoming': 'rgba(255, 149, 0, 0.15)' };
+        return c[type] || 'rgba(255, 255, 255, 0.1)';
     }
-    
     function getTypeBadgeTextColor(type) {
-        const colors = {
-            'event': '#007AFF',
-            'announcement': '#FFD700',
-            'ongoing': '#34C759',
-            'upcoming': '#FF9500'
-        };
-        return colors[type] || '#FFFFFF';
+        var c = { 'event': '#007AFF', 'announcement': '#FFD700', 'ongoing': '#34C759', 'upcoming': '#FF9500' };
+        return c[type] || '#FFFFFF';
     }
-    
     function stripHtml(html) {
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        return temp.textContent || temp.innerText || '';
+        var tmp = document.createElement('div');
+        tmp.innerHTML = html || '';
+        return tmp.textContent || tmp.innerText || '';
     }
-    
     function formatDate(dateString) {
-        const date = new Date(dateString);
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
-    }
-});
-
-// Background image randomization
-document.addEventListener("DOMContentLoaded", function() {
-    const splashImageSection = document.getElementById('home-image');
-    const midImageSection = document.getElementById('mid-image');
-    const totalImages = 50; // Total number of images in your assets folder
-
-    function getRandomImageUrl() {
-        const randomIndex = Math.floor(Math.random() * totalImages) + 1;
-        return `{{ url_for('static', filename='assets/websiteBG/') }}${randomIndex}.jpg`;
+        return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     }
 
-    function updateImages() {
-        const homeImageUrl = getRandomImageUrl();
-        const midImageUrl = getRandomImageUrl();
-
-        // Set background images
-        if (splashImageSection) {
-            splashImageSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${homeImageUrl})`;
-            splashImageSection.style.backgroundSize = 'cover';
-            splashImageSection.style.backgroundPosition = 'center';
+    fetch('/api/highlights').then(function(r) { return r.json(); }).then(function(data) {
+        var container = document.getElementById('highlights');
+        if (!container) return;
+        var active = (data.announcements || []).filter(function(h) { return h.active === 'true' || h.active === true; });
+        active.sort(function(a, b) {
+            if (a.superfeatured && !b.superfeatured) return -1;
+            if (!a.superfeatured && b.superfeatured) return 1;
+            return new Date(b.dateEntered) - new Date(a.dateEntered);
+        });
+        var shown = active.slice(0, 6);
+        if (shown.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);grid-column:1/-1;">No highlights at this time.</p>';
+            return;
         }
-
-        if (midImageSection) {
-            midImageSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${midImageUrl})`;
-            midImageSection.style.backgroundSize = 'cover';
-            midImageSection.style.backgroundPosition = 'center';
-        }
-    }
-
-    // Initial image update
-    updateImages();
+        shown.forEach(function(h, i) {
+            var card = document.createElement('div');
+            card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
+            var imgHtml = h.featuredImage ? '<div style="position:relative;height:200px;overflow:hidden;"><img src="' + h.featuredImage + '" alt="" style="width:100%;height:100%;object-fit:cover;"><div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);"></div></div>' : '';
+            card.innerHTML = imgHtml + '<div style="padding:1.25rem;"><span style="display:inline-block;padding:4px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;text-transform:uppercase;background:' + getTypeBadgeColor(h.type) + ';color:' + getTypeBadgeTextColor(h.type) + ';">' + (h.type || 'Announcement') + '</span><h3 style="color:rgba(255,255,255,0.98);font-size:1.1rem;margin:0.5rem 0 0.35rem;">' + (h.title || '') + '</h3><p style="color:rgba(255,255,255,0.75);font-size:0.9rem;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + stripHtml(h.description) + '</p><div style="margin-top:0.75rem;font-size:0.85rem;color:rgba(255,255,255,0.6);">' + (h.dateEntered ? formatDate(h.dateEntered) : '') + '</div></div>';
+            container.appendChild(card);
+        });
+    }).catch(function() {
+        var c = document.getElementById('highlights');
+        if (c) c.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);">Unable to load highlights.</p>';
+    });
 });
 </script>
-
-<!-- Dynamic banner -->
-<script src="{{ url_for('static', filename='js/dynamic-banner.js') }}"></script>
-
-<!-- Background image fetching -->
-<script src="{{ url_for('static', filename='js/background-fetch-splash-image.js') }}"></script>
 {% endblock %}

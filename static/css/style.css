@@ -158,6 +158,28 @@ body.theme-white .dropdown-menu a:hover {
     color: var(--cpc-blue) !important;
 }
 
+/* Settings dropdown in white theme */
+body.theme-white .dropdown-menu li span {
+    color: #1a1a1a !important;
+}
+body.theme-white .dropdown-menu li span.text-white\/70 {
+    color: #666 !important;
+}
+body.theme-white .dropdown-menu button {
+    color: #1a1a1a !important;
+}
+body.theme-white .dropdown-menu button.bg-blue-500 {
+    background: var(--cpc-blue) !important;
+    color: white !important;
+}
+body.theme-white .dropdown-menu button.bg-white\/20 {
+    background: rgba(0, 0, 0, 0.08) !important;
+    color: #333 !important;
+}
+body.theme-white .dropdown-menu .border-white\/20 {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
 /* White theme dashboard adjustments */
 body.theme-white .dashboard-title {
     color: var(--text-primary);
@@ -256,6 +278,431 @@ body.theme-white .scroll-progress-bar {
 }
 
 /* ========================================
+   WHITE THEME - COMPREHENSIVE OVERRIDES
+   ======================================== */
+
+/* Section dark backgrounds become light in white theme */
+body.theme-white .section-dark {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+
+/* Section headings and subheadings */
+body.theme-white .section-heading {
+    color: #1a1a1a !important;
+}
+body.theme-white .section-subheading {
+    color: #4a4a4a !important;
+}
+
+/* Latest cards (homepage) */
+body.theme-white .latest-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+body.theme-white .latest-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+body.theme-white .latest-card h3 {
+    color: #666 !important;
+}
+body.theme-white .latest-card .latest-title {
+    color: #1a1a1a !important;
+}
+body.theme-white .latest-card .latest-meta {
+    color: #555 !important;
+}
+body.theme-white .latest-card a.cta {
+    color: var(--cpc-blue) !important;
+}
+
+/* Dark cards (homepage new here section) */
+body.theme-white .dark-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+body.theme-white .dark-card:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+body.theme-white .dark-card h3 {
+    color: #1a1a1a !important;
+}
+body.theme-white .dark-card-text {
+    color: #555 !important;
+}
+
+/* Time slots (service info) */
+body.theme-white .time-slot {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .time-slot:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+body.theme-white .time-slot h3 {
+    color: #1a1a1a !important;
+}
+body.theme-white .time-slot p {
+    color: #555 !important;
+}
+body.theme-white .time-slot.featured {
+    background: rgba(0, 82, 163, 0.1) !important;
+    border-color: rgba(0, 82, 163, 0.3) !important;
+}
+
+/* Pull quote */
+body.theme-white .section-dark .pull-quote {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+}
+body.theme-white .section-dark .pull-quote .quote-text,
+body.theme-white .pull-quote .quote-text {
+    color: #2b2a27 !important;
+}
+body.theme-white .section-dark .pull-quote .quote-sub,
+body.theme-white .pull-quote .quote-sub {
+    color: #555 !important;
+}
+
+/* Events list */
+body.theme-white .section-label {
+    color: #666 !important;
+}
+body.theme-white .events-list li {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .events-list .event-date {
+    color: #666 !important;
+}
+body.theme-white .events-list .event-title {
+    color: #1a1a1a !important;
+}
+
+/* Contact strip */
+body.theme-white .contact-strip {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .contact-strip a,
+body.theme-white .contact-strip span {
+    color: #333 !important;
+}
+body.theme-white .contact-strip a:hover {
+    color: var(--cpc-blue) !important;
+}
+
+/* Hero banner text */
+body.theme-white .hero-banner .splash-content h1,
+body.theme-white .hero-banner .splash-content h2 {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+body.theme-white .hero-banner .splash-content p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Buttons in white theme */
+body.theme-white .btn-primary {
+    background: var(--cpc-blue) !important;
+    color: white !important;
+}
+body.theme-white .btn-secondary {
+    background: transparent !important;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a !important;
+}
+body.theme-white .btn-secondary:hover {
+    background: #1a1a1a !important;
+    color: white !important;
+}
+body.theme-white .section-dark .btn-secondary {
+    color: #1a1a1a !important;
+    border-color: #1a1a1a !important;
+}
+body.theme-white .hero-banner .btn-secondary {
+    color: white !important;
+    border-color: white !important;
+}
+body.theme-white .hero-banner .btn-secondary:hover {
+    background: white !important;
+    color: #1a1a1a !important;
+}
+
+/* Highlights section */
+body.theme-white .highlights-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+body.theme-white .highlight-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .highlight-card h3 {
+    color: #1a1a1a !important;
+}
+body.theme-white .highlight-card p {
+    color: #555 !important;
+}
+
+/* CTA links */
+body.theme-white .cta,
+body.theme-white a.cta {
+    color: var(--cpc-blue) !important;
+}
+
+/* Glass icon button */
+body.theme-white .glass-icon-button {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: var(--cpc-blue) !important;
+}
+
+/* Dashboard sidebar in white theme */
+body.theme-white .dashboard-sidebar {
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+body.theme-white .dashboard-sidebar .text-white,
+body.theme-white .dashboard-sidebar .text-white\/90,
+body.theme-white .dashboard-sidebar .text-white\/80,
+body.theme-white .dashboard-sidebar .text-white\/70 {
+    color: #1a1a1a !important;
+}
+body.theme-white #liveClock,
+body.theme-white #liveDate,
+body.theme-white #weatherNow,
+body.theme-white #weatherHiLo,
+body.theme-white #weatherDesc {
+    color: #1a1a1a !important;
+}
+
+/* Search input in sidebar */
+body.theme-white .dashboard-sidebar input[type="search"],
+body.theme-white .dashboard-sidebar input[type="text"] {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #1a1a1a !important;
+}
+body.theme-white .dashboard-sidebar input::placeholder {
+    color: #888 !important;
+}
+
+/* Teaching Series page white theme */
+body.theme-white .teaching-series-page {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+body.theme-white .search-controls,
+body.theme-white .filter-sidebar,
+body.theme-white .series-category {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .search-bar input,
+body.theme-white .sort-select,
+body.theme-white .view-btn,
+body.theme-white .date-range-inputs input {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #1a1a1a !important;
+}
+body.theme-white .search-bar input::placeholder {
+    color: #888 !important;
+}
+body.theme-white .search-bar i {
+    color: #666 !important;
+}
+body.theme-white .view-btn.active {
+    background: var(--cpc-blue) !important;
+    color: white !important;
+}
+body.theme-white .results-count {
+    color: #555 !important;
+}
+body.theme-white .filter-title {
+    color: #1a1a1a !important;
+}
+body.theme-white .filter-option label {
+    color: #333 !important;
+}
+body.theme-white .filter-count {
+    color: #888 !important;
+}
+body.theme-white .clear-filters,
+body.theme-white .action-btn {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #333 !important;
+}
+body.theme-white .clear-filters:hover,
+body.theme-white .action-btn:hover {
+    background: rgba(0, 50, 120, 0.1) !important;
+    color: var(--cpc-blue) !important;
+}
+body.theme-white .category-header h2 {
+    color: #1a1a1a !important;
+}
+body.theme-white .category-header {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .series-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .series-card:hover {
+    background: white !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .series-header h3 {
+    color: #1a1a1a !important;
+}
+body.theme-white .series-meta {
+    color: #666 !important;
+}
+body.theme-white .series-count {
+    background: rgba(0, 0, 0, 0.08) !important;
+    color: #333 !important;
+}
+body.theme-white .author-tag {
+    background: rgba(0, 0, 0, 0.08) !important;
+    color: #333 !important;
+}
+body.theme-white .scripture-tag {
+    background: rgba(0, 82, 163, 0.15) !important;
+    color: var(--cpc-blue) !important;
+}
+body.theme-white .sermon-info a {
+    color: #1a1a1a !important;
+}
+body.theme-white .sermon-info a:hover {
+    color: var(--cpc-blue) !important;
+}
+body.theme-white .sermon-meta {
+    color: #666 !important;
+}
+body.theme-white .series-sermon-item {
+    border-color: rgba(0, 0, 0, 0.08) !important;
+}
+body.theme-white .sermon-action-btn {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #555 !important;
+}
+body.theme-white .sermon-action-btn:hover {
+    background: rgba(0, 50, 120, 0.1) !important;
+    color: var(--cpc-blue) !important;
+}
+body.theme-white .expand-btn {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #333 !important;
+}
+body.theme-white .expand-btn:hover {
+    background: rgba(0, 50, 120, 0.1) !important;
+    color: var(--cpc-blue) !important;
+}
+body.theme-white .empty-state {
+    background: rgba(0, 0, 0, 0.03) !important;
+    color: #666 !important;
+}
+body.theme-white .compact-hero h1 {
+    color: #1a1a1a !important;
+}
+body.theme-white .compact-hero p {
+    color: #555 !important;
+}
+
+/* General page content white theme */
+body.theme-white h1,
+body.theme-white h2,
+body.theme-white h3,
+body.theme-white h4,
+body.theme-white h5,
+body.theme-white h6 {
+    color: #1a1a1a;
+}
+body.theme-white p {
+    color: #333;
+}
+
+/* Glass cards in white theme */
+body.theme-white .glass-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+body.theme-white .glass-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white .glass-card h1,
+body.theme-white .glass-card h2,
+body.theme-white .glass-card h3,
+body.theme-white .glass-card h4 {
+    color: #1a1a1a !important;
+}
+body.theme-white .glass-card p,
+body.theme-white .glass-text-secondary {
+    color: #555 !important;
+}
+
+/* Page heroes in white theme */
+body.theme-white .page-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url('') center/cover !important;
+}
+
+/* Links in white theme */
+body.theme-white a {
+    color: var(--cpc-blue);
+}
+body.theme-white a:hover {
+    color: var(--cpc-blue-dark);
+}
+
+/* Tailwind text color overrides for white theme */
+body.theme-white .text-white {
+    color: #1a1a1a !important;
+}
+body.theme-white .text-gray-600 {
+    color: #555 !important;
+}
+body.theme-white .text-gray-400 {
+    color: #777 !important;
+}
+
+/* Borders in white theme */
+body.theme-white .border-blue-400,
+body.theme-white .border-blue-500 {
+    border-color: var(--cpc-blue) !important;
+}
+
+/* Mobile navigation dropdown in white theme */
+body.theme-white nav[x-data] > div[x-show] {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white nav[x-data] > div[x-show] a,
+body.theme-white nav[x-data] > div[x-show] p,
+body.theme-white nav[x-data] > div[x-show] span {
+    color: #1a1a1a !important;
+}
+body.theme-white nav[x-data] > div[x-show] a:hover {
+    color: var(--cpc-blue) !important;
+}
+body.theme-white nav[x-data] > div[x-show] .border-white {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-white nav[x-data] > div[x-show] button.bg-blue-500 {
+    background: var(--cpc-blue) !important;
+    color: white !important;
+}
+body.theme-white nav[x-data] > div[x-show] button.bg-white\/20 {
+    background: rgba(0, 0, 0, 0.08) !important;
+    color: #333 !important;
+}
+
+/* ========================================
    2. RESET & BASE STYLES
    ======================================== */
 *,
@@ -336,6 +783,9 @@ main {
 /* Dashboard Layout */
 :root {
     --dashboard-sidebar-width: 217px; /* 15% wider */
+    --dashboard-sidebar-width-max: 320px;
+    --dashboard-sidebar-width-left: var(--dashboard-sidebar-width);
+    --dashboard-sidebar-width-right: var(--dashboard-sidebar-width);
     --dashboard-gutter: 16px;
     --dashboard-top-offset: 90px; /* below nav */
     --dashboard-bottom-height: 34px; /* footer ticker height */
@@ -345,7 +795,6 @@ main {
     position: fixed;
     top: var(--dashboard-top-offset);
     bottom: calc(var(--dashboard-gutter) + var(--dashboard-bottom-height));
-    width: var(--dashboard-sidebar-width);
     background: var(--glass-white);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -366,10 +815,12 @@ body.theme-white .dashboard-sidebar {
 
 .dashboard-left {
     left: var(--dashboard-gutter);
+    width: var(--dashboard-sidebar-width-left);
 }
 
 .dashboard-right {
     right: var(--dashboard-gutter);
+    width: var(--dashboard-sidebar-width-right);
 }
 
 .dashboard-main {
@@ -378,8 +829,8 @@ body.theme-white .dashboard-sidebar {
 
 @media (min-width: 1024px) {
     .dashboard-main {
-        padding-left: calc(var(--dashboard-sidebar-width) + var(--dashboard-gutter) * 2);
-        padding-right: calc(var(--dashboard-sidebar-width) + var(--dashboard-gutter) * 2);
+        padding-left: calc(var(--dashboard-sidebar-width-left) + var(--dashboard-gutter) * 2);
+        padding-right: calc(var(--dashboard-sidebar-width-right) + var(--dashboard-gutter) * 2);
     }
 }
 
@@ -387,6 +838,27 @@ body.theme-white .dashboard-sidebar {
     :root {
         --dashboard-sidebar-width: 259px; /* 15% wider */
     }
+}
+
+body.sidebar-left-max {
+    --dashboard-sidebar-width-left: var(--dashboard-sidebar-width-max);
+}
+
+body.sidebar-right-max {
+    --dashboard-sidebar-width-right: var(--dashboard-sidebar-width-max);
+}
+
+body.sidebar-left-hidden {
+    --dashboard-sidebar-width-left: 0px;
+}
+
+body.sidebar-right-hidden {
+    --dashboard-sidebar-width-right: 0px;
+}
+
+body.sidebar-left-hidden .dashboard-left,
+body.sidebar-right-hidden .dashboard-right {
+    display: none;
 }
 
 .dashboard-section + .dashboard-section {
