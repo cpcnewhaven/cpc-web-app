@@ -2,6 +2,7 @@ services:
   - type: web
     name: cpc-new-haven
     env: python
+    runtime: python-3.12.8
     plan: free
     buildCommand: |
       pip install -r requirements.txt

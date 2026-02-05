@@ -13,6 +13,7 @@ import requests
 import feedparser
 import json
 import re
+import sqlite3
 from ics import Calendar, Event
 from dateutil import tz
 import pytz
@@ -62,6 +63,41 @@ migrate.init_app(app, db)
 
 # Import models after db initialization
 from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User
+
+def ensure_sqlite_announcements_columns():
+    if not database_url.startswith('sqlite:///'):
+        return
+    db_path = database_url.replace('sqlite:///', '', 1)
+    if not os.path.isabs(db_path):
+        db_path = os.path.join(os.path.dirname(__file__), db_path)
+    if not os.path.exists(db_path):
+        alt = os.path.join(os.path.dirname(__file__), 'instance', 'cpc_newhaven.db')
+        if os.path.exists(alt):
+            db_path = alt
+        else:
+            return
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(announcements)")
+        columns = [row[1] for row in cursor.fetchall()]
+        if not columns:
+            conn.close()
+            return
+        column_updates = []
+        if 'show_in_banner' not in columns:
+            column_updates.append("ADD COLUMN show_in_banner BOOLEAN DEFAULT 0")
+        if 'image_display_type' not in columns:
+            column_updates.append("ADD COLUMN image_display_type VARCHAR(50)")
+        for column_sql in column_updates:
+            cursor.execute("ALTER TABLE announcements " + column_sql)
+        if column_updates:
+            conn.commit()
+        conn.close()
+    except Exception as exc:
+        app.logger.warning("SQLite announcements migration skipped: %s", exc)
+
+ensure_sqlite_announcements_columns()
 
 # Redirect /admin to dashboard so "Admin" link lands on dashboard
 @app.before_request
