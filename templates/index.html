@@ -269,6 +269,33 @@
     </div>
 </section>
 
+<!-- Welcome / New Here -->
+<section class="section-band band-white">
+    <div class="container">
+        <div class="text-center mb-6">
+            <h2 class="text-blue-700 mb-2">New Here? Start with These</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">A simple way to plan your first visit, learn what we believe, and meet people who can help you feel at home.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4">
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold mb-2">Plan a Visit</h3>
+                <p class="glass-text-secondary mb-4">Service times, parking tips, and what to expect on Sunday.</p>
+                <a href="{{ url_for('about') }}" class="btn btn-primary">Start Here</a>
+            </div>
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold mb-2">What We Believe</h3>
+                <p class="glass-text-secondary mb-4">Discover our mission, values, and the heart of CPC.</p>
+                <a href="{{ url_for('community') }}" class="btn btn-secondary">Learn More</a>
+            </div>
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold mb-2">Meet the Team</h3>
+                <p class="glass-text-secondary mb-4">Connect with our pastors and staff and reach out with questions.</p>
+                <a href="{{ url_for('contact') }}" class="btn btn-secondary">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Highlights Section -->
 <section class="highlights-section" style="
     padding: 5rem 0;
@@ -359,31 +386,25 @@
     </div>
 </section>
 
-<!-- Meet the Pastors & Staff -->
+<!-- Get Connected -->
 <section class="section-band band-warm">
     <div class="container">
-        <h2 class="text-blue-700 mb-4">Meet the Pastors & Staff</h2>
-        <div class="staff-grid fade-up">
-            <div class="staff-member">
-                <div class="staff-photo">PN</div>
-                <h3>Pastor Name</h3>
-                <h4>Senior Pastor</h4>
-                <p class="glass-text-secondary">Loves preaching Christ and walking with people through the gospel.</p>
-                <a href="{{ url_for('contact') }}" class="staff-contact-btn mt-2">Contact</a>
+        <h2 class="text-blue-700 mb-4">Get Connected</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold mb-2">Community & Events</h3>
+                <p class="glass-text-secondary mb-4">Find gatherings, meals, and ways to build relationships.</p>
+                <a href="{{ url_for('events') }}" class="btn btn-primary">See Events</a>
             </div>
-            <div class="staff-member">
-                <div class="staff-photo">AN</div>
-                <h3>Associate Name</h3>
-                <h4>Associate Pastor</h4>
-                <p class="glass-text-secondary">Helps lead worship and community outreach.</p>
-                <a href="{{ url_for('contact') }}" class="staff-contact-btn mt-2">Contact</a>
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold mb-2">Serve & Volunteer</h3>
+                <p class="glass-text-secondary mb-4">Use your gifts to bless the city and support the church.</p>
+                <a href="{{ url_for('community') }}" class="btn btn-secondary">Get Involved</a>
             </div>
-            <div class="staff-member">
-                <div class="staff-photo">DN</div>
-                <h3>Director Name</h3>
-                <h4>Youth Director</h4>
-                <p class="glass-text-secondary">Investing in the next generation of the church.</p>
-                <a href="{{ url_for('contact') }}" class="staff-contact-btn mt-2">Contact</a>
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold mb-2">Give</h3>
+                <p class="glass-text-secondary mb-4">Partner with us to support ministry and mission.</p>
+                <a href="{{ url_for('give') }}" class="btn btn-secondary">Give Online</a>
             </div>
         </div>
     </div>

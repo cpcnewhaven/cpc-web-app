@@ -3,12 +3,8 @@
 {% block title %}Media - CPC New Haven{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-{% endblock %}
-
-{% block head %}
 <style>
 .media-page {
     min-height: calc(100vh - 200px);
@@ -54,6 +50,64 @@
 .media-nav .container {
     max-width: 100%;
     padding: 0 0.75rem;
+}
+
+.media-tabs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.media-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.media-tab.active,
+.media-tab:hover {
+    background: rgba(0, 122, 255, 0.35);
+    border-color: rgba(0, 122, 255, 0.6);
+    color: #fff;
+}
+
+.media-section {
+    display: none;
+}
+
+.media-section.active {
+    display: block;
+}
+
+.year-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+}
+
+.year-tab {
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.year-tab:hover,
+.year-tab.active {
+    background: rgba(0, 122, 255, 0.35);
+    border-color: rgba(0, 122, 255, 0.6);
+    color: #fff;
 }
 </style>
 {% endblock %}
@@ -240,6 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentView = 'grid';
     let currentPhotoIndex = 0;
     let currentTab = 'gallery';
+    let currentYear = null;
 
     // Load gallery images
     loadGallery();
@@ -251,6 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 allPhotos = data.images || [];
                 filteredPhotos = [...allPhotos];
                 updateStats();
+                buildYearTabs();
                 renderGallery();
                 setupEventListeners();
             })
@@ -274,19 +330,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderGallery() {
-        const container = document.getElementById('gallery-container');
+        const container = currentTab === 'yearbook'
+            ? document.getElementById('yearbook-container')
+            : document.getElementById('gallery-container');
         const loadingIndicator = document.getElementById('loading-indicator');
         const emptyState = document.getElementById('empty-state');
 
-        loadingIndicator.style.display = 'none';
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
 
         if (filteredPhotos.length === 0) {
-            emptyState.style.display = 'block';
-            container.innerHTML = '';
+            if (emptyState) {
+                emptyState.style.display = 'block';
+            }
+            if (container) {
+                container.innerHTML = '';
+            }
             return;
         }
 
-        emptyState.style.display = 'none';
+        if (emptyState) {
+            emptyState.style.display = 'none';
+        }
 
         if (currentView === 'yearbook') {
             renderYearbookView(container);
@@ -314,8 +380,12 @@ document.addEventListener('DOMContentLoaded', function() {
         container.className = 'gallery-grid yearbook';
         container.innerHTML = '';
 
+        const yearPhotos = currentYear
+            ? filteredPhotos.filter(photo => getPhotoYear(photo) === currentYear)
+            : filteredPhotos;
+
         // Group photos by year and month
-        const groupedPhotos = groupPhotosByYearMonth(filteredPhotos);
+        const groupedPhotos = groupPhotosByYearMonth(yearPhotos);
 
         Object.keys(groupedPhotos).sort().reverse().forEach(year => {
             const yearSection = document.createElement('div');
@@ -368,6 +438,45 @@ document.addEventListener('DOMContentLoaded', function() {
         return grouped;
     }
 
+    function getPhotoYear(photo) {
+        const date = new Date(photo.created);
+        return Number.isFinite(date.getFullYear()) ? date.getFullYear() : null;
+    }
+
+    function buildYearTabs() {
+        const yearTabs = document.getElementById('year-tabs');
+        if (!yearTabs) return;
+
+        const years = Array.from(new Set(allPhotos
+            .map(getPhotoYear)
+            .filter(year => year)))
+            .sort((a, b) => b - a);
+
+        if (years.length === 0) {
+            yearTabs.innerHTML = '';
+            return;
+        }
+
+        currentYear = currentYear || years[0];
+        yearTabs.innerHTML = years.map(year => `
+            <button class="year-tab${year === currentYear ? ' active' : ''}" data-year="${year}">
+                ${year}
+            </button>
+        `).join('');
+
+        yearTabs.querySelectorAll('.year-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                yearTabs.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentYear = parseInt(tab.dataset.year, 10);
+                if (currentTab === 'yearbook') {
+                    currentView = 'yearbook';
+                    renderGallery();
+                }
+            });
+        });
+    }
+
     function createPhotoElement(photo, index, type = 'gallery') {
         const photoDiv = document.createElement('div');
         photoDiv.className = `gallery-item ${type}`;
@@ -407,17 +516,6 @@ document.addEventListener('DOMContentLoaded', function() {
             tab.addEventListener('click', function() {
                 const tabName = this.dataset.tab;
                 switchTab(tabName);
-            });
-        });
-
-        // Filter tabs
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                currentFilter = this.dataset.filter;
-                filterPhotos();
             });
         });
 
@@ -486,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         filteredPhotos = allPhotos.filter(photo => {
             const matchesSearch = !searchTerm || 
-                photo.name.toLowerCase().includes(searchTerm) ||
+                (photo.name || '').toLowerCase().includes(searchTerm) ||
                 (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
             
             const matchesFilter = currentFilter === 'all' || 
@@ -496,6 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return matchesSearch && matchesFilter;
         });
 
+        buildYearTabs();
         renderGallery();
     }
 
