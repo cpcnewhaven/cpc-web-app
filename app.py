@@ -1455,12 +1455,18 @@ def admin_bulk_sermons():
     
     return jsonify({'success': False, 'error': 'Invalid action'})
 
+@app.route('/admin/banner-alert/new')
+@require_auth
+def admin_banner_alert_new():
+    return redirect(url_for('announcement.create_view', banner=1))
+
 # Enhanced Admin Interface
 from flask_admin import BaseView, expose
 from flask_admin.actions import action
 from flask_admin.form import Select2Field
 from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField
-from wtforms.validators import DataRequired, URL, Length
+from wtforms.validators import DataRequired, URL, Length, Optional
+import re
 from wtforms.widgets import TextArea
 from datetime import datetime
 
@@ -1497,8 +1503,18 @@ class AnnouncementView(AuthenticatedModelView):
     
     form_widget_args = {
         'description': {'rows': 10, 'style': 'width: 100%'},
+        'id': {
+            'placeholder': 'Optional — click Generate ID or fill manually',
+        },
         'featured_image': {'placeholder': 'https://example.com/image.jpg'},
         'image_display_type': {'placeholder': 'poster or leave empty'}
+    }
+
+    form_args = {
+        'id': {
+            'validators': [Optional()],
+            'description': 'Optional but recommended for long-term organization.'
+        }
     }
     
     column_labels = {
@@ -1531,6 +1547,22 @@ class AnnouncementView(AuthenticatedModelView):
         ]
     }
 
+    @staticmethod
+    def _slugify(value):
+        text = (value or '').strip().lower()
+        text = re.sub(r'[^a-z0-9]+', '-', text)
+        text = re.sub(r'-+', '-', text).strip('-')
+        return text or 'item'
+
+    @staticmethod
+    def _build_default_id(title, content_type, category):
+        now = datetime.utcnow()
+        type_part = (content_type or 'announcement').strip().lower() or 'announcement'
+        category_part = (category or 'general').strip().lower() or 'general'
+        slug = AnnouncementView._slugify(title)
+        base = f"{now.year}-{now.month:02d}-{type_part}-{category_part}-{slug}"
+        return base[:60]
+
     def on_form_prefill(self, form, id):
         announcement = self.get_one(id)
         if not announcement or not hasattr(form, 'banner_type'):
@@ -1551,6 +1583,9 @@ class AnnouncementView(AuthenticatedModelView):
             model.type = banner_choice
         else:
             model.show_in_banner = False
+        if not (model.id or '').strip():
+            title_source = model.title or model.description or 'item'
+            model.id = self._build_default_id(title_source, model.type, model.category)
     
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):

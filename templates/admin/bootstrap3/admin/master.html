@@ -7,7 +7,16 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
     /* Dark liquid blue glass – admin tables and subpages */
-    body {
+    body,
+    body.theme-white {
+        --bg-gradient: linear-gradient(135deg, #004080 0%, #003366 50%, #00264d 100%);
+        --glass-white: rgba(0, 50, 120, 0.26);
+        --glass-white-strong: rgba(0, 50, 120, 0.36);
+        --glass-border: rgba(0, 80, 160, 0.45);
+        --glass-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);
+        --text-primary: rgba(255, 255, 255, 0.92);
+        --text-secondary: rgba(255, 255, 255, 0.7);
+        --text-white: rgba(255, 255, 255, 0.95);
         background: var(--bg-gradient) !important;
         font-family: var(--font-primary) !important;
         color: var(--text-primary) !important;
@@ -115,7 +124,10 @@
     }
     
     /* Forms – dark blue glass inputs and wrappers */
-    .form-control {
+    .form-control,
+    input.form-control,
+    select.form-control,
+    textarea.form-control {
         background: rgba(0, 50, 120, 0.25) !important;
         border: 1px solid rgba(0, 80, 160, 0.5) !important;
         border-radius: var(--radius-md) !important;
@@ -618,7 +630,69 @@
             }
             setBannerIdFromTitle();
         }
+        if (!isBanner && idInput) {
+            var help = document.createElement('div');
+            help.className = 'banner-quick-note';
+            help.textContent = 'Optional but recommended. Click Generate ID to keep things organized.';
+            var genBtn = document.createElement('button');
+            genBtn.type = 'button';
+            genBtn.className = 'btn btn-default';
+            genBtn.style.marginTop = '0.5rem';
+            genBtn.textContent = 'Generate ID';
+            genBtn.addEventListener('click', function() {
+                var title = '';
+                if (titleInput && titleInput.value) title = titleInput.value;
+                else if (descriptionInput && descriptionInput.value) title = descriptionInput.value;
+                var slug = slugify(title);
+                var nowLocal = new Date();
+                var mm = (nowLocal.getMonth() + 1);
+                var mmStr = mm < 10 ? '0' + mm : '' + mm;
+                var typeVal = '';
+                var typeInput = form.querySelector('select[name="type"]');
+                if (typeInput) typeVal = typeInput.value || 'announcement';
+                var catVal = '';
+                var catInput = form.querySelector('select[name="category"]');
+                if (catInput) catVal = catInput.value || 'general';
+                idInput.value = nowLocal.getFullYear() + '-' + mmStr + '-' + typeVal + '-' + catVal + '-' + slug;
+                idInput.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            var idGroup = idInput.closest('.form-group');
+            if (idGroup) {
+                idGroup.appendChild(help);
+                idGroup.appendChild(genBtn);
+            }
+        }
     });
+})();
+</script>
+<script>
+(function() {
+    function addBannerMenuItem() {
+        var navLinks = document.querySelectorAll('.navbar-nav > li.dropdown');
+        if (!navLinks.length) return;
+        var target = null;
+        navLinks.forEach(function(item) {
+            var label = item.querySelector('a');
+            if (label && label.textContent.trim().toLowerCase() === 'content') {
+                target = item;
+            }
+        });
+        if (!target) return;
+        var menu = target.querySelector('.dropdown-menu');
+        if (!menu) return;
+        if (menu.querySelector('[data-banner-link="1"]')) return;
+        var divider = document.createElement('li');
+        divider.className = 'divider';
+        var item = document.createElement('li');
+        var link = document.createElement('a');
+        link.setAttribute('href', '{{ url_for('admin_banner_alert_new') }}');
+        link.setAttribute('data-banner-link', '1');
+        link.innerHTML = '<i class="fas fa-bolt" style="margin-right: 6px;"></i> Banner alerts';
+        item.appendChild(link);
+        menu.appendChild(divider);
+        menu.appendChild(item);
+    }
+    document.addEventListener('DOMContentLoaded', addBannerMenuItem);
 })();
 </script>
 {% endblock %}
