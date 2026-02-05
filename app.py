@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings('ignore', message='.*pkg_resources is deprecated.*')
+
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -59,6 +62,12 @@ migrate.init_app(app, db)
 
 # Import models after db initialization
 from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User
+
+# Redirect /admin to dashboard so "Admin" link lands on dashboard
+@app.before_request
+def redirect_admin_to_dashboard():
+    if request.path in ('/admin', '/admin/'):
+        return redirect('/admin/dashboard/')
 
 # Routes
 @app.route('/')
@@ -360,8 +369,26 @@ def api_announcements():
                 'category': a.category,
                 'tag': a.tag,
                 'superfeatured': a.superfeatured,
+                'showInBanner': getattr(a, 'show_in_banner', False),
                 'featuredImage': a.featured_image,
                 'imageDisplayType': a.image_display_type
+            } for a in announcements
+        ]
+    })
+
+
+@app.route('/api/banner-announcements')
+def api_banner_announcements():
+    """Active announcements marked to show in the top yellow bar (weather, parking, etc.)"""
+    announcements = Announcement.query.filter_by(active=True, show_in_banner=True)\
+        .order_by(Announcement.date_entered.desc()).all()
+    return jsonify({
+        'announcements': [
+            {
+                'id': a.id,
+                'title': a.title,
+                'description': a.description,
+                'type': a.type or 'announcement',
             } for a in announcements
         ]
     })
@@ -392,9 +419,9 @@ def api_highlights():
 
 @app.route('/api/ongoing-events')
 def api_ongoing_events():
-    """API endpoint for ongoing events"""
+    """API endpoint for ongoing events (ordered by sort_order, then date)"""
     events = OngoingEvent.query.filter_by(active=True)\
-        .order_by(OngoingEvent.date_entered.desc()).all()
+        .order_by(OngoingEvent.sort_order.asc(), OngoingEvent.date_entered.desc()).all()
     
     return jsonify({
         'ongoingEvents': [
@@ -1297,7 +1324,7 @@ def admin_login():
                 session['authenticated'] = True
                 session['username'] = username
                 flash('Login successful!', 'success')
-                next_url = request.args.get('next', url_for('admin.index'))
+                next_url = request.args.get('next', '/admin/dashboard/')
                 return redirect(next_url)
             else:
                 flash('Invalid username or password', 'error')
@@ -1360,6 +1387,24 @@ def admin_bulk_announcements():
     
     return jsonify({'success': False, 'error': 'Invalid action'})
 
+@app.route('/admin/events/reorder', methods=['POST'])
+@require_auth
+def admin_events_reorder():
+    """Save drag-and-drop order of events. Body: JSON { \"order\": [\"id1\", \"id2\", ...] }"""
+    try:
+        data = request.get_json() or {}
+        order = data.get('order', [])
+        if not order:
+            return jsonify({'success': False, 'error': 'Missing order'}), 400
+        for i, id in enumerate(order):
+            event = OngoingEvent.query.get(id)
+            if event:
+                event.sort_order = i
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/admin/bulk/sermons', methods=['POST'])
 @require_auth
 def admin_bulk_sermons():
@@ -1393,13 +1438,13 @@ class AuthenticatedModelView(ModelView):
         return redirect(url_for('admin_login', next=request.url))
 
 class AnnouncementView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'type', 'category', 'active', 'superfeatured', 'date_entered')
+    column_list = ('id', 'title', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered')
     column_searchable_list = ('title', 'description', 'tag')
-    column_filters = ('type', 'active', 'tag', 'superfeatured', 'category')
+    column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered')
     column_default_sort = ('date_entered', True)
     
-    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'show_in_banner', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
     }
@@ -1413,6 +1458,7 @@ class AnnouncementView(AuthenticatedModelView):
     column_labels = {
         'date_entered': 'Date Created',
         'superfeatured': 'Super Featured',
+        'show_in_banner': 'Show in top bar',
         'featured_image': 'Featured Image URL',
         'image_display_type': 'Image Display Type'
     }
@@ -1422,7 +1468,10 @@ class AnnouncementView(AuthenticatedModelView):
             ('announcement', 'Announcement'),
             ('event', 'Event'),
             ('ongoing', 'Ongoing'),
-            ('highlight', 'Highlight')
+            ('highlight', 'Highlight'),
+            ('weather', 'Weather Alert'),
+            ('parking', 'Parking Update'),
+            ('alert', 'General Alert')
         ],
         'category': [
             ('general', 'General'),
@@ -1653,11 +1702,11 @@ class GalleryImageView(AuthenticatedModelView):
             return False
 
 class OngoingEventView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'type', 'category', 'active', 'date_entered')
+    column_list = ('id', 'title', 'type', 'category', 'active', 'sort_order', 'date_entered')
     column_searchable_list = ('title', 'description')
     column_filters = ('type', 'active', 'category')
-    column_sortable_list = ('title', 'type', 'active', 'date_entered')
-    column_default_sort = ('date_entered', True)
+    column_sortable_list = ('title', 'type', 'active', 'sort_order', 'date_entered')
+    column_default_sort = ('sort_order', False)
     
     form_columns = ('id', 'title', 'description', 'type', 'category', 'active')
     form_extra_fields = {
@@ -1760,6 +1809,21 @@ class DashboardView(BaseView):
                          today=today,
                          latest_luke=latest_luke)
 
+
+class ReorderEventsView(BaseView):
+    """Drag-and-drop reorder events."""
+    def is_accessible(self):
+        return is_authenticated()
+    
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+    
+    @expose('/', methods=['GET', 'POST'])
+    def index(self):
+        events = OngoingEvent.query.order_by(OngoingEvent.sort_order.asc(), OngoingEvent.date_entered.desc()).all()
+        return self.render('admin/reorder_events.html', events=events)
+
+
 # Setup admin with enhanced organization
 admin = Admin(app, name='CPC Admin')
 
@@ -1769,6 +1833,7 @@ admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
 # Add views with categories
 admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
 admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
+admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='Content'))
 admin.add_view(SermonView(Sermon, db.session, name='Sermons', category='Media'))
 admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
 admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))

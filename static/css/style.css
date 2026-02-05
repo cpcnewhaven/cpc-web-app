@@ -789,6 +789,68 @@ a:hover {
 }
 
 /* ========================================
+   TOP ALERT BAR (weather, parking, etc.)
+   ======================================== */
+.top-alert-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: #f59e0b;
+    color: #1f2937;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+.top-alert-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+#topAlertBarContent {
+    flex: 1;
+    min-width: 0;
+}
+.top-alert-item {
+    white-space: normal;
+}
+.top-alert-sep {
+    opacity: 0.85;
+    margin: 0 0.25rem;
+}
+.top-alert-bar-close {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #1f2937;
+    padding: 0.25rem 0.5rem;
+    opacity: 0.9;
+    border-radius: 4px;
+}
+.top-alert-bar-close:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.1);
+}
+body.has-top-alert .top-nav {
+    top: 3rem;
+}
+body.has-top-alert .scroll-progress-bar {
+    top: 2.5rem;
+}
+
+/* ========================================
    SCROLL PROGRESS BAR
    ======================================== */
 .scroll-progress-bar {

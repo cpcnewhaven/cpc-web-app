@@ -115,6 +115,26 @@
         font-size: 0.9rem;
     }
     
+    .stat-card-link {
+        text-decoration: none !important;
+        color: inherit;
+        display: block;
+        cursor: pointer;
+    }
+    .stat-card-link:hover {
+        color: inherit;
+    }
+    
+    .wizard-btn-amber {
+        background: #f59e0b !important;
+        border-color: #f59e0b !important;
+    }
+    .wizard-btn-amber:hover {
+        background: #d97706 !important;
+        border-color: #d97706 !important;
+        color: white !important;
+    }
+    
     /* Wizard Cards */
     .wizard-card {
         background: var(--glass-white);
@@ -284,40 +304,40 @@
         </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- Statistics Cards (click to open that table) -->
     <div class="quick-actions">
-        <div class="stat-card">
+        <a href="{{ url_for('announcement.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.announcements }}</div>
             <div class="stat-label">Announcements</div>
             <div class="stat-sub">{{ stats.active_announcements }} Active</div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.sermons }}</div>
             <div class="stat-label">Sermons</div>
             <div class="stat-sub">In Archive</div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <a href="{{ url_for('podcastepisode.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.podcast_episodes }}</div>
             <div class="stat-label">Podcast Episodes</div>
             <div class="stat-sub">{{ stats.podcast_series }} Series</div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <a href="{{ url_for('ongoingevent.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.ongoing_events }}</div>
             <div class="stat-label">Events</div>
             <div class="stat-sub">{{ stats.active_events }} Active</div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <a href="{{ url_for('galleryimage.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.gallery_images }}</div>
             <div class="stat-label">Gallery Images</div>
             <div class="stat-sub">Total Photos</div>
-        </div>
+        </a>
         
         {% if latest_luke %}
-        <div class="stat-card" style="background: linear-gradient(135deg, var(--cpc-blue), var(--cpc-blue-dark)); border: 2px solid var(--cpc-blue-light);">
+        <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link" style="background: linear-gradient(135deg, var(--cpc-blue), var(--cpc-blue-dark)); border: 2px solid var(--cpc-blue-light);">
             <div class="stat-number" style="font-size: 2.5rem;">Luke {{ latest_luke.latest_by_date.chapter }}</div>
             <div class="stat-label">Latest Luke Chapter</div>
             <div class="stat-sub" style="color: rgba(255, 255, 255, 0.9); margin-top: 0.5rem;">
@@ -328,8 +348,33 @@
                 <i class="fas fa-calendar"></i> {{ latest_luke.latest_by_date.date }}
             </div>
             {% endif %}
-        </div>
+        </a>
         {% endif %}
+    </div>
+
+    <!-- Yellow bar / Banner alerts (front-end top bar) -->
+    <div class="banner-alerts-card" style="margin-bottom: 2rem;">
+        <div class="wizard-card" style="border-left: 4px solid #f59e0b;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="width: 12px; height: 12px; border-radius: 2px; background: #f59e0b;"></span>
+                        <h3 style="color: var(--text-white); font-size: 1.25rem; margin: 0;">Top yellow bar (banner alerts)</h3>
+                    </div>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.95rem;">
+                        Weather, parking, and site-wide alerts shown at the top of every page. Create an announcement and check <strong>Show in top bar</strong> to display it in the yellow bar.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; flex-shrink: 0;">
+                    <a href="{{ url_for('announcement.index_view') }}" class="wizard-btn" style="text-decoration: none;">
+                        <i class="fas fa-list"></i> Manage announcements
+                    </a>
+                    <a href="{{ url_for('announcement.create_view') }}" class="wizard-btn wizard-btn-amber" style="text-decoration: none;">
+                        <i class="fas fa-plus"></i> Add banner alert
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Content Wizards -->

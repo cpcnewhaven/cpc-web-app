@@ -26,10 +26,17 @@
         {% block head %}{% endblock %}
     </head>
     <body class="theme-blue">
+        <!-- Top yellow bar for weather, parking, and other alerts (admin: check "Show in top bar" on an announcement) -->
+        <div id="topAlertBar" class="top-alert-bar" style="display: none;" role="alert">
+            <div class="top-alert-bar-inner">
+                <span id="topAlertBarContent"></span>
+                <button type="button" id="topAlertBarClose" class="top-alert-bar-close" aria-label="Dismiss">×</button>
+            </div>
+        </div>
         <!-- Scroll Progress Bar -->
         <div class="scroll-progress-bar" id="scrollProgressBar"></div>
 
-        <!-- Warning Banner -->
+        <!-- Warning Banner (legacy, kept for dynamic-banner.js if needed) -->
         <div id="warningBanner" class="warning-banner"
             style="display: none;"></div>
 
@@ -110,6 +117,8 @@
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Search</a></li>
                         <li><a href="{{ url_for('archive') }}"
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Archive</a></li>
+                        <li><a href="/admin/dashboard/"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Admin</a></li>
                     </ul>
                 </li>
             </ul>
@@ -171,12 +180,14 @@
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Give</a>
                 </div>
                 <div class="border-t border-white border-opacity-20 pt-2 mt-2">
-                    <p
-                        class="text-sm font-semibold text-white text-opacity-70 mb-2">More</p>
+                        <p
+                            class="text-sm font-semibold text-white text-opacity-70 mb-2">More</p>
                     <a href="{{ url_for('search') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Search</a>
                     <a href="{{ url_for('archive') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Archive</a>
+                    <a href="/admin/dashboard/"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Admin</a>
                 </div>
             </div>
         </nav>
@@ -238,7 +249,7 @@
                         </div>
                     </template>
                     <div class="mt-2" x-show="$store.dash.showAdminCTA">
-                        <a href="/admin" class="glass-button w-full block text-center text-sm py-2">Admin Login</a>
+                        <a href="/admin/dashboard/" class="glass-button w-full block text-center text-sm py-2">Admin</a>
                     </div>
                 </div>
             </div>
@@ -286,7 +297,7 @@
             <div class="dashboard-section" x-show="$store.dash.showAdminCTA">
                 <div class="dashboard-title">Manage Content</div>
                 <div class="text-white/90 mb-2">Sign in to post highlights, edit events, and manage media.</div>
-                <a href="/admin" class="glass-button w-full block text-center">Sign in to Admin</a>
+                <a href="/admin/dashboard/" class="glass-button w-full block text-center">Admin</a>
             </div>
         </aside>
 
@@ -454,6 +465,46 @@
             }
             updateClock();
             setInterval(updateClock, 1000 * 30);
+        })();
+        </script>
+        <!-- Top Alert Bar (banner announcements) -->
+        <script>
+        (function() {
+            const bar = document.getElementById('topAlertBar');
+            const content = document.getElementById('topAlertBarContent');
+            const closeBtn = document.getElementById('topAlertBarClose');
+            if (!bar || !content) return;
+            if (sessionStorage.getItem('topAlertBarDismissed') === '1') return;
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            fetch('/api/banner-announcements')
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .then(function(data) {
+                    const list = (data && data.announcements) ? data.announcements : [];
+                    if (list.length === 0) return;
+                    const parts = list.map(function(a) {
+                        const title = escapeHtml(a.title || '');
+                        const desc = (a.description || '').trim();
+                        const descShort = desc.length > 120 ? desc.slice(0, 117) + '…' : desc;
+                        const type = escapeHtml((a.type || 'Alert').replace(/_/g, ' '));
+                        if (descShort) return '<span class="top-alert-item"><strong>' + title + '</strong> — ' + escapeHtml(descShort) + '</span>';
+                        return '<span class="top-alert-item"><strong>' + title + '</strong></span>';
+                    });
+                    content.innerHTML = parts.join('<span class="top-alert-sep"> · </span>');
+                    bar.style.display = 'block';
+                    document.body.classList.add('has-top-alert');
+                })
+                .catch(function() {});
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    bar.style.display = 'none';
+                    document.body.classList.remove('has-top-alert');
+                    sessionStorage.setItem('topAlertBarDismissed', '1');
+                });
+            }
         })();
         </script>
         <!-- Footer Ticker Script -->

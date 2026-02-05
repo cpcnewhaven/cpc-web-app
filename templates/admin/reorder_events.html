@@ -1,0 +1,120 @@
+{% extends 'admin/master.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    .reorder-container { max-width: 700px; margin: 0 auto; padding: 2rem; }
+    .reorder-header { color: var(--text-white); margin-bottom: 1.5rem; }
+    .reorder-header h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .reorder-header p { color: rgba(255,255,255,0.8); font-size: 1rem; }
+    .reorder-list {
+        background: rgba(0, 50, 120, 0.2);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 80, 160, 0.4);
+        border-radius: var(--radius-lg);
+        padding: 0.5rem;
+        list-style: none;
+        margin: 0 0 1.5rem 0;
+    }
+    .reorder-list li {
+        background: rgba(0, 50, 120, 0.3);
+        border: 1px solid rgba(0, 80, 160, 0.35);
+        border-radius: var(--radius-md);
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-white);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: grab;
+    }
+    .reorder-list li:last-child { margin-bottom: 0; }
+    .reorder-list li:hover { background: rgba(0, 50, 120, 0.45); }
+    .reorder-list li.sortable-ghost { opacity: 0.5; }
+    .reorder-list li .drag-handle { color: rgba(255,255,255,0.6); cursor: grab; }
+    .reorder-list li .title { flex: 1; font-weight: 600; }
+    .reorder-list li .meta { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+    .btn-save-order {
+        background: var(--cpc-blue);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .btn-save-order:hover { background: var(--cpc-blue-dark); }
+    .reorder-message { margin-top: 1rem; padding: 0.75rem; border-radius: var(--radius-md); display: none; }
+    .reorder-message.success { background: rgba(46, 204, 113, 0.25); color: #fff; display: block; }
+    .reorder-message.error { background: rgba(231, 76, 60, 0.25); color: #fff; display: block; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="reorder-container">
+    <div class="reorder-header">
+        <h1><i class="fas fa-grip-vertical"></i> Reorder events</h1>
+        <p>Drag items to change the order. This order is used on the site. Click Save order when done.</p>
+    </div>
+    <ul class="reorder-list" id="reorderList">
+        {% for event in events %}
+        <li data-id="{{ event.id }}">
+            <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+            <span class="title">{{ event.title }}</span>
+            <span class="meta">{{ event.type or '—' }} · {{ event.category or '—' }}{% if not event.active %} · Inactive{% endif %}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    {% if not events %}
+    <p style="color: rgba(255,255,255,0.8);">No events yet. <a href="{{ url_for('ongoingevent.create_view') }}" style="color: var(--cpc-blue-light);">Create one</a> first.</p>
+    {% else %}
+    <button type="button" class="btn-save-order" id="saveOrderBtn">Save order</button>
+    <div class="reorder-message" id="reorderMessage"></div>
+    {% endif %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+(function() {
+    var list = document.getElementById('reorderList');
+    if (!list || list.children.length === 0) return;
+    var saveBtn = document.getElementById('saveOrderBtn');
+    var msgEl = document.getElementById('reorderMessage');
+    var sortable = new Sortable(list, {
+        animation: 150,
+        handle: '.drag-handle',
+        ghostClass: 'sortable-ghost',
+        dataIdAttr: 'data-id'
+    });
+    saveBtn.addEventListener('click', function() {
+        var order = sortable.toArray();
+        saveBtn.disabled = true;
+        msgEl.className = 'reorder-message';
+        msgEl.style.display = 'none';
+        fetch('{{ url_for("admin_events_reorder") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ order: order })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            msgEl.style.display = 'block';
+            if (data.success) {
+                msgEl.className = 'reorder-message success';
+                msgEl.textContent = 'Order saved.';
+            } else {
+                msgEl.className = 'reorder-message error';
+                msgEl.textContent = data.error || 'Failed to save.';
+            }
+        })
+        .catch(function() {
+            msgEl.style.display = 'block';
+            msgEl.className = 'reorder-message error';
+            msgEl.textContent = 'Network error.';
+        })
+        .finally(function() { saveBtn.disabled = false; });
+    });
+})();
+</script>
+{% endblock %}

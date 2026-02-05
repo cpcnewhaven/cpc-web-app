@@ -14,7 +14,7 @@ def export_announcements_csv():
     writer = csv.writer(output)
     
     # Write header
-    writer.writerow(['ID', 'Title', 'Description', 'Type', 'Category', 'Tag', 'Active', 'Super Featured', 'Date Entered', 'Featured Image'])
+    writer.writerow(['ID', 'Title', 'Description', 'Type', 'Category', 'Tag', 'Active', 'Show in Top Bar', 'Super Featured', 'Date Entered', 'Featured Image'])
     
     # Write data
     announcements = Announcement.query.all()
@@ -27,6 +27,7 @@ def export_announcements_csv():
             announcement.category or '',
             announcement.tag or '',
             announcement.active,
+            getattr(announcement, 'show_in_banner', False),
             announcement.superfeatured,
             announcement.date_entered.strftime('%Y-%m-%d %H:%M:%S') if announcement.date_entered else '',
             announcement.featured_image or ''

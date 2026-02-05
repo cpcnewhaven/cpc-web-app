@@ -6,7 +6,7 @@
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-    /* Liquid Glass Admin Theme */
+    /* Dark liquid blue glass – admin tables and subpages */
     body {
         background: var(--bg-gradient) !important;
         font-family: var(--font-primary) !important;
@@ -14,13 +14,14 @@
         min-height: 100vh;
     }
     
-    /* Navigation */
+    /* Navigation – match main site nav (CPC blue) */
     .navbar, .navbar-default {
-        background: var(--glass-bg) !important;
+        background: rgba(0, 50, 120, 0.25) !important;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: none !important;
-        box-shadow: var(--glass-shadow) !important;
+        border: 1px solid rgba(0, 50, 120, 0.4) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35) !important;
+        box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3) !important;
         border-radius: 0 !important;
     }
     
@@ -39,9 +40,10 @@
         color: var(--text-white) !important;
     }
     
-    /* Content Area */
+    /* Content area – dark blue glass */
     .container-fluid {
         padding: 2rem !important;
+        background: transparent !important;
     }
     
     /* Buttons */
@@ -77,18 +79,20 @@
         border-color: var(--cpc-blue-medium) !important;
     }
     
-    /* Tables */
+    /* Tables – dark liquid blue glass */
     .table {
-        background: var(--glass-white) !important;
+        background: rgba(0, 50, 120, 0.2) !important;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 80, 160, 0.4) !important;
         border-radius: var(--radius-md) !important;
         overflow: hidden;
-        box-shadow: var(--shadow-soft);
+        box-shadow: 0 8px 32px rgba(0, 50, 120, 0.25) !important;
     }
     
     .table thead {
-        background: var(--cpc-blue) !important;
+        background: rgba(0, 50, 120, 0.5) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
     
     .table thead th {
@@ -98,31 +102,31 @@
     }
     
     .table tbody tr {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 80, 160, 0.25);
     }
     
     .table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.1) !important;
+        background: rgba(0, 50, 120, 0.25) !important;
     }
     
     .table td {
-        color: rgba(255, 255, 255, 0.9) !important;
+        color: rgba(255, 255, 255, 0.92) !important;
         padding: 1rem !important;
     }
     
-    /* Forms */
+    /* Forms – dark blue glass inputs and wrappers */
     .form-control {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        background: rgba(0, 50, 120, 0.25) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
         border-radius: var(--radius-md) !important;
         color: var(--text-white) !important;
         padding: 0.75rem 1rem !important;
     }
     
     .form-control:focus {
-        background: rgba(255, 255, 255, 0.15) !important;
-        border-color: var(--cpc-blue) !important;
-        box-shadow: 0 0 0 3px rgba(0, 60, 109, 0.2) !important;
+        background: rgba(0, 50, 120, 0.35) !important;
+        border-color: var(--cpc-blue-light) !important;
+        box-shadow: 0 0 0 3px rgba(0, 80, 160, 0.3) !important;
         color: var(--text-white) !important;
     }
     
@@ -131,24 +135,25 @@
     }
     
     label {
-        color: rgba(255, 255, 255, 0.9) !important;
+        color: rgba(255, 255, 255, 0.95) !important;
         font-weight: 600 !important;
         margin-bottom: 0.5rem !important;
     }
     
-    /* Panels/Cards */
+    /* Panels / Cards – dark liquid blue glass */
     .panel, .card {
-        background: var(--glass-white) !important;
+        background: rgba(0, 50, 120, 0.2) !important;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--glass-border) !important;
+        border: 1px solid rgba(0, 80, 160, 0.4) !important;
         border-radius: var(--radius-lg) !important;
-        box-shadow: var(--glass-shadow) !important;
+        box-shadow: 0 8px 32px rgba(0, 50, 120, 0.25) !important;
         margin-bottom: 1.5rem !important;
     }
     
     .panel-heading, .card-header {
-        background: var(--cpc-blue) !important;
+        background: rgba(0, 50, 120, 0.45) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
         color: var(--text-white) !important;
         border: none !important;
         border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
@@ -162,33 +167,161 @@
     
     .panel-body, .card-body {
         background: transparent !important;
-        color: rgba(255, 255, 255, 0.9) !important;
+        color: rgba(255, 255, 255, 0.92) !important;
         padding: 1.5rem !important;
+    }
+    
+    /* List / index page wrapper (Flask-Admin model list) */
+    #content .row, .model-list {
+        background: transparent !important;
+    }
+    
+    /* Table wrapper (Flask-Admin list view) – dark blue glass */
+    .table-responsive {
+        background: rgba(0, 50, 120, 0.2) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 80, 160, 0.4) !important;
+        border-radius: var(--radius-md) !important;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 50, 120, 0.25) !important;
+    }
+    
+    .table-responsive .table {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    
+    /* Toolbar / filter bar above list */
+    .form-inline.form-group,
+    #filter_form .form-group,
+    .filter-form {
+        background: rgba(0, 50, 120, 0.15) !important;
+        border: 1px solid rgba(0, 80, 160, 0.3) !important;
+        border-radius: var(--radius-md) !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    /* Form actions (Save / Cancel bar on create/edit) */
+    .form-actions,
+    .form-actions.well {
+        background: rgba(0, 50, 120, 0.25) !important;
+        border: 1px solid rgba(0, 80, 160, 0.4) !important;
+        border-radius: var(--radius-md) !important;
+        padding: 1rem 1.5rem !important;
+    }
+    
+    /* Column form (edit inline) */
+    .column-form .form-control {
+        background: rgba(0, 50, 120, 0.25) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
+    }
+    
+    /* Default / secondary buttons */
+    .btn-default {
+        background: rgba(0, 50, 120, 0.3) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
+        color: var(--text-white) !important;
+    }
+    
+    .btn-default:hover {
+        background: rgba(0, 50, 120, 0.5) !important;
+        border-color: rgba(0, 80, 160, 0.6) !important;
+        color: var(--text-white) !important;
+    }
+    
+    /* Modal (delete confirmation, etc.) */
+    .modal-content {
+        background: rgba(0, 50, 120, 0.95) !important;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
+        border-radius: var(--radius-lg) !important;
+        color: var(--text-white) !important;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: var(--text-white) !important;
+    }
+    
+    .modal-body {
+        color: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .modal-footer .btn-default {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: var(--text-white) !important;
+    }
+    
+    /* Tabs (if used in admin) */
+    .nav-tabs {
+        border-color: rgba(0, 80, 160, 0.4) !important;
+    }
+    
+    .nav-tabs > li > a {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+    
+    .nav-tabs > li.active > a {
+        background: rgba(0, 50, 120, 0.3) !important;
+        border-color: rgba(0, 80, 160, 0.5) !important;
+        color: var(--text-white) !important;
+    }
+    
+    /* Checkbox and radio in forms */
+    .checkbox label,
+    .radio label {
+        color: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    /* Inline help text */
+    .help-block {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    /* List view: search and filter inputs */
+    #list_form input.form-control,
+    #filter_form input.form-control,
+    #list_form select.form-control,
+    #filter_form select.form-control {
+        background: rgba(0, 50, 120, 0.25) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
+        color: var(--text-white) !important;
+    }
+    
+    /* List view: header row (Create new, etc.) */
+    #content h1 small,
+    #content h1 .brand {
+        color: rgba(255, 255, 255, 0.85) !important;
     }
     
     /* Alerts */
     .alert {
-        background: rgba(255, 255, 255, 0.1) !important;
+        background: rgba(0, 50, 120, 0.25) !important;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(0, 80, 160, 0.4) !important;
         border-radius: var(--radius-md) !important;
         color: var(--text-white) !important;
     }
     
     .alert-success {
-        background: rgba(46, 204, 113, 0.2) !important;
+        background: rgba(46, 204, 113, 0.25) !important;
         border-color: rgba(46, 204, 113, 0.5) !important;
     }
     
     .alert-danger {
-        background: rgba(231, 76, 60, 0.2) !important;
+        background: rgba(231, 76, 60, 0.25) !important;
         border-color: rgba(231, 76, 60, 0.5) !important;
     }
     
     .alert-info {
-        background: rgba(52, 152, 219, 0.2) !important;
-        border-color: rgba(52, 152, 219, 0.5) !important;
+        background: rgba(0, 50, 120, 0.3) !important;
+        border-color: rgba(0, 80, 160, 0.5) !important;
     }
     
     /* Links */
@@ -201,22 +334,27 @@
         color: var(--text-white) !important;
     }
     
-    /* Breadcrumbs */
+    /* Breadcrumbs – dark blue glass */
     .breadcrumb {
-        background: rgba(255, 255, 255, 0.1) !important;
+        background: rgba(0, 50, 120, 0.2) !important;
+        border: 1px solid rgba(0, 80, 160, 0.3) !important;
         border-radius: var(--radius-md) !important;
         padding: 0.75rem 1rem !important;
     }
     
     .breadcrumb a {
-        color: rgba(255, 255, 255, 0.8) !important;
+        color: rgba(255, 255, 255, 0.9) !important;
     }
     
-    /* Pagination */
+    /* Pagination – dark blue glass */
     .pagination > li > a {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border-color: rgba(255, 255, 255, 0.2) !important;
+        background: rgba(0, 50, 120, 0.25) !important;
+        border-color: rgba(0, 80, 160, 0.4) !important;
         color: var(--text-white) !important;
+    }
+    
+    .pagination > li > a:hover {
+        background: rgba(0, 50, 120, 0.4) !important;
     }
     
     .pagination > li.active > a {
@@ -224,15 +362,15 @@
         border-color: var(--cpc-blue) !important;
     }
     
-    /* Model View Headers */
+    /* Model view headers and titles */
     h1, h2, h3 {
         color: var(--text-white) !important;
     }
     
-    /* Select2 dropdowns */
+    /* Select2 dropdowns – dark blue glass */
     .select2-container .select2-selection {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        background: rgba(0, 50, 120, 0.25) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
         border-radius: var(--radius-md) !important;
     }
     
@@ -245,11 +383,170 @@
         padding: 0.4rem 0.8rem !important;
         font-size: 0.85rem !important;
     }
+    
+    /* Flask-Admin form container (create/edit views) */
+    .admin-form, .form-horizontal {
+        background: rgba(0, 50, 120, 0.15) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 80, 160, 0.35) !important;
+        border-radius: var(--radius-lg) !important;
+        padding: 1.5rem !important;
+        box-shadow: 0 8px 32px rgba(0, 50, 120, 0.2) !important;
+    }
+    
+    /* Dropdown menu (action list) */
+    .dropdown-menu {
+        background: rgba(0, 50, 120, 0.95) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
+        border-radius: var(--radius-md) !important;
+    }
+    
+    .dropdown-menu > li > a {
+        color: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    .dropdown-menu > li > a:hover {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: var(--text-white) !important;
+    }
+    
+    /* Sidebar / menu (Flask-Admin category list) */
+    .navbar .dropdown-menu {
+        background: rgba(0, 50, 120, 0.95) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
+    }
+    
+    /* Well / box wrappers */
+    .well {
+        background: rgba(0, 50, 120, 0.2) !important;
+        border: 1px solid rgba(0, 80, 160, 0.4) !important;
+        border-radius: var(--radius-md) !important;
+    }
+    
+    textarea.form-control {
+        background: rgba(0, 50, 120, 0.25) !important;
+        border: 1px solid rgba(0, 80, 160, 0.5) !important;
+        color: var(--text-white) !important;
+    }
+    
+    /* ID builder (toggle-based ID) */
+    .id-builder-panel {
+        background: rgba(0, 50, 120, 0.25);
+        border: 1px solid rgba(0, 80, 160, 0.4);
+        border-radius: var(--radius-md);
+        padding: 1rem 1.25rem;
+        margin-bottom: 1rem;
+    }
+    .id-builder-panel .id-builder-title { color: rgba(255,255,255,0.95); font-weight: 600; margin-bottom: 0.75rem; font-size: 0.95rem; }
+    .id-builder-panel .id-builder-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 0.5rem; }
+    .id-builder-panel .id-builder-row:last-child { margin-bottom: 0; }
+    .id-builder-panel label { margin: 0 0.25rem 0 0; font-size: 0.85rem; color: rgba(255,255,255,0.85); }
+    .id-builder-panel select {
+        background: rgba(0, 50, 120, 0.4);
+        border: 1px solid rgba(0, 80, 160, 0.5);
+        border-radius: 4px;
+        color: #fff;
+        padding: 0.35rem 0.5rem;
+        font-size: 0.9rem;
+    }
+    .id-builder-panel .btn-apply-id {
+        background: var(--cpc-blue);
+        color: #fff;
+        border: none;
+        padding: 0.4rem 0.9rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
+    .id-builder-panel .btn-apply-id:hover { background: var(--cpc-blue-dark); }
+    .id-builder-panel .id-preview { font-size: 0.85rem; color: rgba(255,255,255,0.75); margin-left: 0.5rem; }
 </style>
+<script>
+(function() {
+    function slugify(s) {
+        return (s || '').toString().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'item';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var idInput = document.querySelector('input[name="id"]');
+        if (!idInput || idInput.disabled || idInput.readOnly) return;
+        var form = idInput.closest('form');
+        if (!form) return;
+        var now = new Date();
+        var years = [];
+        for (var y = now.getFullYear() - 2; y <= now.getFullYear() + 1; y++) years.push(y);
+        var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+        var types = [
+            ['announcement','Announcement'],['event','Event'],['ongoing','Ongoing'],['sermon','Sermon'],
+            ['gallery','Gallery'],['highlight','Highlight'],['weather','Weather'],['parking','Parking'],['alert','Alert'],['special','Special']
+        ];
+        var categories = [
+            ['general','General'],['worship','Worship'],['education','Education'],['fellowship','Fellowship'],
+            ['missions','Missions'],['youth','Youth'],['children','Children'],['prayer','Prayer']
+        ];
+        var slugs = [
+            ['','— optional —'],['welcome','welcome'],['lunch','lunch'],['sunday-school','sunday-school'],
+            ['worship','worship'],['dinner','dinner'],['prayer','prayer'],['special','special'],['brunch','brunch'],
+            ['meeting','meeting'],['class','class'],['service','service'],['retreat','retreat']
+        ];
+        var panel = document.createElement('div');
+        panel.className = 'id-builder-panel';
+        panel.innerHTML =
+            '<div class="id-builder-title">Build ID from options (no typing)</div>' +
+            '<div class="id-builder-row">' +
+            '<label>Year</label><select id="idb-year">' + years.map(function(y){ return '<option value="'+y+'"'+(y===now.getFullYear()?' selected':'')+'>'+y+'</option>'; }).join('') + '</select>' +
+            '<label>Month</label><select id="idb-month">' + (function(){ var cm = (now.getMonth()+1)<10 ? '0'+(now.getMonth()+1) : ''+(now.getMonth()+1); return months.map(function(m){ return '<option value="'+m+'"'+(m===cm?' selected':'')+'>'+m+'</option>'; }).join(''); })() + '</select>' +
+            '<label>Type</label><select id="idb-type">' + types.map(function(t){ return '<option value="'+t[0]+'">'+t[1]+'</option>'; }).join('') + '</select>' +
+            '<label>Category</label><select id="idb-cat">' + categories.map(function(c){ return '<option value="'+c[0]+'">'+c[1]+'</option>'; }).join('') + '</select>' +
+            '<label>Slug</label><select id="idb-slug">' + slugs.map(function(s){ return '<option value="'+s[0]+'">'+s[1]+'</option>'; }).join('') + '</select>' +
+            '<button type="button" class="btn-apply-id" id="idb-apply">Apply as ID</button>' +
+            '<span class="id-preview" id="idb-preview"></span></div>';
+        idInput.parentNode.insertBefore(panel, idInput);
+        function buildId() {
+            var y = document.getElementById('idb-year').value;
+            var m = document.getElementById('idb-month').value;
+            var t = document.getElementById('idb-type').value;
+            var c = document.getElementById('idb-cat').value;
+            var s = document.getElementById('idb-slug').value;
+            var id = y + '-' + m + '-' + t + '-' + c;
+            if (s) id += '-' + s;
+            return id;
+        }
+        function updatePreview() {
+            var el = document.getElementById('idb-preview');
+            if (el) el.textContent = '→ ' + buildId();
+        }
+        document.getElementById('idb-apply').addEventListener('click', function() {
+            idInput.value = buildId();
+            idInput.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        ['idb-year','idb-month','idb-type','idb-cat','idb-slug'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.addEventListener('change', updatePreview);
+        });
+        updatePreview();
+        var titleInput = form.querySelector('input[name="title"]');
+        if (titleInput) {
+            titleInput.addEventListener('blur', function() {
+                var slug = slugify(titleInput.value);
+                if (slug && slug !== 'item') {
+                    var sel = document.getElementById('idb-slug');
+                    for (var i = 0; i < sel.options.length; i++) {
+                        if (sel.options[i].value === slug) { sel.selectedIndex = i; updatePreview(); return; }
+                    }
+                    var opt = document.createElement('option'); opt.value = slug; opt.textContent = slug; sel.appendChild(opt);
+                    sel.selectedIndex = sel.options.length - 1;
+                    updatePreview();
+                }
+            });
+        }
+    });
+})();
+</script>
 {% endblock %}
 
 {% block brand %}
-<a class="navbar-brand" href="{{ admin_view.admin.url }}">
+<a class="navbar-brand" href="/admin/dashboard/">
     <i class="fas fa-church"></i> CPC Admin
 </a>
 {% endblock %}

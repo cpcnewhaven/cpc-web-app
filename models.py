@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class Announcement(db.Model):
     __tablename__ = 'announcements'
     
-    id = db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.String(60), primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
@@ -15,13 +15,14 @@ class Announcement(db.Model):
     category = db.Column(db.String(50))
     tag = db.Column(db.String(50))
     superfeatured = db.Column(db.Boolean, default=False)
+    show_in_banner = db.Column(db.Boolean, default=False)  # show in top yellow bar (weather, parking, etc.)
     featured_image = db.Column(db.String(500))
     image_display_type = db.Column(db.String(50))  # poster, cover, etc.
 
 class Sermon(db.Model):
     __tablename__ = 'sermons'
     
-    id = db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.String(60), primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     author = db.Column(db.String(100), nullable=False)
     scripture = db.Column(db.String(200))
@@ -60,7 +61,7 @@ class PodcastSeries(db.Model):
 class GalleryImage(db.Model):
     __tablename__ = 'gallery_images'
     
-    id = db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.String(60), primary_key=True)
     name = db.Column(db.String(200))
     url = db.Column(db.String(500), nullable=False)
     size = db.Column(db.String(50))
@@ -72,13 +73,14 @@ class GalleryImage(db.Model):
 class OngoingEvent(db.Model):
     __tablename__ = 'ongoing_events'
     
-    id = db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.String(60), primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
     active = db.Column(db.Boolean, default=True)
     type = db.Column(db.String(50))
     category = db.Column(db.String(50))
+    sort_order = db.Column(db.Integer, default=0)  # lower = first; drag to reorder
 
 class Paper(db.Model):
     __tablename__ = 'papers'
