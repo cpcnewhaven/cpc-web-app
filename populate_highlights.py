@@ -81,6 +81,7 @@ def populate_database():
                     existing.superfeatured = item.get('superfeatured', False)
                     existing.featured_image = item.get('featuredImage')
                     existing.image_display_type = item.get('imageDisplayType')
+                    existing.show_in_banner = parse_active(item.get('showInBanner', False))
                     
                     updated_count += 1
                     print(f"♻️  Updated: {announcement_id} - {item.get('title', 'No title')[:50]}")
@@ -97,7 +98,8 @@ def populate_database():
                         tag=item.get('tag'),
                         superfeatured=item.get('superfeatured', False),
                         featured_image=item.get('featuredImage'),
-                        image_display_type=item.get('imageDisplayType')
+                        image_display_type=item.get('imageDisplayType'),
+                        show_in_banner=parse_active(item.get('showInBanner', False)),
                     )
                     
                     db.session.add(announcement)

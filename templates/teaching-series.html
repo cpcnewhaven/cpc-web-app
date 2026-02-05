@@ -354,6 +354,23 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
+.series-description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    margin: 0.5rem 0 0.75rem 0;
+}
+
+.series-external-link {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #5AC8FA;
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+}
+.series-external-link:hover { color: #7dd8ff; }
+
 .series-authors {
     display: flex;
     flex-wrap: wrap;
@@ -947,6 +964,7 @@ function renderSeries() {
 
 function renderSeriesCard(series, isSundaySchool) {
     const viewClass = currentView === 'list' ? 'list-view' : '';
+    const hasExternalUrl = series.external_url;
     const sermonsHtml = series.sermons.slice(0, 10).map(sermon => `
         <div class="series-sermon-item">
             <div class="sermon-info">
@@ -965,9 +983,9 @@ function renderSeriesCard(series, isSundaySchool) {
         </div>
     `).join('');
 
-    const dateRange = series.date_range.min && series.date_range.max 
+    const dateRange = series.date_range && series.date_range.min && series.date_range.max
         ? `${series.date_range.min} to ${series.date_range.max}`
-        : series.date_range.min || series.date_range.max || 'Date range unavailable';
+        : (series.date_range && (series.date_range.min || series.date_range.max)) ? (series.date_range.min || series.date_range.max) : (series.count === 0 && hasExternalUrl ? 'Ongoing' : 'Date range unavailable');
 
     return `
         <div class="series-card ${viewClass}">
@@ -987,14 +1005,16 @@ function renderSeriesCard(series, isSundaySchool) {
                 </div>
                 <div class="series-count">${series.count}</div>
             </div>
+            ${(series.description && hasExternalUrl) ? `<p class="series-description">${series.description}</p>` : ''}
+            ${hasExternalUrl ? `<a href="${series.external_url}" class="series-external-link">View ${series.name} →</a>` : ''}
             
-            ${series.authors.length > 0 ? `
+            ${series.authors && series.authors.length > 0 ? `
                 <div class="series-authors">
                     ${series.authors.map(author => `<span class="author-tag">${author}</span>`).join('')}
                 </div>
             ` : ''}
             
-            ${series.scriptures.length > 0 ? `
+            ${series.scriptures && series.scriptures.length > 0 ? `
                 <div class="series-scriptures">
                     ${series.scriptures.slice(0, 5).map(scripture => 
                         `<span class="scripture-tag">${scripture}</span>`

@@ -4,9 +4,9 @@
 
 {% block head %}
 <style>
-    /* ===== UNIFIED DARK THEME (matching Teaching Series) ===== */
+    /* ===== UNIFIED BLUE THEME (same blue as Teaching Series / Resources) ===== */
     .section-dark {
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 20, 35, 0.95) 100%);
+        background: var(--bg-gradient);
     }
     .section-heading {
         font-size: 2rem;
@@ -556,7 +556,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!a.superfeatured && b.superfeatured) return 1;
             return new Date(b.dateEntered) - new Date(a.dateEntered);
         });
-        var shown = active.slice(0, 6);
+        var shown = active.slice(0, 8);
         if (shown.length === 0) {
             container.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);grid-column:1/-1;">No highlights at this time.</p>';
             return;

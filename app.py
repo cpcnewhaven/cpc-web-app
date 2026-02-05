@@ -1328,7 +1328,8 @@ def api_archive():
                     'type': 'announcement',
                     'title': a.title,
                     'date': a.date_entered.strftime('%Y-%m-%d'),
-                    'category': a.category
+                    'category': a.category,
+                    'url': url_for('highlights', _external=False),
                 })
         
         # Get old podcast episodes
@@ -1556,7 +1557,7 @@ class AnnouncementView(AuthenticatedModelView):
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered')
     column_default_sort = ('date_entered', True)
     
-    form_columns = ('id', 'title', 'description', 'type', 'category', 'tag', 'active', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('title', 'description', 'type', 'category', 'tag', 'active', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -1573,18 +1574,8 @@ class AnnouncementView(AuthenticatedModelView):
     
     form_widget_args = {
         'description': {'rows': 10, 'style': 'width: 100%'},
-        'id': {
-            'placeholder': 'Optional — click Generate ID or fill manually',
-        },
         'featured_image': {'placeholder': 'https://example.com/image.jpg'},
         'image_display_type': {'placeholder': 'poster or leave empty'}
-    }
-
-    form_args = {
-        'id': {
-            'validators': [Optional()],
-            'description': 'Optional but recommended for long-term organization.'
-        }
     }
     
     column_labels = {
@@ -1618,20 +1609,12 @@ class AnnouncementView(AuthenticatedModelView):
     }
 
     @staticmethod
-    def _slugify(value):
-        text = (value or '').strip().lower()
-        text = re.sub(r'[^a-z0-9]+', '-', text)
-        text = re.sub(r'-+', '-', text).strip('-')
-        return text or 'item'
-
-    @staticmethod
-    def _build_default_id(title, content_type, category):
+    def _build_default_id(extra_suffix=''):
+        """Generate an ID from current date and time: YYYY-MM-DD-HHMMSS plus optional suffix for uniqueness."""
         now = datetime.utcnow()
-        type_part = (content_type or 'announcement').strip().lower() or 'announcement'
-        category_part = (category or 'general').strip().lower() or 'general'
-        slug = AnnouncementView._slugify(title)
-        base = f"{now.year}-{now.month:02d}-{type_part}-{category_part}-{slug}"
-        return base[:60]
+        base = f"{now.year}-{now.month:02d}-{now.day:02d}-{now.hour:02d}{now.minute:02d}{now.second:02d}"
+        suffix = f"{now.microsecond // 10000:02x}" if now.microsecond else "00"
+        return f"{base}-{suffix}{extra_suffix}"
 
     def on_form_prefill(self, form, id):
         announcement = self.get_one(id)
@@ -1653,9 +1636,17 @@ class AnnouncementView(AuthenticatedModelView):
             model.type = banner_choice
         else:
             model.show_in_banner = False
-        if not (model.id or '').strip():
-            title_source = model.title or model.description or 'item'
-            model.id = self._build_default_id(title_source, model.type, model.category)
+        if is_created or not (model.id or '').strip():
+            import random
+            candidate = self._build_default_id()
+            extra = 0
+            while Announcement.query.get(candidate) is not None:
+                candidate = self._build_default_id(str(random.randint(0, 15)))
+                extra += 1
+                if extra > 100:
+                    candidate = self._build_default_id(str(random.getrandbits(32))[:8])
+                    break
+            model.id = candidate
     
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):

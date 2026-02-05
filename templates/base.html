@@ -258,50 +258,54 @@
         <!-- Fixed Left Dashboard (Desktop) -->
         <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data x-show="$store.dash.showLeftSidebar">
             <div class="dashboard-section">
-                <div class="dashboard-title">Quick Search</div>
+                <div class="dashboard-title">This Sunday</div>
+                <div class="dashboard-note">
+                    <div class="text-white/95 font-semibold text-sm">10:30am Worship</div>
+                    <div class="text-white/70 text-xs mt-0.5">135 Whitney Ave, New Haven</div>
+                    <a href="https://maps.google.com/?q=135+Whitney+Ave+New+Haven+CT" target="_blank" rel="noopener" class="text-blue-300 hover:text-blue-200 text-xs mt-0.5 inline-block">Get Directions →</a>
+                </div>
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Search</div>
                 <form @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
                     <input x-ref="leftSearch" type="search" placeholder="Search site..."
-                        class="w-full px-3 py-2 rounded-md bg-white/80 text-gray-800 focus:outline-none"
+                        class="w-full px-2.5 py-1.5 rounded-md bg-white/80 text-gray-800 focus:outline-none text-sm"
                         autocomplete="off">
                 </form>
             </div>
             <div class="dashboard-section">
-                <div class="dashboard-title">Quick Links</div>
+                <div class="dashboard-title">Watch & Listen</div>
                 <div class="quick-links-grid">
-                    <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i><span>Home</span></a>
-                    <a href="{{ url_for('live') }}"><i class="fa-solid fa-video"></i><span>Live Stream</span></a>
-                    <a href="{{ url_for('highlights') }}"><i class="fa-solid fa-star"></i><span>Highlights</span></a>
-                    <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
-                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>News</span></a>
+                    <a href="{{ url_for('live') }}"><i class="fa-solid fa-video"></i><span>Live</span></a>
                     <a href="{{ url_for('sermons') }}"><i class="fa-solid fa-book-bible"></i><span>Sermons</span></a>
                     <a href="{{ url_for('podcasts') }}"><i class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
-                    <a href="{{ url_for('teaching_series') }}"><i class="fa-solid fa-book-open"></i><span>Teaching Series</span></a>
-                    <a href="{{ url_for('search') }}"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
-                    <a href="{{ url_for('archive') }}"><i class="fa-solid fa-box-archive"></i><span>Archive</span></a>
-                    <a href="{{ url_for('give') }}"><i class="fa-solid fa-hand-holding-heart"></i><span>Give</span></a>
-                    <a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
+                    <a href="{{ url_for('teaching_series') }}"><i class="fa-solid fa-book-open"></i><span>Series</span></a>
                 </div>
             </div>
             <div class="dashboard-section">
-                <div class="dashboard-title">Account</div>
-                <div class="text-white/90" x-data>
-                    <template x-if="$store.dash.userName">
-                        <div class="flex items-center justify-between gap-2 text-sm">
-                            <span class="truncate">Hi, <strong x-text="$store.dash.userName"></strong></span>
-                            <button class="glass-button px-2 py-1 text-xs" @click="$store.dash.userName=''; $store.dash.save()">Sign out</button>
-                        </div>
-                    </template>
-                    <template x-if="!$store.dash.userName">
-                        <div class="flex items-center justify-between gap-2">
-                            <input x-ref="userInput" type="text" placeholder="Your name"
-                                   class="px-2 py-1 rounded-md bg-white/80 text-gray-800 focus:outline-none text-sm"
-                                   style="min-width: 0; width: 65%;">
-                            <button class="glass-button px-2 py-1 text-xs" @click="$store.dash.userName=$refs.userInput.value.trim(); $store.dash.save()">Sign in</button>
-                        </div>
-                    </template>
-                    <div class="mt-2" x-show="$store.dash.showAdminCTA">
-                        <a href="/admin/dashboard/" class="glass-button w-full block text-center text-sm py-2">Admin</a>
-                    </div>
+                <div class="dashboard-title">Stay Connected</div>
+                <div class="quick-links-grid">
+                    <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
+                    <a href="{{ url_for('highlights') }}"><i class="fa-solid fa-star"></i><span>Highlights</span></a>
+                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>News</span></a>
+                    <a href="{{ url_for('community') }}"><i class="fa-solid fa-users"></i><span>Community</span></a>
+                </div>
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Get Involved</div>
+                <div class="quick-links-grid">
+                    <a href="{{ url_for('give') }}"><i class="fa-solid fa-hand-holding-heart"></i><span>Give</span></a>
+                    <a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
+                    <a href="{{ url_for('about') }}"><i class="fa-solid fa-church"></i><span>Visit</span></a>
+                    <a href="{{ url_for('resources') }}"><i class="fa-solid fa-book"></i><span>Resources</span></a>
+                </div>
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-title">Follow Us</div>
+                <div class="flex gap-2">
+                    <a href="https://www.facebook.com/caboruschurch" target="_blank" rel="noopener" class="text-white/70 hover:text-white text-base"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" class="text-white/70 hover:text-white text-base"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@caboruschurch" target="_blank" rel="noopener" class="text-white/70 hover:text-white text-base"><i class="fa-brands fa-youtube"></i></a>
                 </div>
             </div>
         </aside>

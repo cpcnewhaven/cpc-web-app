@@ -58,12 +58,78 @@
     {
       "id": "2026-006",
       "title": "Youth Winter Camp | February 28 | 10am-2pm",
-      "description": "Join students from across southern New England in a joint youth event with our Presbytery! We will be in Whitinsville Christian School in eastern Massachusetts for a half day of fun, fellowship, food and worship. Cost is $10 per student. Age range, 6th to 12th grade. Be on the lookout for registration. If you have any questions, contact Pastor Jerry.",
-      "dateEntered": "2026-01-23",
+      "description": "Join students from across southern New England in a joint youth event with our Presbytery! We will be in Whitinsville Christian School in eastern Massachusetts for a half day of team games, lunch, worship, and small groups. Cost is $10 per student. Age range, 6th to 12th grade. If you are interested and wish to join, contact Pastor Jerry.",
+      "dateEntered": "2026-02-05",
       "active": "true",
       "type": "event",
       "category": "event",
       "tag": "youth",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-009",
+      "title": "Moms Group | March 3 | 11am",
+      "description": "Moms Group meets for fellowship and encouragement. Join us at 11am.",
+      "dateEntered": "2026-02-05",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "groups",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-010",
+      "title": "Pastor Craig Drop-in Office Hours | Fridays 7:30am",
+      "description": "Drop in for a casual time of discussion, Q&A, prayer, coffee, or tea. No appointment needed. Fridays 7:30am–10:30am.",
+      "dateEntered": "2026-02-05",
+      "active": "true",
+      "type": "ongoing",
+      "category": "ongoing",
+      "tag": "pastor",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-011",
+      "title": "SLB Meeting | March 8 | 7pm",
+      "description": "Shepherd Leaders Board meeting. Contact the church office for details.",
+      "dateEntered": "2026-02-05",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "meeting",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-012",
+      "title": "CPC Shepherd Leaders | March 15 | 6:30pm",
+      "description": "CPC Shepherd Leaders gathering at 6:30pm.",
+      "dateEntered": "2026-02-05",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "leadership",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-013",
+      "title": "Spring Work Day | March 22",
+      "description": "Join your church family as we take care of our grounds and building. Projects for all skill levels. A great time of service and fellowship.",
+      "dateEntered": "2026-02-05",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "service",
+      "superfeatured": true
+    },
+    {
+      "id": "2026-014",
+      "title": "Kid's Easter Egg Hunt | March 29",
+      "description": "Join us for our Easter Egg Hunt for children. All kids welcome to participate!",
+      "dateEntered": "2026-02-05",
+      "active": "true",
+      "type": "event",
+      "category": "event",
+      "tag": "children",
       "superfeatured": true
     },
     {
