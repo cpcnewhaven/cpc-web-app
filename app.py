@@ -12,6 +12,7 @@ import os
 import requests
 import feedparser
 import json
+import random
 import re
 import sqlite3
 from ics import Calendar, Event
@@ -150,6 +151,14 @@ def highlights():
 @app.route('/community')
 def community():
     return render_template('community.html')
+
+@app.route('/sundays')
+def sundays():
+    return render_template('sundays.html')
+
+@app.route('/plan-a-vist')
+def plan_a_vist():
+    return render_template('plan-a-vist.html')
 
 @app.route('/give')
 def give():
@@ -1610,11 +1619,12 @@ class AnnouncementView(AuthenticatedModelView):
 
     @staticmethod
     def _build_default_id(extra_suffix=''):
-        """Generate an ID from current date and time: YYYY-MM-DD-HHMMSS plus optional suffix for uniqueness."""
+        """Auto-generate ID from current UTC date and time. Convention: YYYY-MM-DD-HHMMSS-XX (sortable, unique, URL-safe)."""
         now = datetime.utcnow()
-        base = f"{now.year}-{now.month:02d}-{now.day:02d}-{now.hour:02d}{now.minute:02d}{now.second:02d}"
-        suffix = f"{now.microsecond // 10000:02x}" if now.microsecond else "00"
-        return f"{base}-{suffix}{extra_suffix}"
+        date_part = f"{now.year}-{now.month:02d}-{now.day:02d}"
+        time_part = f"{now.hour:02d}{now.minute:02d}{now.second:02d}"
+        ms_hex = f"{now.microsecond // 10000:02x}" if now.microsecond else "00"
+        return f"{date_part}-{time_part}-{ms_hex}{extra_suffix}"
 
     def on_form_prefill(self, form, id):
         announcement = self.get_one(id)
@@ -1637,7 +1647,6 @@ class AnnouncementView(AuthenticatedModelView):
         else:
             model.show_in_banner = False
         if is_created or not (model.id or '').strip():
-            import random
             candidate = self._build_default_id()
             extra = 0
             while Announcement.query.get(candidate) is not None:

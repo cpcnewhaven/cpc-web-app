@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Plan a Visit - CPC New Haven{% endblock %}
+
+{% block content %}
+<div class="plan-visit-page compact-page">
+    <div class="compact-content">
+        <div class="plan-visit-hero compact-hero">
+            <h1>Plan a Visit</h1>
+            <p>We would love to welcome you to Christ Presbyterian Church</p>
+        </div>
+
+        <div class="visit-cta-row">
+            <a class="visit-cta" href="{{ url_for('sundays') }}">First Time Sundays</a>
+            <a class="visit-cta" href="#what-to-expect">What to Expect</a>
+        </div>
+
+        <section id="what-to-expect" class="visit-section">
+            <h2>What to Expect</h2>
+            <p>
+                Aspiring to be a gospel-centered community, we talk a lot about making this a safe place
+                for real-time sinful people to be in journey with Christ. There is no limit to God's grace
+                as accomplished for us by Christ.
+            </p>
+            <p>
+                And aspiring to not just learn about Christ and the good news of the gospel we talk a lot
+                about participating in Christ's presence. We do this both in the mystery of one-anothering
+                in the power of the Holy Spirit, and in the mystery of sacramental worship wherein we do
+                the gospel in the ancient temple pattern of four movements.
+            </p>
+            <p>
+                Through it all, Christ is in the midst of us by the Holy Spirit as our prophet, priest and
+                king. So we hope you will join us and enjoy our journey together in Christ.
+            </p>
+            <div class="visit-highlight">
+                <strong>Welcome:</strong> You are safe, loved, and invited to come as you are as we walk
+                with Christ together.
+            </div>
+        </section>
+
+        <section class="visit-section">
+            <h2>Planning Your First Visits</h2>
+            <p>
+                Below you will find relevant information for planning your first few visits to CPC. We
+                want you to be as comfortable as possible worshiping with us and hope the following helps
+                make your visit logistically smooth and open to knowing our community.
+            </p>
+        </section>
+
+        <section class="visit-section">
+            <h2>Visitor Guide</h2>
+            <ul class="visit-list">
+                <li class="visit-list-item">
+                    <h3>Directions and Time</h3>
+                    <div class="location-grid">
+                        <div>
+                            <p><strong>Address:</strong> 135 Whitney Avenue, New Haven, CT 06510</p>
+                            <p>
+                                We are located next to the Yale School of Management, at the corner of
+                                Whitney Ave. and Bradley St.
+                            </p>
+                            <p>
+                                <strong>Sunday Morning Worship:</strong> We hold one service with communion
+                                at 10:30am. 
+                            </p>
+                          
+                            <p>
+                                <a class="visit-link" href="https://maps.google.com/?q=135+Whitney+Ave+New+Haven+CT+06510" target="_blank" rel="noopener">Get directions in Google Maps</a>
+                            </p>
+                        </div>
+                        <div class="map-frame">
+                            <iframe
+                                src="https://www.google.com/maps?q=135+Whitney+Ave+New+Haven+CT+06510&output=embed"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                </li>
+                <li class="visit-list-item">
+                    <h3>What to Wear</h3>
+                    <p>
+                        You will find a wide range of attire, from t-shirts and jeans to the occasional
+                        bowtie. Wear what makes you feel comfortable worshiping God.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>Parking</h3>
+                    <p>
+                        There is parking available on our property, however, there is not enough for everyone.
+                        Additional parking can be found on Bradley Street beside our building, on Whitney before
+                        you get to our building coming from Trumbull St./Downtown, and at two Yale parking lots
+                        north of the church on Whitney Ave. Lot 16: Gibbs Lab at Whitney Ave. and Humphrey St.,
+                        and the Whitney Ave. Garage located behind 221 Whitney Ave. For safety, exit our lot
+                        on the Bradley St. side only.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>Worship</h3>
+                    <p>
+                        As you enter the sanctuary, you will be greeted by folks who will hand you a worship
+                        bulletin that will direct you through every step of our service including explanations
+                        of why we are carrying out each element.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>A Safe Place</h3>
+                    <p>
+                        People often tell us that they have found CPC to be a very friendly place (what most
+                        people who stick around will say initially attracted them to come back a second time).
+                        But more than friendly, it is often talked about as a safe place where people can be in
+                        route no matter what the location of your spiritual journey.
+                    </p>
+                    <p>
+                        The spirituality of CPC is very much about grace as this not only makes it okay to be
+                        morally flawed and/or broken in some way, but expected even. There will be people there
+                        that are not yet Christians, people who are Christians and left the church and are
+                        venturing back into the church, and even people who have been going to church for a long
+                        time but are finding that the closer they get to God the more they see how flawed they
+                        are in comparison, and how much more loved and accepted than they ever expected possible
+                        because of what Christ accomplishes for us.
+                    </p>
+                    <p>
+                        So come as you are, both outwardly and inwardly, and let happen what happens. It is safe.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>Children</h3>
+                    <p>
+                        We love our children and enjoy having them in worship. That being said, we do have a
+                        quality and carefully managed childcare located in the children's wing of the church
+                        (at end of foyer) for any and all children who at any time during the service are
+                        getting antsy or are distracting their parents from worship. It is intentionally a
+                        free time for guided play to allow children to release some energy before they rejoin
+                        their parents after the sermon.
+                    </p>
+                    <p>
+                        The booklet "Together in God's Presence: Children and Families Together in Covenant
+                        Worship" explains our philosophy of children in relation to worshiping together with
+                        some very practical ways to help your children experience worship for themselves even
+                        if they do not understand much of it.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>Welcome Cards</h3>
+                    <p>
+                        Please fill out a Welcome Card so that we have an opportunity to greet you and follow up
+                        in case you have any questions. There is space to also include a prayer request or request
+                        to speak to a pastor about a spiritual concern.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>Children's Sunday School and Adult Sunday Studies</h3>
+                    <p>
+                        Before worship during the academic year you are welcome to join us at 9:30am for our
+                        School of Discipleship. During this time, children age 2.5 through high school are
+                        invited to participate in age-specific Sunday School classes located throughout the
+                        church building.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>Fellowship Lunch</h3>
+                    <p>
+                        On most Sundays throughout the year our worship service is followed by a shared
+                        fellowship meal at about 12pm. The meal is free to visitors and an enjoyable way to get
+                        to know some people while eating a catered meal.
+                    </p>
+                </li>
+                <li class="visit-list-item">
+                    <h3>Enjoy</h3>
+                    <p>
+                        Please pick up our Welcome Brochure and other materials from the foyer for more information
+                        about our church and programs. Feel free to ask anyone questions about the service, our
+                        programs, our people, or our faith. We are happy to help.
+                    </p>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>
+{% endblock %}

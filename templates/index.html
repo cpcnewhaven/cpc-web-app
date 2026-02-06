@@ -108,7 +108,7 @@
         position: absolute;
         inset: 0;
         background-size: cover;
-        background-position: center;
+        background-position: center 20%;
         opacity: 0;
         transition: opacity 1.2s ease-in-out;
         z-index: 0;
@@ -120,7 +120,7 @@
     .hero-banner .banner-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.35), rgba(0,0,0,0.55));
+        background: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0.55), rgba(0,0,0,0.8));
         z-index: 2;
         pointer-events: none;
     }
@@ -132,9 +132,11 @@
     .hero-banner .splash-content h1,
     .hero-banner .splash-content h2 {
         color: rgba(255, 255, 255, 0.98);
+        text-shadow: 0 3px 14px rgba(0, 0, 0, 0.6);
     }
     .hero-banner .splash-content p {
         color: rgba(255, 255, 255, 0.85);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
     .hero-banner .banner-dots {
         position: absolute;
@@ -258,6 +260,7 @@
 
     @media (max-width: 768px) {
         .hero-banner { min-height: 320px; }
+        .hero-banner .banner-slide { background-position: center 15%; }
     }
 </style>
 {% endblock %}
@@ -277,7 +280,7 @@
         <p>Everyone is truly welcomed into God's presence because there is no limit to God's grace as accomplished for us by Christ.</p>
         <div class="splash-buttons mt-4 md:mt-6">
             <a href="{{ url_for('live') }}" class="btn btn-primary">Watch Live</a>
-            <a href="{{ url_for('about') }}" class="btn btn-secondary">Plan a Visit</a>
+            <a href="{{ url_for('plan_a_vist') }}" class="btn btn-secondary">Plan a Visit</a>
             <a href="{{ url_for('what_we_believe') }}" class="btn btn-secondary">What We Believe</a>
             <a href="{{ url_for('sermons') }}" class="btn btn-secondary">Latest Sermon</a>
         </div>
@@ -371,7 +374,7 @@
             <div class="dark-card p-6">
                 <h3 class="text-lg font-semibold mb-2">Plan a Visit</h3>
                 <p class="dark-card-text mb-4">Service times, parking tips, and what to expect on Sunday.</p>
-                <a href="{{ url_for('about') }}" class="btn btn-primary">Start Here</a>
+                <a href="{{ url_for('plan_a_vist') }}" class="btn btn-primary">Start Here</a>
             </div>
             <div class="dark-card p-6">
                 <h3 class="text-lg font-semibold mb-2">What We Believe</h3>
