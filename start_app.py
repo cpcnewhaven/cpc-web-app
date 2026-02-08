@@ -20,9 +20,6 @@ def check_dependencies():
         import requests
         import feedparser
         import schedule
-        import pandas
-        import matplotlib
-        import seaborn
         print("✅ All dependencies are installed")
         return True
     except ImportError as e:

@@ -26,8 +26,11 @@ def get_analytics():
     """Lazy-load analytics to avoid heavy imports at startup."""
     global analytics
     if analytics is None:
-        from podcast_analytics import PodcastAnalytics
-        analytics = PodcastAnalytics()
+        try:
+            from podcast_analytics import PodcastAnalytics
+            analytics = PodcastAnalytics()
+        except ImportError:
+            analytics = None
     return analytics
 
 @enhanced_api.route('/api/search/sermons')

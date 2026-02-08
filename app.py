@@ -107,9 +107,12 @@ def ensure_db_columns():
     This function fills that gap for both SQLite and PostgreSQL.
     """
     # Map of table -> list of (column_name, sqlite_type, pg_type)
+    # Every column that was ever added AFTER an initial deploy must appear here
+    # so that existing PostgreSQL/SQLite tables get the column via ALTER TABLE.
     MIGRATIONS = {
         'announcements': [
             ('show_in_banner', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
+            ('featured_image', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('image_display_type', 'VARCHAR(50)', 'VARCHAR(50)'),
         ],
         'ongoing_events': [
@@ -1783,10 +1786,10 @@ class SermonView(AuthenticatedModelView):
     form_columns = ('title', 'author', 'scripture', 'date', 'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url')
     form_extra_fields = {
         'scripture': TextAreaField('Scripture', widget=TextArea()),
-        'spotify_url': URLField('Spotify URL', validators=[URL()]),
-        'youtube_url': URLField('YouTube URL', validators=[URL()]),
-        'apple_podcasts_url': URLField('Apple Podcasts URL', validators=[URL()]),
-        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[URL()])
+        'spotify_url': URLField('Spotify URL', validators=[Optional(), URL()]),
+        'youtube_url': URLField('YouTube URL', validators=[Optional(), URL()]),
+        'apple_podcasts_url': URLField('Apple Podcasts URL', validators=[Optional(), URL()]),
+        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()])
     }
     
     form_widget_args = {
@@ -1855,10 +1858,10 @@ class PodcastEpisodeView(AuthenticatedModelView):
     form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url')
     form_extra_fields = {
         'scripture': TextAreaField('Scripture', widget=TextArea()),
-        'link': URLField('Episode Link', validators=[URL()]),
-        'listen_url': URLField('Listen URL', validators=[URL()]),
-        'handout_url': URLField('Handout URL', validators=[URL()]),
-        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[URL()])
+        'link': URLField('Episode Link', validators=[Optional(), URL()]),
+        'listen_url': URLField('Listen URL', validators=[Optional(), URL()]),
+        'handout_url': URLField('Handout URL', validators=[Optional(), URL()]),
+        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()])
     }
     
     form_widget_args = {
