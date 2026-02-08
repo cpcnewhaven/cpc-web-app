@@ -18,14 +18,9 @@ from ics import Calendar, Event
 from dateutil import tz
 import pytz
 from dotenv import load_dotenv
-from admin_utils import export_announcements_csv, export_sermons_csv, bulk_update_announcements, bulk_delete_content, get_content_stats, create_sample_podcast_series
 from enhanced_api import enhanced_api
 from json_api import json_api
 from port_finder import find_available_port
-from ingest.newsletter import NewsletterIngester
-from ingest.events import EventsIngester
-from ingest.youtube import YouTubeIngester
-from ingest.mailchimp import MailchimpIngester
 from google_drive_routes import google_drive_bp
 
 load_dotenv()
@@ -73,6 +68,15 @@ if database_url.startswith('postgres://'):
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Connection-pool tuning (PostgreSQL) — recycle connections before the
+# server-side 5-min idle timeout, and keep a small pool for the free tier.
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 3,
+    'max_overflow': 2,
+    'pool_recycle': 270,      # recycle before PG's idle timeout
+    'pool_pre_ping': True,    # test connections before handing them out
+}
 
 # Log DB type + host (NEVER log the full URL — it contains credentials)
 try:
@@ -529,6 +533,7 @@ def api_teaching_series():
 
 # API Routes
 @app.route('/api/announcements')
+@cache.cached(timeout=60)
 def api_announcements():
     """API endpoint matching your highlights.json structure"""
     announcements = Announcement.query.filter_by(active=True)\
@@ -555,6 +560,7 @@ def api_announcements():
 
 
 @app.route('/api/banner-announcements')
+@cache.cached(timeout=60)
 def api_banner_announcements():
     """Active announcements marked to show in the top yellow bar (weather, parking, etc.)"""
     announcements = Announcement.query.filter_by(active=True, show_in_banner=True)\
@@ -571,6 +577,7 @@ def api_banner_announcements():
     })
 
 @app.route('/api/highlights')
+@cache.cached(timeout=60)
 def api_highlights():
     """API endpoint for highlights data - pulls from database"""
     # Get all announcements from database (not just active ones, for filtering on highlights page)
@@ -595,6 +602,7 @@ def api_highlights():
     })
 
 @app.route('/api/ongoing-events')
+@cache.cached(timeout=60)
 def api_ongoing_events():
     """API endpoint for ongoing events (ordered by sort_order, then date)"""
     events = OngoingEvent.query.filter_by(active=True)\
@@ -615,6 +623,7 @@ def api_ongoing_events():
     })
 
 @app.route('/api/papers/latest')
+@cache.cached(timeout=120)
 def api_papers_latest():
     """Latest paper (e.g. bulletin) for homepage. Prefer category 'bulletin'."""
     bulletin = Paper.query.filter_by(active=True).filter(
@@ -643,6 +652,7 @@ def api_papers_latest():
     return jsonify({})
 
 @app.route('/api/sermons')
+@cache.cached(timeout=120)
 def api_sermons():
     """API endpoint matching your sunday-sermons.json structure"""
     # Use optimized helper to avoid duplication
@@ -973,6 +983,7 @@ def api_bible_verse():
 @cache.cached(timeout=900)
 def api_mailchimp():
     """Fetch Mailchimp newsletter content"""
+    from ingest.mailchimp import MailchimpIngester
     ingester = MailchimpIngester(cache)
     data = ingester.fetch_data(app.config)
     return ingester.normalize_data(data)
@@ -1010,6 +1021,7 @@ def mailchimp_webhook():
         campaign_data = response.json()
         
         # Process and cache the content
+        from ingest.mailchimp import MailchimpIngester
         ingester = MailchimpIngester(cache)
         processed_data = {
             "title": campaign_data.get("settings", {}).get("subject_line", "Newsletter"),
@@ -1138,7 +1150,11 @@ def api_external_data():
     """Comprehensive external data endpoint using ingester architecture"""
     data = {}
     
-    # Initialize ingesters
+    # Initialize ingesters (lazy imports to keep startup fast)
+    from ingest.newsletter import NewsletterIngester
+    from ingest.events import EventsIngester
+    from ingest.youtube import YouTubeIngester
+    from ingest.mailchimp import MailchimpIngester
     newsletter_ingester = NewsletterIngester(cache)
     events_ingester = EventsIngester(cache)
     youtube_ingester = YouTubeIngester(cache)
@@ -1552,27 +1568,29 @@ def admin_logout():
 @require_auth
 def admin_export_announcements():
     """Export announcements to CSV"""
+    from admin_utils import export_announcements_csv
     return export_announcements_csv()
 
 @app.route('/admin/export/sermons')
 @require_auth
 def admin_export_sermons():
     """Export sermons to CSV"""
+    from admin_utils import export_sermons_csv
     return export_sermons_csv()
 
 @app.route('/admin/stats')
 @require_auth
 def admin_stats():
     """Get detailed content statistics"""
-    stats = get_content_stats()
-    return jsonify(stats)
+    from admin_utils import get_content_stats
+    return jsonify(get_content_stats())
 
 @app.route('/admin/setup/podcast-series')
 @require_auth
 def admin_setup_podcast_series():
     """Create default podcast series"""
-    created_count = create_sample_podcast_series()
-    return jsonify({'message': f'Created {created_count} podcast series', 'created': created_count})
+    from admin_utils import create_sample_podcast_series
+    return jsonify({'message': f'Created {create_sample_podcast_series()} podcast series'})
 
 @app.route('/admin/bulk/announcements', methods=['POST'])
 @require_auth
@@ -1585,11 +1603,11 @@ def admin_bulk_announcements():
     value = data.get('value')
     
     if action == 'update' and field and value is not None:
-        success = bulk_update_announcements(ids, field, value)
-        return jsonify({'success': success})
+        from admin_utils import bulk_update_announcements
+        return jsonify({'success': bulk_update_announcements(ids, field, value)})
     elif action == 'delete':
-        success = bulk_delete_content(Announcement, ids)
-        return jsonify({'success': success})
+        from admin_utils import bulk_delete_content
+        return jsonify({'success': bulk_delete_content(Announcement, ids)})
     
     return jsonify({'success': False, 'error': 'Invalid action'})
 
@@ -1620,8 +1638,8 @@ def admin_bulk_sermons():
     ids = data.get('ids', [])
     
     if action == 'delete':
-        success = bulk_delete_content(Sermon, ids)
-        return jsonify({'success': success})
+        from admin_utils import bulk_delete_content
+        return jsonify({'success': bulk_delete_content(Sermon, ids)})
     
     return jsonify({'success': False, 'error': 'Invalid action'})
 
