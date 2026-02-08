@@ -1,6 +1,7 @@
 import warnings
 warnings.filterwarnings('ignore', message='.*pkg_resources is deprecated.*')
 
+import logging
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -13,7 +14,6 @@ import requests
 import feedparser
 import json
 import re
-import sqlite3
 from ics import Calendar, Event
 from dateutil import tz
 import pytz
@@ -28,8 +28,16 @@ from ingest.youtube import YouTubeIngester
 from ingest.mailchimp import MailchimpIngester
 from google_drive_routes import google_drive_bp
 
-
 load_dotenv()
+
+# ---------------------------------------------------------------------------
+# Logging setup (so gunicorn workers inherit this)
+# ---------------------------------------------------------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+log = logging.getLogger("cpc")
 
 app = Flask(__name__)
 
@@ -42,14 +50,40 @@ app.register_blueprint(json_api)
 app.register_blueprint(google_drive_bp)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
-# Database configuration
-database_url = os.getenv('DATABASE_URL', 'sqlite:///cpc_newhaven.db')
-# Handle PostgreSQL URL format for Render.com
+
+# ---------------------------------------------------------------------------
+# Database URL — require DATABASE_URL in production, allow SQLite for local dev
+# ---------------------------------------------------------------------------
+_is_production = os.getenv('FLASK_ENV') == 'production' or os.getenv('RENDER')
+database_url = os.getenv('DATABASE_URL', '')
+
+if not database_url:
+    if _is_production:
+        raise RuntimeError(
+            "FATAL: DATABASE_URL environment variable is not set. "
+            "The app cannot start without a database in production."
+        )
+    # Local development only — fallback to SQLite
+    database_url = 'sqlite:///cpc_newhaven.db'
+    log.info("DATABASE_URL not set — using local SQLite for development")
+
+# Render provides postgres:// but SQLAlchemy 1.4+ requires postgresql://
 if database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Log DB type + host (NEVER log the full URL — it contains credentials)
+try:
+    from urllib.parse import urlparse
+    _parsed = urlparse(database_url)
+    _db_kind = _parsed.scheme.split('+')[0]       # "postgresql" or "sqlite"
+    _db_host = _parsed.hostname or 'localhost'
+    _db_name = _parsed.path.lstrip('/')
+    log.info("DB init: engine=%s host=%s dbname=%s", _db_kind, _db_host, _db_name)
+except Exception:
+    log.info("DB init: engine=unknown (URL parsing failed)")
 
 # Initialize extensions
 from database import db
@@ -90,6 +124,7 @@ def ensure_db_columns():
 
 
 def _ensure_columns_sqlite(migrations):
+    import sqlite3
     db_path = database_url.replace('sqlite:///', '', 1)
     if not os.path.isabs(db_path):
         db_path = os.path.join(os.path.dirname(__file__), db_path)
@@ -136,6 +171,21 @@ def _ensure_columns_pg(migrations):
             conn.commit()
     except Exception as exc:
         app.logger.warning("PostgreSQL column migration skipped: %s", exc)
+
+# ---------------------------------------------------------------------------
+# Health check — lightweight DB liveness probe for Render
+# ---------------------------------------------------------------------------
+@app.route('/healthz')
+def healthz():
+    """Return 200 only if the database connection is alive."""
+    from sqlalchemy import text
+    try:
+        with db.engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return jsonify({"status": "ok", "database": "connected"}), 200
+    except Exception as exc:
+        log.error("Health check FAILED: %s", exc)
+        return jsonify({"status": "error", "database": str(exc)}), 503
 
 # Redirect /admin to dashboard so "Admin" link lands on dashboard
 @app.before_request
@@ -2050,16 +2100,39 @@ admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series
 admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
 admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
 
-# Initialize database, global ID counter, and admin users
+# ---------------------------------------------------------------------------
+# Initialize database, verify connection, run migrations, seed admin users
+# ---------------------------------------------------------------------------
 with app.app_context():
+    from sqlalchemy import text
+
+    # 1. Verify the database is reachable
+    try:
+        with db.engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        log.info("DB connection verified — SELECT 1 OK")
+    except Exception as exc:
+        log.critical("DB connection FAILED: %s", exc)
+        raise RuntimeError(
+            f"Cannot connect to database. Check DATABASE_URL. Error: {exc}"
+        ) from exc
+
+    # 2. Create any missing tables
     db.create_all()
-    # Add any columns that were added after the table was first created
+    log.info("DB schema ready — db.create_all() complete")
+
+    # 3. Add any columns that were added after the table was first created
     ensure_db_columns()
-    # Ensure the global ID counter row exists
+    log.info("DB column migrations complete")
+
+    # 4. Ensure the global ID counter row exists
     if not GlobalIDCounter.query.first():
         db.session.add(GlobalIDCounter(id=1, next_id=1))
         db.session.commit()
+
+    # 5. Seed admin users
     init_admin_users()
+    log.info("DB init complete — app is ready to serve")
 
 if __name__ == '__main__':
     # Find an available port

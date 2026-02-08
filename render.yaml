@@ -22,5 +22,5 @@ services:
         fromDatabase:
           name: cpc-newhaven-db
           property: connectionString
-    healthCheckPath: /
+    healthCheckPath: /healthz
     autoDeploy: true
