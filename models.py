@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 from sqlalchemy import Text, JSON
 from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class Announcement(db.Model):
     __tablename__ = 'announcements'
     
-    id = db.Column(db.String(60), primary_key=True)
+    id = db.Column(db.String(60), primary_key=True, default=lambda: uuid.uuid4().hex)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
