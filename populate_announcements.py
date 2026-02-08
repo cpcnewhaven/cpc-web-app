@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from app import app
 from database import db
-from models import Announcement
+from models import Announcement, next_global_id
 
 def parse_date(date_string):
     """Parse date string to datetime object"""
@@ -69,25 +69,21 @@ def populate_database():
         
         for item in announcements_data:
             try:
-                announcement_id = item.get('id')
-                
-                if not announcement_id:
-                    print(f"⚠️  Skipping item without ID: {item.get('title', 'Unknown')[:50]}")
+                title = item.get('title', '').strip()
+                if not title:
+                    print(f"⚠️  Skipping item without title")
                     skipped_count += 1
                     continue
                 
-                # Check if announcement already exists
-                existing = Announcement.query.filter_by(id=announcement_id).first()
-                
                 # Map JSON fields to database fields
-                # JSON uses: date_entered, featured_image
-                # Database uses: date_entered, featured_image
                 date_entered = item.get('date_entered') or item.get('dateEntered')
                 featured_image = item.get('featured_image') or item.get('featuredImage')
                 
+                # Check if announcement already exists (match by title)
+                existing = Announcement.query.filter_by(title=title).first()
+                
                 if existing:
                     # Update existing announcement
-                    existing.title = item.get('title', existing.title)
                     existing.description = item.get('description', existing.description)
                     if date_entered:
                         existing.date_entered = parse_date(date_entered)
@@ -100,12 +96,12 @@ def populate_database():
                     existing.image_display_type = item.get('image_display_type') or item.get('imageDisplayType')
                     
                     updated_count += 1
-                    print(f"♻️  Updated: {announcement_id} - {item.get('title', 'No title')[:50]}")
+                    print(f"♻️  Updated: #{existing.id} - {title[:50]}")
                 else:
-                    # Create new announcement
+                    # Create new announcement with universal ID
                     announcement = Announcement(
-                        id=announcement_id,
-                        title=item.get('title', 'Untitled'),
+                        id=next_global_id(),
+                        title=title,
                         description=item.get('description', ''),
                         date_entered=parse_date(date_entered) if date_entered else datetime.utcnow(),
                         active=parse_active(item.get('active', True)),
@@ -119,10 +115,10 @@ def populate_database():
                     
                     db.session.add(announcement)
                     added_count += 1
-                    print(f"✅ Added: {announcement_id} - {item.get('title', 'No title')[:50]}")
+                    print(f"✅ Added: #{announcement.id} - {title[:50]}")
                 
             except Exception as e:
-                print(f"❌ Error processing {item.get('id', 'unknown')}: {e}")
+                print(f"❌ Error processing {item.get('title', 'unknown')}: {e}")
                 import traceback
                 traceback.print_exc()
                 skipped_count += 1

@@ -1,13 +1,41 @@
 from datetime import datetime
-import uuid
 from sqlalchemy import Text, JSON
 from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
+class GlobalIDCounter(db.Model):
+    """Single-row table that tracks the next universal content ID.
+    Every piece of content (announcement, sermon, podcast, event, etc.)
+    pulls its ID from this shared counter so IDs are unique across types
+    and always go up: 1, 2, 3, … 543, 544, …
+    """
+    __tablename__ = 'global_id_counter'
+
+    id = db.Column(db.Integer, primary_key=True)          # always 1
+    next_id = db.Column(db.Integer, nullable=False, default=1)
+
+
+def next_global_id():
+    """Return the next universal content ID and bump the counter.
+
+    Must be called inside an active ``db.session`` / app-context.
+    """
+    counter = GlobalIDCounter.query.first()
+    if not counter:
+        counter = GlobalIDCounter(id=1, next_id=1)
+        db.session.add(counter)
+        db.session.flush()
+    current_id = counter.next_id
+    counter.next_id = current_id + 1
+    db.session.flush()
+    return current_id
+
+
 class Announcement(db.Model):
     __tablename__ = 'announcements'
-    
-    id = db.Column(db.String(60), primary_key=True, default=lambda: uuid.uuid4().hex)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
@@ -22,8 +50,8 @@ class Announcement(db.Model):
 
 class Sermon(db.Model):
     __tablename__ = 'sermons'
-    
-    id = db.Column(db.String(60), primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
     author = db.Column(db.String(100), nullable=False)
     scripture = db.Column(db.String(200))
@@ -35,8 +63,8 @@ class Sermon(db.Model):
 
 class PodcastEpisode(db.Model):
     __tablename__ = 'podcast_episodes'
-    
-    id = db.Column(db.Integer, primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     series_id = db.Column(db.Integer, db.ForeignKey('podcast_series.id'))
     number = db.Column(db.Integer)
     title = db.Column(db.String(200), nullable=False)
@@ -48,21 +76,21 @@ class PodcastEpisode(db.Model):
     season = db.Column(db.Integer)
     scripture = db.Column(db.String(200))
     podcast_thumbnail_url = db.Column(db.String(500))
-    
+
     series = db.relationship('PodcastSeries', back_populates='episodes')
 
 class PodcastSeries(db.Model):
     __tablename__ = 'podcast_series'
-    
-    id = db.Column(db.Integer, primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     episodes = db.relationship('PodcastEpisode', back_populates='series')
 
 class GalleryImage(db.Model):
     __tablename__ = 'gallery_images'
-    
-    id = db.Column(db.String(60), primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String(200))
     url = db.Column(db.String(500), nullable=False)
     size = db.Column(db.String(50))
@@ -73,8 +101,8 @@ class GalleryImage(db.Model):
 
 class OngoingEvent(db.Model):
     __tablename__ = 'ongoing_events'
-    
-    id = db.Column(db.String(60), primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
@@ -85,8 +113,8 @@ class OngoingEvent(db.Model):
 
 class Paper(db.Model):
     __tablename__ = 'papers'
-    
-    id = db.Column(db.String(20), primary_key=True)
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
     author = db.Column(db.String(200))
     description = db.Column(db.Text)
@@ -101,19 +129,19 @@ class Paper(db.Model):
 
 class User(db.Model):
     __tablename__ = 'users'
-    
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
     def set_password(self, password):
         """Hash and set password"""
         self.password_hash = generate_password_hash(password)
-    
+
     def check_password(self, password):
         """Check if password matches"""
         return check_password_hash(self.password_hash, password)
-    
+
     def __repr__(self):
         return f'<User {self.username}>'

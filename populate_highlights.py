@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from app import app
 from database import db
-from models import Announcement
+from models import Announcement, next_global_id
 
 def parse_date(date_string):
     """Parse date string to datetime object"""
@@ -59,19 +59,17 @@ def populate_database():
         
         for item in announcements_data:
             try:
-                announcement_id = item.get('id')
-                
-                if not announcement_id:
-                    print(f"⚠️  Skipping item without ID")
+                title = item.get('title', '').strip()
+                if not title:
+                    print(f"⚠️  Skipping item without title")
                     skipped_count += 1
                     continue
                 
-                # Check if announcement already exists
-                existing = Announcement.query.filter_by(id=announcement_id).first()
+                # Check if announcement already exists (match by title)
+                existing = Announcement.query.filter_by(title=title).first()
                 
                 if existing:
                     # Update existing announcement
-                    existing.title = item.get('title', existing.title)
                     existing.description = item.get('description', existing.description)
                     existing.date_entered = parse_date(item.get('dateEntered'))
                     existing.active = parse_active(item.get('active', True))
@@ -84,12 +82,12 @@ def populate_database():
                     existing.show_in_banner = parse_active(item.get('showInBanner', False))
                     
                     updated_count += 1
-                    print(f"♻️  Updated: {announcement_id} - {item.get('title', 'No title')[:50]}")
+                    print(f"♻️  Updated: #{existing.id} - {title[:50]}")
                 else:
-                    # Create new announcement
+                    # Create new announcement with universal ID
                     announcement = Announcement(
-                        id=announcement_id,
-                        title=item.get('title', 'Untitled'),
+                        id=next_global_id(),
+                        title=title,
                         description=item.get('description', ''),
                         date_entered=parse_date(item.get('dateEntered')),
                         active=parse_active(item.get('active', True)),
@@ -104,10 +102,10 @@ def populate_database():
                     
                     db.session.add(announcement)
                     added_count += 1
-                    print(f"✅ Added: {announcement_id} - {item.get('title', 'No title')[:50]}")
+                    print(f"✅ Added: #{announcement.id} - {title[:50]}")
                 
             except Exception as e:
-                print(f"❌ Error processing {item.get('id', 'unknown')}: {e}")
+                print(f"❌ Error processing {item.get('title', 'unknown')}: {e}")
                 skipped_count += 1
                 continue
         

@@ -6,7 +6,7 @@ import csv
 from io import StringIO
 from flask import Response, flash
 from database import db
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, next_global_id
 
 def export_announcements_csv():
     """Export announcements to CSV"""
@@ -166,6 +166,7 @@ def create_sample_podcast_series():
         existing = PodcastSeries.query.filter_by(title=series_info['title']).first()
         if not existing:
             series = PodcastSeries(
+                id=next_global_id(),
                 title=series_info['title'],
                 description=series_info['description']
             )

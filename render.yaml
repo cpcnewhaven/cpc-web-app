@@ -1,3 +1,9 @@
+databases:
+  - name: cpc-newhaven-db
+    plan: starter          # $7/mo – Render sunset the free PG tier
+    databaseName: cpc_newhaven
+    user: cpc_admin
+
 services:
   - type: web
     name: cpc-new-haven
@@ -6,11 +12,15 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-    startCommand: python app.py
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: FLASK_ENV
         value: production
       - key: SECRET_KEY
         value: cpc-new-haven-secret-key-2024
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cpc-newhaven-db
+          property: connectionString
     healthCheckPath: /
     autoDeploy: true

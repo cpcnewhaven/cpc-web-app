@@ -7,7 +7,7 @@ import sys
 import os
 from datetime import datetime, date
 from app import app, db
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, next_global_id
 from admin_utils import get_content_stats, create_sample_podcast_series
 
 def show_stats():
@@ -53,93 +53,86 @@ def create_sample_data():
         series_created = create_sample_podcast_series()
         print(f"✓ Created {series_created} podcast series")
         
-        # Create sample announcements
-        announcements = [
-            {
-                'id': 'ann_001',
-                'title': 'Welcome to CPC New Haven',
-                'description': 'We are excited to welcome you to our church community. Join us for worship every Sunday at 10:30am.',
-                'type': 'announcement',
-                'category': 'general',
-                'superfeatured': True,
-                'active': True
-            },
-            {
-                'id': 'ann_002',
-                'title': 'Sunday School Classes Resume',
-                'description': 'Children\'s Sunday School and Adult Sunday Studies begin at 9:30am every Sunday.',
-                'type': 'event',
-                'category': 'education',
-                'superfeatured': False,
-                'active': True
-            },
-            {
-                'id': 'ann_003',
-                'title': 'Fellowship Lunch',
-                'description': 'Join us for fellowship lunch every Sunday after worship service at 12:00pm.',
-                'type': 'ongoing',
-                'category': 'fellowship',
-                'superfeatured': False,
-                'active': True
-            },
-            {
-                'id': 'ann_004',
-                'title': 'Youth Group Meeting',
-                'description': 'High school and middle school students meet every Friday at 7:00pm for fellowship and study.',
-                'type': 'ongoing',
-                'category': 'youth',
-                'superfeatured': False,
-                'active': True
-            }
-        ]
-        
-        for ann_data in announcements:
-            existing = Announcement.query.get(ann_data['id'])
-            if not existing:
+        # Create sample announcements (only if table is empty)
+        if Announcement.query.count() == 0:
+            announcements = [
+                {
+                    'title': 'Welcome to CPC New Haven',
+                    'description': 'We are excited to welcome you to our church community. Join us for worship every Sunday at 10:30am.',
+                    'type': 'announcement',
+                    'category': 'general',
+                    'superfeatured': True,
+                    'active': True
+                },
+                {
+                    'title': 'Sunday School Classes Resume',
+                    'description': 'Children\'s Sunday School and Adult Sunday Studies begin at 9:30am every Sunday.',
+                    'type': 'event',
+                    'category': 'education',
+                    'superfeatured': False,
+                    'active': True
+                },
+                {
+                    'title': 'Fellowship Lunch',
+                    'description': 'Join us for fellowship lunch every Sunday after worship service at 12:00pm.',
+                    'type': 'ongoing',
+                    'category': 'fellowship',
+                    'superfeatured': False,
+                    'active': True
+                },
+                {
+                    'title': 'Youth Group Meeting',
+                    'description': 'High school and middle school students meet every Friday at 7:00pm for fellowship and study.',
+                    'type': 'ongoing',
+                    'category': 'youth',
+                    'superfeatured': False,
+                    'active': True
+                }
+            ]
+            
+            for ann_data in announcements:
+                ann_data['id'] = next_global_id()
                 announcement = Announcement(**ann_data)
                 db.session.add(announcement)
         
-        # Create sample sermons
-        sermons = [
-            {
-                'id': 'serm_001',
-                'title': 'The Grace of God',
-                'author': 'Pastor John Smith',
-                'scripture': 'Ephesians 2:8-9',
-                'date': date(2024, 1, 7),
-                'spotify_url': 'https://open.spotify.com/episode/example1',
-                'youtube_url': 'https://youtube.com/watch?v=example1',
-                'apple_podcasts_url': 'https://podcasts.apple.com/podcast/example1'
-            },
-            {
-                'id': 'serm_002',
-                'title': 'Walking in Faith',
-                'author': 'Pastor John Smith',
-                'scripture': 'Hebrews 11:1-6',
-                'date': date(2024, 1, 14),
-                'spotify_url': 'https://open.spotify.com/episode/example2',
-                'youtube_url': 'https://youtube.com/watch?v=example2'
-            },
-            {
-                'id': 'serm_003',
-                'title': 'The Love of Christ',
-                'author': 'Pastor Jane Doe',
-                'scripture': 'Romans 8:35-39',
-                'date': date(2024, 1, 21),
-                'spotify_url': 'https://open.spotify.com/episode/example3',
-                'youtube_url': 'https://youtube.com/watch?v=example3'
-            }
-        ]
-        
-        for sermon_data in sermons:
-            existing = Sermon.query.get(sermon_data['id'])
-            if not existing:
+        # Create sample sermons (only if table is empty)
+        if Sermon.query.count() == 0:
+            sermons = [
+                {
+                    'title': 'The Grace of God',
+                    'author': 'Pastor John Smith',
+                    'scripture': 'Ephesians 2:8-9',
+                    'date': date(2024, 1, 7),
+                    'spotify_url': 'https://open.spotify.com/episode/example1',
+                    'youtube_url': 'https://youtube.com/watch?v=example1',
+                    'apple_podcasts_url': 'https://podcasts.apple.com/podcast/example1'
+                },
+                {
+                    'title': 'Walking in Faith',
+                    'author': 'Pastor John Smith',
+                    'scripture': 'Hebrews 11:1-6',
+                    'date': date(2024, 1, 14),
+                    'spotify_url': 'https://open.spotify.com/episode/example2',
+                    'youtube_url': 'https://youtube.com/watch?v=example2'
+                },
+                {
+                    'title': 'The Love of Christ',
+                    'author': 'Pastor Jane Doe',
+                    'scripture': 'Romans 8:35-39',
+                    'date': date(2024, 1, 21),
+                    'spotify_url': 'https://open.spotify.com/episode/example3',
+                    'youtube_url': 'https://youtube.com/watch?v=example3'
+                }
+            ]
+            
+            for sermon_data in sermons:
+                sermon_data['id'] = next_global_id()
                 sermon = Sermon(**sermon_data)
                 db.session.add(sermon)
         
-        # Create sample podcast episodes
+        # Create sample podcast episodes (only if table is empty)
         beyond_series = PodcastSeries.query.filter_by(title='Beyond the Sunday Sermon').first()
-        if beyond_series:
+        if beyond_series and PodcastEpisode.query.count() == 0:
             episodes = [
                 {
                     'series_id': beyond_series.id,
@@ -162,45 +155,38 @@ def create_sample_data():
             ]
             
             for episode_data in episodes:
-                existing = PodcastEpisode.query.filter_by(
-                    series_id=beyond_series.id,
-                    number=episode_data['number']
-                ).first()
-                if not existing:
-                    episode = PodcastEpisode(**episode_data)
-                    db.session.add(episode)
+                episode_data['id'] = next_global_id()
+                episode = PodcastEpisode(**episode_data)
+                db.session.add(episode)
         
-        # Create sample ongoing events
-        events = [
-            {
-                'id': 'event_001',
-                'title': 'Prayer in the Parlor',
-                'description': 'Join us for prayer every Sunday at 8:30am in the parlor.',
-                'type': 'ongoing',
-                'category': 'prayer',
-                'active': True
-            },
-            {
-                'id': 'event_002',
-                'title': 'Bible Study',
-                'description': 'Weekly Bible study on Wednesdays at 7:00pm.',
-                'type': 'ongoing',
-                'category': 'education',
-                'active': True
-            },
-            {
-                'id': 'event_003',
-                'title': 'Men\'s Fellowship',
-                'description': 'Men\'s fellowship group meets every Saturday at 8:00am.',
-                'type': 'ongoing',
-                'category': 'fellowship',
-                'active': True
-            }
-        ]
-        
-        for event_data in events:
-            existing = OngoingEvent.query.get(event_data['id'])
-            if not existing:
+        # Create sample ongoing events (only if table is empty)
+        if OngoingEvent.query.count() == 0:
+            events = [
+                {
+                    'title': 'Prayer in the Parlor',
+                    'description': 'Join us for prayer every Sunday at 8:30am in the parlor.',
+                    'type': 'ongoing',
+                    'category': 'prayer',
+                    'active': True
+                },
+                {
+                    'title': 'Bible Study',
+                    'description': 'Weekly Bible study on Wednesdays at 7:00pm.',
+                    'type': 'ongoing',
+                    'category': 'education',
+                    'active': True
+                },
+                {
+                    'title': 'Men\'s Fellowship',
+                    'description': 'Men\'s fellowship group meets every Saturday at 8:00am.',
+                    'type': 'ongoing',
+                    'category': 'fellowship',
+                    'active': True
+                }
+            ]
+            
+            for event_data in events:
+                event_data['id'] = next_global_id()
                 event = OngoingEvent(**event_data)
                 db.session.add(event)
         

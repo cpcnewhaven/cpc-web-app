@@ -12,7 +12,6 @@ import os
 import requests
 import feedparser
 import json
-import random
 import re
 import sqlite3
 from ics import Calendar, Event
@@ -63,7 +62,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id
 
 def ensure_sqlite_announcements_columns():
     if not database_url.startswith('sqlite:///'):
@@ -1512,8 +1511,8 @@ def admin_events_reorder():
         order = data.get('order', [])
         if not order:
             return jsonify({'success': False, 'error': 'Missing order'}), 400
-        for i, id in enumerate(order):
-            event = OngoingEvent.query.get(id)
+        for i, eid in enumerate(order):
+            event = OngoingEvent.query.get(int(eid))
             if event:
                 event.sort_order = i
         db.session.commit()
@@ -1617,15 +1616,6 @@ class AnnouncementView(AuthenticatedModelView):
         ]
     }
 
-    @staticmethod
-    def _build_default_id(extra_suffix=''):
-        """Auto-generate ID from current UTC date and time. Convention: YYYY-MM-DD-HHMMSS-XX (sortable, unique, URL-safe)."""
-        now = datetime.utcnow()
-        date_part = f"{now.year}-{now.month:02d}-{now.day:02d}"
-        time_part = f"{now.hour:02d}{now.minute:02d}{now.second:02d}"
-        ms_hex = f"{now.microsecond // 10000:02x}" if now.microsecond else "00"
-        return f"{date_part}-{time_part}-{ms_hex}{extra_suffix}"
-
     def on_form_prefill(self, form, id):
         announcement = self.get_one(id)
         if not announcement or not hasattr(form, 'banner_type'):
@@ -1646,16 +1636,8 @@ class AnnouncementView(AuthenticatedModelView):
             model.type = banner_choice
         else:
             model.show_in_banner = False
-        if is_created or not (model.id or '').strip():
-            candidate = self._build_default_id()
-            extra = 0
-            while Announcement.query.get(candidate) is not None:
-                candidate = self._build_default_id(str(random.randint(0, 15)))
-                extra += 1
-                if extra > 100:
-                    candidate = self._build_default_id(str(random.getrandbits(32))[:8])
-                    break
-            model.id = candidate
+        if is_created:
+            model.id = next_global_id()
     
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):
@@ -1710,7 +1692,7 @@ class SermonView(AuthenticatedModelView):
     column_sortable_list = ('title', 'author', 'date')
     column_default_sort = ('date', True)
     
-    form_columns = ('id', 'title', 'author', 'scripture', 'date', 'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url')
+    form_columns = ('title', 'author', 'scripture', 'date', 'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url')
     form_extra_fields = {
         'scripture': TextAreaField('Scripture', widget=TextArea()),
         'spotify_url': URLField('Spotify URL', validators=[URL()]),
@@ -1733,6 +1715,10 @@ class SermonView(AuthenticatedModelView):
         'apple_podcasts_url': 'Apple Podcasts',
         'podcast_thumbnail_url': 'Thumbnail'
     }
+    
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = next_global_id()
     
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected sermons?')
     def bulk_delete(self, ids):
@@ -1761,6 +1747,10 @@ class PodcastSeriesView(AuthenticatedModelView):
     form_widget_args = {
         'description': {'rows': 5, 'style': 'width: 100%'}
     }
+    
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = next_global_id()
     
     def episode_count(self, context, model, name):
         return len(model.episodes) if model.episodes else 0
@@ -1797,6 +1787,10 @@ class PodcastEpisodeView(AuthenticatedModelView):
         'podcast_thumbnail_url': 'Thumbnail'
     }
     
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = next_global_id()
+    
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected podcast episodes?')
     def bulk_delete(self, ids):
         try:
@@ -1818,7 +1812,7 @@ class GalleryImageView(AuthenticatedModelView):
     column_sortable_list = ('name', 'created')
     column_default_sort = ('created', True)
     
-    form_columns = ('id', 'name', 'url', 'size', 'type', 'tags', 'event')
+    form_columns = ('name', 'url', 'size', 'type', 'tags', 'event')
     form_extra_fields = {
         'url': URLField('Image URL', validators=[DataRequired(), URL()]),
         'tags': TextAreaField('Tags (comma-separated)', widget=TextArea())
@@ -1841,6 +1835,8 @@ class GalleryImageView(AuthenticatedModelView):
     tags_display.column_type = 'string'
     
     def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = next_global_id()
         if form.tags.data:
             # Convert comma-separated string to list
             tags = [tag.strip() for tag in form.tags.data.split(',') if tag.strip()]
@@ -1881,7 +1877,7 @@ class OngoingEventView(AuthenticatedModelView):
     column_sortable_list = ('title', 'type', 'active', 'sort_order', 'date_entered')
     column_default_sort = ('sort_order', False)
     
-    form_columns = ('id', 'title', 'description', 'type', 'category', 'active')
+    form_columns = ('title', 'description', 'type', 'category', 'active')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
     }
@@ -1910,6 +1906,10 @@ class OngoingEventView(AuthenticatedModelView):
     column_labels = {
         'date_entered': 'Date Created'
     }
+    
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = next_global_id()
     
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):
@@ -2012,9 +2012,13 @@ admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series
 admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
 admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
 
-# Initialize database and admin users
+# Initialize database, global ID counter, and admin users
 with app.app_context():
     db.create_all()
+    # Ensure the global ID counter row exists
+    if not GlobalIDCounter.query.first():
+        db.session.add(GlobalIDCounter(id=1, next_id=1))
+        db.session.commit()
     init_admin_users()
 
 if __name__ == '__main__':
