@@ -12,16 +12,23 @@ from typing import Dict, List, Optional
 
 # Import search functionality
 from advanced_search import AdvancedSearch
-from podcast_analytics import PodcastAnalytics
 
 logger = logging.getLogger(__name__)
 
 # Create blueprint for enhanced API
 enhanced_api = Blueprint('enhanced_api', __name__)
 
-# Initialize search and analytics
+# Initialize search and analytics (lazy)
 search_engine = AdvancedSearch()
-analytics = PodcastAnalytics()
+analytics = None
+
+def get_analytics():
+    """Lazy-load analytics to avoid heavy imports at startup."""
+    global analytics
+    if analytics is None:
+        from podcast_analytics import PodcastAnalytics
+        analytics = PodcastAnalytics()
+    return analytics
 
 @enhanced_api.route('/api/search/sermons')
 def search_sermons():
@@ -145,11 +152,12 @@ def search_filters():
 def analytics_overview():
     """Get analytics overview."""
     try:
-        stats = analytics.get_basic_stats()
-        frequency = analytics.get_publishing_frequency()
-        content = analytics.get_content_analysis()
-        engagement = analytics.get_engagement_metrics()
-        insights = analytics.generate_insights()
+        analytics_instance = get_analytics()
+        stats = analytics_instance.get_basic_stats()
+        frequency = analytics_instance.get_publishing_frequency()
+        content = analytics_instance.get_content_analysis()
+        engagement = analytics_instance.get_engagement_metrics()
+        insights = analytics_instance.generate_insights()
         
         return jsonify({
             'success': True,
@@ -173,8 +181,9 @@ def analytics_overview():
 def analytics_trends():
     """Get publishing trends and patterns."""
     try:
-        frequency = analytics.get_publishing_frequency()
-        content = analytics.get_content_analysis()
+        analytics_instance = get_analytics()
+        frequency = analytics_instance.get_publishing_frequency()
+        content = analytics_instance.get_content_analysis()
         
         return jsonify({
             'success': True,
