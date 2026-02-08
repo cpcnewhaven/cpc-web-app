@@ -67,8 +67,6 @@
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Highlights</a></li>
                         <li><a href="{{ url_for('events') }}"
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Events</a></li>
-                        <li><a href="{{ url_for('announcements') }}"
-                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Announcements</a></li>
                         <li><a href="{{ url_for('community') }}"
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Community</a></li>
                     </ul>
@@ -189,8 +187,6 @@
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Highlights</a>
                     <a href="{{ url_for('events') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Events</a>
-                    <a href="{{ url_for('announcements') }}"
-                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Announcements</a>
                     <a href="{{ url_for('community') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Community</a>
                 </div>
@@ -287,7 +283,6 @@
                 <div class="quick-links-grid">
                     <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
                     <a href="{{ url_for('highlights') }}"><i class="fa-solid fa-star"></i><span>Highlights</span></a>
-                    <a href="{{ url_for('announcements') }}"><i class="fa-solid fa-bullhorn"></i><span>News</span></a>
                     <a href="{{ url_for('community') }}"><i class="fa-solid fa-users"></i><span>Community</span></a>
                 </div>
             </div>
@@ -449,11 +444,12 @@
         // Apply theme immediately on page load (before Alpine initializes)
         (function() {
             const savedTheme = localStorage.getItem('dash_theme') || 'blue';
-            // Default: left sidebar ON, right sidebar OFF
+            const isHome = window.location.pathname === '/';
+            // Default: left sidebar ON, right sidebar ON only for homepage
             const leftSidebarStored = localStorage.getItem('dash_showLeftSidebar');
             const rightSidebarStored = localStorage.getItem('dash_showRightSidebar');
             const showLeftSidebar = leftSidebarStored !== null ? JSON.parse(leftSidebarStored) : true;
-            const showRightSidebar = rightSidebarStored !== null ? JSON.parse(rightSidebarStored) : false;
+            const showRightSidebar = rightSidebarStored !== null ? JSON.parse(rightSidebarStored) : isHome;
             const leftSidebarMax = JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false');
             const rightSidebarMax = JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false');
             if (savedTheme === 'white') {
@@ -476,13 +472,13 @@
                 showQuickLinks: JSON.parse(localStorage.getItem('dash_showQuickLinks') || 'true'),
                 showService: JSON.parse(localStorage.getItem('dash_showService') || 'true'),
                 showAdminCTA: JSON.parse(localStorage.getItem('dash_showAdminCTA') || 'false'),
-                // Default: left sidebar ON, right sidebar OFF
+                // Default: left sidebar ON, right sidebar ON only for homepage
                 showLeftSidebar: localStorage.getItem('dash_showLeftSidebar') !== null
                     ? JSON.parse(localStorage.getItem('dash_showLeftSidebar'))
                     : true,
                 showRightSidebar: localStorage.getItem('dash_showRightSidebar') !== null
                     ? JSON.parse(localStorage.getItem('dash_showRightSidebar'))
-                    : false,
+                    : (window.location.pathname === '/'),
                 leftSidebarMax: JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false'),
                 rightSidebarMax: JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false'),
                 userName: localStorage.getItem('dash_userName') || '',

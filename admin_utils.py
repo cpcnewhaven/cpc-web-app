@@ -3,6 +3,7 @@ Admin utility functions for bulk operations and data management
 """
 import json
 import csv
+from datetime import datetime, timedelta
 from io import StringIO
 from flask import Response, flash
 from database import db
@@ -106,29 +107,37 @@ def bulk_delete_content(model_class, ids):
 
 def get_content_stats():
     """Get comprehensive content statistics"""
+    def _rows_to_list(rows):
+        """Convert SQLAlchemy Row objects to JSON-serializable lists."""
+        return [[col for col in row] for row in rows]
+
     return {
         'announcements': {
             'total': Announcement.query.count(),
             'active': Announcement.query.filter_by(active=True).count(),
             'superfeatured': Announcement.query.filter_by(superfeatured=True).count(),
-            'by_type': db.session.query(Announcement.type, db.func.count(Announcement.id))
-                .group_by(Announcement.type).all(),
-            'by_category': db.session.query(Announcement.category, db.func.count(Announcement.id))
-                .group_by(Announcement.category).all()
+            'by_type': _rows_to_list(
+                db.session.query(Announcement.type, db.func.count(Announcement.id))
+                .group_by(Announcement.type).all()),
+            'by_category': _rows_to_list(
+                db.session.query(Announcement.category, db.func.count(Announcement.id))
+                .group_by(Announcement.category).all())
         },
         'sermons': {
             'total': Sermon.query.count(),
-            'by_author': db.session.query(Sermon.author, db.func.count(Sermon.id))
-                .group_by(Sermon.author).all(),
+            'by_author': _rows_to_list(
+                db.session.query(Sermon.author, db.func.count(Sermon.id))
+                .group_by(Sermon.author).all()),
             'recent_month': Sermon.query.filter(
-                Sermon.date >= db.func.date('now', '-1 month')
+                Sermon.date >= (datetime.now().date() - timedelta(days=30))
             ).count()
         },
         'podcasts': {
             'series': PodcastSeries.query.count(),
             'episodes': PodcastEpisode.query.count(),
-            'by_series': db.session.query(PodcastSeries.title, db.func.count(PodcastEpisode.id))
-                .join(PodcastEpisode).group_by(PodcastSeries.title).all()
+            'by_series': _rows_to_list(
+                db.session.query(PodcastSeries.title, db.func.count(PodcastEpisode.id))
+                .join(PodcastEpisode).group_by(PodcastSeries.title).all())
         },
         'gallery': {
             'total': GalleryImage.query.count(),

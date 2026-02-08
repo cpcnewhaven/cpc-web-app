@@ -20,15 +20,19 @@ def next_global_id():
     """Return the next universal content ID and bump the counter.
 
     Must be called inside an active ``db.session`` / app-context.
+
+    Uses ``no_autoflush`` so that calling this from an
+    ``on_model_change`` hook (where a new model with id=None is already
+    in the session) does not trigger an early INSERT that would violate
+    PostgreSQL's NOT-NULL primary-key constraint.
     """
-    counter = GlobalIDCounter.query.first()
-    if not counter:
-        counter = GlobalIDCounter(id=1, next_id=1)
-        db.session.add(counter)
-        db.session.flush()
-    current_id = counter.next_id
-    counter.next_id = current_id + 1
-    db.session.flush()
+    with db.session.no_autoflush:
+        counter = GlobalIDCounter.query.first()
+        if not counter:
+            counter = GlobalIDCounter(id=1, next_id=1)
+            db.session.add(counter)
+        current_id = counter.next_id
+        counter.next_id = current_id + 1
     return current_id
 
 

@@ -835,6 +835,7 @@ body.theme-white .dashboard-sidebar {
 .dashboard-left .quick-links-grid {
     gap: 3px;
     padding: 2px 0;
+    grid-template-columns: repeat(2, 1fr);
 }
 .dashboard-left .quick-links-grid a {
     padding: 2px 2px;

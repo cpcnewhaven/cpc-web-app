@@ -64,9 +64,32 @@ migrate.init_app(app, db)
 # Import models after db initialization
 from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id
 
-def ensure_sqlite_announcements_columns():
-    if not database_url.startswith('sqlite:///'):
-        return
+def ensure_db_columns():
+    """Add any missing columns to existing tables (SQLite and PostgreSQL).
+
+    Call this AFTER ``db.create_all()`` inside an app context so that
+    tables already exist.  ``db.create_all()`` creates tables that are
+    missing but never adds new columns to tables that already exist.
+    This function fills that gap for both SQLite and PostgreSQL.
+    """
+    # Map of table -> list of (column_name, sqlite_type, pg_type)
+    MIGRATIONS = {
+        'announcements': [
+            ('show_in_banner', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
+            ('image_display_type', 'VARCHAR(50)', 'VARCHAR(50)'),
+        ],
+        'ongoing_events': [
+            ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
+        ],
+    }
+
+    if database_url.startswith('sqlite:///'):
+        _ensure_columns_sqlite(MIGRATIONS)
+    elif 'postgresql' in database_url or 'postgres' in database_url:
+        _ensure_columns_pg(MIGRATIONS)
+
+
+def _ensure_columns_sqlite(migrations):
     db_path = database_url.replace('sqlite:///', '', 1)
     if not os.path.isabs(db_path):
         db_path = os.path.join(os.path.dirname(__file__), db_path)
@@ -79,25 +102,40 @@ def ensure_sqlite_announcements_columns():
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute("PRAGMA table_info(announcements)")
-        columns = [row[1] for row in cursor.fetchall()]
-        if not columns:
-            conn.close()
-            return
-        column_updates = []
-        if 'show_in_banner' not in columns:
-            column_updates.append("ADD COLUMN show_in_banner BOOLEAN DEFAULT 0")
-        if 'image_display_type' not in columns:
-            column_updates.append("ADD COLUMN image_display_type VARCHAR(50)")
-        for column_sql in column_updates:
-            cursor.execute("ALTER TABLE announcements " + column_sql)
-        if column_updates:
-            conn.commit()
+        for table, columns_to_add in migrations.items():
+            cursor.execute(f"PRAGMA table_info({table})")
+            existing = {row[1] for row in cursor.fetchall()}
+            if not existing:
+                continue  # table doesn't exist yet
+            for col_name, sqlite_type, _pg_type in columns_to_add:
+                if col_name not in existing:
+                    cursor.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {sqlite_type}")
+        conn.commit()
         conn.close()
     except Exception as exc:
-        app.logger.warning("SQLite announcements migration skipped: %s", exc)
+        app.logger.warning("SQLite column migration skipped: %s", exc)
 
-ensure_sqlite_announcements_columns()
+
+def _ensure_columns_pg(migrations):
+    try:
+        from sqlalchemy import text
+        with db.engine.connect() as conn:
+            for table, columns_to_add in migrations.items():
+                result = conn.execute(text(
+                    "SELECT column_name FROM information_schema.columns "
+                    "WHERE table_name = :tbl"
+                ), {'tbl': table})
+                existing = {row[0] for row in result}
+                if not existing:
+                    continue  # table doesn't exist yet
+                for col_name, _sqlite_type, pg_type in columns_to_add:
+                    if col_name not in existing:
+                        conn.execute(text(
+                            f"ALTER TABLE {table} ADD COLUMN {col_name} {pg_type}"
+                        ))
+            conn.commit()
+    except Exception as exc:
+        app.logger.warning("PostgreSQL column migration skipped: %s", exc)
 
 # Redirect /admin to dashboard so "Admin" link lands on dashboard
 @app.before_request
@@ -2015,6 +2053,8 @@ admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', catego
 # Initialize database, global ID counter, and admin users
 with app.app_context():
     db.create_all()
+    # Add any columns that were added after the table was first created
+    ensure_db_columns()
     # Ensure the global ID counter row exists
     if not GlobalIDCounter.query.first():
         db.session.add(GlobalIDCounter(id=1, next_id=1))
