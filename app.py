@@ -101,7 +101,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog
 
 def ensure_db_columns():
     """Add any missing columns to existing tables (SQLite and PostgreSQL).
@@ -1701,6 +1701,35 @@ import re
 from wtforms.widgets import TextArea, Select
 from datetime import datetime
 
+# ---------------------------------------------------------------------------
+# Audit-log helper
+# ---------------------------------------------------------------------------
+def _log_audit(action, model, entity_type=None):
+    """Write one row to the audit_log table.
+
+    ``model`` is the SQLAlchemy instance being created/edited/deleted.
+    ``action`` is one of 'created', 'edited', 'deleted'.
+    """
+    try:
+        username = session.get('username', 'unknown')
+        etype = entity_type or model.__class__.__name__
+        eid = getattr(model, 'id', None)
+        etitle = (getattr(model, 'title', None)
+                  or getattr(model, 'name', None)
+                  or str(eid))
+        entry = AuditLog(
+            user=username,
+            action=action,
+            entity_type=etype,
+            entity_id=eid,
+            entity_title=str(etitle)[:300] if etitle else None,
+        )
+        db.session.add(entry)
+        # Don't commit here — the caller (Flask-Admin) manages the session.
+    except Exception as exc:
+        log.warning("Audit log write failed: %s", exc)
+
+
 # Authenticated ModelView
 class AuthenticatedModelView(ModelView):
     """ModelView that requires authentication"""
@@ -1709,6 +1738,13 @@ class AuthenticatedModelView(ModelView):
     
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('admin_login', next=request.url))
+
+    # --- audit hooks ---
+    def after_model_change(self, form, model, is_created):
+        _log_audit('created' if is_created else 'edited', model)
+
+    def after_model_delete(self, model):
+        _log_audit('deleted', model)
 
 # Choices for announcement type/category — use form_args + form_overrides so we get
 # wtforms SelectField (4-tuple iter_choices), not Flask-Admin Select2Field (3-tuple, breaks widget)
@@ -2367,6 +2403,52 @@ class ReorderEventsView(BaseView):
         return self.render('admin/reorder_events.html', events=events)
 
 
+class HistoryView(BaseView):
+    """Admin audit-log / history view — see who added, edited, or deleted content."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        page = request.args.get('page', 1, type=int)
+        per_page = 50
+        action_filter = request.args.get('action', '')
+        type_filter = request.args.get('type', '')
+        user_filter = request.args.get('user', '')
+
+        query = AuditLog.query.order_by(AuditLog.timestamp.desc())
+
+        if action_filter:
+            query = query.filter(AuditLog.action == action_filter)
+        if type_filter:
+            query = query.filter(AuditLog.entity_type == type_filter)
+        if user_filter:
+            query = query.filter(AuditLog.user == user_filter)
+
+        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+        logs = pagination.items
+
+        # Gather distinct values for the filter dropdowns
+        all_actions = [r[0] for r in db.session.query(AuditLog.action).distinct().all()]
+        all_types = [r[0] for r in db.session.query(AuditLog.entity_type).distinct().all()]
+        all_users = [r[0] for r in db.session.query(AuditLog.user).distinct().all()]
+
+        return self.render(
+            'admin/history.html',
+            logs=logs,
+            pagination=pagination,
+            action_filter=action_filter,
+            type_filter=type_filter,
+            user_filter=user_filter,
+            all_actions=sorted(all_actions),
+            all_types=sorted(all_types),
+            all_users=sorted(all_users),
+        )
+
+
 # Setup admin with enhanced organization
 admin = Admin(app, name='CPC Admin', template_mode='bootstrap3')
 
@@ -2381,6 +2463,7 @@ admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='M
 admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
 admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
 admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
+admin.add_view(HistoryView(name='History', endpoint='history', category='Content'))
 
 # ---------------------------------------------------------------------------
 # Initialize database, verify connection, run migrations, seed admin users

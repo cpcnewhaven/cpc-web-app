@@ -135,6 +135,23 @@ class Paper(db.Model):
     thumbnail_url = db.Column(db.String(500))
     active = db.Column(db.Boolean, default=True)
 
+class AuditLog(db.Model):
+    """Tracks who added, edited, or deleted content and when."""
+    __tablename__ = 'audit_log'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
+    user = db.Column(db.String(80), nullable=False)               # session username
+    action = db.Column(db.String(20), nullable=False)              # 'created', 'edited', 'deleted'
+    entity_type = db.Column(db.String(50), nullable=False)         # e.g. 'Announcement', 'Sermon'
+    entity_id = db.Column(db.Integer)                              # id of the affected record
+    entity_title = db.Column(db.String(300))                       # human-readable title/name
+    details = db.Column(db.Text)                                   # optional extra info (changed fields, etc.)
+
+    def __repr__(self):
+        return f'<AuditLog {self.action} {self.entity_type} #{self.entity_id} by {self.user}>'
+
+
 class User(db.Model):
     __tablename__ = 'users'
 
