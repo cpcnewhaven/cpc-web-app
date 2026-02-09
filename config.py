@@ -16,7 +16,7 @@ class ProductionConfig(Config):
 
 # --- Podcast + cache config ---
 PODCAST_FEEDS = {
-    "cpc": "<PASTE_YOUR_SPOTIFY_RSS_URL_HERE>"
+    "cpc": "https://anchor.fm/s/4c59256c/podcast/rss"
 }
 CACHE_TYPE = "SimpleCache"
 CACHE_DEFAULT_TIMEOUT = 900  # 15 minutes
