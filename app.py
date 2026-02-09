@@ -194,6 +194,52 @@ def healthz():
         log.error("Health check FAILED: %s", exc)
         return jsonify({"status": "error", "database": str(exc)}), 503
 
+# ---------------------------------------------------------------------------
+# Log 500 errors with full traceback (so Render logs show the real cause)
+# ---------------------------------------------------------------------------
+@app.errorhandler(500)
+def internal_error(exc):
+    import traceback
+    log.error("500 Internal Server Error: %s\n%s", exc, traceback.format_exc())
+    # Return HTML so admin/browser still get a page; real cause is in logs (e.g. Render dashboard)
+    return (
+        "<!DOCTYPE html><html><head><title>Error</title></head><body>"
+        "<h1>Internal Server Error</h1><p>Check server logs for details.</p></body></html>"
+    ), 500, {"Content-Type": "text/html; charset=utf-8"}
+
+# ---------------------------------------------------------------------------
+# Admin status: last content change across all tables
+# ---------------------------------------------------------------------------
+@app.route('/api/admin/last-change')
+def api_admin_last_change():
+    """Return the single most-recent content change (for the admin status bar)."""
+    candidates = []
+    try:
+        a = Announcement.query.order_by(Announcement.date_entered.desc()).first()
+        if a:
+            candidates.append(('Announcement', a.title, a.date_entered))
+        s = Sermon.query.order_by(Sermon.date.desc()).first()
+        if s:
+            candidates.append(('Sermon', s.title, datetime.combine(s.date, datetime.min.time()) if s.date else None))
+        e = OngoingEvent.query.order_by(OngoingEvent.date_entered.desc()).first()
+        if e:
+            candidates.append(('Event', e.title, e.date_entered))
+        g = GalleryImage.query.order_by(GalleryImage.created.desc()).first()
+        if g:
+            candidates.append(('Gallery', g.name or 'image', g.created))
+    except Exception:
+        pass
+    candidates = [(t, n, d) for t, n, d in candidates if d]
+    if not candidates:
+        return jsonify({'type': None, 'title': None, 'when': None})
+    candidates.sort(key=lambda x: x[2], reverse=True)
+    typ, title, when = candidates[0]
+    return jsonify({
+        'type': typ,
+        'title': title[:80] if title else '',
+        'when': when.strftime('%b %d, %Y %I:%M %p') if when else None,
+    })
+
 # Redirect /admin to dashboard so "Admin" link lands on dashboard
 @app.before_request
 def redirect_admin_to_dashboard():
@@ -1655,7 +1701,7 @@ from flask_admin.form import Select2Field
 from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField
 from wtforms.validators import DataRequired, URL, Length, Optional
 import re
-from wtforms.widgets import TextArea
+from wtforms.widgets import TextArea, Select
 from datetime import datetime
 
 # Authenticated ModelView
@@ -1694,7 +1740,13 @@ class AnnouncementView(AuthenticatedModelView):
         'featured_image': {'placeholder': 'https://example.com/image.jpg'},
         'image_display_type': {'placeholder': 'poster or leave empty'}
     }
-    
+    # Use standard Select widget so choices stay (value, label) — Flask-Admin's Select2Widget expects 4-tuples and breaks
+    form_widgets = {
+        'type': Select(),
+        'category': Select(),
+        'banner_type': Select(),
+    }
+
     column_labels = {
         'date_entered': 'Date Created',
         'superfeatured': 'Super Featured',
@@ -1994,7 +2046,8 @@ class OngoingEventView(AuthenticatedModelView):
     form_widget_args = {
         'description': {'rows': 8, 'style': 'width: 100%'}
     }
-    
+    form_widgets = {'type': Select(), 'category': Select()}
+
     form_choices = {
         'type': [
             ('ongoing', 'Ongoing'),
@@ -2011,11 +2064,11 @@ class OngoingEventView(AuthenticatedModelView):
             ('prayer', 'Prayer')
         ]
     }
-    
+
     column_labels = {
         'date_entered': 'Date Created'
     }
-    
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
@@ -2107,7 +2160,7 @@ class ReorderEventsView(BaseView):
 
 
 # Setup admin with enhanced organization
-admin = Admin(app, name='CPC Admin')
+admin = Admin(app, name='CPC Admin', template_mode='bootstrap3')
 
 # Add dashboard view
 admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))

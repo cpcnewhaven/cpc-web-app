@@ -1,0 +1,728 @@
+/**
+ * CPC Admin – custom styles (no Bootstrap)
+ * Full control over layout and look.
+ */
+
+/* ---------------------------------------------------------------------------
+   Variables
+   --------------------------------------------------------------------------- */
+.admin-body,
+body.admin-body {
+  --admin-bg: linear-gradient(135deg, #004080 0%, #003366 50%, #00264d 100%);
+  --admin-panel: rgba(0, 50, 120, 0.25);
+  --admin-panel-strong: rgba(0, 50, 120, 0.45);
+  --admin-border: rgba(0, 80, 160, 0.4);
+  --admin-text: rgba(255, 255, 255, 0.95);
+  --admin-text-muted: rgba(255, 255, 255, 0.7);
+  --admin-input-bg: rgba(0, 50, 120, 0.25);
+  --admin-input-border: rgba(0, 80, 160, 0.5);
+  --cpc-blue: #0052a3;
+  --cpc-blue-dark: #003d7a;
+  --cpc-blue-light: #3385d6;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+.admin-body,
+body.admin-body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--admin-bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--admin-text);
+}
+
+.admin-body a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+}
+
+.admin-body a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------------------
+   Layout: container, row, columns (simple grid)
+   --------------------------------------------------------------------------- */
+.admin-body .container {
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.admin-body .container-fluid {
+  width: 100%;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.admin-body .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.admin-body [class*="col-"] {
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box;
+}
+
+.admin-body .col-md-12 { width: 100%; }
+.admin-body .col-sm-12 { width: 100%; }
+.admin-body .col-lg-12 { width: 100%; }
+.admin-body .col-md-6 { width: 50%; }
+.admin-body .col-sm-6 { width: 50%; }
+.admin-body .col-md-4 { width: 33.333%; }
+.admin-body .col-md-8 { width: 66.666%; }
+
+@media (max-width: 768px) {
+  .admin-body .col-md-6,
+  .admin-body .col-md-4,
+  .admin-body .col-md-8 { width: 100%; }
+}
+
+/* ---------------------------------------------------------------------------
+   Navbar
+   --------------------------------------------------------------------------- */
+.admin-body .navbar {
+  background: rgba(0, 50, 120, 0.3);
+  border: 1px solid var(--admin-border);
+  border-radius: 0;
+  margin-bottom: 20px;
+  min-height: 50px;
+}
+
+.admin-body .navbar-default {
+  border: none;
+  background: rgba(0, 50, 120, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.admin-body .navbar-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-body .navbar-brand {
+  color: var(--admin-text) !important;
+  font-weight: 600;
+  padding: 15px;
+  font-size: 18px;
+}
+
+.admin-body .navbar-brand:hover {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.admin-body .navbar-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 8px 12px;
+  margin: 8px 15px;
+  border-radius: var(--radius-sm);
+}
+
+.admin-body .navbar-toggle .icon-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--admin-text);
+  margin: 4px 0;
+  border-radius: 1px;
+}
+
+@media (max-width: 768px) {
+  .admin-body .navbar-toggle { display: block; }
+  .admin-body .navbar-collapse { display: none; }
+  .admin-body .navbar-collapse.in { display: block; }
+  .admin-body .navbar-nav { margin: 0; }
+  .admin-body .navbar-nav > li { display: block; border-bottom: 1px solid rgba(255,255,255,0.1); }
+}
+
+.admin-body .navbar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-body .navbar-nav > li {
+  position: relative;
+}
+
+.admin-body .navbar-nav > li > a {
+  display: block;
+  padding: 15px 12px;
+  color: var(--admin-text) !important;
+}
+
+.admin-body .navbar-nav > li > a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.admin-body .navbar-nav > li.active > a {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff !important;
+}
+
+.admin-body .navbar-right {
+  margin-left: auto;
+}
+
+/* Dropdown */
+.admin-body .dropdown-toggle {
+  cursor: pointer;
+}
+
+.admin-body .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  background: rgba(0, 50, 120, 0.98);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+.admin-body .dropdown.open .dropdown-menu {
+  display: block;
+}
+
+.admin-body .dropdown-menu li {
+  display: block;
+}
+
+.admin-body .dropdown-menu a {
+  display: block;
+  padding: 8px 16px;
+  color: var(--admin-text) !important;
+}
+
+.admin-body .dropdown-menu a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.admin-body .dropdown-menu .active a {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.admin-body .glyphicon {
+  font-style: normal;
+  margin-right: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Content area
+   --------------------------------------------------------------------------- */
+.admin-body #content,
+.admin-body .content {
+  padding: 20px 0;
+}
+
+.admin-body .page-header {
+  margin: 0 0 20px;
+  padding: 15px 20px;
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius);
+}
+
+.admin-body .page-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+/* ---------------------------------------------------------------------------
+   Forms
+   --------------------------------------------------------------------------- */
+.admin-body .form-group {
+  margin-bottom: 1rem;
+}
+
+.admin-body label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.admin-body .form-control {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--admin-text);
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-input-border);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+}
+
+.admin-body .form-control:focus {
+  outline: none;
+  border-color: var(--cpc-blue-light);
+  background: rgba(0, 50, 120, 0.35);
+}
+
+.admin-body .form-control::placeholder {
+  color: var(--admin-text-muted);
+}
+
+.admin-body textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.admin-body select.form-control {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.admin-body .form-inline .form-group {
+  display: inline-block;
+  margin-right: 12px;
+  margin-bottom: 8px;
+}
+
+.admin-body .form-inline .form-control {
+  display: inline-block;
+  width: auto;
+}
+
+.admin-body .form-actions,
+.admin-body .form-actions.well {
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--admin-border);
+}
+
+.admin-body .help-block {
+  margin-top: 0.35rem;
+  font-size: 12px;
+  color: var(--admin-text-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Buttons
+   --------------------------------------------------------------------------- */
+.admin-body .btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+}
+
+.admin-body .btn:hover {
+  text-decoration: none;
+}
+
+.admin-body .btn-primary {
+  background: var(--cpc-blue);
+  border-color: var(--cpc-blue);
+  color: #fff !important;
+}
+
+.admin-body .btn-primary:hover {
+  background: var(--cpc-blue-dark);
+  border-color: var(--cpc-blue-dark);
+  color: #fff !important;
+}
+
+.admin-body .btn-default {
+  background: rgba(0, 50, 120, 0.4);
+  border-color: var(--admin-input-border);
+  color: var(--admin-text) !important;
+}
+
+.admin-body .btn-default:hover {
+  background: rgba(0, 50, 120, 0.6);
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.admin-body .btn-success {
+  background: #28a745;
+  border-color: #28a745;
+  color: #fff !important;
+}
+
+.admin-body .btn-danger {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff !important;
+}
+
+.admin-body .btn-info {
+  background: #17a2b8;
+  border-color: #17a2b8;
+  color: #fff !important;
+}
+
+.admin-body .btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+   Tables
+   --------------------------------------------------------------------------- */
+.admin-body .table-responsive {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius);
+}
+
+.admin-body .table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--admin-text);
+}
+
+.admin-body .table thead {
+  background: var(--admin-panel-strong);
+}
+
+.admin-body .table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-body .table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(0, 80, 160, 0.2);
+}
+
+.admin-body .table tbody tr:hover {
+  background: rgba(0, 50, 120, 0.2);
+}
+
+.admin-body .table-bordered th,
+.admin-body .table-bordered td {
+  border: 1px solid var(--admin-border);
+}
+
+/* ---------------------------------------------------------------------------
+   Panels / wells / cards
+   --------------------------------------------------------------------------- */
+.admin-body .panel,
+.admin-body .well,
+.admin-body .card {
+  margin-bottom: 1.5rem;
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius);
+}
+
+.admin-body .panel-heading,
+.admin-body .card-header {
+  padding: 12px 15px;
+  background: var(--admin-panel-strong);
+  border-bottom: 1px solid var(--admin-border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  color: var(--admin-text);
+  font-weight: 600;
+}
+
+.admin-body .panel-body,
+.admin-body .card-body {
+  padding: 15px;
+  color: var(--admin-text);
+}
+
+.admin-body .well {
+  padding: 15px;
+}
+
+/* ---------------------------------------------------------------------------
+   Breadcrumb
+   --------------------------------------------------------------------------- */
+.admin-body .breadcrumb {
+  padding: 8px 0;
+  margin-bottom: 15px;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--admin-text-muted);
+}
+
+.admin-body .breadcrumb > li + li::before {
+  content: "/";
+  padding: 0 6px;
+  color: var(--admin-text-muted);
+}
+
+.admin-body .breadcrumb a {
+  color: var(--admin-text);
+}
+
+/* ---------------------------------------------------------------------------
+   Pagination
+   --------------------------------------------------------------------------- */
+.admin-body .pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+}
+
+.admin-body .pagination > li > a,
+.admin-body .pagination > li > span {
+  display: block;
+  padding: 6px 12px;
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--admin-text);
+}
+
+.admin-body .pagination > li > a:hover {
+  background: var(--admin-panel-strong);
+  text-decoration: none;
+}
+
+.admin-body .pagination > .active > span {
+  background: var(--cpc-blue);
+  border-color: var(--cpc-blue);
+  color: #fff;
+}
+
+/* ---------------------------------------------------------------------------
+   Alerts / messages
+   --------------------------------------------------------------------------- */
+.admin-body .alert {
+  padding: 12px 15px;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+}
+
+.admin-body .alert-success {
+  background: rgba(40, 167, 69, 0.25);
+  border-color: rgba(40, 167, 69, 0.5);
+  color: #b8e6c4;
+}
+
+.admin-body .alert-danger,
+.admin-body .alert-error {
+  background: rgba(220, 53, 69, 0.25);
+  border-color: rgba(220, 53, 69, 0.5);
+  color: #f5b7c2;
+}
+
+.admin-body .alert-info {
+  background: rgba(0, 50, 120, 0.4);
+  border-color: var(--admin-border);
+  color: var(--admin-text);
+}
+
+/* ---------------------------------------------------------------------------
+   Modals (delete confirmation, etc.)
+   --------------------------------------------------------------------------- */
+.admin-body .modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1040;
+}
+
+.admin-body .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.admin-body .modal-content {
+  background: rgba(0, 50, 120, 0.98);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius);
+  max-width: 500px;
+  width: 100%;
+  color: var(--admin-text);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+
+.admin-body .modal-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--admin-border);
+  font-weight: 600;
+}
+
+.admin-body .modal-body {
+  padding: 20px;
+}
+
+.admin-body .modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--admin-border);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------------------------
+   List group (sidebar / filters)
+   --------------------------------------------------------------------------- */
+.admin-body .list-group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-body .list-group-item {
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(0, 80, 160, 0.2);
+  color: var(--admin-text);
+}
+
+.admin-body .list-group-item:hover {
+  background: rgba(0, 50, 120, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   Filter form, model list
+   --------------------------------------------------------------------------- */
+.admin-body .filter-form .form-group,
+.admin-body #filter_form .form-group {
+  margin-bottom: 8px;
+}
+
+.admin-body .model-list {
+  background: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   Utility
+   --------------------------------------------------------------------------- */
+.admin-body .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.admin-body .text-muted {
+  color: var(--admin-text-muted);
+}
+
+.admin-body .clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* ID builder panel (create form) */
+.admin-body .id-builder-panel {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.admin-body .id-builder-panel .id-builder-title {
+  color: var(--admin-text);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.admin-body .id-builder-panel .id-builder-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.admin-body .id-builder-panel select {
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-input-border);
+  border-radius: 4px;
+  color: var(--admin-text);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.admin-body .id-builder-panel .btn-apply-id {
+  background: var(--cpc-blue);
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.admin-body .id-builder-panel .btn-apply-id:hover {
+  background: var(--cpc-blue-dark);
+}
+
+.admin-body .banner-quick-note,
+.admin-body .banner-char-count {
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+  margin-top: 0.25rem;
+}
+
+.admin-body .banner-char-count {
+  text-align: right;
+  margin-top: 0.5rem;
+}

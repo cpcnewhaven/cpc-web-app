@@ -265,14 +265,6 @@
         <!-- Fixed Left Dashboard (Desktop) -->
         <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data x-show="$store.dash.showLeftSidebar">
             <div class="dashboard-section">
-                <div class="dashboard-title">This Sunday</div>
-                <div class="dashboard-note">
-                    <div class="text-white/95 font-semibold text-sm">10:30am Worship</div>
-                    <div class="text-white/70 text-xs mt-0.5">135 Whitney Ave, New Haven</div>
-                    <a href="https://maps.google.com/?q=135+Whitney+Ave+New+Haven+CT" target="_blank" rel="noopener" class="text-blue-300 hover:text-blue-200 text-xs mt-0.5 inline-block">Get Directions →</a>
-                </div>
-            </div>
-            <div class="dashboard-section">
                 <div class="dashboard-title">Search</div>
                 <form @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
                     <input x-ref="leftSearch" type="search" placeholder="Search site..."
