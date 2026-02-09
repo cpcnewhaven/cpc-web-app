@@ -726,3 +726,105 @@ body.admin-body {
   text-align: right;
   margin-top: 0.5rem;
 }
+
+/* ---------------------------------------------------------------------------
+   Select2 (dark theme override — Flask-Admin loads vendor CSS)
+   --------------------------------------------------------------------------- */
+.admin-body .select2-container .select2-choice,
+.admin-body .select2-container .select2-choices {
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--admin-text);
+  min-height: 34px;
+}
+.admin-body .select2-container .select2-choice .select2-chosen {
+  color: var(--admin-text);
+}
+.admin-body .select2-drop {
+  background: rgba(0, 50, 120, 0.98);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text);
+}
+.admin-body .select2-results .select2-result-label {
+  color: var(--admin-text);
+}
+.admin-body .select2-results .select2-highlighted {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.admin-body .select2-search input {
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-input-border);
+  color: var(--admin-text);
+}
+
+/* ---------------------------------------------------------------------------
+   Nav tabs
+   --------------------------------------------------------------------------- */
+.admin-body .nav-tabs {
+  list-style: none;
+  display: flex;
+  gap: 2px;
+  padding: 0;
+  margin: 0 0 1rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-body .nav-tabs > li > a {
+  display: block;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  color: var(--admin-text-muted);
+}
+.admin-body .nav-tabs > li > a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--admin-text);
+  text-decoration: none;
+}
+.admin-body .nav-tabs > li.active > a {
+  background: var(--admin-panel-strong);
+  border: 1px solid var(--admin-border);
+  border-bottom-color: transparent;
+  color: var(--admin-text);
+}
+.admin-body .tab-content > .tab-pane { display: none; }
+.admin-body .tab-content > .tab-pane.active { display: block; }
+
+/* ---------------------------------------------------------------------------
+   Checkbox / radio
+   --------------------------------------------------------------------------- */
+.admin-body .checkbox,
+.admin-body .radio {
+  margin: 0.35rem 0;
+}
+.admin-body .checkbox label,
+.admin-body .radio label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--admin-text);
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------
+   Caret (dropdown arrow)
+   --------------------------------------------------------------------------- */
+.admin-body .caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: middle;
+  border-top: 4px solid;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  margin-left: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Divider in dropdown menus
+   --------------------------------------------------------------------------- */
+.admin-body .divider {
+  height: 1px;
+  margin: 6px 0;
+  background: var(--admin-border);
+}
