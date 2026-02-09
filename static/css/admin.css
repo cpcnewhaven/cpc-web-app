@@ -4,22 +4,24 @@
  */
 
 /* ---------------------------------------------------------------------------
-   Variables
+   Variables – liquid blue, no gradients/shadows (future SaaS)
    --------------------------------------------------------------------------- */
 .admin-body,
 body.admin-body {
-  --admin-bg: linear-gradient(135deg, #004080 0%, #003366 50%, #00264d 100%);
-  --admin-panel: rgba(0, 50, 120, 0.25);
-  --admin-panel-strong: rgba(0, 50, 120, 0.45);
-  --admin-border: rgba(0, 80, 160, 0.4);
-  --admin-text: rgba(255, 255, 255, 0.95);
-  --admin-text-muted: rgba(255, 255, 255, 0.7);
-  --admin-input-bg: rgba(0, 50, 120, 0.25);
-  --admin-input-border: rgba(0, 80, 160, 0.5);
-  --cpc-blue: #0052a3;
-  --cpc-blue-dark: #003d7a;
-  --cpc-blue-light: #3385d6;
-  --radius: 10px;
+  --admin-bg: #0d2137;
+  --admin-panel: #132f4c;
+  --admin-panel-strong: #1a3a5c;
+  --admin-border: #1e4976;
+  --admin-text: rgba(255, 255, 255, 0.96);
+  --admin-text-muted: rgba(255, 255, 255, 0.72);
+  --admin-input-bg: #132f4c;
+  --admin-input-border: #1e4976;
+  --cpc-blue: #0d6efd;
+  --cpc-blue-dark: #0a58ca;
+  --cpc-blue-light: #4dabf7;
+  --liquid-blue: #228be6;
+  --liquid-blue-bright: #74c0fc;
+  --radius: 8px;
   --radius-sm: 6px;
 }
 
@@ -60,6 +62,19 @@ body.admin-body {
 .admin-body .container-fluid {
   width: 100%;
   padding: 0 15px;
+  box-sizing: border-box;
+}
+
+/* Admin dashboard: full-width main, no fixed sidebars */
+.admin-body .admin-dashboard-main {
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-body .admin-dashboard-content {
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -399,7 +414,7 @@ body.admin-body {
 }
 
 /* ---------------------------------------------------------------------------
-   Tables
+   Tables – clean list layout
    --------------------------------------------------------------------------- */
 .admin-body .table-responsive {
   overflow-x: auto;
@@ -413,6 +428,7 @@ body.admin-body {
   width: 100%;
   border-collapse: collapse;
   color: var(--admin-text);
+  font-size: 14px;
 }
 
 .admin-body .table thead {
@@ -420,24 +436,102 @@ body.admin-body {
 }
 
 .admin-body .table th {
-  padding: 12px 15px;
+  padding: 14px 18px;
   text-align: left;
   font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--liquid-blue-bright);
   border-bottom: 1px solid var(--admin-border);
 }
 
 .admin-body .table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid rgba(0, 80, 160, 0.2);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--admin-border);
+  vertical-align: middle;
 }
 
 .admin-body .table tbody tr:hover {
-  background: rgba(0, 50, 120, 0.2);
+  background: rgba(34, 139, 230, 0.08);
 }
 
 .admin-body .table-bordered th,
 .admin-body .table-bordered td {
   border: 1px solid var(--admin-border);
+}
+
+/* ---------------------------------------------------------------------------
+   Status tags – published / draft / featured / banner (glow via border)
+   --------------------------------------------------------------------------- */
+.admin-body .admin-status-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  margin-right: 6px;
+  white-space: nowrap;
+}
+
+.admin-body .admin-status-published {
+  background: #0f5132;
+  color: #75b798;
+  border-color: #2ea043;
+}
+
+.admin-body .admin-status-draft {
+  background: #3d3d3d;
+  color: #adb5bd;
+  border-color: #495057;
+}
+
+.admin-body .admin-status-featured {
+  background: #0d2137;
+  color: var(--liquid-blue-bright);
+  border-color: var(--liquid-blue);
+}
+
+.admin-body .admin-status-banner {
+  background: #0d2137;
+  color: #ffd43b;
+  border-color: #fab005;
+}
+
+.admin-body .admin-status-archived {
+  background: #2d2d2d;
+  color: #868e96;
+  border-color: #495057;
+}
+
+.admin-body .admin-status-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-body .admin-status-select {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--admin-panel-strong);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  color: var(--liquid-blue-bright);
+  cursor: pointer;
+  max-width: 140px;
+}
+
+.admin-body .admin-status-select:hover {
+  border-color: var(--liquid-blue);
+}
+
+.admin-body .admin-status-select:focus {
+  outline: none;
+  border-color: var(--liquid-blue);
 }
 
 /* ---------------------------------------------------------------------------

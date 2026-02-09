@@ -3,6 +3,7 @@ warnings.filterwarnings('ignore', message='.*pkg_resources is deprecated.*')
 
 import logging
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session
+from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
@@ -118,9 +119,15 @@ def ensure_db_columns():
             ('show_in_banner', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
             ('featured_image', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('image_display_type', 'VARCHAR(50)', 'VARCHAR(50)'),
+            ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
         ],
         'ongoing_events': [
             ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
+            ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
+        ],
+        'sermons': [
+            ('active', 'BOOLEAN DEFAULT 1', 'BOOLEAN DEFAULT TRUE'),
+            ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
         ],
     }
 
@@ -700,70 +707,61 @@ def api_papers_latest():
 @app.route('/api/sermons')
 @cache.cached(timeout=120)
 def api_sermons():
-    """API endpoint matching your sunday-sermons.json structure"""
-    # Use optimized helper to avoid duplication
+    """Sunday Sermons API: DB sermons (published) first, then JSON fallback."""
+    episodes = []
+    # 1. Published sermons from admin (Sunday Sermons)
     try:
-        from sermon_data_helper import get_sermon_helper
-        helper = get_sermon_helper()
-        
-        metadata = helper.get_metadata()
-        sermons = helper.get_all_sermons()
-        
-        episodes = []
-        for sermon in sermons:
-            episode = {
-                'id': sermon.get('id', ''),
-                'title': sermon.get('title', ''),
-                'author': sermon.get('author', ''),
-                'scripture': sermon.get('scripture', ''),
-                'date': sermon.get('date', ''),
-                'spotify_url': sermon.get('spotify_url', ''),
-                'youtube_url': sermon.get('youtube_url', ''),
-                'apple_podcasts_url': sermon.get('apple_podcasts_url', ''),
-                'link': sermon.get('link', ''),
-                'podcast-thumbnail_url': sermon.get('podcast_thumbnail_url', '')
-            }
-            episodes.append(episode)
-        
-        return jsonify({
-            'title': metadata.get('title', 'Sunday Sermons'),
-            'description': metadata.get('description', 'Weekly sermons from our Sunday worship services'),
-            'episodes': episodes
-        })
-    except ImportError:
-        # Fallback to old method if helper not available
-        import json
-        with open('data/sermons.json', 'r') as f:
-            sermons_data = json.load(f)
-        
-        episodes = []
-        for sermon in sermons_data.get('sermons', []):
-            episode = {
-                'id': sermon.get('id', ''),
-                'title': sermon.get('title', ''),
-                'author': sermon.get('author', ''),
-                'scripture': sermon.get('scripture', ''),
-                'date': sermon.get('date', ''),
-                'spotify_url': sermon.get('spotify_url', ''),
-                'youtube_url': sermon.get('youtube_url', ''),
-                'apple_podcasts_url': sermon.get('apple_podcasts_url', ''),
-                'link': sermon.get('link', ''),
-                'podcast-thumbnail_url': sermon.get('podcast_thumbnail_url', '')
-            }
-            episodes.append(episode)
-        
-        return jsonify({
-            'title': sermons_data.get('title', 'Sunday Sermons'),
-            'description': sermons_data.get('description', 'Weekly sermons from our Sunday worship services'),
-            'episodes': episodes
-        })
+        db_sermons = Sermon.query.filter(
+            Sermon.active == True,
+            Sermon.archived == False
+        ).order_by(Sermon.date.desc()).all()
+        for s in db_sermons:
+            episodes.append({
+                'id': s.id,
+                'title': s.title or '',
+                'author': s.author or '',
+                'scripture': s.scripture or '',
+                'date': s.date.strftime('%Y-%m-%d') if s.date else '',
+                'spotify_url': s.spotify_url or '',
+                'youtube_url': s.youtube_url or '',
+                'apple_podcasts_url': s.apple_podcasts_url or '',
+                'link': s.spotify_url or s.youtube_url or s.apple_podcasts_url or '',
+                'podcast-thumbnail_url': s.podcast_thumbnail_url or ''
+            })
     except Exception as e:
-        print(f"Error loading sermons: {e}")
-        return jsonify({
-            'title': 'Sunday Sermons',
-            'description': 'Weekly sermons from our Sunday worship services',
-            'episodes': []
-        })
+        print(f"Error loading DB sermons: {e}")
+    # 2. If no DB sermons, use JSON (sermon_data_helper)
+    if not episodes:
+        try:
+            from sermon_data_helper import get_sermon_helper
+            helper = get_sermon_helper()
+            metadata = helper.get_metadata()
+            sermons = helper.get_all_sermons()
+            for sermon in sermons:
+                episodes.append({
+                    'id': sermon.get('id', ''),
+                    'title': sermon.get('title', ''),
+                    'author': sermon.get('author', ''),
+                    'scripture': sermon.get('scripture', ''),
+                    'date': sermon.get('date', ''),
+                    'spotify_url': sermon.get('spotify_url', ''),
+                    'youtube_url': sermon.get('youtube_url', ''),
+                    'apple_podcasts_url': sermon.get('apple_podcasts_url', ''),
+                    'link': sermon.get('link', ''),
+                    'podcast-thumbnail_url': sermon.get('podcast_thumbnail_url', '')
+                })
+            return jsonify({
+                'title': metadata.get('title', 'Sunday Sermons'),
+                'description': metadata.get('description', 'Weekly sermons from our Sunday worship services'),
+                'episodes': episodes
+            })
+        except Exception as e:
+            print(f"Error loading sermons: {e}")
+    return jsonify({
+        'title': 'Sunday Sermons',
+        'description': 'Weekly sermons from our Sunday worship services',
+        'episodes': episodes
+    })
 
 @app.route('/api/podcasts/beyond-podcast')
 def api_beyond_podcast():
@@ -1697,7 +1695,6 @@ def admin_banner_alert_new():
 # Enhanced Admin Interface
 from flask_admin import BaseView, expose
 from flask_admin.actions import action
-from flask_admin.form import Select2Field
 from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField
 from wtforms.validators import DataRequired, URL, Length, Optional
 import re
@@ -1713,13 +1710,68 @@ class AuthenticatedModelView(ModelView):
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('admin_login', next=request.url))
 
+# Choices for announcement type/category — use form_args + form_overrides so we get
+# wtforms SelectField (4-tuple iter_choices), not Flask-Admin Select2Field (3-tuple, breaks widget)
+ANNOUNCEMENT_TYPE_CHOICES = [
+    ('announcement', 'Announcement'),
+    ('event', 'Event'),
+    ('ongoing', 'Ongoing'),
+    ('highlight', 'Highlight'),
+    ('weather', 'Weather Alert'),
+    ('parking', 'Parking Update'),
+    ('alert', 'General Alert'),
+    ('info', 'Info'),
+]
+ANNOUNCEMENT_CATEGORY_CHOICES = [
+    ('general', 'General'),
+    ('worship', 'Worship'),
+    ('education', 'Education'),
+    ('fellowship', 'Fellowship'),
+    ('missions', 'Missions'),
+    ('youth', 'Youth'),
+    ('children', 'Children'),
+]
+
+
+def _format_announcement_status(view, context, model, name):
+    from flask import url_for
+    base = url_for('announcement.set_status')
+    publish_url = base + '?id=' + str(model.id) + '&status=publish'
+    draft_url = base + '?id=' + str(model.id) + '&status=draft'
+    archive_url = base + '?id=' + str(model.id) + '&status=archive'
+    active = getattr(model, 'active', True)
+    archived = getattr(model, 'archived', False)
+    if archived:
+        status_tag = '<span class="admin-status-tag admin-status-archived">Archived</span>'
+    elif active:
+        status_tag = '<span class="admin-status-tag admin-status-published">Published</span>'
+    else:
+        status_tag = '<span class="admin-status-tag admin-status-draft">Draft</span>'
+    dropdown = (
+        '<select class="admin-status-select" onchange="var u=this.value; if(u) window.location=u;">'
+        '<option value="">Change status…</option>'
+        '<option value="' + publish_url + '">Publish</option>'
+        '<option value="' + draft_url + '">Revert to draft</option>'
+        '<option value="' + archive_url + '">Archive</option>'
+        '</select>'
+    )
+    tags = [status_tag, dropdown]
+    if getattr(model, 'superfeatured', False):
+        tags.insert(1, '<span class="admin-status-tag admin-status-featured">Featured</span>')
+    if getattr(model, 'show_in_banner', False):
+        tags.insert(1, '<span class="admin-status-tag admin-status-banner">Banner</span>')
+    return Markup('<span class="admin-status-wrap">' + ' '.join(tags) + '</span>')
+
+
 class AnnouncementView(AuthenticatedModelView):
     column_list = ('id', 'title', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered')
     column_searchable_list = ('title', 'description', 'tag')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered')
     column_default_sort = ('date_entered', True)
-    
+    # Exclude id from create form so we set it in on_model_change (next_global_id)
+    form_excluded_columns = ['id', 'date_entered']
+
     form_columns = ('title', 'description', 'type', 'category', 'tag', 'active', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
@@ -1734,17 +1786,21 @@ class AnnouncementView(AuthenticatedModelView):
             ]
         )
     }
+
+    # Use wtforms SelectField (not Flask-Admin Select2Field) so iter_choices yields 4-tuples and the Select widget works
+    form_overrides = {
+        'type': SelectField,
+        'category': SelectField,
+    }
+    form_args = {
+        'type': {'choices': ANNOUNCEMENT_TYPE_CHOICES},
+        'category': {'choices': ANNOUNCEMENT_CATEGORY_CHOICES},
+    }
     
     form_widget_args = {
         'description': {'rows': 10, 'style': 'width: 100%'},
         'featured_image': {'placeholder': 'https://example.com/image.jpg'},
         'image_display_type': {'placeholder': 'poster or leave empty'}
-    }
-    # Use standard Select widget so choices stay (value, label) — Flask-Admin's Select2Widget expects 4-tuples and breaks
-    form_widgets = {
-        'type': Select(),
-        'category': Select(),
-        'banner_type': Select(),
     }
 
     column_labels = {
@@ -1752,29 +1808,12 @@ class AnnouncementView(AuthenticatedModelView):
         'superfeatured': 'Super Featured',
         'show_in_banner': 'Show in top bar',
         'featured_image': 'Featured Image URL',
-        'image_display_type': 'Image Display Type'
+        'image_display_type': 'Image Display Type',
+        'active': 'Status'
     }
-    
-    form_choices = {
-        'type': [
-            ('announcement', 'Announcement'),
-            ('event', 'Event'),
-            ('ongoing', 'Ongoing'),
-            ('highlight', 'Highlight'),
-            ('weather', 'Weather Alert'),
-            ('parking', 'Parking Update'),
-            ('alert', 'General Alert'),
-            ('info', 'Info')
-        ],
-        'category': [
-            ('general', 'General'),
-            ('worship', 'Worship'),
-            ('education', 'Education'),
-            ('fellowship', 'Fellowship'),
-            ('missions', 'Missions'),
-            ('youth', 'Youth'),
-            ('children', 'Children')
-        ]
+
+    column_formatters = {
+        'active': _format_announcement_status
     }
 
     def on_form_prefill(self, form, id):
@@ -1791,7 +1830,8 @@ class AnnouncementView(AuthenticatedModelView):
 
     def on_model_change(self, form, model, is_created):
         banner_field = getattr(form, 'banner_type', None)
-        banner_choice = banner_field.data.strip().lower() if banner_field and banner_field.data else ''
+        raw = getattr(banner_field, 'data', None) if banner_field else None
+        banner_choice = (str(raw).strip().lower() if raw is not None and raw != '' else '')
         if banner_choice:
             model.show_in_banner = True
             model.type = banner_choice
@@ -1799,7 +1839,33 @@ class AnnouncementView(AuthenticatedModelView):
             model.show_in_banner = False
         if is_created:
             model.id = next_global_id()
-    
+
+    @expose('set-status/', methods=['GET'])
+    def set_status(self):
+        if not is_authenticated():
+            return redirect(url_for('admin_login'))
+        id_val = request.args.get('id', type=int)
+        status = request.args.get('status')
+        if not id_val or status not in ('publish', 'draft', 'archive'):
+            flash('Invalid request.', 'error')
+            return redirect(url_for('announcement.index_view'))
+        ann = Announcement.query.get(id_val)
+        if not ann:
+            flash('Not found.', 'error')
+            return redirect(url_for('announcement.index_view'))
+        if status == 'publish':
+            ann.active = True
+            ann.archived = False
+        elif status == 'draft':
+            ann.active = False
+            ann.archived = False
+        else:
+            ann.active = False
+            ann.archived = True
+        db.session.commit()
+        flash('Status updated.', 'success')
+        return redirect(url_for('announcement.index_view'))
+
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):
         try:
@@ -1846,40 +1912,125 @@ class AnnouncementView(AuthenticatedModelView):
                 return False
         return False
 
+# Gospel books for sermon wizard (series -> chapter -> verse)
+SERMON_BOOK_CHOICES = [('', '— Select book —'), ('Matthew', 'Matthew'), ('Mark', 'Mark'), ('Luke', 'Luke'), ('John', 'John')]
+SERMON_CHAPTER_CHOICES = [('', '—')] + [(str(i), str(i)) for i in range(1, 29)]
+SERMON_VERSE_CHOICES = [('0', 'Whole chapter')] + [(str(i), str(i)) for i in range(1, 51)]
+
+
+def _format_sermon_status(view, context, model, name):
+    from flask import url_for
+    base = url_for('sermon.set_status')
+    publish_url = base + '?id=' + str(model.id) + '&status=publish'
+    draft_url = base + '?id=' + str(model.id) + '&status=draft'
+    archive_url = base + '?id=' + str(model.id) + '&status=archive'
+    active = getattr(model, 'active', True)
+    archived = getattr(model, 'archived', False)
+    if archived:
+        status_tag = '<span class="admin-status-tag admin-status-archived">Archived</span>'
+    elif active:
+        status_tag = '<span class="admin-status-tag admin-status-published">Published</span>'
+    else:
+        status_tag = '<span class="admin-status-tag admin-status-draft">Draft</span>'
+    dropdown = (
+        '<select class="admin-status-select" onchange="var u=this.value; if(u) window.location=u;">'
+        '<option value="">Change status…</option>'
+        '<option value="' + publish_url + '">Publish</option>'
+        '<option value="' + draft_url + '">Revert to draft</option>'
+        '<option value="' + archive_url + '">Archive</option>'
+        '</select>'
+    )
+    return Markup('<span class="admin-status-wrap">' + status_tag + ' ' + dropdown + '</span>')
+
+
 class SermonView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'author', 'date', 'scripture', 'spotify_url', 'youtube_url')
+    column_list = ('id', 'title', 'author', 'date', 'scripture', 'active', 'spotify_url', 'youtube_url')
     column_searchable_list = ('title', 'author', 'scripture')
     column_filters = ('author', 'date')
     column_sortable_list = ('title', 'author', 'date')
     column_default_sort = ('date', True)
-    
-    form_columns = ('title', 'author', 'scripture', 'date', 'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url')
+    form_excluded_columns = ['id']
+    column_labels = {
+        'spotify_url': 'Spotify',
+        'youtube_url': 'YouTube',
+        'apple_podcasts_url': 'Apple Podcasts',
+        'podcast_thumbnail_url': 'Thumbnail',
+        'active': 'Status'
+    }
+    column_formatters = {'active': _format_sermon_status}
+
+    form_columns = (
+        'scripture_book', 'scripture_chapter', 'verse_start', 'verse_end',
+        'title', 'author', 'scripture', 'date',
+        'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url'
+    )
     form_extra_fields = {
-        'scripture': TextAreaField('Scripture', widget=TextArea()),
+        'scripture_book': SelectField('1. Series (Book)', choices=SERMON_BOOK_CHOICES),
+        'scripture_chapter': SelectField('2. Chapter', choices=SERMON_CHAPTER_CHOICES),
+        'verse_start': SelectField('3. Verse (start)', choices=SERMON_VERSE_CHOICES),
+        'verse_end': SelectField('Verse (end, optional)', choices=SERMON_VERSE_CHOICES),
+        'scripture': TextAreaField('Scripture (or type manually)', widget=TextArea()),
         'spotify_url': URLField('Spotify URL', validators=[Optional(), URL()]),
         'youtube_url': URLField('YouTube URL', validators=[Optional(), URL()]),
         'apple_podcasts_url': URLField('Apple Podcasts URL', validators=[Optional(), URL()]),
         'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()])
     }
-    
     form_widget_args = {
-        'scripture': {'rows': 3, 'style': 'width: 100%'},
+        'scripture': {'rows': 2, 'style': 'width: 100%', 'placeholder': 'e.g. Luke 12:35-59'},
         'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
         'youtube_url': {'placeholder': 'https://youtube.com/watch?v=...'},
         'apple_podcasts_url': {'placeholder': 'https://podcasts.apple.com/podcast/...'},
         'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'}
     }
-    
-    column_labels = {
-        'spotify_url': 'Spotify',
-        'youtube_url': 'YouTube',
-        'apple_podcasts_url': 'Apple Podcasts',
-        'podcast_thumbnail_url': 'Thumbnail'
-    }
-    
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
+        book = getattr(form, 'scripture_book', None) and getattr(form.scripture_book, 'data', None)
+        ch = getattr(form, 'scripture_chapter', None) and getattr(form.scripture_chapter, 'data', None)
+        v1 = getattr(form, 'verse_start', None) and getattr(form.verse_start, 'data', None)
+        v2 = getattr(form, 'verse_end', None) and getattr(form.verse_end, 'data', None)
+        if book and ch and str(ch).isdigit():
+            try:
+                vs = int(v1 or 0) if v1 else 0
+                ve = int(v2 or 0) if v2 else 0
+                if vs > 0:
+                    ref = f"{book} {ch}:{vs}"
+                    if ve > vs:
+                        ref += f"-{ve}"
+                else:
+                    ref = f"{book} {ch}"
+                model.scripture = ref
+                if not (model.title and model.title.strip()):
+                    model.title = ref
+            except (TypeError, ValueError):
+                pass
+
+    @expose('set-status/', methods=['GET'])
+    def set_status(self):
+        if not is_authenticated():
+            return redirect(url_for('admin_login'))
+        id_val = request.args.get('id', type=int)
+        status = request.args.get('status')
+        if not id_val or status not in ('publish', 'draft', 'archive'):
+            flash('Invalid request.', 'error')
+            return redirect(url_for('sermon.index_view'))
+        s = Sermon.query.get(id_val)
+        if not s:
+            flash('Not found.', 'error')
+            return redirect(url_for('sermon.index_view'))
+        if status == 'publish':
+            s.active = True
+            s.archived = False
+        elif status == 'draft':
+            s.active = False
+            s.archived = False
+        else:
+            s.active = False
+            s.archived = True
+        db.session.commit()
+        flash('Status updated.', 'success')
+        return redirect(url_for('sermon.index_view'))
     
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected sermons?')
     def bulk_delete(self, ids):
@@ -1899,7 +2050,8 @@ class PodcastSeriesView(AuthenticatedModelView):
     column_list = ('title', 'description', 'episode_count')
     column_searchable_list = ('title', 'description')
     column_sortable_list = ('title',)
-    
+    form_excluded_columns = ['id']
+
     form_columns = ('title', 'description')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[Length(max=1000)])
@@ -1924,7 +2076,8 @@ class PodcastEpisodeView(AuthenticatedModelView):
     column_filters = ('series', 'guest', 'season')
     column_sortable_list = ('number', 'title', 'date_added')
     column_default_sort = ('number', True)
-    
+    form_excluded_columns = ['id']
+
     form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url')
     form_extra_fields = {
         'scripture': TextAreaField('Scripture', widget=TextArea()),
@@ -1972,7 +2125,8 @@ class GalleryImageView(AuthenticatedModelView):
     column_filters = ('event',)
     column_sortable_list = ('name', 'created')
     column_default_sort = ('created', True)
-    
+    form_excluded_columns = ['id']
+
     form_columns = ('name', 'url', 'size', 'type', 'tags', 'event')
     form_extra_fields = {
         'url': URLField('Image URL', validators=[DataRequired(), URL()]),
@@ -2031,13 +2185,39 @@ class GalleryImageView(AuthenticatedModelView):
             flash(f'Error toggling event status: {str(e)}', 'error')
             return False
 
+def _format_event_status(view, context, model, name):
+    from flask import url_for
+    base = url_for('ongoingevent.set_status')
+    publish_url = base + '?id=' + str(model.id) + '&status=publish'
+    draft_url = base + '?id=' + str(model.id) + '&status=draft'
+    archive_url = base + '?id=' + str(model.id) + '&status=archive'
+    active = getattr(model, 'active', True)
+    archived = getattr(model, 'archived', False)
+    if archived:
+        status_tag = '<span class="admin-status-tag admin-status-archived">Archived</span>'
+    elif active:
+        status_tag = '<span class="admin-status-tag admin-status-published">Published</span>'
+    else:
+        status_tag = '<span class="admin-status-tag admin-status-draft">Draft</span>'
+    dropdown = (
+        '<select class="admin-status-select" onchange="var u=this.value; if(u) window.location=u;">'
+        '<option value="">Change status…</option>'
+        '<option value="' + publish_url + '">Publish</option>'
+        '<option value="' + draft_url + '">Revert to draft</option>'
+        '<option value="' + archive_url + '">Archive</option>'
+        '</select>'
+    )
+    return Markup('<span class="admin-status-wrap">' + status_tag + ' ' + dropdown + '</span>')
+
+
 class OngoingEventView(AuthenticatedModelView):
     column_list = ('id', 'title', 'type', 'category', 'active', 'sort_order', 'date_entered')
     column_searchable_list = ('title', 'description')
     column_filters = ('type', 'active', 'category')
     column_sortable_list = ('title', 'type', 'active', 'sort_order', 'date_entered')
     column_default_sort = ('sort_order', False)
-    
+    form_excluded_columns = ['id']
+
     form_columns = ('title', 'description', 'type', 'category', 'active')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
@@ -2066,13 +2246,41 @@ class OngoingEventView(AuthenticatedModelView):
     }
 
     column_labels = {
-        'date_entered': 'Date Created'
+        'date_entered': 'Date Created',
+        'active': 'Status'
     }
+    column_formatters = {'active': _format_event_status}
 
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
-    
+
+    @expose('set-status/', methods=['GET'])
+    def set_status(self):
+        if not is_authenticated():
+            return redirect(url_for('admin_login'))
+        id_val = request.args.get('id', type=int)
+        status = request.args.get('status')
+        if not id_val or status not in ('publish', 'draft', 'archive'):
+            flash('Invalid request.', 'error')
+            return redirect(url_for('ongoingevent.index_view'))
+        event = OngoingEvent.query.get(id_val)
+        if not event:
+            flash('Not found.', 'error')
+            return redirect(url_for('ongoingevent.index_view'))
+        if status == 'publish':
+            event.active = True
+            event.archived = False
+        elif status == 'draft':
+            event.active = False
+            event.archived = False
+        else:
+            event.active = False
+            event.archived = True
+        db.session.commit()
+        flash('Status updated.', 'success')
+        return redirect(url_for('ongoingevent.index_view'))
+
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):
         try:
@@ -2169,7 +2377,7 @@ admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
 admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
 admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
 admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='Content'))
-admin.add_view(SermonView(Sermon, db.session, name='Sermons', category='Media'))
+admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))
 admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
 admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
 admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
@@ -2212,13 +2420,13 @@ if __name__ == '__main__':
     # Find an available port
     try:
         port = find_available_port()
-        print(f"🚀 Starting Flask app on port {port}")
-        print(f"🌐 Main site: http://localhost:{port}")
-        print(f"⚙️  Admin panel: http://localhost:{port}/admin")
-        print(f"🔍 Enhanced search: http://localhost:{port}/sermons_enhanced")
+        print(f"Starting Flask app on port {port}")
+        print(f"Main site: http://localhost:{port}")
+        print(f"Admin panel: http://localhost:{port}/admin")
+        print(f"Enhanced search: http://localhost:{port}/sermons_enhanced")
         print("Press Ctrl+C to stop the server")
         app.run(debug=True, port=port, host='0.0.0.0')
     except RuntimeError as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         print("Please free up a port or try running the app again.")
         exit(1)

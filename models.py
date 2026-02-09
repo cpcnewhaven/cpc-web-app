@@ -49,6 +49,7 @@ class Announcement(db.Model):
     tag = db.Column(db.String(50))
     superfeatured = db.Column(db.Boolean, default=False)
     show_in_banner = db.Column(db.Boolean, default=False)  # show in top yellow bar (weather, parking, etc.)
+    archived = db.Column(db.Boolean, default=False)  # Archive = not active, archived True
     featured_image = db.Column(db.String(500))
     image_display_type = db.Column(db.String(50))  # poster, cover, etc.
 
@@ -60,6 +61,8 @@ class Sermon(db.Model):
     author = db.Column(db.String(100), nullable=False)
     scripture = db.Column(db.String(200))
     date = db.Column(db.Date, nullable=False)
+    active = db.Column(db.Boolean, default=True)
+    archived = db.Column(db.Boolean, default=False)
     spotify_url = db.Column(db.String(500))
     youtube_url = db.Column(db.String(500))
     apple_podcasts_url = db.Column(db.String(500))
@@ -111,6 +114,7 @@ class OngoingEvent(db.Model):
     description = db.Column(db.Text, nullable=False)
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
     active = db.Column(db.Boolean, default=True)
+    archived = db.Column(db.Boolean, default=False)
     type = db.Column(db.String(50))
     category = db.Column(db.String(50))
     sort_order = db.Column(db.Integer, default=0)  # lower = first; drag to reorder

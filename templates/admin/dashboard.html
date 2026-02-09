@@ -258,12 +258,75 @@
         margin-left: 0.5rem;
     }
     
-    /* Quick Actions Grid */
+    /* Single responsive dashboard grid – no sidebars */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem 2rem;
+        margin-bottom: 2rem;
+    }
+    @media (min-width: 640px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (min-width: 900px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    @media (min-width: 1200px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    /* Stat cards: many per row in grid */
+    .dashboard-grid.stat-cards {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+    @media (min-width: 640px) {
+        .dashboard-grid.stat-cards {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        }
+    }
+
+    /* Wizard cards: 2–3 per row */
+    .dashboard-grid.wizard-cards {
+        grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) {
+        .dashboard-grid.wizard-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (min-width: 1000px) {
+        .dashboard-grid.wizard-cards {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* Recent content: 2 columns when wide, 1 when narrow */
+    .dashboard-grid.recent-content {
+        grid-template-columns: 1fr;
+    }
+    @media (min-width: 768px) {
+        .dashboard-grid.recent-content {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Quick Actions Grid (legacy name, same as dashboard-grid) */
     .quick-actions {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
+    }
+    @media (min-width: 640px) {
+        .quick-actions.stat-cards {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        }
     }
     
     /* Cozy touches */
@@ -285,9 +348,7 @@
 {% endblock %}
 
 {% block body %}
-<main class="dashboard-main">
-<div class="container-fluid"
-    style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+<div class="admin-dashboard-content" style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
     <!-- Welcome Header with Today's Date -->
     <div class="admin-welcome">
         <h1><span class="welcome-emoji">👋</span> Welcome{% if
@@ -305,8 +366,8 @@
         </div>
     </div>
 
-    <!-- Statistics Cards (click to open that table) -->
-    <div class="quick-actions">
+    <!-- Statistics Cards (click to open that table) – responsive grid -->
+    <div class="dashboard-grid stat-cards">
         <a href="{{ url_for('announcement.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.announcements }}</div>
             <div class="stat-label">Announcements</div>
@@ -315,8 +376,8 @@
 
         <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.sermons }}</div>
-            <div class="stat-label">Sermons</div>
-            <div class="stat-sub">In Archive</div>
+            <div class="stat-label">Sunday Sermons</div>
+            <div class="stat-sub">Manage → appears on /sermons</div>
         </a>
 
         <a href="{{ url_for('podcastepisode.index_view') }}" class="stat-card stat-card-link">
@@ -353,7 +414,7 @@
         {% endif %}
     </div>
 
-    <!-- Yellow bar / Banner alerts (front-end top bar) -->
+    <!-- Yellow bar / Banner alerts (front-end top bar) – full width -->
     <div class="banner-alerts-card" style="margin-bottom: 2rem;">
         <div class="wizard-card" style="border-left: 4px solid #f59e0b;">
             <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
@@ -388,7 +449,7 @@
         through the process step by step.
     </p>
 
-    <div class="quick-actions">
+    <div class="dashboard-grid wizard-cards">
         <!-- Announcement Wizard -->
         <div class="wizard-card"
             onclick="window.location.href='{{ url_for('announcement.create_view') }}'">
@@ -403,15 +464,15 @@
             </div>
         </div>
 
-        <!-- Sermon Wizard -->
+        <!-- Sunday Sermon Wizard (book → chapter → verse) -->
         <div class="wizard-card"
             onclick="window.location.href='{{ url_for('sermon.create_view') }}'">
             <i class="fas fa-microphone wizard-icon"></i>
-            <div class="wizard-title">New Sermon</div>
+            <div class="wizard-title">New Sunday Sermon</div>
             <div class="wizard-desc">
-                Add a new sermon to the archive. Include title, speaker,
-                scripture, date, and links to Spotify, YouTube, or Apple
-                Podcasts.
+                Pick series (e.g. Luke), chapter, and verse. Auto-fills scripture.
+                Add author, date, and links to Spotify, YouTube, or Apple Podcasts.
+                Publish or save as draft.
             </div>
             <div class="wizard-btn">
                 <i class="fas fa-arrow-right"></i> Start Wizard
@@ -475,9 +536,8 @@
         </div>
     </div>
 
-    <!-- Recent Content -->
-    <div
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem;">
+    <!-- Recent Content – responsive 2-column grid -->
+    <div class="dashboard-grid recent-content" style="margin-top: 2rem;">
         <!-- Recent Announcements -->
         <div class="wizard-card">
             <div
@@ -593,6 +653,10 @@
         </h3>
         <div
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="/sermons" target="_blank" class="wizard-btn"
+                style="font-size: 0.9rem; padding: 0.75rem 1rem;">
+                <i class="fas fa-book-open"></i> View Sunday Sermons
+            </a>
             <a href="/" target="_blank" class="wizard-btn"
                 style="font-size: 0.9rem; padding: 0.75rem 1rem;">
                 <i class="fas fa-globe"></i> View Website
@@ -604,7 +668,6 @@
         </div>
     </div>
 </div>
-</main>
 
 <script>
 // Add smooth animations
