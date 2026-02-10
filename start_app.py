@@ -58,7 +58,7 @@ def start_app_with_port_management():
     
     # Check for port conflicts
     finder = PortFinder()
-    preferred_ports = [5001, 5000, 8000, 8080, 3000]
+    preferred_ports = [6000, 6001, 6002, 6003, 6004, 6005, 5001, 5000, 8000, 8080, 3000]
     
     print("\n🔍 Checking port availability...")
     
@@ -110,7 +110,7 @@ def main():
     if len(sys.argv) > 1:
         if sys.argv[1] == '--kill-ports':
             # Kill processes on common ports
-            ports_to_check = [5001, 5000, 8000, 8080, 3000]
+            ports_to_check = [6000, 6001, 6002, 6003, 6004, 6005, 5001, 5000, 8000, 8080, 3000]
             for port in ports_to_check:
                 kill_process_on_port(port)
             print("✅ Attempted to kill processes on common ports")
@@ -118,7 +118,7 @@ def main():
         elif sys.argv[1] == '--check-ports':
             # Just check port availability
             finder = PortFinder()
-            for port in [5001, 5000, 8000, 8080, 3000]:
+            for port in [6000, 6001, 6002, 6003, 6004, 6005, 5001, 5000, 8000, 8080, 3000]:
                 info = finder.get_port_info(port)
                 status = "✅ Available" if info['available'] else "❌ In Use"
                 print(f"Port {port}: {status}")

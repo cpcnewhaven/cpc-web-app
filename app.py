@@ -6,7 +6,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for, f
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView as _AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_caching import Cache
 from datetime import datetime, date, timedelta
@@ -48,6 +48,12 @@ app.register_blueprint(json_api)
 app.register_blueprint(google_drive_bp)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
+
+# Session cookie security — enforce HTTPS-only cookies in production
+if os.getenv('FLASK_ENV') == 'production' or os.getenv('RENDER'):
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 # ---------------------------------------------------------------------------
 # Database URL — require DATABASE_URL in production, allow SQLite for local dev
@@ -2494,8 +2500,21 @@ class HistoryView(BaseView):
         )
 
 
+# Protected index view — redirect /admin/ to login or dashboard
+class ProtectedAdminIndexView(_AdminIndexView):
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        return redirect(url_for('dashboard.index'))
+
 # Setup admin with enhanced organization
-admin = Admin(app, name='CPC Admin', template_mode='bootstrap3')
+admin = Admin(app, name='CPC Admin', template_mode='bootstrap3',
+              index_view=ProtectedAdminIndexView())
 
 # Add dashboard view
 admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
@@ -2545,9 +2564,14 @@ with app.app_context():
     log.info("DB init complete — app is ready to serve")
 
 if __name__ == '__main__':
-    # Find an available port
+    # Use one port for both main and reloader (so URL doesn't change after restart)
     try:
-        port = find_available_port()
+        port = os.environ.get('FLASK_APP_PORT')
+        if port is not None:
+            port = int(port)
+        else:
+            port = find_available_port()
+            os.environ['FLASK_APP_PORT'] = str(port)
         print(f"Starting Flask app on port {port}")
         print(f"Main site: http://localhost:{port}")
         print(f"Admin panel: http://localhost:{port}/admin")

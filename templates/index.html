@@ -288,15 +288,17 @@
     <div class="banner-dots" id="bannerDots" aria-hidden="true"></div>
 </section>
 
-<!-- Highlights Section (compact) -->
-<section class="highlights-section section-dark" style="padding: 4rem 0; position: relative;">
+<!-- New Content Section (announcements / latest from admin) -->
+<section class="highlights-section section-dark new-content-section" style="padding: 4rem 0; position: relative;">
     <div class="container" style="position: relative; z-index: 1;">
         <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
-            <h2 class="section-heading" style="margin-bottom: 0.5rem;">Highlights &amp; Featured</h2>
-            <p class="section-subheading">Stay connected with what's happening at CPC</p>
+            <h2 class="section-heading" style="margin-bottom: 0.5rem;">New Content</h2>
+            <p class="section-subheading">Announcements and the latest from CPC</p>
         </div>
         <div id="highlights" class="highlights-grid"></div>
-        <div style="text-align: center; margin-top: 2rem;">
+        <div id="highlights-extra" class="highlights-grid highlights-extra" style="display: none; margin-top: 1rem;"></div>
+        <div id="new-content-actions" style="text-align: center; margin-top: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
+            <button type="button" id="show-all-new-content-btn" class="btn btn-secondary" style="display: none;">Show all new content</button>
             <a href="{{ url_for('highlights') }}" class="glass-icon-button"><i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
@@ -531,8 +533,11 @@
 })();
 </script>
 <script>
-// Highlights grid (same as before)
+// New Content grid: latest 6, then "Show all new content" reveals rest as previews
 document.addEventListener('DOMContentLoaded', function() {
+    var INITIAL_COUNT = 6;
+    var allActive = [];
+
     function getTypeBadgeColor(type) {
         var c = { 'event': 'rgba(0, 122, 255, 0.15)', 'announcement': 'rgba(255, 215, 0, 0.15)', 'ongoing': 'rgba(52, 199, 89, 0.15)', 'upcoming': 'rgba(255, 149, 0, 0.15)' };
         return c[type] || 'rgba(255, 255, 255, 0.1)';
@@ -550,30 +555,61 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     }
 
+    function buildCard(h) {
+        var card = document.createElement('div');
+        card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
+        var imgHtml = h.featuredImage ? '<div style="position:relative;height:200px;overflow:hidden;"><img src="' + h.featuredImage + '" alt="" style="width:100%;height:100%;object-fit:cover;"><div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);"></div></div>' : '';
+        card.innerHTML = imgHtml + '<div style="padding:1.25rem;"><span style="display:inline-block;padding:4px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;text-transform:uppercase;background:' + getTypeBadgeColor(h.type) + ';color:' + getTypeBadgeTextColor(h.type) + ';">' + (h.type || 'Announcement') + '</span><h3 style="color:rgba(255,255,255,0.98);font-size:1.1rem;margin:0.5rem 0 0.35rem;">' + (h.title || '') + '</h3><p style="color:rgba(255,255,255,0.75);font-size:0.9rem;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + stripHtml(h.description) + '</p><div style="margin-top:0.75rem;font-size:0.85rem;color:rgba(255,255,255,0.6);">' + (h.dateEntered ? formatDate(h.dateEntered) : '') + '</div></div>';
+        return card;
+    }
+
+    function renderItems(container, items) {
+        container.innerHTML = '';
+        items.forEach(function(h) {
+            container.appendChild(buildCard(h));
+        });
+    }
+
     fetch('/api/highlights').then(function(r) { return r.json(); }).then(function(data) {
         var container = document.getElementById('highlights');
+        var extraContainer = document.getElementById('highlights-extra');
+        var btn = document.getElementById('show-all-new-content-btn');
         if (!container) return;
-        var active = (data.announcements || []).filter(function(h) { return h.active === 'true' || h.active === true; });
-        active.sort(function(a, b) {
+
+        allActive = (data.announcements || []).filter(function(h) { return h.active === 'true' || h.active === true; });
+        allActive.sort(function(a, b) {
             if (a.superfeatured && !b.superfeatured) return -1;
             if (!a.superfeatured && b.superfeatured) return 1;
             return new Date(b.dateEntered) - new Date(a.dateEntered);
         });
-        var shown = active.slice(0, 8);
-        if (shown.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);grid-column:1/-1;">No highlights at this time.</p>';
+
+        if (allActive.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);grid-column:1/-1;">No new content at this time.</p>';
             return;
         }
-        shown.forEach(function(h, i) {
-            var card = document.createElement('div');
-            card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
-            var imgHtml = h.featuredImage ? '<div style="position:relative;height:200px;overflow:hidden;"><img src="' + h.featuredImage + '" alt="" style="width:100%;height:100%;object-fit:cover;"><div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);"></div></div>' : '';
-            card.innerHTML = imgHtml + '<div style="padding:1.25rem;"><span style="display:inline-block;padding:4px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;text-transform:uppercase;background:' + getTypeBadgeColor(h.type) + ';color:' + getTypeBadgeTextColor(h.type) + ';">' + (h.type || 'Announcement') + '</span><h3 style="color:rgba(255,255,255,0.98);font-size:1.1rem;margin:0.5rem 0 0.35rem;">' + (h.title || '') + '</h3><p style="color:rgba(255,255,255,0.75);font-size:0.9rem;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + stripHtml(h.description) + '</p><div style="margin-top:0.75rem;font-size:0.85rem;color:rgba(255,255,255,0.6);">' + (h.dateEntered ? formatDate(h.dateEntered) : '') + '</div></div>';
-            container.appendChild(card);
-        });
+
+        var initial = allActive.slice(0, INITIAL_COUNT);
+        var rest = allActive.slice(INITIAL_COUNT);
+        renderItems(container, initial);
+
+        if (rest.length > 0 && extraContainer && btn) {
+            renderItems(extraContainer, rest);
+            btn.style.display = 'inline-block';
+            btn.textContent = 'Show all new content';
+            btn.addEventListener('click', function() {
+                var isExpanded = extraContainer.style.display === 'grid';
+                if (isExpanded) {
+                    extraContainer.style.display = 'none';
+                    btn.textContent = 'Show all new content';
+                } else {
+                    extraContainer.style.display = 'grid';
+                    btn.textContent = 'Show less';
+                }
+            });
+        }
     }).catch(function() {
         var c = document.getElementById('highlights');
-        if (c) c.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);">Unable to load highlights.</p>';
+        if (c) c.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);">Unable to load new content.</p>';
     });
 });
 </script>

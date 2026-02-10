@@ -208,7 +208,8 @@
                 })();
                 </script>
 
-                <!-- Development: Admin Accounts -->
+                {% if config.DEBUG %}
+                <!-- Development only: Admin Accounts (hidden in production) -->
                 <div
                     style="margin-top: 2rem; padding: 1.5rem; background: rgba(0, 0, 0, 0.2); border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.2);">
                     <h3
@@ -243,6 +244,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </body>

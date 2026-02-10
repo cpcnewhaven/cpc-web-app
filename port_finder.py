@@ -20,7 +20,7 @@ class PortFinder:
             max_attempts: Maximum number of ports to try
         """
         if preferred_ports is None:
-            preferred_ports = [5001, 5000, 8000, 8080, 3000, 5002, 5003, 5004, 5005]
+            preferred_ports = [6000, 6001, 6002, 6003, 6004, 6005, 5001, 5000, 8000, 8080, 3000]
         
         self.preferred_ports = preferred_ports
         self.max_attempts = max_attempts

@@ -1169,7 +1169,7 @@ body.theme-white .dashboard-section + .dashboard-section {
     align-items: center;
     white-space: nowrap;
     will-change: transform;
-    animation: tickerScroll 40s linear infinite;
+    animation: tickerScroll 70s linear infinite;
     padding-left: 100%;
 }
 .footer-ticker:hover .ticker-content {

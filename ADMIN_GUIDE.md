@@ -23,6 +23,8 @@ The admin dashboard provides:
 
 ### Announcements
 
+Announcements you create here appear as **New Content** on the homepage (latest 6 shown, with “Show all new content” for the rest) and on the full New Content page.
+
 **Features:**
 - Create, edit, and delete announcements
 - Set announcement types (announcement, event, ongoing, highlight)

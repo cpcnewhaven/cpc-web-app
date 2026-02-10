@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Highlights - CPC New Haven{% endblock %}
+{% block title %}New Content - CPC New Haven{% endblock %}
 
 {% block head %}
 <style>
@@ -159,8 +159,8 @@
 <div class="highlights-page compact-page">
     <div class="highlights-container compact-content">
         <div class="highlights-hero compact-hero">
-            <h1>What's Happening at CPC</h1>
-            <p>Stay connected with featured events, announcements, and ongoing activities</p>
+            <h1>New Content</h1>
+            <p>Announcements, events, and the latest from CPC</p>
         </div>
 
         <div class="filter-section">
@@ -172,7 +172,7 @@
         </div>
 
         <div id="highlights-container" class="highlights-grid">
-            <div class="empty-state">Loading highlights...</div>
+            <div class="empty-state">Loading new content...</div>
         </div>
     </div>
 </div>
@@ -189,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setupFilters();
         })
         .catch(error => {
-            console.error('Error loading highlights:', error);
-            document.getElementById('highlights-container').innerHTML = '<div class="empty-state">Error loading highlights.</div>';
+            console.error('Error loading new content:', error);
+            document.getElementById('highlights-container').innerHTML = '<div class="empty-state">Error loading new content.</div>';
         });
 
     function displayHighlights(highlights) {
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.innerHTML = '';
         
         if (highlights.length === 0) {
-            container.innerHTML = '<div class="empty-state">No highlights at this time.</div>';
+            container.innerHTML = '<div class="empty-state">No new content at this time.</div>';
             return;
         }
 
