@@ -267,6 +267,23 @@
     left: 100%;
 }
 
+/* Play button - for Spotify-linked sermons */
+.btn-play {
+    background: rgba(29, 185, 84, 0.45);
+    color: rgba(255, 255, 255, 0.98);
+    border-color: rgba(29, 185, 84, 0.55);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-play:hover {
+    background: rgba(29, 185, 84, 0.6);
+    border-color: rgba(29, 185, 84, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.35);
+}
+
 .btn-spotify {
     background: rgba(29, 185, 84, 0.3);
     color: rgba(255, 255, 255, 0.95);
@@ -447,6 +464,20 @@
     border-color: rgba(29, 185, 84, 0.6);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3);
+}
+
+.sermons-table .sermon-links a.btn-play {
+    background: rgba(29, 185, 84, 0.45);
+    color: rgba(255, 255, 255, 0.98);
+    border-color: rgba(29, 185, 84, 0.55);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.sermons-table .sermon-links a.btn-play:hover {
+    background: rgba(29, 185, 84, 0.6);
+    border-color: rgba(29, 185, 84, 0.7);
 }
 
 .sermons-table .sermon-links a[href*="youtube"] {
@@ -631,6 +662,11 @@
                             <div class="sermon-links">
                                 <a :href="sermon.spotify_url"
                                     x-show="sermon.spotify_url" target="_blank"
+                                    rel="noopener"
+                                    class="btn btn-play"
+                                    title="Play on Spotify"><i class="fas fa-play"></i> Play</a>
+                                <a :href="sermon.spotify_url"
+                                    x-show="sermon.spotify_url" target="_blank"
                                     class="btn btn-spotify">Spotify</a>
                                 <a :href="sermon.youtube_url"
                                     x-show="sermon.youtube_url" target="_blank"
@@ -669,6 +705,12 @@
                                 <td x-text="sermon.author || 'Unknown'"></td>
                                 <td x-text="sermon.scripture || '-'"></td>
                                 <td class="sermon-links">
+                                    <a x-show="sermon.spotify_url"
+                                        :href="sermon.spotify_url"
+                                        target="_blank"
+                                        rel="noopener"
+                                        class="btn-play"
+                                        title="Play on Spotify"><i class="fas fa-play"></i> Play</a>
                                     <a x-show="sermon.spotify_url"
                                         :href="sermon.spotify_url"
                                         target="_blank"
@@ -989,6 +1031,15 @@ window.sermonData = function() {
                 linksCell.className = 'sermon-links';
                 
                 if (sermon.spotify_url) {
+                    const playLink = document.createElement('a');
+                    playLink.href = sermon.spotify_url;
+                    playLink.target = '_blank';
+                    playLink.rel = 'noopener';
+                    playLink.className = 'btn-play';
+                    playLink.title = 'Play on Spotify';
+                    playLink.innerHTML = '<i class="fas fa-play"></i> Play';
+                    playLink.style.cssText = 'padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; background: rgba(29, 185, 84, 0.45); color: rgba(255, 255, 255, 0.98); border: 1px solid rgba(29, 185, 84, 0.55); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);';
+                    linksCell.appendChild(playLink);
                     const spotifyLink = document.createElement('a');
                     spotifyLink.href = sermon.spotify_url;
                     spotifyLink.target = '_blank';

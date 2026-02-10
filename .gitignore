@@ -50,6 +50,9 @@ Thumbs.db
 instance/
 .webassets-cache
 
+# Uploaded media (URLs are stored in DB; files live here)
+static/uploads/
+
 # Migrations (optional - uncomment if you want to ignore migrations)
 # migrations/
 

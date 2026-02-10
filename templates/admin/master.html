@@ -67,6 +67,70 @@
             var idGroup = idInput.closest('.form-group');
             if (idGroup) idGroup.style.display = 'none';
         }
+
+        // Featured image: add drag-and-drop upload zone
+        var featuredInput = form.querySelector('input[name="featured_image"]');
+        if (featuredInput) {
+            var formGroup = featuredInput.closest('.form-group');
+            if (formGroup) {
+                var dropWrap = document.createElement('div');
+                dropWrap.className = 'featured-image-upload-wrap';
+                dropWrap.style.cssText = 'margin-bottom: 12px;';
+                var dropZone = document.createElement('div');
+                dropZone.className = 'featured-image-drop-zone';
+                dropZone.setAttribute('data-drop-zone', '1');
+                dropZone.innerHTML = '<span class="drop-zone-text"><i class="fas fa-cloud-upload-alt" style="margin-right: 6px;"></i>Drag & drop an image here, or click to choose</span><input type="file" accept="image/png,image/jpeg,image/gif,image/webp" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
+                dropZone.style.cssText = 'border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 24px; text-align: center; color: rgba(255,255,255,0.7); cursor: pointer; position: relative; transition: border-color 0.2s, background 0.2s;';
+                var statusEl = document.createElement('div');
+                statusEl.className = 'featured-image-upload-status';
+                statusEl.style.cssText = 'margin-top: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.6); min-height: 20px;';
+                dropWrap.appendChild(dropZone);
+                dropWrap.appendChild(statusEl);
+                formGroup.insertBefore(dropWrap, formGroup.firstChild);
+
+                var fileInput = dropZone.querySelector('input[type="file"]');
+                function setStatus(msg, isError) {
+                    statusEl.textContent = msg;
+                    statusEl.style.color = isError ? 'rgba(255,120,100,0.95)' : 'rgba(255,255,255,0.6)';
+                }
+                function uploadFile(file) {
+                    if (!file || !file.type.match(/^image\/(png|jpeg|gif|webp)$/)) {
+                        setStatus('Please choose a PNG, JPG, GIF, or WebP image.', true);
+                        return;
+                    }
+                    setStatus('Uploading…');
+                    var fd = new FormData();
+                    fd.append('file', file);
+                    fetch('{{ url_for("admin_upload_image") }}', { method: 'POST', body: fd })
+                        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+                        .then(function(o) {
+                            if (o.ok && o.data && o.data.url) {
+                                featuredInput.value = o.data.url;
+                                featuredInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                setStatus('Saved: ' + o.data.url);
+                            } else {
+                                setStatus(o.data && o.data.error ? o.data.error : 'Upload failed', true);
+                            }
+                        })
+                        .catch(function() { setStatus('Upload failed', true); });
+                }
+                dropZone.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = 'var(--cpc-blue, #007AFF)'; dropZone.style.background = 'rgba(0,122,255,0.08)'; });
+                dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = ''; dropZone.style.background = ''; });
+                dropZone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.style.borderColor = '';
+                    dropZone.style.background = '';
+                    var files = e.dataTransfer && e.dataTransfer.files;
+                    if (files && files[0]) uploadFile(files[0]);
+                });
+                fileInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) uploadFile(this.files[0]);
+                    this.value = '';
+                });
+                dropZone.addEventListener('click', function(e) { if (e.target === dropZone || e.target.classList.contains('drop-zone-text')) fileInput.click(); });
+            }
+        }
     });
 })();
 </script>

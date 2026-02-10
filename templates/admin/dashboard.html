@@ -570,6 +570,9 @@
                 <p>{{ announcement.description[:100] }}{% if
                     announcement.description|length > 100 %}...{% endif %}</p>
                 <small>
+                    {% if announcement.author %}
+                    <i class="fas fa-user"></i> {{ announcement.author }} |
+                    {% endif %}
                     <i class="fas fa-calendar"></i> {{
                     announcement.date_entered.strftime('%B %d, %Y') }} |
                     <i class="fas fa-tag"></i> {{ announcement.type|title }} |

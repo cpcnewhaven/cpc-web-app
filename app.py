@@ -11,7 +11,9 @@ from flask_admin.contrib.sqla import ModelView
 from flask_caching import Cache
 from datetime import datetime, date, timedelta
 import os
+import uuid
 import requests
+from werkzeug.utils import secure_filename
 import feedparser
 import json
 import re
@@ -120,6 +122,7 @@ def ensure_db_columns():
             ('featured_image', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('image_display_type', 'VARCHAR(50)', 'VARCHAR(50)'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
+            ('author', 'VARCHAR(200)', 'VARCHAR(200)'),
         ],
         'ongoing_events': [
             ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
@@ -1692,6 +1695,42 @@ def admin_bulk_sermons():
 def admin_banner_alert_new():
     return redirect(url_for('announcement.create_view', banner=1))
 
+# Admin image upload (for announcement featured image, etc.)
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def _allowed_image(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
+
+@app.route('/admin/upload-image', methods=['POST'])
+@require_auth
+def admin_upload_image():
+    """Accept an image file; save to static/uploads; return the public URL to store in DB."""
+    if 'file' not in request.files and 'image' not in request.files:
+        return jsonify({'error': 'No file in request'}), 400
+    f = request.files.get('file') or request.files.get('image')
+    if not f or f.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    if not _allowed_image(f.filename):
+        return jsonify({'error': 'Invalid file type. Use PNG, JPG, GIF, or WebP.'}), 400
+    base = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+    os.makedirs(base, exist_ok=True)
+    ext = (f.filename.rsplit('.', 1)[1].lower() or 'jpg')
+    safe_name = secure_filename(f.filename)
+    if not safe_name:
+        safe_name = 'image'
+    unique = str(uuid.uuid4())[:8] + '_' + (safe_name[:50] if len(safe_name) > 50 else safe_name)
+    unique = secure_filename(unique)
+    if not unique.endswith('.' + ext):
+        unique = unique + '.' + ext
+    path = os.path.join(base, unique)
+    try:
+        f.save(path)
+    except Exception as e:
+        return jsonify({'error': 'Failed to save file: ' + str(e)}), 500
+    # URL that works on this host (relative so it works behind a reverse proxy)
+    url = url_for('static', filename='uploads/' + unique)
+    return jsonify({'url': url})
+
 # Enhanced Admin Interface
 from flask_admin import BaseView, expose
 from flask_admin.actions import action
@@ -1800,15 +1839,15 @@ def _format_announcement_status(view, context, model, name):
 
 
 class AnnouncementView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered')
-    column_searchable_list = ('title', 'description', 'tag')
+    column_list = ('id', 'title', 'author', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered')
+    column_searchable_list = ('title', 'description', 'tag', 'author')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category')
-    column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered')
+    column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'author')
     column_default_sort = ('date_entered', True)
     # Exclude id from create form so we set it in on_model_change (next_global_id)
     form_excluded_columns = ['id', 'date_entered']
 
-    form_columns = ('title', 'description', 'type', 'category', 'tag', 'active', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('title', 'description', 'type', 'category', 'tag', 'author', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -1842,10 +1881,11 @@ class AnnouncementView(AuthenticatedModelView):
     column_labels = {
         'date_entered': 'Date Created',
         'superfeatured': 'Super Featured',
-        'show_in_banner': 'Show in top bar',
+        'show_in_banner': 'Featured in top bar',
         'featured_image': 'Featured Image URL',
         'image_display_type': 'Image Display Type',
-        'active': 'Status'
+        'active': 'Status',
+        'author': 'Author',
     }
 
     column_formatters = {
@@ -1865,6 +1905,7 @@ class AnnouncementView(AuthenticatedModelView):
             form.banner_type.data = ''
 
     def on_model_change(self, form, model, is_created):
+        # "Featured in top bar": banner_type selection (e.g. Weather) turns it on; otherwise use checkbox
         banner_field = getattr(form, 'banner_type', None)
         raw = getattr(banner_field, 'data', None) if banner_field else None
         banner_choice = (str(raw).strip().lower() if raw is not None and raw != '' else '')
@@ -1872,7 +1913,11 @@ class AnnouncementView(AuthenticatedModelView):
             model.show_in_banner = True
             model.type = banner_choice
         else:
-            model.show_in_banner = False
+            show_in_banner_field = getattr(form, 'show_in_banner', None)
+            if show_in_banner_field is not None and hasattr(show_in_banner_field, 'data'):
+                model.show_in_banner = bool(show_in_banner_field.data)
+            else:
+                model.show_in_banner = False
         if is_created:
             model.id = next_global_id()
 

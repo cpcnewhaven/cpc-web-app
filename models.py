@@ -52,6 +52,7 @@ class Announcement(db.Model):
     archived = db.Column(db.Boolean, default=False)  # Archive = not active, archived True
     featured_image = db.Column(db.String(500))
     image_display_type = db.Column(db.String(50))  # poster, cover, etc.
+    author = db.Column(db.String(200))  # who created/wrote the announcement
 
 class Sermon(db.Model):
     __tablename__ = 'sermons'
