@@ -2554,6 +2554,14 @@ with app.app_context():
     ensure_db_columns()
     log.info("DB column migrations complete")
 
+    # 3b. Stamp Alembic version if not yet tracked (one-time baseline)
+    from alembic.migration import MigrationContext
+    alembic_ctx = MigrationContext.configure(db.engine.connect())
+    if alembic_ctx.get_current_revision() is None:
+        from flask_migrate import stamp
+        stamp(revision='head')
+        log.info("Alembic baseline stamped (first run)")
+
     # 4. Ensure the global ID counter row exists
     if not GlobalIDCounter.query.first():
         db.session.add(GlobalIDCounter(id=1, next_id=1))
