@@ -334,7 +334,7 @@
         font-size: 2rem;
         margin-right: 0.5rem;
     }
-    
+
     .cozy-note {
         background: rgba(255, 255, 255, 0.1);
         border-left: 3px solid var(--cpc-blue-light);
@@ -343,6 +343,58 @@
         margin-top: 1rem;
         color: rgba(255, 255, 255, 0.9);
         font-style: italic;
+    }
+
+    /* Mobile overrides */
+    @media (max-width: 768px) {
+        .admin-dashboard-content {
+            padding: 1rem !important;
+        }
+
+        .admin-welcome h1 {
+            font-size: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .wizard-card {
+            padding: 1.25rem;
+        }
+
+        .wizard-icon {
+            font-size: 1.8rem;
+        }
+
+        .wizard-title {
+            font-size: 1.1rem;
+        }
+
+        /* Banner alerts: stack buttons below text */
+        .banner-alerts-card .wizard-card > div {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+        }
+
+        .banner-alerts-card .wizard-card > div > div:last-child {
+            width: 100%;
+        }
+
+        .banner-alerts-card .wizard-card > div > div:last-child .wizard-btn {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Quick links grid: smaller minmax for mobile */
+        .wizard-card div[style*="minmax(200px"] {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+        }
     }
 </style>
 {% endblock %}
