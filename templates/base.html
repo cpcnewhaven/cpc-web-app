@@ -354,23 +354,49 @@
                 <i class="fa-solid fa-house"></i>
                 <span>Home</span>
             </a>
-            <a href="{{ url_for('live') }}" class="mobile-nav-item" data-route="live">
-                <i class="fa-solid fa-video"></i>
-                <span>Live</span>
-            </a>
             <a href="{{ url_for('sermons') }}" class="mobile-nav-item" data-route="sermons">
                 <i class="fa-solid fa-book-bible"></i>
                 <span>Sermons</span>
+            </a>
+            <a href="{{ url_for('give') }}" class="mobile-nav-item" data-route="give">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                <span>Give</span>
             </a>
             <a href="{{ url_for('events') }}" class="mobile-nav-item" data-route="events">
                 <i class="fa-solid fa-calendar-days"></i>
                 <span>Events</span>
             </a>
-            <a href="{{ url_for('search') }}" class="mobile-nav-item" data-route="search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <span>Search</span>
-            </a>
+            <button type="button" class="mobile-nav-item mobile-nav-more" id="mobileNavMoreBtn" aria-label="More menu" data-route="more">
+                <i class="fa-solid fa-bars"></i>
+                <span>More</span>
+            </button>
         </nav>
+
+        <!-- Mobile More Menu (slide-up sheet) -->
+        <div id="mobileMoreMenu" class="mobile-more-menu" aria-hidden="true" role="dialog" aria-label="More menu">
+            <div class="mobile-more-backdrop" id="mobileMoreBackdrop"></div>
+            <div class="mobile-more-sheet">
+                <div class="mobile-more-header">
+                    <h2 class="mobile-more-title">More</h2>
+                    <button type="button" class="mobile-more-close" id="mobileMoreCloseBtn" aria-label="Close menu">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <div class="mobile-more-links">
+                    <a href="{{ url_for('live') }}" class="mobile-more-link"><i class="fa-solid fa-video"></i><span>Live Stream</span></a>
+                    <a href="{{ url_for('podcasts') }}" class="mobile-more-link"><i class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
+                    <a href="{{ url_for('search') }}" class="mobile-more-link"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
+                    <a href="{{ url_for('contact') }}" class="mobile-more-link"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
+                    <a href="{{ url_for('plan_a_vist') }}" class="mobile-more-link"><i class="fa-solid fa-location-dot"></i><span>Plan a Visit</span></a>
+                    <a href="{{ url_for('highlights') }}" class="mobile-more-link"><i class="fa-solid fa-sparkles"></i><span>New Content</span></a>
+                    <a href="{{ url_for('community') }}" class="mobile-more-link"><i class="fa-solid fa-people-group"></i><span>Community</span></a>
+                    <a href="{{ url_for('media') }}" class="mobile-more-link"><i class="fa-solid fa-images"></i><span>Gallery</span></a>
+                    <a href="{{ url_for('teaching_series') }}" class="mobile-more-link"><i class="fa-solid fa-list"></i><span>Teaching Series</span></a>
+                    <a href="{{ url_for('resources') }}" class="mobile-more-link"><i class="fa-solid fa-folder-open"></i><span>Resources</span></a>
+                    <a href="{{ url_for('archive') }}" class="mobile-more-link"><i class="fa-solid fa-box-archive"></i><span>Archive</span></a>
+                </div>
+            </div>
+        </div>
 
         <!-- Footer Ticker (announcements/highlights) -->
         <div class="footer-ticker">
@@ -709,6 +735,38 @@
         })();
         </script>
 
+        <!-- Mobile More Menu open/close -->
+        <script>
+        (function() {
+            const menu = document.getElementById('mobileMoreMenu');
+            const openBtn = document.getElementById('mobileNavMoreBtn');
+            const closeBtn = document.getElementById('mobileMoreCloseBtn');
+            const backdrop = document.getElementById('mobileMoreBackdrop');
+            if (!menu || !openBtn) return;
+
+            function openMore() {
+                menu.classList.add('mobile-more-menu-open');
+                menu.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeMore() {
+                menu.classList.remove('mobile-more-menu-open');
+                menu.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            openBtn.addEventListener('click', openMore);
+            closeBtn && closeBtn.addEventListener('click', closeMore);
+            backdrop && backdrop.addEventListener('click', closeMore);
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && menu.classList.contains('mobile-more-menu-open')) closeMore();
+            });
+            menu.querySelectorAll('.mobile-more-link').forEach(function(link) {
+                link.addEventListener('click', closeMore);
+            });
+        })();
+        </script>
+
         <!-- Mobile Bottom Nav Active State -->
         <script>
         (function() {
@@ -716,14 +774,13 @@
             const currentPath = window.location.pathname;
             const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
             
-            // Map routes to data-route values
+            // Map routes to data-route values (More is never active)
             const routeMap = {
                 '/': 'index',
                 '/index': 'index',
-                '/live': 'live',
                 '/sermons': 'sermons',
-                '/events': 'events',
-                '/search': 'search'
+                '/give': 'give',
+                '/events': 'events'
             };
             
             // Determine current route
