@@ -20,7 +20,8 @@ class PortFinder:
             max_attempts: Maximum number of ports to try
         """
         if preferred_ports is None:
-            preferred_ports = [6000, 6001, 6002, 6003, 6004, 6005, 5001, 5000, 8000, 8080, 3000]
+            # Browser-safe ports first (Chrome/Edge block 6000-6063 with ERR_UNSAFE_PORT)
+            preferred_ports = [3000, 5000, 5001, 8000, 8080, 6000, 6001, 6002, 6003, 6004, 6005]
         
         self.preferred_ports = preferred_ports
         self.max_attempts = max_attempts

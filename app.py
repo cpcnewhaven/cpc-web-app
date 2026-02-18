@@ -109,7 +109,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession
 
 def ensure_db_columns():
     """Add any missing columns to existing tables (SQLite and PostgreSQL).
@@ -129,14 +129,23 @@ def ensure_db_columns():
             ('image_display_type', 'VARCHAR(50)', 'VARCHAR(50)'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
             ('author', 'VARCHAR(200)', 'VARCHAR(200)'),
+            ('expires_at', 'DATE', 'DATE'),
         ],
         'ongoing_events': [
             ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
+            ('expires_at', 'DATE', 'DATE'),
         ],
         'sermons': [
             ('active', 'BOOLEAN DEFAULT 1', 'BOOLEAN DEFAULT TRUE'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
+            ('expires_at', 'DATE', 'DATE'),
+        ],
+        'podcast_episodes': [
+            ('expires_at', 'DATE', 'DATE'),
+        ],
+        'gallery_images': [
+            ('expires_at', 'DATE', 'DATE'),
         ],
     }
 
@@ -266,10 +275,12 @@ def redirect_admin_to_dashboard():
 @app.route('/')
 def index():
     """Homepage with highlights"""
-    # Get active superfeatured announcements first, then regular ones
+    # Get active superfeatured announcements first, then regular ones (exclude expired)
     superfeatured = Announcement.query.filter_by(active=True, superfeatured=True)\
+        .filter(_not_expired(Announcement))\
         .order_by(Announcement.date_entered.desc()).limit(3).all()
     regular = Announcement.query.filter_by(active=True, superfeatured=False)\
+        .filter(_not_expired(Announcement))\
         .order_by(Announcement.date_entered.desc()).limit(7).all()
     
     highlights = superfeatured + regular
@@ -381,6 +392,65 @@ def contact():
 def teaching_series():
     """Teaching series page showing sermon series and Sunday school series"""
     return render_template('teaching-series.html')
+
+
+@app.route('/pastor-teaching')
+def pastor_teaching():
+    """Public page for pastor-led teaching series (e.g. Total Christ) with PDFs."""
+    return render_template('pastor-teaching.html')
+
+
+@app.route('/api/pastor-teaching-series')
+def api_pastor_teaching_series():
+    """List active teaching series (pastor-uploaded, with optional sessions count)."""
+    series_list = TeachingSeries.query.filter_by(active=True)\
+        .filter(_not_expired(TeachingSeries))\
+        .order_by(TeachingSeries.sort_order.asc(), TeachingSeries.date_entered.desc()).all()
+    return jsonify({
+        'series': [
+            {
+                'id': s.id,
+                'title': s.title,
+                'description': s.description or '',
+                'image_url': s.image_url,
+                'start_date': s.start_date.isoformat() if s.start_date else None,
+                'end_date': s.end_date.isoformat() if s.end_date else None,
+                'event_info': s.event_info or '',
+                'session_count': len(s.sessions) if s.sessions else 0,
+            }
+            for s in series_list
+        ]
+    })
+
+
+@app.route('/api/pastor-teaching-series/<int:series_id>')
+def api_pastor_teaching_series_detail(series_id):
+    """One teaching series with sessions in order (1, 2, 3...) and PDF links."""
+    s = TeachingSeries.query.filter_by(id=series_id, active=True)\
+        .filter(_not_expired(TeachingSeries)).first()
+    if not s:
+        return jsonify({'error': 'Not found'}), 404
+    sessions = sorted(s.sessions, key=lambda x: x.number) if s.sessions else []
+    return jsonify({
+        'id': s.id,
+        'title': s.title,
+        'description': s.description or '',
+        'image_url': s.image_url,
+        'start_date': s.start_date.isoformat() if s.start_date else None,
+        'end_date': s.end_date.isoformat() if s.end_date else None,
+        'event_info': s.event_info or '',
+        'sessions': [
+            {
+                'id': sess.id,
+                'number': sess.number,
+                'title': sess.title,
+                'description': sess.description or '',
+                'pdf_url': sess.pdf_url,
+            }
+            for sess in sessions
+        ]
+    })
+
 
 @app.route('/api/teaching-series')
 def api_teaching_series():
@@ -595,10 +665,20 @@ def api_teaching_series():
 
 # API Routes
 @app.route('/api/announcements')
+def _not_expired(model_klass):
+    """SQLAlchemy filter: show only content that has no expiration or expires_at > today."""
+    from sqlalchemy import text
+    col = getattr(model_klass, 'expires_at', None)
+    if col is None:
+        return text('1 = 1')  # no expires_at column
+    return db.or_(col.is_(None), col > date.today())
+
+
 @cache.cached(timeout=60)
 def api_announcements():
     """API endpoint matching your highlights.json structure"""
     announcements = Announcement.query.filter_by(active=True)\
+        .filter(_not_expired(Announcement))\
         .order_by(Announcement.date_entered.desc()).all()
     
     return jsonify({
@@ -626,6 +706,7 @@ def api_announcements():
 def api_banner_announcements():
     """Active announcements marked to show in the top yellow bar (weather, parking, etc.)"""
     announcements = Announcement.query.filter_by(active=True, show_in_banner=True)\
+        .filter(_not_expired(Announcement))\
         .order_by(Announcement.date_entered.desc()).all()
     return jsonify({
         'announcements': [
@@ -643,7 +724,8 @@ def api_banner_announcements():
 def api_highlights():
     """API endpoint for highlights data - pulls from database"""
     # Get all announcements from database (not just active ones, for filtering on highlights page)
-    announcements = Announcement.query.order_by(Announcement.date_entered.desc()).all()
+    announcements = Announcement.query.filter(_not_expired(Announcement))\
+        .order_by(Announcement.date_entered.desc()).all()
     
     return jsonify({
         'announcements': [
@@ -668,6 +750,7 @@ def api_highlights():
 def api_ongoing_events():
     """API endpoint for ongoing events (ordered by sort_order, then date)"""
     events = OngoingEvent.query.filter_by(active=True)\
+        .filter(_not_expired(OngoingEvent))\
         .order_by(OngoingEvent.sort_order.asc(), OngoingEvent.date_entered.desc()).all()
     
     return jsonify({
@@ -723,7 +806,7 @@ def api_sermons():
         db_sermons = Sermon.query.filter(
             Sermon.active == True,
             Sermon.archived == False
-        ).order_by(Sermon.date.desc()).all()
+        ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).all()
         for s in db_sermons:
             episodes.append({
                 'id': s.id,
@@ -848,7 +931,8 @@ def api_gallery():
     except Exception as e:
         print(f"Error loading gallery from JSON: {e}")
         # Fallback to database
-        images = GalleryImage.query.order_by(GalleryImage.created.desc()).all()
+        images = GalleryImage.query.filter(_not_expired(GalleryImage))\
+            .order_by(GalleryImage.created.desc()).all()
         
         return jsonify({
             'images': [
@@ -1311,7 +1395,7 @@ def api_search():
                     Announcement.category.ilike(f'%{query}%'),
                     Announcement.tag.ilike(f'%{query}%')
                 )
-            ).all()
+            ).filter(_not_expired(Announcement)).all()
             for a in announcements:
                 results['results'].append({
                     'type': 'announcement',
@@ -1336,7 +1420,7 @@ def api_search():
             except:
                 pass  # Fields might not exist
             
-            episodes = PodcastEpisode.query.filter(or_(*conditions)).all()
+            episodes = PodcastEpisode.query.filter(or_(*conditions)).filter(_not_expired(PodcastEpisode)).all()
             for ep in episodes:
                 results['results'].append({
                     'type': 'podcast',
@@ -1354,7 +1438,7 @@ def api_search():
                     OngoingEvent.title.ilike(f'%{query}%'),
                     OngoingEvent.description.ilike(f'%{query}%')
                 )
-            ).all()
+            ).filter(_not_expired(OngoingEvent)).all()
             for e in events:
                 results['results'].append({
                     'type': 'event',
@@ -1369,7 +1453,7 @@ def api_search():
         if content_type in ['all', 'gallery']:
             images = GalleryImage.query.filter(
                 GalleryImage.name.ilike(f'%{query}%')
-            ).all()
+            ).filter(_not_expired(GalleryImage)).all()
             for img in images:
                 results['results'].append({
                     'type': 'gallery',
@@ -1572,6 +1656,35 @@ def init_admin_users():
     
     db.session.commit()
 
+
+def _seed_pastor_teaching_sample():
+    """Create sample teaching series 'Total Christ' with 5 sessions (no PDFs; pastor can add)."""
+    series = TeachingSeries(
+        title='Total Christ',
+        description='A multi-week series on the person and work of Christ. Join us for teaching and discussion.',
+        event_info='Sundays 9:00 AM — 6–8 weeks. Check bulletin for room.',
+        active=True,
+        sort_order=0,
+    )
+    db.session.add(series)
+    db.session.flush()  # get series.id
+    for i, title in enumerate([
+        'Session 1: Introduction to Total Christ',
+        'Session 2: The Deity of Christ',
+        'Session 3: The Humanity of Christ',
+        'Session 4: The Work of Christ',
+        'Session 5: Living in Light of Christ',
+    ], start=1):
+        sess = TeachingSeriesSession(
+            series_id=series.id,
+            number=i,
+            title=title,
+            description='',
+        )
+        db.session.add(sess)
+    db.session.commit()
+
+
 def is_authenticated():
     """Check if user is authenticated"""
     return session.get('authenticated', False)
@@ -1737,14 +1850,114 @@ def admin_upload_image():
     url = url_for('static', filename='uploads/' + unique)
     return jsonify({'url': url})
 
+# PDF upload for teaching series (pastor uploads)
+ALLOWED_PDF_EXTENSIONS = {'pdf'}
+
+def _allowed_pdf(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_PDF_EXTENSIONS
+
+@app.route('/admin/upload-pdf', methods=['POST'])
+@require_auth
+def admin_upload_pdf():
+    """Accept a PDF file; save to static/uploads/teaching; return the public URL."""
+    if 'file' not in request.files and 'pdf' not in request.files:
+        return jsonify({'error': 'No file in request'}), 400
+    f = request.files.get('file') or request.files.get('pdf')
+    if not f or f.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    if not _allowed_pdf(f.filename):
+        return jsonify({'error': 'Invalid file type. Only PDF is allowed.'}), 400
+    base = os.path.join(os.path.dirname(__file__), 'static', 'uploads', 'teaching')
+    os.makedirs(base, exist_ok=True)
+    ext = (f.filename.rsplit('.', 1)[1].lower() or 'pdf')
+    safe_name = secure_filename(f.filename)
+    if not safe_name:
+        safe_name = 'handout'
+    unique = str(uuid.uuid4())[:8] + '_' + (safe_name[:50] if len(safe_name) > 50 else safe_name)
+    unique = secure_filename(unique)
+    if not unique.endswith('.' + ext):
+        unique = unique + '.' + ext
+    path = os.path.join(base, unique)
+    try:
+        f.save(path)
+    except Exception as e:
+        return jsonify({'error': 'Failed to save file: ' + str(e)}), 500
+    url = url_for('static', filename='uploads/teaching/' + unique)
+    return jsonify({'url': url})
+
 # Enhanced Admin Interface
 from flask_admin import BaseView, expose
 from flask_admin.actions import action
-from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField
+from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField, DateTimeField
 from wtforms.validators import DataRequired, URL, Length, Optional
 import re
-from wtforms.widgets import TextArea, Select
+from wtforms.widgets import TextArea, Select, Input
 from datetime import datetime
+
+# ---------------------------------------------------------------------------
+# Global date/datetime picker widgets (calendar) for admin forms
+# ---------------------------------------------------------------------------
+class DatePickerWidget(Input):
+    """Renders <input type="date"> for calendar picker."""
+    input_type = 'date'
+
+    def __call__(self, field, **kwargs):
+        if field.data and hasattr(field.data, 'strftime'):
+            kwargs.setdefault('value', field.data.strftime('%Y-%m-%d'))
+        return super().__call__(field, **kwargs)
+
+
+class DateTimePickerWidget(Input):
+    """Renders <input type="datetime-local"> for calendar picker."""
+    input_type = 'datetime-local'
+
+    def __call__(self, field, **kwargs):
+        if field.data:
+            d = field.data
+            if hasattr(d, 'strftime'):
+                # datetime-local wants YYYY-MM-DDTHH:MM (no seconds for better browser support)
+                kwargs.setdefault('value', d.strftime('%Y-%m-%dT%H:%M'))
+            else:
+                kwargs.setdefault('value', d)
+        return super().__call__(field, **kwargs)
+
+
+# Expiration preset choices for "when to stop showing" in all content wizards
+EXPIRATION_PRESET_CHOICES = [
+    ('never', 'Never'),
+    ('1_week', '1 week'),
+    ('2_weeks', '2 weeks'),
+    ('3_weeks', '3 weeks'),
+    ('4_weeks', '4 weeks'),
+    ('specific', 'Pick a date…'),
+]
+
+
+def _compute_expires_at(preset_value, specific_date_value, base_date):
+    """Return a date or None for model.expires_at from form preset + optional specific date.
+    base_date is the content's "created" date (date_entered, date, date_added, or created).
+    """
+    if not preset_value or preset_value == 'never':
+        return None
+    if preset_value == 'specific':
+        if specific_date_value and hasattr(specific_date_value, 'date'):
+            return specific_date_value.date() if hasattr(specific_date_value, 'date') else specific_date_value
+        return specific_date_value
+    base = base_date.date() if hasattr(base_date, 'date') else (base_date if isinstance(base_date, date) else date.today())
+    weeks = {'1_week': 1, '2_weeks': 2, '3_weeks': 3, '4_weeks': 4}.get(preset_value)
+    if weeks:
+        return base + timedelta(weeks=weeks)
+    return None
+
+
+class DatePickerField(DateField):
+    """DateField that uses HTML5 date input (calendar widget)."""
+    widget = DatePickerWidget()
+
+
+class DateTimePickerField(DateTimeField):
+    """DateTimeField that uses HTML5 datetime-local input (calendar widget)."""
+    widget = DateTimePickerWidget()
 
 # ---------------------------------------------------------------------------
 # Audit-log helper
@@ -1845,15 +2058,14 @@ def _format_announcement_status(view, context, model, name):
 
 
 class AnnouncementView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'author', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered')
+    column_list = ('id', 'title', 'author', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered', 'expires_at')
     column_searchable_list = ('title', 'description', 'tag', 'author')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'author')
     column_default_sort = ('date_entered', True)
-    # Exclude id from create form so we set it in on_model_change (next_global_id)
-    form_excluded_columns = ['id', 'date_entered']
+    form_excluded_columns = ['id']
 
-    form_columns = ('title', 'description', 'type', 'category', 'tag', 'author', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('title', 'description', 'type', 'category', 'tag', 'author', 'date_entered', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -1865,14 +2077,16 @@ class AnnouncementView(AuthenticatedModelView):
                 ('alert', 'Alert'),
                 ('info', 'Info')
             ]
-        )
+        ),
+        'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
+        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
-
-    # Use wtforms SelectField (not Flask-Admin Select2Field) so iter_choices yields 4-tuples and the Select widget works
     form_overrides = {
         'type': SelectField,
         'category': SelectField,
+        'date_entered': DateTimePickerField,
     }
+
     form_args = {
         'type': {'choices': ANNOUNCEMENT_TYPE_CHOICES},
         'category': {'choices': ANNOUNCEMENT_CATEGORY_CHOICES},
@@ -1886,6 +2100,9 @@ class AnnouncementView(AuthenticatedModelView):
 
     column_labels = {
         'date_entered': 'Date Created',
+        'expires_at': 'Expires',
+        'expiration_preset': 'Expiration',
+        'expiration_date': 'Expiration date',
         'superfeatured': 'Super Featured',
         'show_in_banner': 'Featured in top bar',
         'featured_image': 'Featured Image URL',
@@ -1900,15 +2117,20 @@ class AnnouncementView(AuthenticatedModelView):
 
     def on_form_prefill(self, form, id):
         announcement = self.get_one(id)
-        if not announcement or not hasattr(form, 'banner_type'):
+        if not announcement:
             return
-        if getattr(announcement, 'show_in_banner', False):
-            current_type = (announcement.type or '').strip().lower()
-            if current_type not in {'weather', 'parking', 'alert', 'info'}:
-                current_type = 'alert'
-            form.banner_type.data = current_type
-        else:
-            form.banner_type.data = ''
+        if hasattr(form, 'banner_type'):
+            if getattr(announcement, 'show_in_banner', False):
+                current_type = (announcement.type or '').strip().lower()
+                if current_type not in {'weather', 'parking', 'alert', 'info'}:
+                    current_type = 'alert'
+                form.banner_type.data = current_type
+            else:
+                form.banner_type.data = ''
+        if hasattr(form, 'expiration_preset'):
+            form.expiration_preset.data = 'specific' if getattr(announcement, 'expires_at', None) else 'never'
+        if hasattr(form, 'expiration_date') and getattr(announcement, 'expires_at', None):
+            form.expiration_date.data = announcement.expires_at
 
     def on_model_change(self, form, model, is_created):
         # "Featured in top bar": banner_type selection (e.g. Weather) turns it on; otherwise use checkbox
@@ -1924,6 +2146,10 @@ class AnnouncementView(AuthenticatedModelView):
                 model.show_in_banner = bool(show_in_banner_field.data)
             else:
                 model.show_in_banner = False
+        preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
+        specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
+        base = model.date_entered or datetime.utcnow()
+        model.expires_at = _compute_expires_at(preset, specific, base)
         if is_created:
             model.id = next_global_id()
 
@@ -2031,7 +2257,7 @@ def _format_sermon_status(view, context, model, name):
 
 
 class SermonView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'author', 'date', 'scripture', 'active', 'spotify_url', 'youtube_url')
+    column_list = ('id', 'title', 'author', 'date', 'scripture', 'active', 'expires_at', 'spotify_url', 'youtube_url')
     column_searchable_list = ('title', 'author', 'scripture')
     column_filters = ('author', 'date')
     column_sortable_list = ('title', 'author', 'date')
@@ -2042,14 +2268,16 @@ class SermonView(AuthenticatedModelView):
         'youtube_url': 'YouTube',
         'apple_podcasts_url': 'Apple Podcasts',
         'podcast_thumbnail_url': 'Thumbnail',
-        'active': 'Status'
+        'active': 'Status',
+        'expires_at': 'Expires',
     }
     column_formatters = {'active': _format_sermon_status}
 
     form_columns = (
         'scripture_book', 'scripture_chapter', 'verse_start', 'verse_end',
         'title', 'author', 'scripture', 'date',
-        'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url'
+        'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url',
+        'expiration_preset', 'expiration_date'
     )
     form_extra_fields = {
         'scripture_book': SelectField('1. Series (Book)', choices=SERMON_BOOK_CHOICES),
@@ -2060,8 +2288,11 @@ class SermonView(AuthenticatedModelView):
         'spotify_url': URLField('Spotify URL', validators=[Optional(), URL()]),
         'youtube_url': URLField('YouTube URL', validators=[Optional(), URL()]),
         'apple_podcasts_url': URLField('Apple Podcasts URL', validators=[Optional(), URL()]),
-        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()])
+        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()]),
+        'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
+        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
+    form_overrides = {'date': DatePickerField}
     form_widget_args = {
         'scripture': {'rows': 2, 'style': 'width: 100%', 'placeholder': 'e.g. Luke 12:35-59'},
         'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
@@ -2069,6 +2300,15 @@ class SermonView(AuthenticatedModelView):
         'apple_podcasts_url': {'placeholder': 'https://podcasts.apple.com/podcast/...'},
         'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'}
     }
+
+    def on_form_prefill(self, form, id):
+        sermon = self.get_one(id)
+        if not sermon:
+            return
+        if hasattr(form, 'expiration_preset'):
+            form.expiration_preset.data = 'specific' if getattr(sermon, 'expires_at', None) else 'never'
+        if hasattr(form, 'expiration_date') and getattr(sermon, 'expires_at', None):
+            form.expiration_date.data = sermon.expires_at
 
     def on_model_change(self, form, model, is_created):
         if is_created:
@@ -2092,6 +2332,10 @@ class SermonView(AuthenticatedModelView):
                     model.title = ref
             except (TypeError, ValueError):
                 pass
+        preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
+        specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
+        base = model.date or date.today()
+        model.expires_at = _compute_expires_at(preset, specific, base)
 
     @expose('set-status/', methods=['GET'])
     def set_status(self):
@@ -2158,22 +2402,25 @@ class PodcastSeriesView(AuthenticatedModelView):
     episode_count.column_type = 'integer'
 
 class PodcastEpisodeView(AuthenticatedModelView):
-    column_list = ('number', 'title', 'series', 'guest', 'date_added', 'scripture')
+    column_list = ('number', 'title', 'series', 'guest', 'date_added', 'expires_at', 'scripture')
     column_searchable_list = ('title', 'guest', 'scripture')
     column_filters = ('series', 'guest', 'season')
     column_sortable_list = ('number', 'title', 'date_added')
     column_default_sort = ('number', True)
     form_excluded_columns = ['id']
 
-    form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url')
+    form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'scripture': TextAreaField('Scripture', widget=TextArea()),
         'link': URLField('Episode Link', validators=[Optional(), URL()]),
         'listen_url': URLField('Listen URL', validators=[Optional(), URL()]),
         'handout_url': URLField('Handout URL', validators=[Optional(), URL()]),
-        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()])
+        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()]),
+        'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
+        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
-    
+    form_overrides = {'date_added': DatePickerField}
+
     form_widget_args = {
         'scripture': {'rows': 3, 'style': 'width: 100%'},
         'link': {'placeholder': 'https://example.com/episode'},
@@ -2181,16 +2428,30 @@ class PodcastEpisodeView(AuthenticatedModelView):
         'handout_url': {'placeholder': 'https://example.com/handout.pdf'},
         'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'}
     }
-    
+
     column_labels = {
         'listen_url': 'Listen URL',
         'handout_url': 'Handout URL',
-        'podcast_thumbnail_url': 'Thumbnail'
+        'podcast_thumbnail_url': 'Thumbnail',
+        'expires_at': 'Expires',
     }
-    
+
+    def on_form_prefill(self, form, id):
+        episode = self.get_one(id)
+        if not episode:
+            return
+        if hasattr(form, 'expiration_preset'):
+            form.expiration_preset.data = 'specific' if getattr(episode, 'expires_at', None) else 'never'
+        if hasattr(form, 'expiration_date') and getattr(episode, 'expires_at', None):
+            form.expiration_date.data = episode.expires_at
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
+        preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
+        specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
+        base = model.date_added or date.today()
+        model.expires_at = _compute_expires_at(preset, specific, base)
     
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected podcast episodes?')
     def bulk_delete(self, ids):
@@ -2207,38 +2468,56 @@ class PodcastEpisodeView(AuthenticatedModelView):
             return False
 
 class GalleryImageView(AuthenticatedModelView):
-    column_list = ('id', 'name', 'event', 'created', 'tags_display')
+    column_list = ('id', 'name', 'event', 'created', 'expires_at', 'tags_display')
     column_searchable_list = ('name',)
     column_filters = ('event',)
     column_sortable_list = ('name', 'created')
     column_default_sort = ('created', True)
     form_excluded_columns = ['id']
 
-    form_columns = ('name', 'url', 'size', 'type', 'tags', 'event')
+    form_columns = ('name', 'url', 'size', 'type', 'tags', 'event', 'created', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'url': URLField('Image URL', validators=[DataRequired(), URL()]),
-        'tags': TextAreaField('Tags (comma-separated)', widget=TextArea())
+        'tags': TextAreaField('Tags (comma-separated)', widget=TextArea()),
+        'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
+        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
-    
+    form_overrides = {'created': DateTimePickerField}
+
     form_widget_args = {
         'tags': {'rows': 3, 'style': 'width: 100%', 'placeholder': 'worship, fellowship, youth, etc.'},
         'url': {'placeholder': 'https://example.com/image.jpg'}
     }
-    
+
     column_labels = {
-        'event': 'Is Event Photo'
+        'event': 'Is Event Photo',
+        'created': 'Date Added',
+        'expires_at': 'Expires',
     }
-    
+
     def tags_display(self, context, model, name):
         if model.tags:
             return ', '.join(model.tags) if isinstance(model.tags, list) else str(model.tags)
         return ''
-    
+
     tags_display.column_type = 'string'
-    
+
+    def on_form_prefill(self, form, id):
+        image = self.get_one(id)
+        if not image:
+            return
+        if hasattr(form, 'expiration_preset'):
+            form.expiration_preset.data = 'specific' if getattr(image, 'expires_at', None) else 'never'
+        if hasattr(form, 'expiration_date') and getattr(image, 'expires_at', None):
+            form.expiration_date.data = image.expires_at
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
+        preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
+        specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
+        base = model.created or datetime.utcnow()
+        model.expires_at = _compute_expires_at(preset, specific, base)
         if form.tags.data:
             # Convert comma-separated string to list
             tags = [tag.strip() for tag in form.tags.data.split(',') if tag.strip()]
@@ -2298,18 +2577,21 @@ def _format_event_status(view, context, model, name):
 
 
 class OngoingEventView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'type', 'category', 'active', 'sort_order', 'date_entered')
+    column_list = ('id', 'title', 'type', 'category', 'active', 'sort_order', 'date_entered', 'expires_at')
     column_searchable_list = ('title', 'description')
     column_filters = ('type', 'active', 'category')
     column_sortable_list = ('title', 'type', 'active', 'sort_order', 'date_entered')
     column_default_sort = ('sort_order', False)
     form_excluded_columns = ['id']
 
-    form_columns = ('title', 'description', 'type', 'category', 'active')
+    form_columns = ('title', 'description', 'type', 'category', 'active', 'date_entered', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
-        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)])
+        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
+        'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
+        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
-    
+    form_overrides = {'date_entered': DateTimePickerField}
+
     form_widget_args = {
         'description': {'rows': 8, 'style': 'width: 100%'}
     }
@@ -2334,13 +2616,27 @@ class OngoingEventView(AuthenticatedModelView):
 
     column_labels = {
         'date_entered': 'Date Created',
+        'expires_at': 'Expires',
         'active': 'Status'
     }
     column_formatters = {'active': _format_event_status}
 
+    def on_form_prefill(self, form, id):
+        evt = self.get_one(id)
+        if not evt:
+            return
+        if hasattr(form, 'expiration_preset'):
+            form.expiration_preset.data = 'specific' if getattr(evt, 'expires_at', None) else 'never'
+        if hasattr(form, 'expiration_date') and getattr(evt, 'expires_at', None):
+            form.expiration_date.data = evt.expires_at
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
+        preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
+        specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
+        base = model.date_entered or datetime.utcnow()
+        model.expires_at = _compute_expires_at(preset, specific, base)
 
     @expose('set-status/', methods=['GET'])
     def set_status(self):
@@ -2396,6 +2692,109 @@ class OngoingEventView(AuthenticatedModelView):
             flash(f'Error deleting events: {str(e)}', 'error')
             return False
 
+
+class TeachingSeriesOverviewView(BaseView):
+    """Subpage listing all teaching series — no dropdown; single landing page with all series."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        series_list = TeachingSeries.query.order_by(
+            TeachingSeries.sort_order.asc(),
+            TeachingSeries.date_entered.desc()
+        ).all()
+        return self.render(
+            'admin/teaching_series_overview.html',
+            series_list=series_list,
+        )
+
+
+class TeachingSeriesView(AuthenticatedModelView):
+    """Admin for pastor teaching series (e.g. Total Christ). Hidden from menu; use Overview page."""
+    column_list = ('id', 'title', 'active', 'sort_order', 'start_date', 'end_date', 'date_entered', 'session_count')
+    column_searchable_list = ('title', 'description', 'event_info')
+    column_filters = ('active',)
+    column_sortable_list = ('title', 'sort_order', 'start_date', 'end_date', 'date_entered')
+    column_default_sort = ('sort_order', False)
+    form_columns = (
+        'title', 'description', 'image_url', 'start_date', 'end_date', 'event_info',
+        'active', 'sort_order', 'date_entered', 'expiration_preset', 'expiration_date'
+    )
+    form_extra_fields = {
+        'description': TextAreaField('Description', widget=TextArea(), validators=[Length(max=2000)]),
+        'event_info': TextAreaField('Event info (when/where)', widget=TextArea(), validators=[Length(max=500)]),
+        'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
+        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+    }
+    form_overrides = {
+        'start_date': DatePickerField,
+        'end_date': DatePickerField,
+        'date_entered': DateTimePickerField,
+    }
+    form_widget_args = {
+        'description': {'rows': 5, 'style': 'width: 100%'},
+        'event_info': {'rows': 2, 'style': 'width: 100%', 'placeholder': 'e.g. Sundays 9am, Room 101'},
+        'image_url': {'placeholder': 'https://example.com/series-image.jpg'},
+    }
+    column_labels = {
+        'date_entered': 'Date Created',
+        'event_info': 'When / Where',
+        'expires_at': 'Expires',
+    }
+
+    def session_count(self, context, model, name):
+        return len(model.sessions) if model.sessions else 0
+    session_count.column_type = 'integer'
+
+    def on_form_prefill(self, form, id):
+        series = self.get_one(id)
+        if not series:
+            return
+        if hasattr(form, 'expiration_preset'):
+            form.expiration_preset.data = 'specific' if getattr(series, 'expires_at', None) else 'never'
+        if hasattr(form, 'expiration_date') and getattr(series, 'expires_at', None):
+            form.expiration_date.data = series.expires_at
+
+    def on_model_change(self, form, model, is_created):
+        preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
+        specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
+        base = model.date_entered or datetime.utcnow()
+        model.expires_at = _compute_expires_at(preset, specific, base)
+
+    def is_visible(self):
+        """Hide from admin menu; access only via Teaching Series overview page."""
+        return False
+
+
+class TeachingSeriesSessionView(AuthenticatedModelView):
+    """Admin for sessions (1, 2, 3...) within a teaching series; PDF upload per session."""
+    column_list = ('number', 'title', 'series', 'pdf_url', 'date_entered')
+    column_searchable_list = ('title', 'description')
+    column_filters = ('series',)
+    column_sortable_list = ('number', 'title', 'date_entered')
+    column_default_sort = ('number', True)
+    form_columns = ('series', 'number', 'title', 'description', 'pdf_url', 'date_entered')
+    form_extra_fields = {
+        'description': TextAreaField('Description', widget=TextArea(), validators=[Length(max=2000)]),
+    }
+    form_overrides = {'date_entered': DateTimePickerField}
+    form_widget_args = {
+        'description': {'rows': 4, 'style': 'width: 100%'},
+        'pdf_url': {'placeholder': 'Upload PDF below or paste URL'},
+    }
+    column_labels = {
+        'date_entered': 'Date Added',
+        'pdf_url': 'PDF handout',
+    }
+
+    def on_model_change(self, form, model, is_created):
+        pass  # no special handling needed
+
+
 # Custom Admin Dashboard
 class DashboardView(BaseView):
     def is_accessible(self):
@@ -2444,14 +2843,27 @@ class ReorderEventsView(BaseView):
     """Drag-and-drop reorder events."""
     def is_accessible(self):
         return is_authenticated()
-    
+
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('admin_login', next=request.url))
-    
+
     @expose('/', methods=['GET', 'POST'])
     def index(self):
         events = OngoingEvent.query.order_by(OngoingEvent.sort_order.asc(), OngoingEvent.date_entered.desc()).all()
         return self.render('admin/reorder_events.html', events=events)
+
+
+class BannerAlertView(BaseView):
+    """Quick link to create a top-bar banner alert (weather, parking, etc.)."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        return redirect(url_for('admin_banner_alert_new'))
 
 
 class HistoryView(BaseView):
@@ -2522,12 +2934,18 @@ admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
 # Add views with categories
 admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
 admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
-admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='Content'))
 admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))
 admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
 admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
 admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
-admin.add_view(HistoryView(name='History', endpoint='history', category='Content'))
+# Teaching Series: single link (no dropdown) → goes straight to overview subpage
+admin.add_view(TeachingSeriesOverviewView(name='Teaching Series', endpoint='teaching_series_overview', category=None))
+admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', category=None))  # hidden from menu
+# More features: utilities and history
+admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='More features'))
+admin.add_view(BannerAlertView(name='Banner alert', endpoint='banner_alert', category='More features'))
+admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Series Sessions', category='More features'))
+admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
 
 # ---------------------------------------------------------------------------
 # Initialize database, verify connection, run migrations, seed admin users
@@ -2569,6 +2987,10 @@ with app.app_context():
 
     # 5. Seed admin users
     init_admin_users()
+    # 6. Sample pastor teaching series (Total Christ) if none exist
+    if TeachingSeries.query.count() == 0:
+        _seed_pastor_teaching_sample()
+        log.info("Sample teaching series 'Total Christ' created")
     log.info("DB init complete — app is ready to serve")
 
 if __name__ == '__main__':

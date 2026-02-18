@@ -483,7 +483,7 @@
                     <a href="{{ url_for('announcement.index_view') }}" class="wizard-btn" style="text-decoration: none;">
                         <i class="fas fa-list"></i> Manage announcements
                     </a>
-                    <a href="{{ url_for('admin_banner_alert_new') }}" class="wizard-btn wizard-btn-amber" style="text-decoration: none;">
+                    <a href="/admin/banner-alert/new" class="wizard-btn wizard-btn-amber" style="text-decoration: none;">
                         <i class="fas fa-plus"></i> Add banner alert
                     </a>
                 </div>
@@ -504,7 +504,7 @@
     <div class="dashboard-grid wizard-cards">
         <!-- Announcement Wizard -->
         <div class="wizard-card"
-            onclick="window.location.href='{{ url_for('announcement.create_view') }}'">
+            onclick="window.location.href='/admin/announcement/new/'">
             <i class="fas fa-bullhorn wizard-icon"></i>
             <div class="wizard-title">New Announcement</div>
             <div class="wizard-desc">
@@ -518,7 +518,7 @@
 
         <!-- Sunday Sermon Wizard (book → chapter → verse) -->
         <div class="wizard-card"
-            onclick="window.location.href='{{ url_for('sermon.create_view') }}'">
+            onclick="window.location.href='/admin/sermon/new/'">
             <i class="fas fa-microphone wizard-icon"></i>
             <div class="wizard-title">New Sunday Sermon</div>
             <div class="wizard-desc">
@@ -533,7 +533,7 @@
 
         <!-- Podcast Wizard -->
         <div class="wizard-card"
-            onclick="window.location.href='{{ url_for('podcastepisode.create_view') }}'">
+            onclick="window.location.href='/admin/podcastepisode/new/'">
             <i class="fas fa-podcast wizard-icon"></i>
             <div class="wizard-title">New Podcast Episode</div>
             <div class="wizard-desc">
@@ -547,7 +547,7 @@
 
         <!-- Event Wizard -->
         <div class="wizard-card"
-            onclick="window.location.href='{{ url_for('ongoingevent.create_view') }}'">
+            onclick="window.location.href='/admin/ongoingevent/new/'">
             <i class="fas fa-calendar-plus wizard-icon"></i>
             <div class="wizard-title">New Event</div>
             <div class="wizard-desc">
@@ -561,7 +561,7 @@
 
         <!-- Gallery Wizard -->
         <div class="wizard-card"
-            onclick="window.location.href='{{ url_for('galleryimage.create_view') }}'">
+            onclick="window.location.href='/admin/galleryimage/new/'">
             <i class="fas fa-images wizard-icon"></i>
             <div class="wizard-title">Add Gallery Image</div>
             <div class="wizard-desc">
@@ -575,12 +575,40 @@
 
         <!-- Podcast Series Wizard -->
         <div class="wizard-card"
-            onclick="window.location.href='{{ url_for('podcastseries.create_view') }}'">
+            onclick="window.location.href='/admin/podcastseries/new/'">
             <i class="fas fa-list wizard-icon"></i>
             <div class="wizard-title">New Podcast Series</div>
             <div class="wizard-desc">
                 Create a new podcast series to organize episodes. Give it a
                 title and description that describes the series.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
+            </div>
+        </div>
+
+        <!-- Teaching Series (Pastor) -->
+        <div class="wizard-card"
+            onclick="window.location.href='/admin/teachingseries/new/'">
+            <i class="fas fa-graduation-cap wizard-icon"></i>
+            <div class="wizard-title">New Teaching Series</div>
+            <div class="wizard-desc">
+                Create a multi-week teaching series (e.g. Total Christ). Add
+                event info, dates, then add sessions 1, 2, 3… with PDF handouts.
+            </div>
+            <div class="wizard-btn">
+                <i class="fas fa-arrow-right"></i> Start Wizard
+            </div>
+        </div>
+
+        <!-- Teaching Series Session (add PDFs) -->
+        <div class="wizard-card"
+            onclick="window.location.href='/admin/teachingseriessession/new/'">
+            <i class="fas fa-file-pdf wizard-icon"></i>
+            <div class="wizard-title">Add Series Session</div>
+            <div class="wizard-desc">
+                Add a session (1, 2, 3…) to a teaching series. Upload a PDF
+                handout or paste a link. Sessions stay in sequential order.
             </div>
             <div class="wizard-btn">
                 <i class="fas fa-arrow-right"></i> Start Wizard

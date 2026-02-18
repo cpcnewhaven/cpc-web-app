@@ -68,7 +68,7 @@
         {% endfor %}
     </ul>
     {% if not events %}
-    <p style="color: rgba(255,255,255,0.8);">No events yet. <a href="{{ url_for('ongoingevent.create_view') }}" style="color: var(--cpc-blue-light);">Create one</a> first.</p>
+    <p style="color: rgba(255,255,255,0.8);">No events yet. <a href="/admin/ongoingevent/new/" style="color: var(--cpc-blue-light);">Create one</a> first.</p>
     {% else %}
     <button type="button" class="btn-save-order" id="saveOrderBtn">Save order</button>
     <div class="reorder-message" id="reorderMessage"></div>

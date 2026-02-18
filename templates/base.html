@@ -35,6 +35,9 @@
             defer></script>
 
         {% block head %}{% endblock %}
+        <style>
+            .create-nav-btn:hover { background: linear-gradient(135deg, #0a8cff 0%, #0060e8 100%) !important; color: white !important; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.5) !important; transform: translateY(-1px); }
+        </style>
     </head>
     <body class="theme-blue">
         <!-- Top yellow bar for weather, parking, and other alerts (admin: check "Show in top bar" on an announcement) -->
@@ -97,6 +100,8 @@
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Podcasts</a></li>
                         <li><a href="{{ url_for('teaching_series') }}"
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Teaching Series</a></li>
+                        <li><a href="{{ url_for('pastor_teaching') }}"
+                                class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Pastor Teaching (PDFs)</a></li>
                         <li><a href="{{ url_for('live') }}"
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Live
                                 Stream <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: rgba(255,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.25);">LIVE</span></a></li>
@@ -130,6 +135,56 @@
                                 class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Admin</a></li>
                     </ul>
                 </li>
+                <!-- Create button → small wizard of content types -->
+                <li class="relative nav-dropdown">
+                    <a href="#"
+                        class="create-nav-btn dropdown-toggle inline-flex items-center gap-1.5 font-semibold px-4 py-2.5 rounded-lg text-sm transition-all"
+                        style="background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%); color: white; box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4);">
+                        <i class="fas fa-plus"></i> Create
+                        <i class="fas fa-chevron-down text-xs opacity-90"></i>
+                    </a>
+                    <ul class="dropdown-menu create-wizard-menu absolute top-full right-0 mt-2 rounded-xl shadow-xl py-3 min-w-[280px] hidden backdrop-blur-lg"
+                        style="background: rgba(0, 50, 120, 0.97); border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <li class="px-4 pb-2 mb-2 border-b border-white/20">
+                            <span class="text-white/80 text-xs uppercase tracking-wider font-semibold">What do you want to create?</span>
+                        </li>
+                        <li class="px-2 pb-1"><span class="text-white/50 text-xs uppercase tracking-wider px-2">Content</span></li>
+                        <li><a href="/admin/announcement/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-bullhorn w-5 text-center text-blue-200"></i>
+                            <span>New Announcement</span>
+                        </a></li>
+                        <li><a href="/admin/ongoingevent/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-calendar-plus w-5 text-center text-blue-200"></i>
+                            <span>New Event</span>
+                        </a></li>
+                        <li class="px-2 pt-2 pb-1 mt-1 border-t border-white/10"><span class="text-white/50 text-xs uppercase tracking-wider px-2">Media</span></li>
+                        <li><a href="/admin/sermon/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-microphone w-5 text-center text-blue-200"></i>
+                            <span>New Sunday Sermon</span>
+                        </a></li>
+                        <li><a href="/admin/podcastseries/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-list w-5 text-center text-blue-200"></i>
+                            <span>New Podcast Series</span>
+                        </a></li>
+                        <li><a href="/admin/podcastepisode/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-podcast w-5 text-center text-blue-200"></i>
+                            <span>New Podcast Episode</span>
+                        </a></li>
+                        <li><a href="/admin/galleryimage/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-images w-5 text-center text-blue-200"></i>
+                            <span>Add Gallery Image</span>
+                        </a></li>
+                        <li class="px-2 pt-2 pb-1 mt-1 border-t border-white/10"><span class="text-white/50 text-xs uppercase tracking-wider px-2">Teaching</span></li>
+                        <li><a href="/admin/teachingseries/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-graduation-cap w-5 text-center text-blue-200"></i>
+                            <span>New Teaching Series</span>
+                        </a></li>
+                        <li><a href="/admin/teachingseriessession/new/" class="create-wizard-item block px-4 py-2.5 rounded-lg text-white hover:bg-white/10 transition-colors flex items-center gap-3">
+                            <i class="fas fa-file-pdf w-5 text-center text-blue-200"></i>
+                            <span>Add Series Session (PDF)</span>
+                        </a></li>
+                    </ul>
+                </li>
                 <!-- Settings Gear -->
                 <li class="relative nav-dropdown" x-data>
                     <a href="#"
@@ -154,6 +209,20 @@
                                 :class="$store.dash.showRightSidebar ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
                                 @click="$store.dash.showRightSidebar = !$store.dash.showRightSidebar; $store.dash.save()"
                                 x-text="$store.dash.showRightSidebar ? 'On' : 'Off'"></button>
+                        </li>
+                        <li class="flex items-center justify-between py-1.5 px-1">
+                            <span class="text-white text-sm">Ticker</span>
+                            <button class="px-3 py-1 rounded text-xs font-medium transition-all"
+                                :class="$store.dash.showTicker ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                                @click="$store.dash.showTicker = !$store.dash.showTicker; $store.dash.save()"
+                                x-text="$store.dash.showTicker ? 'On' : 'Off'"></button>
+                        </li>
+                        <li class="flex items-center justify-between py-1.5 px-1">
+                            <span class="text-white text-sm">Sticky nav</span>
+                            <button class="px-3 py-1 rounded text-xs font-medium transition-all"
+                                :class="$store.dash.stickyNav ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                                @click="$store.dash.stickyNav = !$store.dash.stickyNav; $store.dash.save()"
+                                x-text="$store.dash.stickyNav ? 'On' : 'Off'"></button>
                         </li>
                         <li class="px-1 pt-2 mt-2 border-t border-white/20 pb-2 mb-2 border-b border-white/20">
                             <span class="text-white/70 text-xs uppercase tracking-wider font-semibold">Theme</span>
@@ -212,6 +281,8 @@
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Podcasts</a>
                     <a href="{{ url_for('teaching_series') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Teaching Series</a>
+                    <a href="{{ url_for('pastor_teaching') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Pastor Teaching (PDFs)</a>
                     <a href="{{ url_for('live') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 pl-4">Live
                         Stream</a>
@@ -251,6 +322,20 @@
                             x-text="$store.dash.showRightSidebar ? 'On' : 'Off'"></button>
                     </div>
                     <div class="flex items-center justify-between py-1 pl-4 pr-2">
+                        <span class="text-white text-sm">Ticker</span>
+                        <button class="px-3 py-1 rounded text-xs font-medium"
+                            :class="$store.dash.showTicker ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                            @click="$store.dash.showTicker = !$store.dash.showTicker; $store.dash.save()"
+                            x-text="$store.dash.showTicker ? 'On' : 'Off'"></button>
+                    </div>
+                    <div class="flex items-center justify-between py-1 pl-4 pr-2">
+                        <span class="text-white text-sm">Sticky nav</span>
+                        <button class="px-3 py-1 rounded text-xs font-medium"
+                            :class="$store.dash.stickyNav ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/70'"
+                            @click="$store.dash.stickyNav = !$store.dash.stickyNav; $store.dash.save()"
+                            x-text="$store.dash.stickyNav ? 'On' : 'Off'"></button>
+                    </div>
+                    <div class="flex items-center justify-between py-1 pl-4 pr-2">
                         <span class="text-white text-sm">Theme</span>
                         <button class="px-3 py-1 rounded text-xs font-medium bg-white/20 text-white flex items-center gap-1"
                             @click="$store.dash.theme = $store.dash.theme === 'blue' ? 'white' : 'blue'; $store.dash.save(); $store.dash.applyTheme()">
@@ -279,6 +364,7 @@
                     <a href="{{ url_for('sermons') }}"><i class="fa-solid fa-book-bible"></i><span>Sermons</span></a>
                     <a href="{{ url_for('podcasts') }}"><i class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
                     <a href="{{ url_for('teaching_series') }}"><i class="fa-solid fa-book-open"></i><span>Series</span></a>
+                    <a href="{{ url_for('pastor_teaching') }}"><i class="fa-solid fa-file-pdf"></i><span>Pastor Teaching</span></a>
                 </div>
             </div>
             <div class="dashboard-section">
@@ -392,6 +478,7 @@
                     <a href="{{ url_for('community') }}" class="mobile-more-link"><i class="fa-solid fa-people-group"></i><span>Community</span></a>
                     <a href="{{ url_for('media') }}" class="mobile-more-link"><i class="fa-solid fa-images"></i><span>Gallery</span></a>
                     <a href="{{ url_for('teaching_series') }}" class="mobile-more-link"><i class="fa-solid fa-list"></i><span>Teaching Series</span></a>
+                    <a href="{{ url_for('pastor_teaching') }}" class="mobile-more-link"><i class="fa-solid fa-file-pdf"></i><span>Pastor Teaching</span></a>
                     <a href="{{ url_for('resources') }}" class="mobile-more-link"><i class="fa-solid fa-folder-open"></i><span>Resources</span></a>
                     <a href="{{ url_for('archive') }}" class="mobile-more-link"><i class="fa-solid fa-box-archive"></i><span>Archive</span></a>
                 </div>
@@ -473,14 +560,16 @@
         // Apply theme immediately on page load (before Alpine initializes)
         (function() {
             const savedTheme = localStorage.getItem('dash_theme') || 'blue';
-            const isHome = window.location.pathname === '/';
-            // Default: left sidebar ON, right sidebar ON only for homepage
+            // Default: left sidebar ON, right panel ON for all pages
             const leftSidebarStored = localStorage.getItem('dash_showLeftSidebar');
             const rightSidebarStored = localStorage.getItem('dash_showRightSidebar');
             const showLeftSidebar = leftSidebarStored !== null ? JSON.parse(leftSidebarStored) : true;
-            const showRightSidebar = rightSidebarStored !== null ? JSON.parse(rightSidebarStored) : isHome;
+            const showRightSidebar = rightSidebarStored !== null ? JSON.parse(rightSidebarStored) : true;
             const leftSidebarMax = JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false');
             const rightSidebarMax = JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false');
+            const savedShowTicker = localStorage.getItem('dash_showTicker');
+            const showTicker = savedShowTicker !== null ? JSON.parse(savedShowTicker) : true;
+            const stickyNav = JSON.parse(localStorage.getItem('dash_stickyNav') || 'false');
             if (savedTheme === 'white') {
                 document.body.classList.add('theme-white');
                 document.body.classList.remove('theme-blue');
@@ -489,6 +578,8 @@
                 document.body.classList.remove('theme-white');
             }
             document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.classList.toggle('ticker-hidden', !showTicker);
+            document.body.classList.toggle('nav-not-sticky', !stickyNav);
             document.body.classList.toggle('sidebar-left-hidden', !showLeftSidebar);
             document.body.classList.toggle('sidebar-right-hidden', !showRightSidebar);
             document.body.classList.toggle('sidebar-left-max', leftSidebarMax);
@@ -501,13 +592,17 @@
                 showQuickLinks: JSON.parse(localStorage.getItem('dash_showQuickLinks') || 'true'),
                 showService: JSON.parse(localStorage.getItem('dash_showService') || 'true'),
                 showAdminCTA: JSON.parse(localStorage.getItem('dash_showAdminCTA') || 'false'),
-                // Default: left sidebar ON, right sidebar ON only for homepage
+                // Default: left sidebar ON, right panel ON for all pages
                 showLeftSidebar: localStorage.getItem('dash_showLeftSidebar') !== null
                     ? JSON.parse(localStorage.getItem('dash_showLeftSidebar'))
                     : true,
                 showRightSidebar: localStorage.getItem('dash_showRightSidebar') !== null
                     ? JSON.parse(localStorage.getItem('dash_showRightSidebar'))
-                    : (window.location.pathname === '/'),
+                    : true,
+                showTicker: localStorage.getItem('dash_showTicker') !== null
+                    ? JSON.parse(localStorage.getItem('dash_showTicker'))
+                    : true,
+                stickyNav: JSON.parse(localStorage.getItem('dash_stickyNav') || 'false'),
                 leftSidebarMax: JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false'),
                 rightSidebarMax: JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false'),
                 userName: localStorage.getItem('dash_userName') || '',
@@ -521,6 +616,8 @@
                     localStorage.setItem('dash_showRightSidebar', JSON.stringify(this.showRightSidebar));
                     localStorage.setItem('dash_leftSidebarMax', JSON.stringify(this.leftSidebarMax));
                     localStorage.setItem('dash_rightSidebarMax', JSON.stringify(this.rightSidebarMax));
+                    localStorage.setItem('dash_showTicker', JSON.stringify(this.showTicker));
+                    localStorage.setItem('dash_stickyNav', JSON.stringify(this.stickyNav));
                     localStorage.setItem('dash_userName', this.userName || '');
                     localStorage.setItem('dash_theme', this.theme);
                     this.applyLayout();
@@ -530,6 +627,8 @@
                     document.body.classList.toggle('sidebar-right-hidden', !this.showRightSidebar);
                     document.body.classList.toggle('sidebar-left-max', this.leftSidebarMax);
                     document.body.classList.toggle('sidebar-right-max', this.rightSidebarMax);
+                    document.body.classList.toggle('ticker-hidden', !this.showTicker);
+                    document.body.classList.toggle('nav-not-sticky', !this.stickyNav);
                 },
                 applyTheme() {
                     document.documentElement.setAttribute('data-theme', this.theme);

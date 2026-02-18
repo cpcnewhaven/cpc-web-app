@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from sqlalchemy import Text, JSON
 from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -53,6 +53,7 @@ class Announcement(db.Model):
     featured_image = db.Column(db.String(500))
     image_display_type = db.Column(db.String(50))  # poster, cover, etc.
     author = db.Column(db.String(200))  # who created/wrote the announcement
+    expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
 
 class Sermon(db.Model):
     __tablename__ = 'sermons'
@@ -68,6 +69,7 @@ class Sermon(db.Model):
     youtube_url = db.Column(db.String(500))
     apple_podcasts_url = db.Column(db.String(500))
     podcast_thumbnail_url = db.Column(db.String(500))
+    expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
 
 class PodcastEpisode(db.Model):
     __tablename__ = 'podcast_episodes'
@@ -84,6 +86,7 @@ class PodcastEpisode(db.Model):
     season = db.Column(db.Integer)
     scripture = db.Column(db.String(200))
     podcast_thumbnail_url = db.Column(db.String(500))
+    expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
 
     series = db.relationship('PodcastSeries', back_populates='episodes')
 
@@ -106,6 +109,7 @@ class GalleryImage(db.Model):
     tags = db.Column(JSON)  # Store as JSON array
     event = db.Column(db.Boolean, default=False)
     created = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
 
 class OngoingEvent(db.Model):
     __tablename__ = 'ongoing_events'
@@ -119,6 +123,41 @@ class OngoingEvent(db.Model):
     type = db.Column(db.String(50))
     category = db.Column(db.String(50))
     sort_order = db.Column(db.Integer, default=0)  # lower = first; drag to reorder
+    expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
+
+class TeachingSeries(db.Model):
+    """Pastor-led teaching series (e.g. Total Christ) — 6–8 weeks, with event info."""
+    __tablename__ = 'teaching_series'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    image_url = db.Column(db.String(500))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    event_info = db.Column(db.Text)  # when/where (e.g. "Sundays 9am, Room 101")
+    active = db.Column(db.Boolean, default=True)
+    sort_order = db.Column(db.Integer, default=0)
+    date_entered = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.Date, nullable=True)
+
+    sessions = db.relationship('TeachingSeriesSession', back_populates='series', order_by='TeachingSeriesSession.number')
+
+
+class TeachingSeriesSession(db.Model):
+    """Single session in a teaching series (1, 2, 3...) with optional PDF."""
+    __tablename__ = 'teaching_series_sessions'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    series_id = db.Column(db.Integer, db.ForeignKey('teaching_series.id'), nullable=False)
+    number = db.Column(db.Integer, nullable=False)  # 1, 2, 3...
+    title = db.Column(db.String(300), nullable=False)
+    description = db.Column(db.Text)
+    pdf_url = db.Column(db.String(500))  # uploaded PDF or external link
+    date_entered = db.Column(db.DateTime, default=datetime.utcnow)
+
+    series = db.relationship('TeachingSeries', back_populates='sessions')
+
 
 class Paper(db.Model):
     __tablename__ = 'papers'

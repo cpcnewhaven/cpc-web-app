@@ -68,6 +68,24 @@
             if (idGroup) idGroup.style.display = 'none';
         }
 
+        // Expiration: show "Expiration date" only when "Pick a date…" is selected
+        var expirationPreset = form.querySelector('select[name="expiration_preset"]');
+        var expirationDateGroup = form.querySelector('input[name="expiration_date"]');
+        if (expirationPreset && expirationDateGroup) {
+            expirationDateGroup = expirationDateGroup.closest('.form-group');
+            function toggleExpirationDate() {
+                if (expirationDateGroup) expirationDateGroup.style.display = expirationPreset.value === 'specific' ? '' : 'none';
+            }
+            toggleExpirationDate();
+            expirationPreset.addEventListener('change', toggleExpirationDate);
+        }
+
+        // Global: ensure all date/datetime inputs use calendar-friendly styling
+        form.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(function(inp) {
+            inp.style.maxWidth = '220px';
+            inp.style.cursor = 'pointer';
+        });
+
         // Featured image: add drag-and-drop upload zone
         var featuredInput = form.querySelector('input[name="featured_image"]');
         if (featuredInput) {
@@ -131,6 +149,68 @@
                 dropZone.addEventListener('click', function(e) { if (e.target === dropZone || e.target.classList.contains('drop-zone-text')) fileInput.click(); });
             }
         }
+
+        // PDF upload for teaching series sessions (pdf_url field)
+        var pdfInput = form.querySelector('input[name="pdf_url"]');
+        if (pdfInput) {
+            var formGroup = pdfInput.closest('.form-group');
+            if (formGroup) {
+                var dropWrap = document.createElement('div');
+                dropWrap.className = 'pdf-upload-wrap';
+                dropWrap.style.cssText = 'margin-bottom: 12px;';
+                var dropZone = document.createElement('div');
+                dropZone.className = 'pdf-drop-zone';
+                dropZone.innerHTML = '<span class="drop-zone-text"><i class="fas fa-file-pdf" style="margin-right: 6px;"></i>Drag & drop a PDF here, or click to choose</span><input type="file" accept="application/pdf" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
+                dropZone.style.cssText = 'border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 20px; text-align: center; color: rgba(255,255,255,0.7); cursor: pointer; position: relative; transition: border-color 0.2s, background 0.2s;';
+                var statusEl = document.createElement('div');
+                statusEl.className = 'pdf-upload-status';
+                statusEl.style.cssText = 'margin-top: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.6); min-height: 20px;';
+                dropWrap.appendChild(dropZone);
+                dropWrap.appendChild(statusEl);
+                formGroup.insertBefore(dropWrap, formGroup.firstChild);
+                var fileInput = dropZone.querySelector('input[type="file"]');
+                function setStatus(msg, isError) {
+                    statusEl.textContent = msg;
+                    statusEl.style.color = isError ? 'rgba(255,120,100,0.95)' : 'rgba(255,255,255,0.6)';
+                }
+                function uploadPdf(file) {
+                    if (!file || file.type !== 'application/pdf') {
+                        setStatus('Please choose a PDF file.', true);
+                        return;
+                    }
+                    setStatus('Uploading…');
+                    var fd = new FormData();
+                    fd.append('file', file);
+                    fetch('{{ url_for("admin_upload_pdf") }}', { method: 'POST', body: fd })
+                        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+                        .then(function(o) {
+                            if (o.ok && o.data && o.data.url) {
+                                pdfInput.value = o.data.url;
+                                pdfInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                setStatus('Saved: ' + o.data.url);
+                            } else {
+                                setStatus(o.data && o.data.error ? o.data.error : 'Upload failed', true);
+                            }
+                        })
+                        .catch(function() { setStatus('Upload failed', true); });
+                }
+                dropZone.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = 'var(--cpc-blue, #007AFF)'; dropZone.style.background = 'rgba(0,122,255,0.08)'; });
+                dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = ''; dropZone.style.background = ''; });
+                dropZone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.style.borderColor = '';
+                    dropZone.style.background = '';
+                    var files = e.dataTransfer && e.dataTransfer.files;
+                    if (files && files[0]) uploadPdf(files[0]);
+                });
+                fileInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) uploadPdf(this.files[0]);
+                    this.value = '';
+                });
+                dropZone.addEventListener('click', function(e) { if (e.target === dropZone || e.target.classList.contains('drop-zone-text')) fileInput.click(); });
+            }
+        }
     });
 })();
 </script>
@@ -154,7 +234,7 @@
         divider.className = 'divider';
         var item = document.createElement('li');
         var link = document.createElement('a');
-        link.setAttribute('href', '{{ url_for('admin_banner_alert_new') }}');
+        link.setAttribute('href', '/admin/banner-alert/new');
         link.setAttribute('data-banner-link', '1');
         link.innerHTML = '<i class="fas fa-bolt" style="margin-right: 6px;"></i> Banner alerts';
         item.appendChild(link);
@@ -173,9 +253,32 @@
 {% endblock %}
 
 {% block brand %}
-<a class="navbar-brand" href="/admin/dashboard/">
-    <i class="fas fa-church"></i> CPC Admin
-</a>
+<div style="display: flex; align-items: center; gap: 0.75rem;">
+    <a class="navbar-brand" href="/admin/dashboard/" style="margin: 0;">
+        <i class="fas fa-church"></i> CPC Admin
+    </a>
+    <!-- Create button + small wizard (next to home, high z-index so nothing overrides) -->
+    <div class="admin-create-wrap" style="position: relative; z-index: 2147483647;">
+        <button type="button" id="adminCreateBtn" class="admin-create-btn" aria-haspopup="true" aria-expanded="false" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,122,255,0.35);">
+            <i class="fas fa-plus"></i> Create
+            <i class="fas fa-chevron-down" style="font-size: 0.7rem; opacity: 0.9;"></i>
+        </button>
+        <div id="adminCreateDropdown" class="admin-create-dropdown" role="menu" aria-hidden="true" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 0.35rem; min-width: 260px; background: rgba(0, 40, 90, 0.98); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 0.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 2147483647;">
+            <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 0.35rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7);">What do you want to create?</div>
+            <a href="/admin/announcement/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-bullhorn" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Announcement</a>
+            <a href="/admin/ongoingevent/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-calendar-plus" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Event</a>
+            <a href="/admin/banner-alert/new" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-bolt" style="width: 1.25rem; text-align: center; color: #fbbf24;"></i> Banner Alert</a>
+            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0.25rem 0;"></div>
+            <a href="/admin/sermon/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-microphone" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Sunday Sermon</a>
+            <a href="/admin/podcastseries/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-list" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Podcast Series</a>
+            <a href="/admin/podcastepisode/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-podcast" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Podcast Episode</a>
+            <a href="/admin/galleryimage/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-images" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Add Gallery Image</a>
+            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0.25rem 0;"></div>
+            <a href="/admin/teachingseries/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-graduation-cap" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Teaching Series</a>
+            <a href="/admin/teachingseriessession/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-file-pdf" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Add Series Session (PDF)</a>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block access_control %}
@@ -197,6 +300,47 @@
 
 {% block tail %}
 {{ super() }}
+<style>
+/* Create dropdown surpasses everything else (max z-index) */
+.admin-create-wrap { z-index: 2147483647 !important; }
+.admin-create-dropdown { z-index: 2147483647 !important; }
+.admin-create-btn:hover { background: linear-gradient(135deg, #0a8cff 0%, #0060e8 100%) !important; box-shadow: 0 4px 12px rgba(0,122,255,0.45); }
+.admin-create-item:hover { background: rgba(255,255,255,0.12); }
+/* Ensure navbar doesn't clip the Create dropdown */
+.navbar-header .admin-create-wrap { position: relative; }
+</style>
+<script>
+(function() {
+    var btn = document.getElementById('adminCreateBtn');
+    var dropdown = document.getElementById('adminCreateDropdown');
+    if (btn && dropdown) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var open = dropdown.style.display === 'block';
+            dropdown.style.display = open ? 'none' : 'block';
+            btn.setAttribute('aria-expanded', !open);
+        });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.admin-create-wrap')) {
+                dropdown.style.display = 'none';
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+        // Ensure Create dropdown links always navigate (in case another script intercepts)
+        dropdown.querySelectorAll('a.admin-create-item').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (href && href !== '#' && href !== '') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = href;
+                }
+            });
+        });
+    }
+})();
+</script>
 <script>
 (function() {
     var el = document.getElementById('adminLastChange');

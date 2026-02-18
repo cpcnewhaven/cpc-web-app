@@ -802,6 +802,23 @@ body {
     touch-action: manipulation;
 }
 
+/* Ticker visibility (Settings dropdown) */
+body.ticker-hidden .footer-ticker { display: none !important; }
+body.ticker-hidden { --dashboard-bottom-height: 0; }
+
+/* Sticky nav off = nav scrolls with page (Settings dropdown) */
+body.nav-not-sticky .top-nav {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin-top: 1.25rem;
+}
+body.nav-not-sticky main {
+    margin-top: 1rem;
+    padding-top: 2rem !important; /* override Tailwind pt-8/pt-24 when nav scrolls */
+}
+
 main {
     flex: 1;
     margin-top: 100px;
