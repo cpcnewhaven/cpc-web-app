@@ -3,6 +3,7 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
 <script>
 (function() {
     function trimWords(text, maxWords) {
@@ -300,6 +301,7 @@
 
 {% block tail %}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/admin-wysiwyg.js') }}"></script>
 <style>
 /* Create dropdown surpasses everything else (max z-index) */
 .admin-create-wrap { z-index: 2147483647 !important; }
