@@ -409,6 +409,12 @@
         <div class="admin-date">
             <i class="fas fa-calendar-day"></i>
             <span id="today-date">{{ today.strftime('%A, %B %d, %Y') }}</span>
+            {% if current_user_last_login %}
+            <span aria-hidden="true">•</span>
+            <span>
+                Last login: {{ current_user_last_login.strftime('%b %d, %Y %I:%M %p') }}
+            </span>
+            {% endif %}
         </div>
         <p>Your cozy workspace for updating the church website. Everything you
             need is right here.</p>

@@ -49,6 +49,7 @@ class Announcement(db.Model):
     tag = db.Column(db.String(50))
     superfeatured = db.Column(db.Boolean, default=False)
     show_in_banner = db.Column(db.Boolean, default=False)  # show in top yellow bar (weather, parking, etc.)
+    banner_sort_order = db.Column(db.Integer, default=0)  # order in top bar when show_in_banner; lower = first
     archived = db.Column(db.Boolean, default=False)  # Archive = not active, archived True
     featured_image = db.Column(db.String(500))
     image_display_type = db.Column(db.String(50))  # poster, cover, etc.
@@ -199,6 +200,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_login_at = db.Column(db.DateTime, nullable=True)
 
     def set_password(self, password):
         """Hash and set password"""

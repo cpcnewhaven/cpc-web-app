@@ -13,6 +13,34 @@
     document.addEventListener('DOMContentLoaded', function() {
         var form = document.querySelector('form');
         if (!form) return;
+
+        // Compact creation/edit form: grid layout, dropdowns and toggles (dials)
+        (function compactForm() {
+            var formGroups = form.querySelectorAll('.form-group');
+            if (!formGroups.length) return;
+            form.classList.add('admin-form-compact');
+            formGroups.forEach(function(grp) {
+                var selects = grp.querySelectorAll('select');
+                var textareas = grp.querySelectorAll('textarea');
+                var checkboxes = grp.querySelectorAll('input[type="checkbox"]');
+                var textInputs = grp.querySelectorAll('input[type="text"], input[type="url"], input[type="number"]');
+                var dateInputs = grp.querySelectorAll('input[type="date"], input[type="datetime-local"]');
+                var files = grp.querySelectorAll('input[type="file"]');
+                var visible = function(nodes) { return Array.prototype.filter.call(nodes, function(n) { return n.offsetParent !== null || n.type === 'hidden'; }); };
+                var s = visible(selects).length, t = visible(textareas).length, c = visible(checkboxes).length;
+                var tx = visible(textInputs).length, d = visible(dateInputs).length, f = visible(files).length;
+                if (c === 1 && s === 0 && t === 0 && tx === 0) {
+                    grp.classList.add('form-group-short', 'form-group-toggle');
+                } else if (s === 1 && t === 0 && c === 0 && tx === 0 && f === 0) {
+                    grp.classList.add('form-group-short');
+                } else if (d === 1 && t === 0 && tx === 0 && s === 0 && f === 0) {
+                    grp.classList.add('form-group-short');
+                } else {
+                    grp.classList.add('form-group-full');
+                }
+            });
+        })();
+
         var params = new URLSearchParams(window.location.search);
         var isBanner = params.get('banner') === '1';
         var titleInput = form.querySelector('input[name="title"]');
@@ -258,13 +286,13 @@
     <a class="navbar-brand" href="/admin/dashboard/" style="margin: 0;">
         <i class="fas fa-church"></i> CPC Admin
     </a>
-    <!-- Create button + small wizard (next to home, high z-index so nothing overrides) -->
-    <div class="admin-create-wrap" style="position: relative; z-index: 2147483647;">
+    <!-- Create button + small wizard (z-index 5000, above navbar 1000 / modal 1050) -->
+    <div class="admin-create-wrap" style="position: relative; z-index: 5000;">
         <button type="button" id="adminCreateBtn" class="admin-create-btn" aria-haspopup="true" aria-expanded="false" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,122,255,0.35);">
             <i class="fas fa-plus"></i> Create
             <i class="fas fa-chevron-down" style="font-size: 0.7rem; opacity: 0.9;"></i>
         </button>
-        <div id="adminCreateDropdown" class="admin-create-dropdown" role="menu" aria-hidden="true" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 0.35rem; min-width: 260px; background: rgba(0, 40, 90, 0.98); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 0.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 2147483647;">
+        <div id="adminCreateDropdown" class="admin-create-dropdown" role="menu" aria-hidden="true" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 0.35rem; min-width: 260px; background: rgba(0, 40, 90, 0.98); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 0.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 5000;">
             <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 0.35rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7);">What do you want to create?</div>
             <a href="/admin/announcement/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-bullhorn" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Announcement</a>
             <a href="/admin/ongoingevent/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-calendar-plus" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Event</a>
@@ -303,9 +331,9 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='js/admin-wysiwyg.js') }}"></script>
 <style>
-/* Create dropdown surpasses everything else (max z-index) */
-.admin-create-wrap { z-index: 2147483647 !important; }
-.admin-create-dropdown { z-index: 2147483647 !important; }
+/* Create dropdown above navbar (1000) and modals (1050) */
+.admin-create-wrap { z-index: 5000 !important; }
+.admin-create-dropdown { z-index: 5000 !important; }
 .admin-create-btn:hover { background: linear-gradient(135deg, #0a8cff 0%, #0060e8 100%) !important; box-shadow: 0 4px 12px rgba(0,122,255,0.45); }
 .admin-create-item:hover { background: rgba(255,255,255,0.12); }
 /* Ensure navbar doesn't clip the Create dropdown */

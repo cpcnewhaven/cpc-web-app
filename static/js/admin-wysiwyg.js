@@ -1,18 +1,16 @@
 /**
- * Admin WYSIWYG – works in every scenario
- * - All forms with description or event_info get a rich editor + live preview
- * - Banner mode (banner=1) is skipped
- * - Quill load failure: form stays usable (no layout change, plain textarea)
- * - Multiple editors on one form (e.g. description + event_info) supported
+ * Admin WYSIWYG – works on all admin create/edit forms
+ * - Rich editors for: description, event_info, scripture
+ * - Banner mode (banner=1) included; live preview for all
+ * - Quill load failure: form stays usable (plain textarea)
  */
 (function () {
   'use strict';
 
   var QUILL_CDN = 'https://cdn.quilljs.com/1.3.7/quill.min.js';
   var QUILL_CSS = 'https://cdn.quilljs.com/1.3.7/quill.snow.css';
-  var QUILL_LOCAL = null; /* set window.ADMIN_QUILL_URL to use local copy, e.g. "/static/js/quill.min.js" */
   var LOAD_TIMEOUT_MS = 12000;
-  var RICH_FIELDS = ['description', 'event_info'];
+  var RICH_FIELDS = ['description', 'event_info', 'scripture'];
 
   function ready(fn) {
     if (document.readyState !== 'loading') fn();
@@ -62,8 +60,6 @@
     var form = document.querySelector('form');
     if (!form) return;
     if (form.closest('.admin-form-with-preview')) return;
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('banner') === '1') return;
 
     var textareas = [];
     RICH_FIELDS.forEach(function (name) {
@@ -81,6 +77,7 @@
     formCol.appendChild(form);
 
     var hasEventInfo = textareas.some(function (p) { return p.name === 'event_info'; });
+    var hasScripture = textareas.some(function (p) { return p.name === 'scripture'; });
     var previewHtml =
       '<h4>Live preview</h4>' +
       '<div class="admin-preview-card">' +
@@ -94,6 +91,13 @@
         '<div class="preview-event-info-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:rgba(255,255,255,0.5);margin-bottom:4px;">When / Where</div>' +
         '<div class="preview-description preview-event-info" id="admin-preview-event-info">' +
         '<span class="admin-preview-placeholder">When/where will appear here.</span></div></div>';
+    }
+    if (hasScripture) {
+      previewHtml +=
+        '<div class="preview-scripture-wrap" id="admin-preview-scripture-wrap" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">' +
+        '<div class="preview-event-info-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:rgba(255,255,255,0.5);margin-bottom:4px;">Scripture</div>' +
+        '<div class="preview-description" id="admin-preview-scripture">' +
+        '<span class="admin-preview-placeholder">Scripture will appear here.</span></div></div>';
     }
     previewHtml += '</div>';
 
@@ -115,6 +119,8 @@
     var previewDescEl = document.getElementById('admin-preview-description');
     var previewEventWrap = document.getElementById('admin-preview-event-info-wrap');
     var previewEventEl = document.getElementById('admin-preview-event-info');
+    var previewScriptureWrap = document.getElementById('admin-preview-scripture-wrap');
+    var previewScriptureEl = document.getElementById('admin-preview-scripture');
 
     var editors = [];
 
@@ -176,6 +182,18 @@
           previewEventWrap.style.display = '';
         }
       }
+
+      if (hasScripture && previewScriptureEl && previewScriptureWrap) {
+        var scriptureHtml = getFieldHtml('scripture');
+        if (scriptureHtml && !isEmptyHtml(scriptureHtml) && scriptureHtml !== '<p><br></p>') {
+          previewScriptureEl.innerHTML = getPreviewHtml(scriptureHtml);
+          previewScriptureEl.querySelectorAll('.admin-preview-placeholder').forEach(function (el) { el.remove(); });
+          previewScriptureWrap.style.display = '';
+        } else {
+          previewScriptureEl.innerHTML = '<span class="admin-preview-placeholder">Scripture will appear here.</span>';
+          previewScriptureWrap.style.display = '';
+        }
+      }
     }
 
     function createOneEditor(entry) {
@@ -183,21 +201,22 @@
       var initialHtml = ta.value || '';
       var wrap = document.createElement('div');
       wrap.className = 'admin-wysiwyg-wrap';
-      if (entry.name === 'event_info') wrap.classList.add('admin-wysiwyg-event-info');
+      if (entry.name === 'event_info' || entry.name === 'scripture') wrap.classList.add('admin-wysiwyg-event-info');
       ta.parentNode.insertBefore(wrap, ta);
       ta.style.display = 'none';
 
+      var simpleToolbar = [['bold', 'italic'], ['link'], [{ list: 'ordered' }, { list: 'bullet' }]];
+      var fullToolbar = [
+        ['bold', 'italic', 'underline'],
+        ['link', { list: 'ordered' }, { list: 'bullet' }],
+        [{ header: [1, 2, 3] }],
+        ['blockquote']
+      ];
+      var useSimple = entry.name === 'event_info' || entry.name === 'scripture';
       var quill = new window.Quill(wrap, {
         theme: 'snow',
         modules: {
-          toolbar: entry.name === 'event_info'
-            ? [['bold', 'italic'], ['link'], [{ list: 'ordered' }, { list: 'bullet' }]]
-            : [
-                ['bold', 'italic', 'underline'],
-                ['link', { list: 'ordered' }, { list: 'bullet' }],
-                [{ header: [1, 2, 3] }],
-                ['blockquote']
-              ],
+          toolbar: useSimple ? simpleToolbar : fullToolbar,
           clipboard: { matchVisual: false }
         }
       });
@@ -205,6 +224,7 @@
 
       quill.on('text-change', function () {
         ta.value = quill.root.innerHTML;
+        ta.dispatchEvent(new Event('input', { bubbles: true }));
         updatePreview();
       });
       editors.push({ name: entry.name, textarea: ta, quill: quill });

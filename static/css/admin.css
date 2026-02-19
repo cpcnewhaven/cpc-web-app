@@ -109,6 +109,8 @@ body.admin-body {
    Navbar
    --------------------------------------------------------------------------- */
 .admin-body .navbar {
+  position: relative;
+  z-index: 1100;
   background: rgba(0, 50, 120, 0.3);
   border: 1px solid var(--admin-border);
   border-radius: 0;
@@ -343,6 +345,115 @@ body.admin-body {
   margin-top: 0.35rem;
   font-size: 12px;
   color: var(--admin-text-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Compact creation/edit forms – dials (toggles) and dropdowns
+   --------------------------------------------------------------------------- */
+.admin-body form.admin-form-compact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1.25rem;
+  align-items: start;
+}
+
+.admin-body form.admin-form-compact .form-group {
+  margin-bottom: 0;
+}
+
+/* Full-width: title, description, textareas, long text, URLs, file/image fields */
+.admin-body form.admin-form-compact .form-group.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.admin-body form.admin-form-compact .form-group.form-group-full {
+  margin-bottom: 0.25rem;
+}
+
+/* Short fields (dropdowns, toggles) – one or two per row */
+.admin-body form.admin-form-compact .form-group.form-group-short {
+  min-width: 0;
+}
+
+.admin-body form.admin-form-compact .form-group.form-group-short label {
+  margin-bottom: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+/* Dropdowns: compact select styling */
+.admin-body form.admin-form-compact select.form-control {
+  max-width: 100%;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.875rem;
+  min-height: 34px;
+}
+
+/* Toggle switch (dial) for checkboxes */
+.admin-body form.admin-form-compact .form-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-body form.admin-form-compact .form-group-toggle label {
+  margin-bottom: 0;
+  font-size: 0.8125rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-body form.admin-form-compact .form-group-toggle .checkbox,
+.admin-body form.admin-form-compact .form-group-toggle [class*="checkbox"] {
+  margin: 0;
+}
+
+.admin-body form.admin-form-compact .form-group-toggle input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  background: var(--admin-panel-strong);
+  border: 1px solid var(--admin-border);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  position: relative;
+  margin: 0;
+}
+
+.admin-body form.admin-form-compact .form-group-toggle input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.admin-body form.admin-form-compact .form-group-toggle input[type="checkbox"]:checked {
+  background: var(--cpc-blue);
+  border-color: var(--cpc-blue);
+}
+
+.admin-body form.admin-form-compact .form-group-toggle input[type="checkbox"]:checked::before {
+  transform: translateX(18px);
+}
+
+.admin-body form.admin-form-compact .form-actions {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .admin-body form.admin-form-compact {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---------------------------------------------------------------------------

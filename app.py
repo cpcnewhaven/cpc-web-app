@@ -2,7 +2,7 @@ import warnings
 warnings.filterwarnings('ignore', message='.*pkg_resources is deprecated.*')
 
 import logging
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -125,6 +125,7 @@ def ensure_db_columns():
     MIGRATIONS = {
         'announcements': [
             ('show_in_banner', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
+            ('banner_sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
             ('featured_image', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('image_display_type', 'VARCHAR(50)', 'VARCHAR(50)'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
@@ -146,6 +147,9 @@ def ensure_db_columns():
         ],
         'gallery_images': [
             ('expires_at', 'DATE', 'DATE'),
+        ],
+        'users': [
+            ('last_login_at', 'DATETIME', 'TIMESTAMP'),
         ],
     }
 
@@ -707,7 +711,7 @@ def api_banner_announcements():
     """Active announcements marked to show in the top yellow bar (weather, parking, etc.)"""
     announcements = Announcement.query.filter_by(active=True, show_in_banner=True)\
         .filter(_not_expired(Announcement))\
-        .order_by(Announcement.date_entered.desc()).all()
+        .order_by(Announcement.banner_sort_order.asc(), Announcement.date_entered.desc()).all()
     return jsonify({
         'announcements': [
             {
@@ -1689,6 +1693,25 @@ def is_authenticated():
     """Check if user is authenticated"""
     return session.get('authenticated', False)
 
+
+def get_authenticated_user():
+    """Return the currently authenticated admin user or None."""
+    if not is_authenticated():
+        return None
+    username = session.get('username')
+    if not username:
+        return None
+    return User.query.filter_by(username=username).first()
+
+
+@app.context_processor
+def inject_current_user_metadata():
+    """Expose authenticated-user metadata to templates."""
+    user = get_authenticated_user()
+    return {
+        'current_user_last_login': user.last_login_at if user else None
+    }
+
 def require_auth(f):
     """Decorator to require authentication"""
     from functools import wraps
@@ -1709,6 +1732,8 @@ def admin_login():
         if username and password:
             user = User.query.filter_by(username=username).first()
             if user and user.check_password(password):
+                user.last_login_at = datetime.utcnow()
+                db.session.commit()
                 session['authenticated'] = True
                 session['username'] = username
                 flash('Login successful!', 'success')
@@ -1814,6 +1839,46 @@ def admin_bulk_sermons():
 def admin_banner_alert_new():
     return redirect(url_for('announcement.create_view', banner=1))
 
+
+@app.route('/admin/banners/reorder', methods=['POST'])
+@require_auth
+def admin_banners_reorder():
+    """Save banner order (announcements with show_in_banner=True)."""
+    try:
+        data = request.get_json() or {}
+        order = data.get('order', [])
+        if not order:
+            return jsonify({'success': False, 'error': 'Missing order'}), 400
+        for i, aid in enumerate(order):
+            ann = Announcement.query.get(int(aid))
+            if ann and getattr(ann, 'show_in_banner', False):
+                ann.banner_sort_order = i
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/admin/banners/<int:aid>/expiration', methods=['POST'])
+@require_auth
+def admin_banner_update_expiration(aid):
+    """Update expiration date for a banner announcement."""
+    try:
+        data = request.get_json() or {}
+        ann = Announcement.query.get(aid)
+        if not ann or not getattr(ann, 'show_in_banner', False):
+            return jsonify({'success': False, 'error': 'Not found'}), 404
+        val = data.get('expires_at')
+        if val is None:
+            ann.expires_at = None
+        else:
+            from datetime import datetime as dt
+            ann.expires_at = dt.strptime(str(val)[:10], '%Y-%m-%d').date()
+        db.session.commit()
+        return jsonify({'success': True, 'expires_at': ann.expires_at.isoformat() if ann.expires_at else None})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 # Admin image upload (for announcement featured image, etc.)
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
@@ -1900,6 +1965,7 @@ from datetime import datetime
 class DatePickerWidget(Input):
     """Renders <input type="date"> for calendar picker."""
     input_type = 'date'
+    validation_attrs = ('required', 'max', 'min', 'maxlength', 'minlength', 'pattern', 'step')
 
     def __call__(self, field, **kwargs):
         if field.data and hasattr(field.data, 'strftime'):
@@ -1910,6 +1976,7 @@ class DatePickerWidget(Input):
 class DateTimePickerWidget(Input):
     """Renders <input type="datetime-local"> for calendar picker."""
     input_type = 'datetime-local'
+    validation_attrs = ('required', 'max', 'min', 'maxlength', 'minlength', 'pattern', 'step')
 
     def __call__(self, field, **kwargs):
         if field.data:
@@ -1931,6 +1998,16 @@ EXPIRATION_PRESET_CHOICES = [
     ('4_weeks', '4 weeks'),
     ('specific', 'Pick a date…'),
 ]
+
+
+def _admin_author_choices():
+    """Choices for author dropdown: all admin users (logged-in admins)."""
+    try:
+        if not has_app_context():
+            return []
+        return [(u.username, u.username) for u in User.query.order_by(User.username).all()]
+    except RuntimeError:
+        return []
 
 
 def _compute_expires_at(preset_value, specific_date_value, base_date):
@@ -2085,11 +2162,13 @@ class AnnouncementView(AuthenticatedModelView):
         'type': SelectField,
         'category': SelectField,
         'date_entered': DateTimePickerField,
+        'author': SelectField,
     }
 
     form_args = {
         'type': {'choices': ANNOUNCEMENT_TYPE_CHOICES},
         'category': {'choices': ANNOUNCEMENT_CATEGORY_CHOICES},
+        'author': {'choices': []},  # set in get_form from admin users
     }
     
     form_widget_args = {
@@ -2114,6 +2193,18 @@ class AnnouncementView(AuthenticatedModelView):
     column_formatters = {
         'active': _format_announcement_status
     }
+
+    def get_form(self):
+        form = super().get_form()
+        if form and hasattr(form, 'author') and has_app_context():
+            form.author.choices = _admin_author_choices()
+            if not form.author.choices:
+                form.author.choices = [('', '— No admins —')]
+            if has_request_context():
+                current = session.get('username')
+                if current and (not form.author.data or not str(form.author.data).strip()):
+                    form.author.data = current
+        return form
 
     def on_form_prefill(self, form, id):
         announcement = self.get_one(id)
@@ -2292,7 +2383,7 @@ class SermonView(AuthenticatedModelView):
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
         'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
-    form_overrides = {'date': DatePickerField}
+    form_overrides = {'date': DatePickerField, 'author': SelectField}
     form_widget_args = {
         'scripture': {'rows': 2, 'style': 'width: 100%', 'placeholder': 'e.g. Luke 12:35-59'},
         'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
@@ -2300,6 +2391,18 @@ class SermonView(AuthenticatedModelView):
         'apple_podcasts_url': {'placeholder': 'https://podcasts.apple.com/podcast/...'},
         'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'}
     }
+
+    def get_form(self):
+        form = super().get_form()
+        if form and hasattr(form, 'author') and has_app_context():
+            form.author.choices = _admin_author_choices()
+            if not form.author.choices:
+                form.author.choices = [('', '— No admins —')]
+            if has_request_context():
+                current = session.get('username')
+                if current and (not form.author.data or not str(form.author.data).strip()):
+                    form.author.data = current
+        return form
 
     def on_form_prefill(self, form, id):
         sermon = self.get_one(id)
@@ -2854,7 +2957,7 @@ class ReorderEventsView(BaseView):
 
 
 class BannerAlertView(BaseView):
-    """Quick link to create a top-bar banner alert (weather, parking, etc.)."""
+    """Manage top-bar banner alerts: list, reorder, edit expiration; link to create new."""
     def is_accessible(self):
         return is_authenticated()
 
@@ -2863,7 +2966,9 @@ class BannerAlertView(BaseView):
 
     @expose('/')
     def index(self):
-        return redirect(url_for('admin_banner_alert_new'))
+        banners = Announcement.query.filter_by(show_in_banner=True)\
+            .order_by(Announcement.banner_sort_order.asc(), Announcement.date_entered.desc()).all()
+        return self.render('admin/banner_manage.html', banners=banners, now=date.today())
 
 
 class HistoryView(BaseView):
@@ -2928,25 +3033,6 @@ class ProtectedAdminIndexView(_AdminIndexView):
 admin = Admin(app, name='CPC Admin', template_mode='bootstrap3',
               index_view=ProtectedAdminIndexView())
 
-# Add dashboard view
-admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
-
-# Add views with categories
-admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
-admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
-admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))
-admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
-admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
-admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
-# Teaching Series: single link (no dropdown) → goes straight to overview subpage
-admin.add_view(TeachingSeriesOverviewView(name='Teaching Series', endpoint='teaching_series_overview', category=None))
-admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', category=None))  # hidden from menu
-# More features: utilities and history
-admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='More features'))
-admin.add_view(BannerAlertView(name='Banner alert', endpoint='banner_alert', category='More features'))
-admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Series Sessions', category='More features'))
-admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
-
 # ---------------------------------------------------------------------------
 # Initialize database, verify connection, run migrations, seed admin users
 # ---------------------------------------------------------------------------
@@ -2992,6 +3078,21 @@ with app.app_context():
         _seed_pastor_teaching_sample()
         log.info("Sample teaching series 'Total Christ' created")
     log.info("DB init complete — app is ready to serve")
+
+    # 7. Register admin views (inside app context so get_form() can use DB)
+    admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
+    admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
+    admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
+    admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))
+    admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
+    admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
+    admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
+    admin.add_view(TeachingSeriesOverviewView(name='Teaching Series', endpoint='teaching_series_overview', category=None))
+    admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', category=None))
+    admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='More features'))
+    admin.add_view(BannerAlertView(name='Banner alert', endpoint='banner_alert', category='More features'))
+    admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Series Sessions', category='More features'))
+    admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
 
 if __name__ == '__main__':
     # Use one port for both main and reloader (so URL doesn't change after restart)

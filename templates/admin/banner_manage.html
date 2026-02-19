@@ -1,0 +1,193 @@
+{% extends 'admin/master.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    .banner-manage-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .banner-manage-header { color: var(--text-white); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+    .banner-manage-header h1 { font-size: 1.75rem; margin: 0 0 0.5rem 0; }
+    .banner-manage-header p { color: rgba(255,255,255,0.8); font-size: 1rem; margin: 0; }
+    .btn-new-banner {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #1f2937;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .btn-new-banner:hover { color: #1f2937; opacity: 0.95; }
+    .banner-list {
+        background: rgba(0, 50, 120, 0.2);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 80, 160, 0.4);
+        border-radius: var(--radius-lg);
+        padding: 0.5rem;
+        list-style: none;
+        margin: 0 0 1.5rem 0;
+    }
+    .banner-list li {
+        background: rgba(0, 50, 120, 0.3);
+        border: 1px solid rgba(0, 80, 160, 0.35);
+        border-radius: var(--radius-md);
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-white);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    .banner-list li:last-child { margin-bottom: 0; }
+    .banner-list li:hover { background: rgba(0, 50, 120, 0.45); }
+    .banner-list li.sortable-ghost { opacity: 0.5; }
+    .banner-list li .drag-handle { color: rgba(255,255,255,0.6); cursor: grab; }
+    .banner-list li .banner-body { flex: 1; min-width: 0; }
+    .banner-list li .banner-title { font-weight: 600; margin-bottom: 0.25rem; }
+    .banner-list li .banner-desc { font-size: 0.85rem; color: rgba(255,255,255,0.75); margin-bottom: 0.35rem; }
+    .banner-list li .banner-meta { font-size: 0.8rem; color: rgba(255,255,255,0.6); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .banner-list li .banner-meta .type-badge { background: rgba(245,158,11,0.3); color: #fbbf24; padding: 0.15rem 0.5rem; border-radius: 4px; }
+    .banner-list li .banner-meta .expired { color: #f87171; }
+    .banner-list li .banner-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .banner-list li .expiration-wrap { display: flex; align-items: center; gap: 0.35rem; }
+    .banner-list li input[type="date"] {
+        background: var(--admin-input-bg);
+        border: 1px solid var(--admin-border);
+        color: var(--admin-text);
+        padding: 0.35rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+    }
+    .banner-list li .btn-save-exp { padding: 0.25rem 0.5rem; font-size: 0.8rem; background: var(--cpc-blue); color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    .banner-list li .btn-save-exp:hover { background: var(--cpc-blue-dark); }
+    .banner-list li .btn-edit { color: var(--cpc-blue-light); text-decoration: none; font-size: 0.9rem; }
+    .banner-list li .btn-edit:hover { text-decoration: underline; }
+    .btn-save-order {
+        background: var(--cpc-blue);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .btn-save-order:hover { background: var(--cpc-blue-dark); }
+    .banner-message { margin-top: 1rem; padding: 0.75rem; border-radius: var(--radius-md); display: none; }
+    .banner-message.success { background: rgba(46, 204, 113, 0.25); color: #fff; display: block; }
+    .banner-message.error { background: rgba(231, 76, 60, 0.25); color: #fff; display: block; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="banner-manage-container">
+    <div class="banner-manage-header">
+        <div>
+            <h1><i class="fas fa-bolt"></i> Banner alerts</h1>
+            <p>Reorder top-bar banners and set expiration dates. Drag to reorder, then Save order.</p>
+        </div>
+        <a href="{{ url_for('admin_banner_alert_new') }}" class="btn-new-banner">
+            <i class="fas fa-plus"></i> Add banner alert
+        </a>
+    </div>
+    <ul class="banner-list" id="bannerList">
+        {% for b in banners %}
+        <li data-id="{{ b.id }}">
+            <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+            <div class="banner-body">
+                <div class="banner-title">{{ b.title or '(No title)' }}</div>
+                <div class="banner-desc">{% if b.description %}{{ (b.description[:80] | striptags) + ('…' if b.description | length > 80 else '') }}{% else %}—{% endif %}</div>
+                <div class="banner-meta">
+                    <span class="type-badge">{{ b.type or 'alert' }}</span>
+                    {% if not b.active %}<span>Inactive</span>{% endif %}
+                    {% if b.expires_at %}<span class="{% if b.expires_at < now %}expired{% endif %}">Expires {{ b.expires_at.strftime('%Y-%m-%d') }}</span>{% else %}<span>No expiration</span>{% endif %}
+                </div>
+            </div>
+            <div class="banner-actions">
+                <div class="expiration-wrap">
+                    <input type="date" class="banner-expiration-input" data-id="{{ b.id }}" value="{{ b.expires_at.strftime('%Y-%m-%d') if b.expires_at else '' }}" placeholder="Expires">
+                    <button type="button" class="btn-save-exp" data-id="{{ b.id }}">Save</button>
+                </div>
+                <a href="{{ url_for('announcement.edit_view', id=b.id) }}?banner=1" class="btn-edit"><i class="fas fa-pen"></i> Edit</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% if not banners %}
+    <p style="color: rgba(255,255,255,0.8);">No banner alerts yet. <a href="{{ url_for('admin_banner_alert_new') }}" style="color: var(--cpc-blue-light);">Create one</a>.</p>
+    {% else %}
+    <button type="button" class="btn-save-order" id="saveOrderBtn">Save order</button>
+    <div class="banner-message" id="bannerMessage"></div>
+    {% endif %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+(function() {
+    var list = document.getElementById('bannerList');
+    if (!list || list.children.length === 0) return;
+    var saveBtn = document.getElementById('saveOrderBtn');
+    var msgEl = document.getElementById('bannerMessage');
+    var sortable = new Sortable(list, {
+        animation: 150,
+        handle: '.drag-handle',
+        ghostClass: 'sortable-ghost',
+        dataIdAttr: 'data-id'
+    });
+    saveBtn.addEventListener('click', function() {
+        var order = sortable.toArray();
+        saveBtn.disabled = true;
+        msgEl.className = 'banner-message';
+        msgEl.style.display = 'none';
+        fetch('{{ url_for("admin_banners_reorder") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ order: order })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            msgEl.style.display = 'block';
+            if (data.success) {
+                msgEl.className = 'banner-message success';
+                msgEl.textContent = 'Order saved.';
+            } else {
+                msgEl.className = 'banner-message error';
+                msgEl.textContent = data.error || 'Failed to save.';
+            }
+        })
+        .catch(function() {
+            msgEl.style.display = 'block';
+            msgEl.className = 'banner-message error';
+            msgEl.textContent = 'Network error.';
+        })
+        .finally(function() { saveBtn.disabled = false; });
+    });
+    list.querySelectorAll('.btn-save-exp').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            var row = this.closest('li');
+            var input = row.querySelector('.banner-expiration-input');
+            var val = input.value || null;
+            btn.disabled = true;
+            fetch('/admin/banners/' + id + '/expiration', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ expires_at: val })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    var meta = row.querySelector('.banner-meta');
+                    var span = meta.querySelector('.expired') || meta.querySelector('span:last-child');
+                    if (span) span.textContent = data.expires_at ? 'Expires ' + data.expires_at : 'No expiration';
+                }
+            })
+            .finally(function() { btn.disabled = false; });
+        });
+    });
+})();
+</script>
+{% endblock %}
