@@ -16,6 +16,40 @@ class GlobalIDCounter(db.Model):
     next_id = db.Column(db.Integer, nullable=False, default=1)
 
 
+class BibleBook(db.Model):
+    __tablename__ = 'bible_books'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    testament = db.Column(db.String(2), nullable=False) # 'OT' or 'NT'
+    sort_order = db.Column(db.Integer, nullable=False, unique=True)
+
+    def __repr__(self):
+        return f'<BibleBook {self.name}>'
+
+class BibleChapter(db.Model):
+    __tablename__ = 'bible_chapters'
+    id = db.Column(db.Integer, primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('bible_books.id'), nullable=False)
+    chapter_number = db.Column(db.Integer, nullable=False)
+    verse_count = db.Column(db.Integer, nullable=False)
+    
+    book = db.relationship('BibleBook', backref=db.backref('chapters', lazy=True))
+
+class SermonSeries(db.Model):
+    __tablename__ = 'sermon_series'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    image_url = db.Column(db.String(500))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<SermonSeries {self.title}>'
+
+
 def next_global_id():
     """Return the next universal content ID and bump the counter.
 
@@ -71,6 +105,29 @@ class Sermon(db.Model):
     apple_podcasts_url = db.Column(db.String(500))
     podcast_thumbnail_url = db.Column(db.String(500))
     expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
+    
+    # New fields for enhanced schema
+    series_id = db.Column(db.Integer, db.ForeignKey('sermon_series.id'), nullable=True)
+    episode_number = db.Column(db.Integer, nullable=True)
+    
+    # Scripture Validation
+    bible_book_id = db.Column(db.Integer, db.ForeignKey('bible_books.id'), nullable=True)
+    chapter_start = db.Column(db.Integer, nullable=True)
+    verse_start = db.Column(db.Integer, nullable=True)
+    chapter_end = db.Column(db.Integer, nullable=True)
+    verse_end = db.Column(db.Integer, nullable=True)
+    
+    # Media & Links
+    audio_file_url = db.Column(db.String(500), nullable=True) # Direct link for simple hosting
+    video_file_url = db.Column(db.String(500), nullable=True) # Direct link for simple hosting
+    
+    # Association
+    beyond_episode_id = db.Column(db.Integer, db.ForeignKey('podcast_episodes.id'), nullable=True)
+    
+    # Relationships
+    series = db.relationship('SermonSeries', backref='sermons')
+    book = db.relationship('BibleBook')
+    beyond_episode = db.relationship('PodcastEpisode', foreign_keys=[beyond_episode_id])
 
 class PodcastEpisode(db.Model):
     __tablename__ = 'podcast_episodes'

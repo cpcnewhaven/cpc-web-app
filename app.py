@@ -109,7 +109,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries
 
 def ensure_db_columns():
     """Add any missing columns to existing tables (SQLite and PostgreSQL).
@@ -141,6 +141,16 @@ def ensure_db_columns():
             ('active', 'BOOLEAN DEFAULT 1', 'BOOLEAN DEFAULT TRUE'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
             ('expires_at', 'DATE', 'DATE'),
+            ('series_id', 'INTEGER', 'INTEGER'),
+            ('episode_number', 'INTEGER', 'INTEGER'),
+            ('bible_book_id', 'INTEGER', 'INTEGER'),
+            ('chapter_start', 'INTEGER', 'INTEGER'),
+            ('verse_start', 'INTEGER', 'INTEGER'),
+            ('chapter_end', 'INTEGER', 'INTEGER'),
+            ('verse_end', 'INTEGER', 'INTEGER'),
+            ('audio_file_url', 'VARCHAR(500)', 'VARCHAR(500)'),
+            ('video_file_url', 'VARCHAR(500)', 'VARCHAR(500)'),
+            ('beyond_episode_id', 'INTEGER', 'INTEGER'),
         ],
         'podcast_episodes': [
             ('expires_at', 'DATE', 'DATE'),
@@ -812,7 +822,7 @@ def api_sermons():
             Sermon.archived == False
         ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).all()
         for s in db_sermons:
-            episodes.append({
+            sermon_data = {
                 'id': s.id,
                 'title': s.title or '',
                 'author': s.author or '',
@@ -822,8 +832,23 @@ def api_sermons():
                 'youtube_url': s.youtube_url or '',
                 'apple_podcasts_url': s.apple_podcasts_url or '',
                 'link': s.spotify_url or s.youtube_url or s.apple_podcasts_url or '',
-                'podcast-thumbnail_url': s.podcast_thumbnail_url or ''
-            })
+                'podcast-thumbnail_url': s.podcast_thumbnail_url or '',
+                # New fields
+                'episode': s.episode_number,
+                'audio_file': s.audio_file_url,
+                'video_file': s.video_file_url,
+            }
+            if s.series:
+                sermon_data['series'] = {
+                    'id': s.series.id,
+                    'title': s.series.title,
+                    'image_url': s.series.image_url
+                }
+            if s.beyond_episode:
+                # Provide a direct link to the beyond episode if available
+                sermon_data['beyond_link'] = s.beyond_episode.link or s.beyond_episode.listen_url
+            
+            episodes.append(sermon_data)
     except Exception as e:
         print(f"Error loading DB sermons: {e}")
     # 2. If no DB sermons, use JSON (sermon_data_helper)
@@ -2347,14 +2372,38 @@ def _format_sermon_status(view, context, model, name):
     return Markup('<span class="admin-status-wrap">' + status_tag + ' ' + dropdown + '</span>')
 
 
+class SermonSeriesView(AuthenticatedModelView):
+    column_list = ('title', 'start_date', 'end_date', 'active')
+    column_searchable_list = ('title', 'description')
+    column_sortable_list = ('start_date', 'title')
+    column_default_sort = ('start_date', True)
+    form_columns = ('title', 'description', 'image_url', 'start_date', 'end_date', 'active')
+
 class SermonView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'author', 'date', 'scripture', 'active', 'expires_at', 'spotify_url', 'youtube_url')
+    column_list = ('id', 'title', 'series', 'episode_number', 'author', 'date', 'scripture', 'active', 'expires_at')
     column_searchable_list = ('title', 'author', 'scripture')
-    column_filters = ('author', 'date')
-    column_sortable_list = ('title', 'author', 'date')
+    column_filters = ('series', 'author', 'date', 'active')
+    column_sortable_list = ('date', 'title', 'author', 'episode_number')
     column_default_sort = ('date', True)
     form_excluded_columns = ['id']
+
+    form_columns = (
+        'series', 'episode_number',
+        'book', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end',
+        'title', 'author', 'date',
+        'audio_file_url', 'video_file_url',
+        'beyond_episode',
+        'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url',
+        'expiration_preset', 'expiration_date', 'active', 'archived'
+    )
+    
     column_labels = {
+        'series': 'Series',
+        'episode_number': 'Ep #',
+        'book': 'Bible Book',
+        'beyond_episode': 'Beyond Link',
+        'audio_file_url': 'Audio File',
+        'video_file_url': 'Video File',
         'spotify_url': 'Spotify',
         'youtube_url': 'YouTube',
         'apple_podcasts_url': 'Apple Podcasts',
@@ -2362,34 +2411,41 @@ class SermonView(AuthenticatedModelView):
         'active': 'Status',
         'expires_at': 'Expires',
     }
+    
     column_formatters = {'active': _format_sermon_status}
 
-    form_columns = (
-        'scripture_book', 'scripture_chapter', 'verse_start', 'verse_end',
-        'title', 'author', 'scripture', 'date',
-        'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url',
-        'expiration_preset', 'expiration_date'
-    )
     form_extra_fields = {
-        'scripture_book': SelectField('1. Series (Book)', choices=SERMON_BOOK_CHOICES),
-        'scripture_chapter': SelectField('2. Chapter', choices=SERMON_CHAPTER_CHOICES),
-        'verse_start': SelectField('3. Verse (start)', choices=SERMON_VERSE_CHOICES),
-        'verse_end': SelectField('Verse (end, optional)', choices=SERMON_VERSE_CHOICES),
-        'scripture': TextAreaField('Scripture (or type manually)', widget=TextArea()),
-        'spotify_url': URLField('Spotify URL', validators=[Optional(), URL()]),
-        'youtube_url': URLField('YouTube URL', validators=[Optional(), URL()]),
-        'apple_podcasts_url': URLField('Apple Podcasts URL', validators=[Optional(), URL()]),
-        'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
         'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
-    form_overrides = {'date': DatePickerField, 'author': SelectField}
+
+    form_overrides = {
+        'date': DatePickerField, 
+        'author': SelectField
+    }
+    
+    form_args = {
+        'book': {
+            'query_factory': lambda: BibleBook.query.order_by(BibleBook.sort_order).all(),
+            'allow_blank': True
+        },
+        'series': {
+            'query_factory': lambda: SermonSeries.query.order_by(SermonSeries.start_date.desc()).all(),
+            'allow_blank': True
+        },
+        'beyond_episode': {
+            'query_factory': lambda: PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all(),
+            'allow_blank': True
+        }
+    }
+
     form_widget_args = {
-        'scripture': {'rows': 2, 'style': 'width: 100%', 'placeholder': 'e.g. Luke 12:35-59'},
         'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
         'youtube_url': {'placeholder': 'https://youtube.com/watch?v=...'},
         'apple_podcasts_url': {'placeholder': 'https://podcasts.apple.com/podcast/...'},
-        'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'}
+        'podcast_thumbnail_url': {'placeholder': 'https://example.com/thumbnail.jpg'},
+        'audio_file_url': {'placeholder': 'https://storage.googleapis.com/.../sermon.mp3'},
+        'video_file_url': {'placeholder': 'https://storage.googleapis.com/.../video.mp4'}
     }
 
     def get_form(self):
@@ -2416,25 +2472,34 @@ class SermonView(AuthenticatedModelView):
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
-        book = getattr(form, 'scripture_book', None) and getattr(form.scripture_book, 'data', None)
-        ch = getattr(form, 'scripture_chapter', None) and getattr(form.scripture_chapter, 'data', None)
-        v1 = getattr(form, 'verse_start', None) and getattr(form.verse_start, 'data', None)
-        v2 = getattr(form, 'verse_end', None) and getattr(form.verse_end, 'data', None)
-        if book and ch and str(ch).isdigit():
-            try:
-                vs = int(v1 or 0) if v1 else 0
-                ve = int(v2 or 0) if v2 else 0
-                if vs > 0:
-                    ref = f"{book} {ch}:{vs}"
-                    if ve > vs:
-                        ref += f"-{ve}"
-                else:
-                    ref = f"{book} {ch}"
-                model.scripture = ref
-                if not (model.title and model.title.strip()):
-                    model.title = ref
-            except (TypeError, ValueError):
-                pass
+            
+        # Auto-generate scripture string from book/chapter/verse
+        # book is a relationship, so form.book.data is a BibleBook object
+        book_obj = getattr(form, 'book', None) and getattr(form.book, 'data', None)
+        ch_start = getattr(form, 'chapter_start', None) and getattr(form.chapter_start, 'data', None)
+        v_start = getattr(form, 'verse_start', None) and getattr(form.verse_start, 'data', None)
+        ch_end = getattr(form, 'chapter_end', None) and getattr(form.chapter_end, 'data', None)
+        v_end = getattr(form, 'verse_end', None) and getattr(form.verse_end, 'data', None)
+
+        if book_obj:
+            ref = book_obj.name
+            if ch_start:
+                ref += f" {ch_start}"
+                if v_start:
+                    ref += f":{v_start}"
+                
+                if ch_end or v_end:
+                    ref += "-"
+                    if ch_end and ch_end != ch_start:
+                         ref += f"{ch_end}:"
+                    if v_end:
+                        ref += f"{v_end}"
+            
+            model.scripture = ref
+            # If title is empty, use scripture
+            if not (model.title and model.title.strip()):
+                model.title = ref
+
         preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
         specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
         base = model.date or date.today()
@@ -3084,6 +3149,7 @@ with app.app_context():
     admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
     admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
     admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))
+    admin.add_view(SermonSeriesView(SermonSeries, db.session, name='Sermon Series', category='Media'))
     admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
     admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
     admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
