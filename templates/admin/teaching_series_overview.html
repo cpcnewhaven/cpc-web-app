@@ -5,26 +5,70 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-    .ts-overview-container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-    .ts-overview-header { color: var(--text-white); margin-bottom: 1.5rem; }
-    .ts-overview-header h1 { font-size: 1.75rem; margin-bottom: 0.35rem; }
-    .ts-overview-header p { color: rgba(255,255,255,0.8); font-size: 1rem; margin: 0; }
-    .ts-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+    .ts-overview-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .ts-overview-header {
+        color: var(--text-white);
+        margin-bottom: 1.5rem;
+    }
+
+    .ts-overview-header h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .ts-overview-header p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .ts-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        align-items: center;
+    }
+
     .ts-btn {
-        display: inline-flex; align-items: center; gap: 0.5rem;
-        padding: 0.6rem 1.25rem; border-radius: var(--radius-md);
-        font-weight: 600; text-decoration: none; font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.25rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 0.95rem;
         transition: all 0.2s;
     }
+
     .ts-btn-primary {
-        background: var(--cpc-blue); color: white; border: none;
+        background: var(--cpc-blue);
+        color: white;
+        border: none;
     }
-    .ts-btn-primary:hover { background: var(--cpc-blue-dark); color: white; }
+
+    .ts-btn-primary:hover {
+        background: var(--cpc-blue-dark);
+        color: white;
+    }
+
     .ts-btn-secondary {
-        background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.95);
-        border: 1px solid rgba(255,255,255,0.25);
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.25);
     }
-    .ts-btn-secondary:hover { background: rgba(255,255,255,0.18); color: white; }
+
+    .ts-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: white;
+    }
+
     .ts-series-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -33,6 +77,7 @@
         margin: 0;
         padding: 0;
     }
+
     .ts-series-card {
         background: rgba(0, 50, 120, 0.26);
         backdrop-filter: blur(16px);
@@ -41,11 +86,13 @@
         padding: 1.25rem;
         transition: var(--transition-base);
     }
+
     .ts-series-card:hover {
         background: rgba(0, 50, 120, 0.36);
         border-color: rgba(0, 80, 160, 0.55);
         box-shadow: 0 8px 24px rgba(0, 50, 120, 0.25);
     }
+
     .ts-series-card h3 {
         margin: 0 0 0.5rem 0;
         font-size: 1.15rem;
@@ -53,15 +100,20 @@
         font-weight: 600;
         line-height: 1.3;
     }
+
     .ts-series-meta {
         font-size: 0.85rem;
-        color: rgba(255,255,255,0.7);
+        color: rgba(255, 255, 255, 0.7);
         margin-bottom: 0.75rem;
     }
-    .ts-series-meta span { margin-right: 0.75rem; }
+
+    .ts-series-meta span {
+        margin-right: 0.75rem;
+    }
+
     .ts-series-desc {
         font-size: 0.9rem;
-        color: rgba(255,255,255,0.8);
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.45;
         margin-bottom: 1rem;
         display: -webkit-box;
@@ -69,12 +121,15 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
     .ts-series-actions {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
     }
-    .ts-series-actions a, .ts-series-actions span {
+
+    .ts-series-actions a,
+    .ts-series-actions span {
         font-size: 0.85rem;
         padding: 0.4rem 0.75rem;
         border-radius: 6px;
@@ -83,28 +138,52 @@
         align-items: center;
         gap: 0.35rem;
     }
+
     .ts-series-actions .edit-link {
-        background: rgba(255,255,255,0.15);
+        background: rgba(255, 255, 255, 0.15);
         color: #7dd8ff;
-        border: 1px solid rgba(255,255,255,0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    .ts-series-actions .edit-link:hover { background: rgba(255,255,255,0.25); color: white; }
+
+    .ts-series-actions .edit-link:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
     .ts-series-actions .sessions-link {
         background: rgba(0, 82, 163, 0.4);
-        color: rgba(255,255,255,0.95);
+        color: rgba(255, 255, 255, 0.95);
     }
-    .ts-series-actions .sessions-link:hover { background: rgba(0, 82, 163, 0.6); color: white; }
+
+    .ts-series-actions .sessions-link:hover {
+        background: rgba(0, 82, 163, 0.6);
+        color: white;
+    }
+
     .ts-empty {
         text-align: center;
         padding: 3rem 2rem;
-        color: rgba(255,255,255,0.7);
-        background: rgba(255,255,255,0.05);
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.05);
         border-radius: var(--radius-lg);
-        border: 1px dashed rgba(255,255,255,0.2);
+        border: 1px dashed rgba(255, 255, 255, 0.2);
     }
-    .ts-empty i { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.6; }
-    .ts-empty a { color: var(--cpc-blue-light); text-decoration: none; font-weight: 600; }
-    .ts-empty a:hover { text-decoration: underline; }
+
+    .ts-empty i {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.6;
+    }
+
+    .ts-empty a {
+        color: var(--cpc-blue-light);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .ts-empty a:hover {
+        text-decoration: underline;
+    }
 </style>
 {% endblock %}
 
@@ -130,9 +209,12 @@
         <li class="ts-series-card">
             <h3>{{ series.title }}</h3>
             <div class="ts-series-meta">
-                <span><i class="fas fa-list"></i> {{ series.sessions|length }} session{{ 's' if series.sessions|length != 1 else '' }}</span>
+                <span><i class="fas fa-list"></i> {{ series.sessions|length }} session{{ 's' if series.sessions|length
+                    != 1 else '' }}</span>
                 {% if series.start_date or series.end_date %}
-                <span><i class="fas fa-calendar-alt"></i> {% if series.start_date %}{{ series.start_date.strftime('%b %Y') }}{% endif %}{% if series.end_date %} – {{ series.end_date.strftime('%b %Y') }}{% endif %}</span>
+                <span><i class="fas fa-calendar-alt"></i> {% if series.start_date %}{{ series.start_date.strftime('%b
+                    %Y') }}{% endif %}{% if series.end_date %} – {{ series.end_date.strftime('%b %Y') }}{% endif
+                    %}</span>
                 {% endif %}
                 {% if not series.active %}<span style="color: rgba(255,200,100,0.9);">Inactive</span>{% endif %}
             </div>
@@ -140,8 +222,12 @@
             <div class="ts-series-desc">{{ series.description }}</div>
             {% endif %}
             <div class="ts-series-actions">
-                <a href="/admin/teachingseries/edit/?id={{ series.id }}" class="edit-link"><i class="fas fa-pen"></i> Edit</a>
-                <a href="{{ url_for('teachingseriessession.index_view') }}?flt0_0={{ series.id }}" class="sessions-link"><i class="fas fa-file-pdf"></i> Sessions</a>
+                <a href="/admin/teachingseries/edit/?id={{ series.id }}" class="edit-link"><i class="fas fa-pen"></i>
+                    Edit</a>
+                <a href="{{ url_for('teachingseriessession.index_view') }}?flt0_0={{ series.id }}"
+                    class="sessions-link"><i class="fas fa-file-pdf"></i> Sessions</a>
+                <a href="{{ url_for('reorder_sessions.index', series_id=series.id) }}" class="sessions-link"
+                    style="background: rgba(0, 163, 136, 0.4);"><i class="fas fa-sort-numeric-down"></i> Reorder</a>
             </div>
         </li>
         {% endfor %}

@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from sqlalchemy import Text, JSON
+from sqlalchemy import Text, JSON, event, func
 from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -212,9 +212,29 @@ class TeachingSeriesSession(db.Model):
     title = db.Column(db.String(300), nullable=False)
     description = db.Column(db.Text)
     pdf_url = db.Column(db.String(500))  # uploaded PDF or external link
+    session_date = db.Column(db.Date) # Date of the session
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
 
     series = db.relationship('TeachingSeries', back_populates='sessions')
+
+
+@event.listens_for(TeachingSeriesSession, 'before_insert')
+def auto_assign_session_number(mapper, connection, target):
+    """Automatically assign the next number for the series if not provided."""
+    # Check if number is None or 0 (treating 0 as unassigned)
+    if not target.number:
+        try:
+            from sqlalchemy import select, func
+            table = TeachingSeriesSession.__table__
+            # Be very explicit about getting the max number for this series
+            query = select(func.max(table.c.number)).where(table.c.series_id == target.series_id)
+            max_num = connection.scalar(query) or 0
+            target.number = int(max_num) + 1
+        except Exception as e:
+            # Fallback to 1 if anything goes wrong, but log it
+            import logging
+            logging.getLogger("cpc").warning("Failed to auto-assign session number in event listener: %s", e)
+            target.number = 1
 
 
 class Paper(db.Model):

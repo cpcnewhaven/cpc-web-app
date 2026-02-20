@@ -12,7 +12,5 @@ feedparser==6.0.11
 python-dateutil==2.8.2
 pytz==2025.2
 schedule==1.2.0
-
 ics==0.8.0.dev0
-
-
+rich==13.7.0

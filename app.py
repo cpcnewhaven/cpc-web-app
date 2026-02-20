@@ -1,6 +1,14 @@
 import warnings
 warnings.filterwarnings('ignore', message='.*pkg_resources is deprecated.*')
 
+import collections
+if not hasattr(collections, 'Mapping'):
+    import collections.abc
+    collections.Mapping = collections.abc.Mapping
+    collections.Iterable = collections.abc.Iterable
+    collections.MutableMapping = collections.abc.MutableMapping
+    collections.Sequence = collections.abc.Sequence
+
 import logging
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context
 from markupsafe import Markup
@@ -21,6 +29,37 @@ from ics import Calendar, Event
 from dateutil import tz
 import pytz
 from dotenv import load_dotenv
+
+# ---------------------------------------------------------------------------
+# Global monkeypatch to fix WTForms 3.0+ unpacking error (expected 4, got 3)
+# for relationship fields in Flask-Admin 1.6.x.
+# This must happen before model views are instantiated.
+# ---------------------------------------------------------------------------
+try:
+    from flask_admin.contrib.sqla.fields import QuerySelectField, QuerySelectMultipleField
+    
+    def patch_iter_choices(original_iter):
+        def iter_choices(self):
+            for choice in original_iter(self):
+                if len(choice) == 3:
+                    yield choice + ({},)
+                else:
+                    yield choice
+        return iter_choices
+
+    QuerySelectField.iter_choices = patch_iter_choices(QuerySelectField.iter_choices)
+    QuerySelectMultipleField.iter_choices = patch_iter_choices(QuerySelectMultipleField.iter_choices)
+    # Also patch Select2Field if it exists (for some custom implementations)
+    try:
+        from flask_admin.form.fields import Select2Field
+        Select2Field.iter_choices = patch_iter_choices(Select2Field.iter_choices)
+    except (ImportError, AttributeError):
+        pass
+except (ImportError, AttributeError) as e:
+    # If imports fail, log but don't crash — maybe a different version
+    import logging
+    logging.getLogger("cpc").warning("Failed to apply WTForms 3.0 monkeypatch: %s", e)
+
 from enhanced_api import enhanced_api
 from json_api import json_api
 from port_finder import find_available_port
@@ -154,6 +193,9 @@ def ensure_db_columns():
         ],
         'podcast_episodes': [
             ('expires_at', 'DATE', 'DATE'),
+        ],
+        'teaching_series_sessions': [
+            ('session_date', 'DATE', 'DATE'),
         ],
         'gallery_images': [
             ('expires_at', 'DATE', 'DATE'),
@@ -1845,6 +1887,24 @@ def admin_events_reorder():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/admin/teaching-series/reorder-sessions', methods=['POST'])
+@require_auth
+def admin_sessions_reorder():
+    """Save drag-and-drop order of sessions in a series. Body: JSON { \"order\": [\"id1\", \"id2\", ...] }"""
+    try:
+        data = request.get_json() or {}
+        order = data.get('order', [])
+        if not order:
+            return jsonify({'success': False, 'error': 'Missing order'}), 400
+        for i, sid in enumerate(order):
+            session_obj = TeachingSeriesSession.query.get(int(sid))
+            if session_obj:
+                session_obj.number = i + 1  # Sessions are 1-indexed
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/admin/bulk/sermons', methods=['POST'])
 @require_auth
 def admin_bulk_sermons():
@@ -2940,16 +3000,20 @@ class TeachingSeriesView(AuthenticatedModelView):
 
 class TeachingSeriesSessionView(AuthenticatedModelView):
     """Admin for sessions (1, 2, 3...) within a teaching series; PDF upload per session."""
-    column_list = ('number', 'title', 'series', 'pdf_url', 'date_entered')
+    column_list = ('number', 'title', 'series', 'session_date', 'pdf_url', 'date_entered')
     column_searchable_list = ('title', 'description')
-    column_filters = ('series',)
-    column_sortable_list = ('number', 'title', 'date_entered')
+    column_filters = ('series', 'session_date')
+    column_sortable_list = ('number', 'title', 'session_date', 'date_entered')
     column_default_sort = ('number', True)
-    form_columns = ('series', 'number', 'title', 'description', 'pdf_url', 'date_entered')
+    form_excluded_columns = ('number',)
+    form_columns = ('series', 'title', 'description', 'session_date', 'pdf_url', 'date_entered')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[Length(max=2000)]),
     }
-    form_overrides = {'date_entered': DateTimePickerField}
+    form_overrides = {
+        'date_entered': DateTimePickerField,
+        'session_date': DatePickerField,
+    }
     form_widget_args = {
         'description': {'rows': 4, 'style': 'width: 100%'},
         'pdf_url': {'placeholder': 'Upload PDF below or paste URL'},
@@ -2960,7 +3024,7 @@ class TeachingSeriesSessionView(AuthenticatedModelView):
     }
 
     def on_model_change(self, form, model, is_created):
-        pass  # no special handling needed
+        pass  # no special handling needed, model event listener handles auto-numbering
 
 
 # Custom Admin Dashboard
@@ -3005,6 +3069,24 @@ class DashboardView(BaseView):
                          recent_sermons=recent_sermons,
                          today=today,
                          latest_luke=latest_luke)
+
+
+class ReorderSessionsView(BaseView):
+    """Drag-and-drop reorder sessions for a specific series."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/', methods=['GET'])
+    def index(self):
+        series_id = request.args.get('series_id', type=int)
+        if not series_id:
+            return redirect(url_for('teaching_series_overview.index'))
+        series = TeachingSeries.query.get_or_404(series_id)
+        sessions = TeachingSeriesSession.query.filter_by(series_id=series_id).order_by(TeachingSeriesSession.number.asc()).all()
+        return self.render('admin/reorder_sessions.html', series=series, sessions=sessions)
 
 
 class ReorderEventsView(BaseView):
@@ -3157,6 +3239,7 @@ with app.app_context():
     admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', category=None))
     admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='More features'))
     admin.add_view(BannerAlertView(name='Banner alert', endpoint='banner_alert', category='More features'))
+    admin.add_view(ReorderSessionsView(name='Reorder Sessions', endpoint='reorder_sessions', category='More features'))
     admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Series Sessions', category='More features'))
     admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
 

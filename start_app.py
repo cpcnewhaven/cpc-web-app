@@ -90,7 +90,7 @@ def start_app_with_port_management():
         
         # Import and run the app
         from app import app
-        app.run(debug=True, port=port, host='0.0.0.0')
+        app.run(debug=True, port=port, host='0.0.0.0', use_reloader=False)
         
     except RuntimeError as e:
         print(f"\n❌ Error: {e}")
