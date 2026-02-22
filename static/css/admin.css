@@ -1084,3 +1084,17 @@ body.admin-body {
     padding: 0 10px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Announcement Table Highlighting
+   --------------------------------------------------------------------------- */
+.admin-body .table tbody tr:has(.announcement-status-wrap .admin-status-banner) td {
+  background-color: rgba(250, 176, 5, 0.15) !important;
+  border-top: 1px solid rgba(250, 176, 5, 0.4);
+  border-bottom: 1px solid rgba(250, 176, 5, 0.4);
+}
+.admin-body .table tbody tr:has(.announcement-status-wrap .admin-status-published):not(:has(.announcement-status-wrap .admin-status-banner)) td {
+  background-color: rgba(46, 160, 67, 0.15) !important;
+  border-top: 1px solid rgba(46, 160, 67, 0.4);
+  border-bottom: 1px solid rgba(46, 160, 67, 0.4);
+}

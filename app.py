@@ -2114,7 +2114,7 @@ def _format_announcement_status(view, context, model, name):
         tags.insert(1, '<span class="admin-status-tag admin-status-featured">Featured</span>')
     if getattr(model, 'show_in_banner', False):
         tags.insert(1, '<span class="admin-status-tag admin-status-banner">Banner</span>')
-    return Markup('<span class="admin-status-wrap">' + ' '.join(tags) + '</span>')
+    return Markup('<span class="admin-status-wrap announcement-status-wrap">' + ' '.join(tags) + '</span>')
 
 
 class AnnouncementView(AuthenticatedModelView):
@@ -2123,6 +2123,9 @@ class AnnouncementView(AuthenticatedModelView):
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category', 'speaker')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'speaker')
     column_default_sort = ('date_entered', True)
+    page_size = 50
+    can_set_page_size = True
+    page_size_choices = (20, 50, 100, 500, 1000)
     form_excluded_columns = ['id']
 
     form_columns = ('title', 'description', 'type', 'category', 'tag', 'speaker', 'date_entered', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
@@ -2225,6 +2228,8 @@ class AnnouncementView(AuthenticatedModelView):
         base = model.date_entered or datetime.utcnow()
         model.expires_at = _compute_expires_at(preset, specific, base)
         if is_created:
+            if not model.date_entered:
+                model.date_entered = datetime.utcnow()
             model.id = next_global_id()
 
     @expose('set-status/', methods=['GET'])
@@ -3167,8 +3172,8 @@ with app.app_context():
     admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
     admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
     admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))
-    admin.add_view(TeachingSeriesOverviewView(name='Teaching Series', endpoint='teaching_series_overview', category=None))
-    admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', category=None))
+    admin.add_view(TeachingSeriesOverviewView(name='Teaching Series', endpoint='teaching_series_overview', category='More features'))
+    admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', category='More features'))
     admin.add_view(ReorderEventsView(name='Reorder events', endpoint='reorder_events', category='More features'))
     admin.add_view(BannerAlertView(name='Banner alert', endpoint='banner_alert', category='More features'))
     admin.add_view(ReorderSessionsView(name='Reorder Sessions', endpoint='reorder_sessions', category='More features'))
