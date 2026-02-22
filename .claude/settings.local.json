@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(git log:*)",
+      "Bash(FLASK_APP=app.py flask db:*)"
+    ]
+  }
+}

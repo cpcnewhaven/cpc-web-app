@@ -40,7 +40,7 @@ class AdvancedSearch:
             return self.sermons
         
         if fields is None:
-            fields = ['title', 'scripture', 'author', 'description', 'search_keywords']
+            fields = ['title', 'scripture', 'speaker', 'description', 'search_keywords']
         
         query_lower = query.lower()
         results = []
@@ -82,11 +82,11 @@ class AdvancedSearch:
         
         return results
     
-    def search_by_author(self, author: str) -> List[Dict]:
-        """Search sermons by author."""
-        author_lower = author.lower()
+    def search_by_speaker(self, speaker: str) -> List[Dict]:
+        """Search sermons by speaker."""
+        speaker_lower = speaker.lower()
         return [sermon for sermon in self.sermons 
-                if author_lower in sermon.get('author', '').lower()]
+                if speaker_lower in sermon.get('speaker', '').lower()]
     
     def search_by_series(self, series: str) -> List[Dict]:
         """Search sermons by series."""
@@ -168,7 +168,7 @@ class AdvancedSearch:
     def advanced_search(self, 
                        query: str = None,
                        scripture: Dict = None,
-                       author: str = None,
+                       speaker: str = None,
                        series: str = None,
                        date_range: Dict = None,
                        tags: List[str] = None,
@@ -193,9 +193,9 @@ class AdvancedSearch:
             scripture_results = self.search_by_scripture(book, chapter, verse)
             results = [s for s in results if s in scripture_results]
         
-        if author:
-            author_results = self.search_by_author(author)
-            results = [s for s in results if s in author_results]
+        if speaker:
+            speaker_results = self.search_by_speaker(speaker)
+            results = [s for s in results if s in speaker_results]
         
         if series:
             series_results = self.search_by_series(series)
@@ -238,8 +238,8 @@ class AdvancedSearch:
             return sorted(results, key=lambda x: x.get('date', ''), reverse=reverse)
         elif sort_by == 'title':
             return sorted(results, key=lambda x: x.get('title', '').lower(), reverse=reverse)
-        elif sort_by == 'author':
-            return sorted(results, key=lambda x: x.get('author', '').lower(), reverse=reverse)
+        elif sort_by == 'speaker':
+            return sorted(results, key=lambda x: x.get('speaker', '').lower(), reverse=reverse)
         elif sort_by == 'duration':
             return sorted(results, key=lambda x: x.get('duration_minutes', 0), reverse=reverse)
         else:
@@ -257,10 +257,10 @@ class AdvancedSearch:
                 if word.startswith(partial_lower) and len(word) > 3:
                     suggestions.add(word)
             
-            # Add author names
-            author = sermon.get('author', '').lower()
-            if author.startswith(partial_lower):
-                suggestions.add(author)
+            # Add speaker names
+            speaker = sermon.get('speaker', '').lower()
+            if speaker.startswith(partial_lower):
+                suggestions.add(speaker)
             
             # Add series names
             series = sermon.get('series', '').lower()
@@ -300,7 +300,7 @@ class AdvancedSearch:
     def get_search_filters(self) -> Dict:
         """Get available search filters and their options."""
         filters = {
-            'authors': list(set(sermon.get('author', '') for sermon in self.sermons if sermon.get('author'))),
+            'speakers': list(set(sermon.get('speaker', '') for sermon in self.sermons if sermon.get('speaker'))),
             'series': list(set(sermon.get('series', '') for sermon in self.sermons if sermon.get('series'))),
             'sermon_types': list(set(sermon.get('sermon_type', '') for sermon in self.sermons if sermon.get('sermon_type'))),
             'tags': []
@@ -337,7 +337,7 @@ def main():
     print("\nTesting advanced search...")
     results = search.advanced_search(
         query="church",
-        author="Rev. Craig Luekens",
+        speaker="Rev. Craig Luekens",
         sermon_type="sermon",
         limit=5
     )

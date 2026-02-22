@@ -1,184 +1,132 @@
-#!/usr/bin/env python3
+#!/_usr_bin_env python3
 """
-Optimized Sermon Data Helper
-Eliminates duplication by generating flat array on-demand from sermons_by_year.
-Includes caching for performance.
+Sermon Data Helper - Database Powered
+Sourced from the Render PostgreSQL database instead of JSON files.
+Author: Antigravity
 """
 
-import json
-import os
-from functools import lru_cache
+import logging
 from typing import Dict, List, Optional
 from datetime import datetime
+from database import db
+from models import Sermon, SermonSeries
+
+logger = logging.getLogger(__name__)
 
 class SermonDataHelper:
-    """Helper class for optimized sermon data access"""
+    """Helper class for database-driven sermon data access"""
     
-    def __init__(self, sermons_file: str = 'data/sermons.json'):
-        self.sermons_file = sermons_file
-        self._data_cache = None
-        self._flat_cache = None
-        self._cache_timestamp = None
+    def __init__(self, sermons_file: str = None):
+        # We ignore sermons_file now as we use the database
+        pass
     
-    def _load_data(self) -> Dict:
-        """Load sermons data with caching"""
-        # Check if file was modified
-        current_mtime = os.path.getmtime(self.sermons_file) if os.path.exists(self.sermons_file) else 0
-        
-        if (self._data_cache is None or 
-            self._cache_timestamp is None or 
-            current_mtime > self._cache_timestamp):
-            try:
-                with open(self.sermons_file, 'r', encoding='utf-8') as f:
-                    self._data_cache = json.load(f)
-                    self._cache_timestamp = current_mtime
-                    # Clear flat cache when data changes
-                    self._flat_cache = None
-            except FileNotFoundError:
-                return {}
-            except json.JSONDecodeError as e:
-                print(f"Error parsing sermons.json: {e}")
-                return {}
-        
-        return self._data_cache
+    def _sermon_to_dict(self, sermon: Sermon) -> Dict:
+        """Convert a Sermon model instance to a dictionary for API compatibility."""
+        series_name = sermon.series.title if sermon.series else "The Sunday Sermon"
+        return {
+            'id': sermon.id,
+            'title': sermon.title,
+            'speaker': sermon.speaker or '',
+            'author': sermon.speaker or '', # Keep for backward compatibility
+            'scripture': sermon.scripture or '',
+            'date': sermon.date.isoformat() if sermon.date else '',
+            'active': sermon.active,
+            'archived': sermon.archived,
+            'spotify_url': sermon.spotify_url,
+            'youtube_url': sermon.youtube_url,
+            'apple_podcasts_url': sermon.apple_podcasts_url,
+            'podcast_thumbnail_url': sermon.podcast_thumbnail_url,
+            'series': series_name,
+            'episode_number': sermon.episode_number,
+            'audio_file_url': sermon.audio_file_url,
+            'video_file_url': sermon.video_file_url,
+            'link': sermon.spotify_url or sermon.youtube_url or sermon.apple_podcasts_url,
+            'tags': [], # Tags are not yet fully implemented in the model as a separate table
+            'sermon_type': 'sermon'
+        }
     
     def get_all_sermons(self) -> List[Dict]:
-        """
-        Get all sermons as a flat array.
-        Generates from sermons_by_year if flat array doesn't exist.
-        Cached for performance.
-        """
-        if self._flat_cache is not None:
-            return self._flat_cache
-        
-        data = self._load_data()
-        
-        # Try to get from flat array first (backward compatibility)
-        if 'sermons' in data and data['sermons']:
-            self._flat_cache = data['sermons']
-            return self._flat_cache
-        
-        # Generate from sermons_by_year
-        sermons_by_year = data.get('sermons_by_year', {})
-        flat_sermons = []
-        
-        # Get all years sorted
-        years = sorted([y for y in sermons_by_year.keys() if y != '_no_date'])
-        
-        # Add sermons year by year (oldest to newest)
-        for year in years:
-            flat_sermons.extend(sermons_by_year[year])
-        
-        # Add sermons without dates at the end
-        if '_no_date' in sermons_by_year:
-            flat_sermons.extend(sermons_by_year['_no_date'])
-        
-        self._flat_cache = flat_sermons
-        return flat_sermons
+        """Get all active sermons from the database."""
+        try:
+            sermons = Sermon.query.filter_by(active=True, archived=False).order_by(Sermon.date.desc()).all()
+            return [self._sermon_to_dict(s) for s in sermons]
+        except Exception as e:
+            logger.error(f"Error fetching sermons from database: {e}")
+            return []
     
     def get_sermons_by_year(self, year: Optional[str] = None) -> Dict[str, List[Dict]]:
         """Get sermons organized by year"""
-        data = self._load_data()
-        sermons_by_year = data.get('sermons_by_year', {})
+        all_sermons = self.get_all_sermons()
+        sermons_by_year = {}
         
+        for sermon in all_sermons:
+            s_year = sermon['date'][:4] if sermon['date'] else '_no_date'
+            if s_year not in sermons_by_year:
+                sermons_by_year[s_year] = []
+            sermons_by_year[s_year].append(sermon)
+            
         if year:
             return {year: sermons_by_year.get(year, [])}
         return sermons_by_year
     
     def get_year_counts(self) -> Dict:
         """Get year counts metadata"""
-        data = self._load_data()
-        return data.get('_year_counts', {})
+        sermons_by_year = self.get_sermons_by_year()
+        return {year: len(sermons) for year, sermons in sermons_by_year.items()}
     
     def get_metadata(self) -> Dict:
         """Get metadata (title, description, etc.)"""
-        data = self._load_data()
+        all_sermons = self.get_all_sermons()
         return {
-            'title': data.get('title', 'Sunday Sermons'),
-            'description': data.get('description', 'Weekly sermons from our Sunday worship services'),
-            'total_sermons': data.get('_total_sermons', len(self.get_all_sermons())),
-            'year_counts': data.get('_year_counts', {})
+            'title': 'Sunday Sermons',
+            'description': 'Weekly sermons from our Sunday worship services',
+            'total_sermons': len(all_sermons),
+            'year_counts': self.get_year_counts()
         }
     
     def search_sermons(self, query: str = None, year: str = None, 
-                      author: str = None, series: str = None) -> List[Dict]:
-        """Search sermons with optional filters"""
-        sermons = self.get_all_sermons()
+                      speaker: str = None, series: str = None) -> List[Dict]:
+        """Search sermons with optional filters using database queries."""
+        q = Sermon.query.filter_by(active=True, archived=False)
         
-        if not any([query, year, author, series]):
-            return sermons
-        
-        results = []
-        query_lower = query.lower() if query else None
-        
-        for sermon in sermons:
-            # Year filter
-            if year and not sermon.get('date', '').startswith(str(year)):
-                continue
+        if year:
+            # Simple year filter
+            q = q.filter(db.extract('year', Sermon.date) == int(year))
             
-            # Author filter
-            if author and author.lower() not in sermon.get('author', '').lower():
-                continue
+        if speaker:
+            q = q.filter(Sermon.speaker.ilike(f'%{speaker}%'))
             
-            # Series filter
-            if series and series.lower() not in sermon.get('series', '').lower():
-                continue
+        if series:
+            q = q.join(Sermon.series).filter(SermonSeries.title.ilike(f'%{series}%'))
             
-            # Query search
-            if query_lower:
-                searchable_fields = [
-                    sermon.get('title', ''),
-                    sermon.get('author', ''),
-                    sermon.get('scripture', ''),
-                    sermon.get('series', ''),
-                    sermon.get('search_keywords', '')
-                ]
-                if not any(query_lower in str(field).lower() for field in searchable_fields):
-                    continue
+        if query:
+            q = q.filter(db.or_(
+                Sermon.title.ilike(f'%{query}%'),
+                Sermon.scripture.ilike(f'%{query}%'),
+                Sermon.speaker.ilike(f'%{query}%')
+            ))
             
-            results.append(sermon)
-        
-        return results
+        results = q.order_by(Sermon.date.desc()).all()
+        return [self._sermon_to_dict(s) for s in results]
     
     def get_archive_sermons(self, cutoff_days: int = 90) -> List[Dict]:
-        """Get sermons older than cutoff_days or marked as archive"""
-        from datetime import timedelta
-        cutoff_date = datetime.now() - timedelta(days=cutoff_days)
-        
-        sermons = self.get_all_sermons()
-        archive_sermons = []
-        
-        for sermon in sermons:
-            sermon_date = sermon.get('date')
-            if sermon_date:
-                try:
-                    serm_dt = datetime.strptime(sermon_date, '%Y-%m-%d')
-                    is_archive = sermon.get('source') == 'archive'
-                    if serm_dt < cutoff_date or is_archive:
-                        archive_sermons.append(sermon)
-                except ValueError:
-                    pass
-        
-        return archive_sermons
+        """Get archived sermons."""
+        try:
+            sermons = Sermon.query.filter_by(archived=True).order_by(Sermon.date.desc()).all()
+            return [self._sermon_to_dict(s) for s in sermons]
+        except Exception as e:
+            logger.error(f"Error fetching archived sermons: {e}")
+            return []
     
     def get_latest_luke_chapter(self) -> Optional[Dict]:
-        """
-        Find the latest Luke chapter from all sermons.
-        Returns dict with chapter number, reference, date, and sermon title.
-        """
+        """Find the latest Luke chapter from all sermons."""
         import re
-        sermons = self.get_all_sermons()
+        all_sermons = self.get_all_sermons()
         luke_sermons = []
-        
-        # Pattern to match Luke references: "luke 24:36-53", "Luke 23.26-43", etc.
         luke_pattern = re.compile(r'luke\s+(\d+)[:\.]', re.IGNORECASE)
         
-        for sermon in sermons:
+        for sermon in all_sermons:
             scripture = sermon.get('scripture', '').strip()
-            title = sermon.get('title', '')
-            date = sermon.get('date', '')
-            
-            # Check scripture field first
             if scripture:
                 match = luke_pattern.search(scripture)
                 if match:
@@ -186,41 +134,16 @@ class SermonDataHelper:
                     luke_sermons.append({
                         'chapter': chapter,
                         'reference': scripture,
-                        'date': date,
-                        'title': sermon.get('title', ''),
-                        'sermon': sermon
-                    })
-                    continue
-            
-            # Also check title if scripture field is empty
-            if not scripture and title:
-                match = luke_pattern.search(title)
-                if match:
-                    chapter = int(match.group(1))
-                    # Try to extract full reference from title
-                    ref_match = re.search(r'luke\s+(\d+)[:\.]?\d*[-\.]?\d*', title, re.IGNORECASE)
-                    reference = ref_match.group(0) if ref_match else f"Luke {chapter}"
-                    luke_sermons.append({
-                        'chapter': chapter,
-                        'reference': reference,
-                        'date': date,
-                        'title': title,
+                        'date': sermon['date'],
+                        'title': sermon['title'],
                         'sermon': sermon
                     })
         
         if not luke_sermons:
             return None
-        
-        # Sort by date (most recent first), then by chapter number
-        luke_sermons.sort(key=lambda x: (
-            x['date'] if x['date'] else '0000-00-00',
-            -x['chapter']  # Negative for descending
-        ), reverse=True)
-        
-        # Get the most recent sermon
+            
+        luke_sermons.sort(key=lambda x: (x['date'], -x['chapter']), reverse=True)
         latest = luke_sermons[0]
-        
-        # Find the highest chapter number overall (in case we want the latest chapter regardless of date)
         max_chapter_sermon = max(luke_sermons, key=lambda x: x['chapter'])
         
         return {
@@ -239,13 +162,11 @@ class SermonDataHelper:
             'total_luke_sermons': len(luke_sermons)
         }
 
-# Global instance for easy access
+# Global instance
 _sermon_helper = None
 
 def get_sermon_helper() -> SermonDataHelper:
-    """Get or create global sermon helper instance"""
     global _sermon_helper
     if _sermon_helper is None:
         _sermon_helper = SermonDataHelper()
     return _sermon_helper
-

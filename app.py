@@ -168,7 +168,7 @@ def ensure_db_columns():
             ('featured_image', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('image_display_type', 'VARCHAR(50)', 'VARCHAR(50)'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
-            ('author', 'VARCHAR(200)', 'VARCHAR(200)'),
+            ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
             ('expires_at', 'DATE', 'DATE'),
         ],
         'ongoing_events': [
@@ -190,6 +190,7 @@ def ensure_db_columns():
             ('audio_file_url', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('video_file_url', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('beyond_episode_id', 'INTEGER', 'INTEGER'),
+            ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
         ],
         'podcast_episodes': [
             ('expires_at', 'DATE', 'DATE'),
@@ -199,9 +200,20 @@ def ensure_db_columns():
         ],
         'gallery_images': [
             ('expires_at', 'DATE', 'DATE'),
+            ('description', 'TEXT', 'TEXT'),
+            ('location', 'VARCHAR(200)', 'VARCHAR(200)'),
+            ('photographer', 'VARCHAR(100)', 'VARCHAR(100)'),
         ],
         'users': [
             ('last_login_at', 'DATETIME', 'TIMESTAMP'),
+        ],
+        'papers': [
+            ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
+        ],
+        'sermon_series': [
+            ('slug', 'VARCHAR(100)', 'VARCHAR(100)'),
+            ('external_url', 'VARCHAR(500)', 'VARCHAR(500)'),
+            ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
         ],
     }
 
@@ -510,22 +522,21 @@ def api_pastor_teaching_series_detail(series_id):
 
 @app.route('/api/teaching-series')
 def api_teaching_series():
-    """API endpoint for teaching series - sermon series and Sunday school series with enhanced metadata"""
+    """API endpoint for teaching series - sermon series and Sunday school series with enhanced metadata.
+    Purely database driven - all data comes from Render PostgreSQL.
+    """
     try:
         from sermon_data_helper import get_sermon_helper
         helper = get_sermon_helper()
-        sermons = helper.get_all_sermons()
-    except ImportError:
-        # Fallback to old method
-        import json
-        with open('data/sermons.json', 'r') as f:
-            sermons_data = json.load(f)
-        sermons = sermons_data.get('sermons', [])
+        sermons = helper.get_all_sermons() # Now comes from DB
+    except Exception as e:
+        log.error(f"Error getting sermons for teaching series: {e}")
+        sermons = []
     
     # Extract unique sermon series (excluding "The Sunday Sermon" as it's the default)
-    sermon_series = {}
-    sunday_school_series = {}
-    all_authors = set()
+    sermon_series_buckets = {}
+    sunday_school_series_buckets = {}
+    all_speakers = set()
     all_scriptures = set()
     all_tags = set()
     date_range = {'min': None, 'max': None}
@@ -533,27 +544,23 @@ def api_teaching_series():
     for sermon in sermons:
         series_name = sermon.get('series', '')
         title = sermon.get('title', '')
-        author = sermon.get('author', '')
+        speaker = sermon.get('speaker', '') or sermon.get('author', '')
         scripture = sermon.get('scripture', '')
-        date = sermon.get('date', '')
+        date_str = sermon.get('date', '')
         tags = sermon.get('tags', [])
         
         # Collect metadata
-        if author:
-            all_authors.add(author)
+        if speaker:
+            all_speakers.add(speaker)
         if scripture:
             all_scriptures.add(scripture)
         if tags:
-            if isinstance(tags, list):
-                all_tags.update(tags)
-            else:
-                all_tags.add(str(tags))
+            all_tags.update(tags if isinstance(tags, list) else [str(tags)])
         
         # Track date range
-        if date:
+        if date_str:
             try:
-                from datetime import datetime
-                date_obj = datetime.strptime(date, '%Y-%m-%d')
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
                 if date_range['min'] is None or date_obj < date_range['min']:
                     date_range['min'] = date_obj
                 if date_range['max'] is None or date_obj > date_range['max']:
@@ -564,142 +571,97 @@ def api_teaching_series():
         sermon_data = {
             'id': sermon.get('id'),
             'title': sermon.get('title'),
-            'author': author,
-            'date': date,
+            'speaker': speaker,
+            'date': date_str,
             'scripture': scripture,
-            'link': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url'),
+            'link': sermon.get('link'),
             'spotify_url': sermon.get('spotify_url'),
             'youtube_url': sermon.get('youtube_url'),
             'apple_podcasts_url': sermon.get('apple_podcasts_url'),
             'tags': tags if isinstance(tags, list) else [tags] if tags else [],
-            'sermon_type': sermon.get('sermon_type', 'sermon'),
-            'search_keywords': sermon.get('search_keywords', '')
+            'sermon_type': sermon.get('sermon_type', 'sermon')
         }
         
-        # Check if it's a Sunday School series
-        if 'Sunday School' in series_name or 'Sunday School' in title or 'The Sunday School' in title:
-            if series_name and series_name not in sunday_school_series:
-                sunday_school_series[series_name] = {
+        # Determine which bucket it goes into
+        is_sunday_school = 'Sunday School' in series_name or 'Sunday School' in title or 'The Sunday School' in title
+        target_buckets = sunday_school_series_buckets if is_sunday_school else sermon_series_buckets
+        
+        if series_name and series_name != 'The Sunday Sermon':
+            if series_name not in target_buckets:
+                target_buckets[series_name] = {
                     'name': series_name,
                     'count': 0,
                     'sermons': [],
-                    'authors': set(),
+                    'speakers': set(),
                     'date_range': {'min': None, 'max': None},
                     'scriptures': set()
                 }
-            if series_name in sunday_school_series:
-                sunday_school_series[series_name]['count'] += 1
-                sunday_school_series[series_name]['sermons'].append(sermon_data)
-                if author:
-                    sunday_school_series[series_name]['authors'].add(author)
-                if scripture:
-                    sunday_school_series[series_name]['scriptures'].add(scripture)
-                if date:
-                    try:
-                        from datetime import datetime
-                        date_obj = datetime.strptime(date, '%Y-%m-%d')
-                        s_range = sunday_school_series[series_name]['date_range']
-                        if s_range['min'] is None or date_obj < s_range['min']:
-                            s_range['min'] = date_obj
-                        if s_range['max'] is None or date_obj > s_range['max']:
-                            s_range['max'] = date_obj
-                    except:
-                        pass
-        # Regular sermon series (exclude default "The Sunday Sermon")
-        elif series_name and series_name != 'The Sunday Sermon' and series_name not in ['', None]:
-            if series_name not in sermon_series:
-                sermon_series[series_name] = {
-                    'name': series_name,
-                    'count': 0,
-                    'sermons': [],
-                    'authors': set(),
-                    'date_range': {'min': None, 'max': None},
-                    'scriptures': set()
-                }
-            sermon_series[series_name]['count'] += 1
-            sermon_series[series_name]['sermons'].append(sermon_data)
-            if author:
-                sermon_series[series_name]['authors'].add(author)
+            
+            bucket = target_buckets[series_name]
+            bucket['count'] += 1
+            bucket['sermons'].append(sermon_data)
+            if speaker:
+                bucket['speakers'].add(speaker)
             if scripture:
-                sermon_series[series_name]['scriptures'].add(scripture)
-            if date:
+                bucket['scriptures'].add(scripture)
+            if date_str:
                 try:
-                    from datetime import datetime
-                    date_obj = datetime.strptime(date, '%Y-%m-%d')
-                    s_range = sermon_series[series_name]['date_range']
-                    if s_range['min'] is None or date_obj < s_range['min']:
-                        s_range['min'] = date_obj
-                    if s_range['max'] is None or date_obj > s_range['max']:
-                        s_range['max'] = date_obj
+                    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                    if bucket['date_range']['min'] is None or date_obj < bucket['date_range']['min']:
+                        bucket['date_range']['min'] = date_obj
+                    if bucket['date_range']['max'] is None or date_obj > bucket['date_range']['max']:
+                        bucket['date_range']['max'] = date_obj
                 except:
                     pass
-    
-    # Convert sets to lists and format date ranges
-    def format_series(series_dict):
-        result = []
-        for name, data in series_dict.items():
+
+    # Convert buckets to lists and enhance with SermonSeries metadata from DB
+    def finalize_series(buckets):
+        final_list = []
+        # Get metadata for all series from the database
+        db_series = {s.title: s for s in SermonSeries.query.all()}
+        
+        for name, data in buckets.items():
+            ds = db_series.get(name)
             series_item = {
                 'name': name,
                 'count': data['count'],
-                'sermons': data['sermons'],
-                'authors': sorted(list(data['authors'])),
-                'scriptures': sorted(list(data['scriptures']))[:10],  # Limit to 10 for display
+                'sermons': sorted(data['sermons'], key=lambda x: x.get('date', ''), reverse=True),
+                'speakers': sorted(list(data['speakers'])),
+                'scriptures': sorted(list(data['scriptures']))[:10],
                 'date_range': {
                     'min': data['date_range']['min'].strftime('%Y-%m-%d') if data['date_range']['min'] else None,
                     'max': data['date_range']['max'].strftime('%Y-%m-%d') if data['date_range']['max'] else None
-                }
+                },
+                'description': ds.description if ds else '',
+                'slug': ds.slug if ds and ds.slug else '',
+                'external_url': ds.external_url if ds and ds.external_url else '',
+                'sort_order': ds.sort_order if ds else 999,
+                'image_url': ds.image_url if ds else None
             }
-            result.append(series_item)
-        return result
+            final_list.append(series_item)
+            
+        # Add series from DB that don't have sermons yet (e.g. curated links)
+        for title, ds in db_series.items():
+            if title not in buckets and ds.active:
+                 final_list.append({
+                    'name': title,
+                    'count': 0,
+                    'sermons': [],
+                    'speakers': [],
+                    'scriptures': [],
+                    'date_range': {'min': None, 'max': None},
+                    'description': ds.description or '',
+                    'slug': ds.slug or '',
+                    'external_url': ds.external_url or '',
+                    'sort_order': ds.sort_order or 999,
+                    'image_url': ds.image_url
+                })
+        
+        return sorted(final_list, key=lambda x: (x['sort_order'], x['name']))
+
+    sermon_series_list = finalize_series(sermon_series_buckets)
+    sunday_school_series_list = finalize_series(sunday_school_series_buckets)
     
-    sermon_series_list = format_series(sermon_series)
-    sunday_school_series_list = format_series(sunday_school_series)
-    
-    # Sort sermons within each series by date (newest first)
-    for series in sermon_series_list:
-        series['sermons'].sort(key=lambda x: x.get('date', ''), reverse=True)
-    for series in sunday_school_series_list:
-        series['sermons'].sort(key=lambda x: x.get('date', ''), reverse=True)
-    
-    # Merge curated teaching series (e.g. "What We Believe") from config for long-term data use
-    _curated_path = os.path.join(os.path.dirname(__file__), 'data', 'teaching_series_config.json')
-    if os.path.exists(_curated_path):
-        try:
-            with open(_curated_path, 'r', encoding='utf-8') as f:
-                curated_config = json.load(f)
-            for curated in curated_config.get('curated_series', []):
-                name = curated.get('name')
-                if not name:
-                    continue
-                existing = next((s for s in sermon_series_list if s['name'] == name), None)
-                if existing:
-                    if curated.get('description') is not None:
-                        existing['description'] = curated['description']
-                    if curated.get('external_url') is not None:
-                        existing['external_url'] = curated['external_url']
-                    if curated.get('slug') is not None:
-                        existing['slug'] = curated['slug']
-                else:
-                    sermon_series_list.append({
-                        'name': name,
-                        'count': 0,
-                        'sermons': [],
-                        'authors': [],
-                        'scriptures': [],
-                        'date_range': {'min': None, 'max': None},
-                        'description': curated.get('description', ''),
-                        'external_url': curated.get('external_url', ''),
-                        'slug': curated.get('slug', ''),
-                    })
-            # Sort so curated series (with sort_order) appear first; preserve order otherwise
-            def _series_sort_key(s):
-                idx = next((i for i, c in enumerate(curated_config.get('curated_series', [])) if c.get('name') == s['name']), None)
-                return (0, idx) if idx is not None else (1, 0)
-            sermon_series_list.sort(key=_series_sort_key)
-        except (json.JSONDecodeError, IOError):
-            pass
-    
-    # Convert date range for response
     date_range_response = {
         'min': date_range['min'].strftime('%Y-%m-%d') if date_range['min'] else None,
         'max': date_range['max'].strftime('%Y-%m-%d') if date_range['max'] else None
@@ -712,7 +674,7 @@ def api_teaching_series():
             'total_series': len(sermon_series_list) + len(sunday_school_series_list),
             'total_sermon_series': len(sermon_series_list),
             'total_sunday_school_series': len(sunday_school_series_list),
-            'all_authors': sorted(list(all_authors)),
+            'all_speakers': sorted(list(all_speakers)),
             'all_scriptures': sorted(list(all_scriptures))[:50],  # Top 50 for filter
             'all_tags': sorted(list(all_tags)),
             'date_range': date_range_response
@@ -834,7 +796,7 @@ def api_papers_latest():
         return jsonify({
             'id': bulletin.id,
             'title': bulletin.title,
-            'author': bulletin.author,
+            'speaker': bulletin.speaker,
             'file_url': bulletin.file_url,
             'date_published': bulletin.date_published.isoformat() if bulletin.date_published else None,
             'date_entered': bulletin.date_entered.strftime('%Y-%m-%d') if bulletin.date_entered else None,
@@ -845,7 +807,7 @@ def api_papers_latest():
         return jsonify({
             'id': latest.id,
             'title': latest.title,
-            'author': latest.author,
+            'speaker': latest.speaker,
             'file_url': latest.file_url,
             'date_published': latest.date_published.isoformat() if latest.date_published else None,
             'date_entered': latest.date_entered.strftime('%Y-%m-%d') if latest.date_entered else None,
@@ -855,9 +817,8 @@ def api_papers_latest():
 @app.route('/api/sermons')
 @cache.cached(timeout=120)
 def api_sermons():
-    """Sunday Sermons API: DB sermons (published) first, then JSON fallback."""
+    """Sunday Sermons API: Sourced from database only."""
     episodes = []
-    # 1. Published sermons from admin (Sunday Sermons)
     try:
         db_sermons = Sermon.query.filter(
             Sermon.active == True,
@@ -867,7 +828,7 @@ def api_sermons():
             sermon_data = {
                 'id': s.id,
                 'title': s.title or '',
-                'author': s.author or '',
+                'speaker': s.speaker or '',
                 'scripture': s.scripture or '',
                 'date': s.date.strftime('%Y-%m-%d') if s.date else '',
                 'spotify_url': s.spotify_url or '',
@@ -875,7 +836,6 @@ def api_sermons():
                 'apple_podcasts_url': s.apple_podcasts_url or '',
                 'link': s.spotify_url or s.youtube_url or s.apple_podcasts_url or '',
                 'podcast-thumbnail_url': s.podcast_thumbnail_url or '',
-                # New fields
                 'episode': s.episode_number,
                 'audio_file': s.audio_file_url,
                 'video_file': s.video_file_url,
@@ -887,121 +847,88 @@ def api_sermons():
                     'image_url': s.series.image_url
                 }
             if s.beyond_episode:
-                # Provide a direct link to the beyond episode if available
                 sermon_data['beyond_link'] = s.beyond_episode.link or s.beyond_episode.listen_url
             
             episodes.append(sermon_data)
     except Exception as e:
         print(f"Error loading DB sermons: {e}")
-    # 2. If no DB sermons, use JSON (sermon_data_helper)
-    if not episodes:
-        try:
-            from sermon_data_helper import get_sermon_helper
-            helper = get_sermon_helper()
-            metadata = helper.get_metadata()
-            sermons = helper.get_all_sermons()
-            for sermon in sermons:
-                episodes.append({
-                    'id': sermon.get('id', ''),
-                    'title': sermon.get('title', ''),
-                    'author': sermon.get('author', ''),
-                    'scripture': sermon.get('scripture', ''),
-                    'date': sermon.get('date', ''),
-                    'spotify_url': sermon.get('spotify_url', ''),
-                    'youtube_url': sermon.get('youtube_url', ''),
-                    'apple_podcasts_url': sermon.get('apple_podcasts_url', ''),
-                    'link': sermon.get('link', ''),
-                    'podcast-thumbnail_url': sermon.get('podcast_thumbnail_url', '')
-                })
-            return jsonify({
-                'title': metadata.get('title', 'Sunday Sermons'),
-                'description': metadata.get('description', 'Weekly sermons from our Sunday worship services'),
-                'episodes': episodes
-            })
-        except Exception as e:
-            print(f"Error loading sermons: {e}")
+        
     return jsonify({
         'title': 'Sunday Sermons',
         'description': 'Weekly sermons from our Sunday worship services',
-        'episodes': episodes
+        'episodes': episodes,
+        'total': len(episodes),
+        'source': 'database'
     })
+
+def _get_podcast_episodes(series_title):
+    """Helper to fetch podcast episodes from DB by series title."""
+    series = PodcastSeries.query.filter(PodcastSeries.title.ilike(f'%{series_title}%')).first()
+    if not series:
+        return []
+    
+    episodes = PodcastEpisode.query.filter_by(series_id=series.id)\
+        .order_by(PodcastEpisode.date_added.desc()).all()
+    
+    return [
+        {
+            'number': ep.number,
+            'title': ep.title,
+            'link': ep.link,
+            'listen_url': ep.listen_url,
+            'guest': ep.guest,
+            'date_added': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
+            'season': ep.season,
+            'scripture': ep.scripture,
+            'podcast_thumbnail_url': ep.podcast_thumbnail_url
+        } for ep in episodes
+    ]
 
 @app.route('/api/podcasts/beyond-podcast')
 def api_beyond_podcast():
-    """API endpoint for Beyond the Sunday Sermon podcast"""
-    # Redirect to JSON API
-    from flask import redirect
-    return redirect('/api/json/podcasts/beyond-podcast')
+    """API endpoint for Beyond the Sunday Sermon podcast sourced from database."""
+    episodes = _get_podcast_episodes('Beyond the Sunday Sermon')
+    return jsonify({
+        'title': 'Beyond the Sunday Sermon',
+        'description': 'Extended conversations and deeper dives into biblical topics.',
+        'episodes': episodes
+    })
 
 @app.route('/api/podcasts/biblical-interpretation')
 def api_biblical_interpretation():
-    """API endpoint for Biblical Interpretation series"""
-    # Redirect to JSON API
-    from flask import redirect
-    return redirect('/api/json/podcasts/biblical-interpretation')
+    """API endpoint for Biblical Interpretation series sourced from database."""
+    episodes = _get_podcast_episodes('Biblical Interpretation')
+    return jsonify({
+        'title': 'Biblical Interpretation',
+        'description': 'Teaching series on how to read and understand Scripture.',
+        'episodes': episodes
+    })
 
 @app.route('/api/podcasts/confessional-theology')
 def api_confessional_theology():
-    """API endpoint for Confessional Theology series"""
-    # Redirect to JSON API
-    from flask import redirect
-    return redirect('/api/json/podcasts/confessional-theology')
+    """API endpoint for Confessional Theology series sourced from database."""
+    episodes = _get_podcast_episodes('Confessional Theology')
+    return jsonify({
+        'title': 'Confessional Theology',
+        'description': 'Exploring Reformed theology and doctrine.',
+        'episodes': episodes
+    })
 
 @app.route('/api/podcasts/membership-seminar')
 def api_membership_seminar():
-    """API endpoint for Membership Seminar series"""
-    # Redirect to JSON API
-    from flask import redirect
-    return redirect('/api/json/podcasts/membership-seminar')
+    """API endpoint for Membership Seminar series sourced from database."""
+    episodes = _get_podcast_episodes('Membership Seminar')
+    return jsonify({
+        'title': 'Membership Seminar',
+        'description': 'Understanding church membership and the Christian life.',
+        'episodes': episodes
+    })
 
 @app.route('/api/gallery')
+@cache.cached(timeout=300)
 def api_gallery():
-    """API endpoint for image gallery with enhanced metadata"""
-    # Try to load from JSON first (for existing data)
+    """API endpoint for image gallery sourced from database"""
     try:
-        import json
-        with open('data/gallery.json', 'r') as f:
-            json_data = json.load(f)
-        
-        # Enhance JSON data with better metadata
-        enhanced_images = []
-        for img in json_data:
-            # Parse date from created field or use current date
-            created_date = None
-            if img.get('created') and img['created'] != 'Unknown':
-                try:
-                    created_date = datetime.strptime(img['created'], '%Y-%m-%d')
-                except:
-                    created_date = datetime.now()
-            else:
-                created_date = datetime.now()
-            
-            enhanced_img = {
-                'id': img.get('id', ''),
-                'name': img.get('name', 'Untitled'),
-                'url': img.get('url', ''),
-                'size': img.get('size', 'Unknown'),
-                'type': img.get('type', 'image/jpeg'),
-                'created': created_date.strftime('%Y-%m-%d'),
-                'created_timestamp': created_date.isoformat(),
-                'tags': img.get('tags', []),
-                'event': img.get('event', False),
-                'description': img.get('description', ''),
-                'location': img.get('location', ''),
-                'photographer': img.get('photographer', ''),
-                'category': img.get('category', 'general')
-            }
-            enhanced_images.append(enhanced_img)
-        
-        return jsonify({
-            'images': enhanced_images,
-            'total': len(enhanced_images),
-            'source': 'json'
-        })
-        
-    except Exception as e:
-        print(f"Error loading gallery from JSON: {e}")
-        # Fallback to database
         images = GalleryImage.query.filter(_not_expired(GalleryImage))\
             .order_by(GalleryImage.created.desc()).all()
         
@@ -1009,23 +936,25 @@ def api_gallery():
             'images': [
                 {
                     'id': img.id,
-                    'name': img.name,
+                    'name': img.name or 'Untitled',
                     'url': img.url,
-                    'size': img.size,
-                    'type': img.type,
+                    'size': img.size or 'Unknown',
+                    'type': img.type or 'image/jpeg',
                     'created': img.created.strftime('%Y-%m-%d') if img.created else None,
                     'created_timestamp': img.created.isoformat() if img.created else None,
-                    'tags': img.tags,
+                    'tags': img.tags if isinstance(img.tags, list) else [],
                     'event': img.event,
-                    'description': getattr(img, 'description', ''),
-                    'location': getattr(img, 'location', ''),
-                    'photographer': getattr(img, 'photographer', ''),
-                    'category': getattr(img, 'category', 'general')
+                    'description': img.description or '',
+                    'location': img.location or '',
+                    'photographer': img.photographer or ''
                 } for img in images
             ],
             'total': len(images),
             'source': 'database'
         })
+    except Exception as e:
+        print(f"Error loading gallery: {e}")
+        return jsonify({'images': [], 'total': 0, 'error': str(e)})
 
 def _fetch_podcast(feed_url: str) -> dict:
     r = requests.get(
@@ -1427,35 +1356,29 @@ def api_search():
         return jsonify(results)
     
     try:
-        # Search sermons
+        # Search sermons — DB only
         if content_type in ['all', 'sermons']:
-            try:
-                with open('data/sermons.json', 'r', encoding='utf-8') as f:
-                    sermons_data = json.load(f)
-                    for sermon in sermons_data.get('sermons', []):
-                        # Search across multiple fields
-                        search_fields = [
-                            sermon.get('title', ''),
-                            sermon.get('author', ''),
-                            sermon.get('scripture', ''),
-                            sermon.get('series', ''),
-                            sermon.get('sermon_type', ''),
-                            ', '.join(sermon.get('tags', [])) if isinstance(sermon.get('tags'), list) else ''
-                        ]
-                        search_text = ' '.join([str(f) for f in search_fields if f]).lower()
-                        if query in search_text:
-                            results['results'].append({
-                                'type': 'sermon',
-                                'title': sermon.get('title'),
-                                'description': sermon.get('scripture', '') or sermon.get('series', ''),
-                                'author': sermon.get('author'),
-                                'date': sermon.get('date'),
-                                'series': sermon.get('series', ''),
-                                'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url') or sermon.get('apple_podcasts_url'),
-                                'thumbnail': sermon.get('podcast_thumbnail_url')
-                            })
-            except FileNotFoundError:
-                pass  # Sermons file not found, skip
+            from sqlalchemy import or_
+            sermon_hits = Sermon.query.filter(
+                Sermon.active == True,
+                or_(
+                    Sermon.title.ilike(f'%{query}%'),
+                    Sermon.speaker.ilike(f'%{query}%'),
+                    Sermon.scripture.ilike(f'%{query}%'),
+                )
+            ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).limit(50).all()
+            for s in sermon_hits:
+                series_title = s.series.title if s.series else ''
+                results['results'].append({
+                    'type': 'sermon',
+                    'title': s.title,
+                    'description': s.scripture or series_title,
+                    'speaker': s.speaker or '',
+                    'date': s.date.strftime('%Y-%m-%d') if s.date else None,
+                    'series': series_title,
+                    'url': s.spotify_url or s.youtube_url or s.apple_podcasts_url or '',
+                    'thumbnail': s.podcast_thumbnail_url or ''
+                })
         
         # Search announcements
         if content_type in ['all', 'announcements']:
@@ -1540,7 +1463,7 @@ def api_search():
             papers = Paper.query.filter(
                 db.or_(
                     Paper.title.ilike(f'%{query}%'),
-                    Paper.author.ilike(f'%{query}%') if Paper.author else False,
+                    Paper.speaker.ilike(f'%{query}%') if Paper.speaker else False,
                     Paper.description.ilike(f'%{query}%') if Paper.description else False
                 )
             ).all()
@@ -1548,7 +1471,7 @@ def api_search():
                 results['results'].append({
                     'type': 'paper',
                     'title': p.title,
-                    'author': p.author,
+                    'speaker': p.speaker,
                     'description': p.description[:200] if p.description else '',
                     'date': p.date_published.strftime('%Y-%m-%d') if p.date_published else (p.date_entered.strftime('%Y-%m-%d') if p.date_entered else None),
                     'category': p.category,
@@ -1590,54 +1513,29 @@ def api_archive():
     }
     
     try:
-        # Get old sermons
+        # Get old sermons — DB only
         if content_type in ['all', 'sermons']:
-            try:
-                from sermon_data_helper import get_sermon_helper
-                helper = get_sermon_helper()
-                archive_sermons = helper.get_archive_sermons(cutoff_days=90)
-                
-                for sermon in archive_sermons:
-                    sermon_date = sermon.get('date')
-                    if sermon_date:
-                        # Filter by year if specified
-                        if not year or sermon_date.startswith(str(year)):
-                            results['items'].append({
-                                'type': 'sermon',
-                                'title': sermon.get('title'),
-                                'author': sermon.get('author'),
-                                'date': sermon_date,
-                                'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url') or sermon.get('apple_podcasts_url'),
-                                'scripture': sermon.get('scripture', ''),
-                                'series': sermon.get('series', ''),
-                                'description': f"{sermon.get('scripture', '')} - {sermon.get('series', '')}".strip(' - ')
-                            })
-            except ImportError:
-                # Fallback to old method
-                with open('data/sermons.json', 'r') as f:
-                    sermons_data = json.load(f)
-                cutoff_date = datetime.now() - timedelta(days=90)
-                
-                for sermon in sermons_data.get('sermons', []):
-                    sermon_date = sermon.get('date')
-                    if sermon_date:
-                        try:
-                            serm_dt = datetime.strptime(sermon_date, '%Y-%m-%d')
-                            is_archive = sermon.get('source') == 'archive'
-                            if serm_dt < cutoff_date or is_archive:
-                                if not year or sermon_date.startswith(str(year)):
-                                    results['items'].append({
-                                        'type': 'sermon',
-                                        'title': sermon.get('title'),
-                                        'author': sermon.get('author'),
-                                        'date': sermon_date,
-                                        'url': sermon.get('link') or sermon.get('spotify_url') or sermon.get('youtube_url') or sermon.get('apple_podcasts_url'),
-                                        'scripture': sermon.get('scripture', ''),
-                                        'series': sermon.get('series', ''),
-                                        'description': f"{sermon.get('scripture', '')} - {sermon.get('series', '')}".strip(' - ')
-                                    })
-                        except:
-                            pass
+            cutoff_date = (datetime.now() - timedelta(days=90)).date()
+            query_builder = Sermon.query.filter(Sermon.active == True)
+            if year:
+                from sqlalchemy import extract
+                query_builder = query_builder.filter(extract('year', Sermon.date) == int(year))
+            else:
+                query_builder = query_builder.filter(Sermon.date <= cutoff_date)
+            archive_sermons = query_builder.order_by(Sermon.date.desc()).all()
+            for s in archive_sermons:
+                series_title = s.series.title if s.series else ''
+                sermon_date = s.date.strftime('%Y-%m-%d') if s.date else None
+                results['items'].append({
+                    'type': 'sermon',
+                    'title': s.title,
+                    'speaker': s.speaker or '',
+                    'date': sermon_date,
+                    'url': s.spotify_url or s.youtube_url or s.apple_podcasts_url or '',
+                    'scripture': s.scripture or '',
+                    'series': series_title,
+                    'description': f"{s.scripture or ''} - {series_title}".strip(' - ')
+                })
         
         # Get old announcements
         if content_type in ['all', 'announcements']:
@@ -1685,7 +1583,7 @@ def api_archive():
                 results['items'].append({
                     'type': 'paper',
                     'title': p.title,
-                    'author': p.author,
+                    'speaker': p.speaker,
                     'description': p.description[:150] if p.description else '',
                     'date': p.date_published.strftime('%Y-%m-%d') if p.date_published else (p.date_entered.strftime('%Y-%m-%d') if p.date_entered else None),
                     'category': p.category,
@@ -2085,8 +1983,8 @@ EXPIRATION_PRESET_CHOICES = [
 ]
 
 
-def _admin_author_choices():
-    """Choices for author dropdown: all admin users (logged-in admins)."""
+def _admin_speaker_choices():
+    """Choices for speaker dropdown: all admin users (logged-in admins)."""
     try:
         if not has_app_context():
             return []
@@ -2220,14 +2118,14 @@ def _format_announcement_status(view, context, model, name):
 
 
 class AnnouncementView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'author', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered', 'expires_at')
-    column_searchable_list = ('title', 'description', 'tag', 'author')
-    column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category')
-    column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'author')
+    column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered', 'expires_at')
+    column_searchable_list = ('title', 'description', 'tag', 'speaker')
+    column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category', 'speaker')
+    column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'speaker')
     column_default_sort = ('date_entered', True)
     form_excluded_columns = ['id']
 
-    form_columns = ('title', 'description', 'type', 'category', 'tag', 'author', 'date_entered', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
+    form_columns = ('title', 'description', 'type', 'category', 'tag', 'speaker', 'date_entered', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -2247,13 +2145,13 @@ class AnnouncementView(AuthenticatedModelView):
         'type': SelectField,
         'category': SelectField,
         'date_entered': DateTimePickerField,
-        'author': SelectField,
+        'speaker': SelectField,
     }
 
     form_args = {
         'type': {'choices': ANNOUNCEMENT_TYPE_CHOICES},
         'category': {'choices': ANNOUNCEMENT_CATEGORY_CHOICES},
-        'author': {'choices': []},  # set in get_form from admin users
+        'speaker': {'choices': []},  # set in get_form from admin users
     }
     
     form_widget_args = {
@@ -2272,7 +2170,7 @@ class AnnouncementView(AuthenticatedModelView):
         'featured_image': 'Featured Image URL',
         'image_display_type': 'Image Display Type',
         'active': 'Status',
-        'author': 'Author',
+        'speaker': 'Speaker',
     }
 
     column_formatters = {
@@ -2281,14 +2179,14 @@ class AnnouncementView(AuthenticatedModelView):
 
     def get_form(self):
         form = super().get_form()
-        if form and hasattr(form, 'author') and has_app_context():
-            form.author.choices = _admin_author_choices()
-            if not form.author.choices:
-                form.author.choices = [('', '— No admins —')]
+        if form and hasattr(form, 'speaker') and has_app_context():
+            form.speaker.choices = _admin_speaker_choices()
+            if not form.speaker.choices:
+                form.speaker.choices = [('', '— No admins —')]
             if has_request_context():
                 current = session.get('username')
-                if current and (not form.author.data or not str(form.author.data).strip()):
-                    form.author.data = current
+                if current and (not form.speaker.data or not str(form.speaker.data).strip()):
+                    form.speaker.data = current
         return form
 
     def on_form_prefill(self, form, id):
@@ -2434,23 +2332,54 @@ def _format_sermon_status(view, context, model, name):
 
 class SermonSeriesView(AuthenticatedModelView):
     column_list = ('title', 'start_date', 'end_date', 'active')
-    column_searchable_list = ('title', 'description')
+    column_searchable_list = ('title', 'description', 'slug')
+    column_filters = ('active', 'start_date')
     column_sortable_list = ('start_date', 'title')
     column_default_sort = ('start_date', True)
-    form_columns = ('title', 'description', 'image_url', 'start_date', 'end_date', 'active')
+    form_columns = ('title', 'description', 'slug', 'external_url', 'sort_order', 'image_url', 'start_date', 'end_date', 'active')
+    column_labels = {
+        'external_url': 'External URL',
+        'sort_order': 'Sort Order',
+    }
+
+class PaperView(AuthenticatedModelView):
+    column_list = ('title', 'speaker', 'category', 'date_published', 'active')
+    column_searchable_list = ('title', 'speaker', 'description')
+    column_filters = ('category', 'active', 'speaker')
+    column_sortable_list = ('date_published', 'title', 'speaker')
+    column_default_sort = ('date_published', True)
+    form_columns = ('title', 'speaker', 'description', 'content', 'category', 'date_published', 'file_url', 'thumbnail_url', 'active')
+    column_labels = {
+        'speaker': 'Speaker/Author',
+        'date_published': 'Published Date',
+        'file_url': 'File URL',
+        'thumbnail_url': 'Thumbnail URL',
+    }
+    form_overrides = {
+        'speaker': SelectField,
+        'date_published': DatePickerField,
+    }
+    
+    def get_form(self):
+        form = super().get_form()
+        if form and hasattr(form, 'speaker') and has_app_context():
+            form.speaker.choices = _admin_speaker_choices()
+            if not form.speaker.choices:
+                form.speaker.choices = [('', '— No admins —')]
+        return form
 
 class SermonView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'series', 'episode_number', 'author', 'date', 'scripture', 'active', 'expires_at')
-    column_searchable_list = ('title', 'author', 'scripture')
-    column_filters = ('series', 'author', 'date', 'active')
-    column_sortable_list = ('date', 'title', 'author', 'episode_number')
+    column_list = ('id', 'title', 'series', 'episode_number', 'speaker', 'date', 'scripture', 'active', 'expires_at')
+    column_searchable_list = ('title', 'speaker', 'scripture')
+    column_filters = ('series', 'speaker', 'date', 'active')
+    column_sortable_list = ('date', 'title', 'speaker', 'episode_number')
     column_default_sort = ('date', True)
     form_excluded_columns = ['id']
 
     form_columns = (
         'series', 'episode_number',
         'book', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end',
-        'title', 'author', 'date',
+        'title', 'speaker', 'date',
         'audio_file_url', 'video_file_url',
         'beyond_episode',
         'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url',
@@ -2470,6 +2399,7 @@ class SermonView(AuthenticatedModelView):
         'podcast_thumbnail_url': 'Thumbnail',
         'active': 'Status',
         'expires_at': 'Expires',
+        'speaker': 'Speaker',
     }
     
     column_formatters = {'active': _format_sermon_status}
@@ -2481,7 +2411,7 @@ class SermonView(AuthenticatedModelView):
 
     form_overrides = {
         'date': DatePickerField, 
-        'author': SelectField
+        'speaker': SelectField
     }
     
     form_args = {
@@ -2496,7 +2426,8 @@ class SermonView(AuthenticatedModelView):
         'beyond_episode': {
             'query_factory': lambda: PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all(),
             'allow_blank': True
-        }
+        },
+        'speaker': {'choices': []}, # populated in get_form
     }
 
     form_widget_args = {
@@ -2510,14 +2441,14 @@ class SermonView(AuthenticatedModelView):
 
     def get_form(self):
         form = super().get_form()
-        if form and hasattr(form, 'author') and has_app_context():
-            form.author.choices = _admin_author_choices()
-            if not form.author.choices:
-                form.author.choices = [('', '— No admins —')]
+        if form and hasattr(form, 'speaker') and has_app_context():
+            form.speaker.choices = _admin_speaker_choices()
+            if not form.speaker.choices:
+                form.speaker.choices = [('', '— No admins —')]
             if has_request_context():
                 current = session.get('username')
-                if current and (not form.author.data or not str(form.author.data).strip()):
-                    form.author.data = current
+                if current and (not form.speaker.data or not str(form.speaker.data).strip()):
+                    form.speaker.data = current
         return form
 
     def on_form_prefill(self, form, id):
@@ -2696,14 +2627,14 @@ class PodcastEpisodeView(AuthenticatedModelView):
             return False
 
 class GalleryImageView(AuthenticatedModelView):
-    column_list = ('id', 'name', 'event', 'created', 'expires_at', 'tags_display')
-    column_searchable_list = ('name',)
-    column_filters = ('event',)
-    column_sortable_list = ('name', 'created')
+    column_list = ('id', 'name', 'event', 'photographer', 'created', 'expires_at', 'tags_display')
+    column_searchable_list = ('name', 'description', 'location', 'photographer')
+    column_filters = ('event', 'photographer')
+    column_sortable_list = ('name', 'created', 'photographer')
     column_default_sort = ('created', True)
     form_excluded_columns = ['id']
 
-    form_columns = ('name', 'url', 'size', 'type', 'tags', 'event', 'created', 'expiration_preset', 'expiration_date')
+    form_columns = ('name', 'url', 'description', 'location', 'photographer', 'size', 'type', 'tags', 'event', 'created', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'url': URLField('Image URL', validators=[DataRequired(), URL()]),
         'tags': TextAreaField('Tags (comma-separated)', widget=TextArea()),
@@ -3232,6 +3163,7 @@ with app.app_context():
     admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
     admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))
     admin.add_view(SermonSeriesView(SermonSeries, db.session, name='Sermon Series', category='Media'))
+    admin.add_view(PaperView(Paper, db.session, name='Papers & Bulletins', category='Media'))
     admin.add_view(PodcastSeriesView(PodcastSeries, db.session, name='Podcast Series', category='Media'))
     admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcast Episodes', category='Media'))
     admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='Media'))

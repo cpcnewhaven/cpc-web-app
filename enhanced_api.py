@@ -42,7 +42,7 @@ def search_sermons():
         scripture_book = request.args.get('scripture_book')
         scripture_chapter = request.args.get('scripture_chapter', type=int)
         scripture_verse = request.args.get('scripture_verse', type=int)
-        author = request.args.get('author')
+        speaker = request.args.get('speaker')
         series = request.args.get('series')
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
@@ -67,8 +67,8 @@ def search_sermons():
                 'verse': scripture_verse
             }
         
-        if author:
-            search_criteria['author'] = author
+        if speaker:
+            search_criteria['speaker'] = speaker
         
         if series:
             search_criteria['series'] = series
@@ -234,7 +234,7 @@ def popular_sermons():
     """Get popular sermons based on various metrics."""
     try:
         limit = request.args.get('limit', 10, type=int)
-        metric = request.args.get('metric', 'recent')  # recent, series, author
+        metric = request.args.get('metric', 'recent')  # recent, series, speaker
         
         if metric == 'recent':
             results = search_engine.advanced_search(
@@ -252,16 +252,16 @@ def popular_sermons():
             # Get sermons from most popular series
             most_popular_series = max(series_counts.items(), key=lambda x: x[1])[0]
             results = search_engine.search_by_series(most_popular_series)[:limit]
-        elif metric == 'author':
-            # Get most prolific author
-            author_counts = {}
+        elif metric == 'speaker':
+            # Get most prolific speaker
+            speaker_counts = {}
             for sermon in search_engine.sermons:
-                author = sermon.get('author', '')
-                if author:
-                    author_counts[author] = author_counts.get(author, 0) + 1
+                speaker = sermon.get('speaker', '')
+                if speaker:
+                    speaker_counts[speaker] = speaker_counts.get(speaker, 0) + 1
             
-            most_prolific_author = max(author_counts.items(), key=lambda x: x[1])[0]
-            results = search_engine.search_by_author(most_prolific_author)[:limit]
+            most_prolific_speaker = max(speaker_counts.items(), key=lambda x: x[1])[0]
+            results = search_engine.search_by_speaker(most_prolific_speaker)[:limit]
         else:
             results = []
         
@@ -299,15 +299,15 @@ def sermons_by_series(series_name):
             'error': str(e)
         }), 500
 
-@enhanced_api.route('/api/sermons/author/<author_name>')
-def sermons_by_author(author_name):
-    """Get sermons by specific author."""
+@enhanced_api.route('/api/sermons/speaker/<speaker_name>')
+def sermons_by_speaker(speaker_name):
+    """Get sermons by specific speaker."""
     try:
-        results = search_engine.search_by_author(author_name)
+        results = search_engine.search_by_speaker(speaker_name)
         
         return jsonify({
             'success': True,
-            'author': author_name,
+            'speaker': speaker_name,
             'sermons': results,
             'total': len(results)
         })

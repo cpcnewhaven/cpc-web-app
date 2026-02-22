@@ -41,6 +41,9 @@ class SermonSeries(db.Model):
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
     image_url = db.Column(db.String(500))
+    slug = db.Column(db.String(100))
+    external_url = db.Column(db.String(500))
+    sort_order = db.Column(db.Integer, default=0)
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     active = db.Column(db.Boolean, default=True)
@@ -87,7 +90,7 @@ class Announcement(db.Model):
     archived = db.Column(db.Boolean, default=False)  # Archive = not active, archived True
     featured_image = db.Column(db.String(500))
     image_display_type = db.Column(db.String(50))  # poster, cover, etc.
-    author = db.Column(db.String(200))  # who created/wrote the announcement
+    speaker = db.Column(db.String(200))  # who created/wrote the announcement
     expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
 
 class Sermon(db.Model):
@@ -95,7 +98,7 @@ class Sermon(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
-    author = db.Column(db.String(100), nullable=False)
+    speaker = db.Column(db.String(100), nullable=True)
     scripture = db.Column(db.String(200))
     date = db.Column(db.Date, nullable=False)
     active = db.Column(db.Boolean, default=True)
@@ -166,6 +169,9 @@ class GalleryImage(db.Model):
     type = db.Column(db.String(50))
     tags = db.Column(JSON)  # Store as JSON array
     event = db.Column(db.Boolean, default=False)
+    description = db.Column(db.Text)
+    location = db.Column(db.String(200))
+    photographer = db.Column(db.String(100))
     created = db.Column(db.DateTime, default=datetime.utcnow)
     expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
 
@@ -242,7 +248,7 @@ class Paper(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
-    author = db.Column(db.String(200))
+    speaker = db.Column(db.String(200))
     description = db.Column(db.Text)
     content = db.Column(db.Text)
     date_published = db.Column(db.Date)
