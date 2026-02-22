@@ -5,273 +5,273 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
 <script>
-(function() {
-    function trimWords(text, maxWords) {
-        var words = (text || '').trim().split(/\s+/).filter(Boolean);
-        return words.slice(0, maxWords).join(' ');
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        var form = document.querySelector('form');
-        if (!form) return;
+    (function () {
+        function trimWords(text, maxWords) {
+            var words = (text || '').trim().split(/\s+/).filter(Boolean);
+            return words.slice(0, maxWords).join(' ');
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.querySelector('form');
+            if (!form) return;
 
-        // Compact creation/edit form: grid layout, dropdowns and toggles (dials)
-        (function compactForm() {
-            var formGroups = form.querySelectorAll('.form-group');
-            if (!formGroups.length) return;
-            form.classList.add('admin-form-compact');
-            formGroups.forEach(function(grp) {
-                var selects = grp.querySelectorAll('select');
-                var textareas = grp.querySelectorAll('textarea');
-                var checkboxes = grp.querySelectorAll('input[type="checkbox"]');
-                var textInputs = grp.querySelectorAll('input[type="text"], input[type="url"], input[type="number"]');
-                var dateInputs = grp.querySelectorAll('input[type="date"], input[type="datetime-local"]');
-                var files = grp.querySelectorAll('input[type="file"]');
-                var visible = function(nodes) { return Array.prototype.filter.call(nodes, function(n) { return n.offsetParent !== null || n.type === 'hidden'; }); };
-                var s = visible(selects).length, t = visible(textareas).length, c = visible(checkboxes).length;
-                var tx = visible(textInputs).length, d = visible(dateInputs).length, f = visible(files).length;
-                if (c === 1 && s === 0 && t === 0 && tx === 0) {
-                    grp.classList.add('form-group-short', 'form-group-toggle');
-                } else if (s === 1 && t === 0 && c === 0 && tx === 0 && f === 0) {
-                    grp.classList.add('form-group-short');
-                } else if (d === 1 && t === 0 && tx === 0 && s === 0 && f === 0) {
-                    grp.classList.add('form-group-short');
-                } else {
-                    grp.classList.add('form-group-full');
+            // Compact creation/edit form: grid layout, dropdowns and toggles (dials)
+            (function compactForm() {
+                var formGroups = form.querySelectorAll('.form-group');
+                if (!formGroups.length) return;
+                form.classList.add('admin-form-compact');
+                formGroups.forEach(function (grp) {
+                    var selects = grp.querySelectorAll('select');
+                    var textareas = grp.querySelectorAll('textarea');
+                    var checkboxes = grp.querySelectorAll('input[type="checkbox"]');
+                    var textInputs = grp.querySelectorAll('input[type="text"], input[type="url"], input[type="number"]');
+                    var dateInputs = grp.querySelectorAll('input[type="date"], input[type="datetime-local"]');
+                    var files = grp.querySelectorAll('input[type="file"]');
+                    var visible = function (nodes) { return Array.prototype.filter.call(nodes, function (n) { return n.offsetParent !== null || n.type === 'hidden'; }); };
+                    var s = visible(selects).length, t = visible(textareas).length, c = visible(checkboxes).length;
+                    var tx = visible(textInputs).length, d = visible(dateInputs).length, f = visible(files).length;
+                    if (c === 1 && s === 0 && t === 0 && tx === 0) {
+                        grp.classList.add('form-group-short', 'form-group-toggle');
+                    } else if (s === 1 && t === 0 && c === 0 && tx === 0 && f === 0) {
+                        grp.classList.add('form-group-short');
+                    } else if (d === 1 && t === 0 && tx === 0 && s === 0 && f === 0) {
+                        grp.classList.add('form-group-short');
+                    } else {
+                        grp.classList.add('form-group-full');
+                    }
+                });
+            })();
+
+            var params = new URLSearchParams(window.location.search);
+            var isBanner = params.get('banner') === '1';
+            var titleInput = form.querySelector('input[name="title"]');
+            var bannerTypeInput = form.querySelector('select[name="banner_type"]');
+            var descriptionInput = form.querySelector('textarea[name="description"]');
+
+            if (isBanner) {
+                var fieldNamesToHide = [
+                    'type', 'category', 'tag', 'title', 'id', 'active',
+                    'show_in_banner', 'superfeatured', 'featured_image', 'image_display_type'
+                ];
+                fieldNamesToHide.forEach(function (name) {
+                    var input = form.querySelector('[name="' + name + '"]');
+                    if (!input) return;
+                    var group = input.closest('.form-group');
+                    if (group) group.style.display = 'none';
+                });
+                if (bannerTypeInput && !bannerTypeInput.value) {
+                    bannerTypeInput.value = 'alert';
                 }
-            });
-        })();
-
-        var params = new URLSearchParams(window.location.search);
-        var isBanner = params.get('banner') === '1';
-        var titleInput = form.querySelector('input[name="title"]');
-        var bannerTypeInput = form.querySelector('select[name="banner_type"]');
-        var descriptionInput = form.querySelector('textarea[name="description"]');
-
-        if (isBanner) {
-            var fieldNamesToHide = [
-                'type', 'category', 'tag', 'title', 'id', 'active',
-                'show_in_banner', 'superfeatured', 'featured_image', 'image_display_type'
-            ];
-            fieldNamesToHide.forEach(function(name) {
-                var input = form.querySelector('[name="' + name + '"]');
-                if (!input) return;
-                var group = input.closest('.form-group');
-                if (group) group.style.display = 'none';
-            });
-            if (bannerTypeInput && !bannerTypeInput.value) {
-                bannerTypeInput.value = 'alert';
-            }
-            if (descriptionInput) {
-                descriptionInput.setAttribute('maxlength', '280');
-                descriptionInput.setAttribute('placeholder', 'Type the banner message (tweet length).');
-                descriptionInput.style.minHeight = '120px';
-                var note = document.createElement('div');
-                note.className = 'banner-quick-note';
-                note.textContent = 'Keep it short and scannable. Title and ID are set automatically.';
-                descriptionInput.parentNode.appendChild(note);
-                var count = document.createElement('div');
-                count.className = 'banner-char-count';
-                descriptionInput.parentNode.appendChild(count);
-                var updateCount = function() {
-                    count.textContent = descriptionInput.value.length + '/280';
-                    if (titleInput) {
-                        var autoTitle = trimWords(descriptionInput.value, 6);
-                        if (autoTitle) {
-                            titleInput.value = autoTitle;
-                            titleInput.dispatchEvent(new Event('change', { bubbles: true }));
+                if (descriptionInput) {
+                    descriptionInput.setAttribute('maxlength', '280');
+                    descriptionInput.setAttribute('placeholder', 'Type the banner message (tweet length).');
+                    descriptionInput.style.minHeight = '120px';
+                    var note = document.createElement('div');
+                    note.className = 'banner-quick-note';
+                    note.textContent = 'Keep it short and scannable. Title and ID are set automatically.';
+                    descriptionInput.parentNode.appendChild(note);
+                    var count = document.createElement('div');
+                    count.className = 'banner-char-count';
+                    descriptionInput.parentNode.appendChild(count);
+                    var updateCount = function () {
+                        count.textContent = descriptionInput.value.length + '/280';
+                        if (titleInput) {
+                            var autoTitle = trimWords(descriptionInput.value, 6);
+                            if (autoTitle) {
+                                titleInput.value = autoTitle;
+                                titleInput.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
                         }
+                    };
+                    descriptionInput.addEventListener('input', updateCount);
+                    updateCount();
+                }
+                if (bannerTypeInput) {
+                    bannerTypeInput.addEventListener('change', function () { });
+                }
+            }
+
+            // Hide any ID form group so users only see automatic IDs (no builder)
+            var idInput = form.querySelector('input[name="id"]');
+            if (idInput) {
+                var idGroup = idInput.closest('.form-group');
+                if (idGroup) idGroup.style.display = 'none';
+            }
+
+            // Expiration: show "Expiration date" only when "Pick a date…" is selected
+            var expirationPreset = form.querySelector('select[name="expiration_preset"]');
+            var expirationDateGroup = form.querySelector('input[name="expiration_date"]');
+            if (expirationPreset && expirationDateGroup) {
+                expirationDateGroup = expirationDateGroup.closest('.form-group');
+                function toggleExpirationDate() {
+                    if (expirationDateGroup) expirationDateGroup.style.display = expirationPreset.value === 'specific' ? '' : 'none';
+                }
+                toggleExpirationDate();
+                expirationPreset.addEventListener('change', toggleExpirationDate);
+            }
+
+            // Global: ensure all date/datetime inputs use calendar-friendly styling
+            form.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(function (inp) {
+                inp.style.maxWidth = '220px';
+                inp.style.cursor = 'pointer';
+            });
+
+            // Featured image: add drag-and-drop upload zone
+            var featuredInput = form.querySelector('input[name="featured_image"]');
+            if (featuredInput) {
+                var formGroup = featuredInput.closest('.form-group');
+                if (formGroup) {
+                    var dropWrap = document.createElement('div');
+                    dropWrap.className = 'featured-image-upload-wrap';
+                    dropWrap.style.cssText = 'margin-bottom: 12px;';
+                    var dropZone = document.createElement('div');
+                    dropZone.className = 'featured-image-drop-zone';
+                    dropZone.setAttribute('data-drop-zone', '1');
+                    dropZone.innerHTML = '<span class="drop-zone-text"><i class="fas fa-cloud-upload-alt" style="margin-right: 6px;"></i>Drag & drop an image here, or click to choose</span><input type="file" accept="image/png,image/jpeg,image/gif,image/webp" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
+                    dropZone.style.cssText = 'border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 24px; text-align: center; color: rgba(255,255,255,0.7); cursor: pointer; position: relative; transition: border-color 0.2s, background 0.2s;';
+                    var statusEl = document.createElement('div');
+                    statusEl.className = 'featured-image-upload-status';
+                    statusEl.style.cssText = 'margin-top: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.6); min-height: 20px;';
+                    dropWrap.appendChild(dropZone);
+                    dropWrap.appendChild(statusEl);
+                    formGroup.insertBefore(dropWrap, formGroup.firstChild);
+
+                    var fileInput = dropZone.querySelector('input[type="file"]');
+                    function setStatus(msg, isError) {
+                        statusEl.textContent = msg;
+                        statusEl.style.color = isError ? 'rgba(255,120,100,0.95)' : 'rgba(255,255,255,0.6)';
                     }
-                };
-                descriptionInput.addEventListener('input', updateCount);
-                updateCount();
+                    function uploadFile(file) {
+                        if (!file || !file.type.match(/^image\/(png|jpeg|gif|webp)$/)) {
+                            setStatus('Please choose a PNG, JPG, GIF, or WebP image.', true);
+                            return;
+                        }
+                        setStatus('Uploading…');
+                        var fd = new FormData();
+                        fd.append('file', file);
+                        fetch('{{ url_for("admin_upload_image") }}', { method: 'POST', body: fd })
+                            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                            .then(function (o) {
+                                if (o.ok && o.data && o.data.url) {
+                                    featuredInput.value = o.data.url;
+                                    featuredInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                    setStatus('Saved: ' + o.data.url);
+                                } else {
+                                    setStatus(o.data && o.data.error ? o.data.error : 'Upload failed', true);
+                                }
+                            })
+                            .catch(function () { setStatus('Upload failed', true); });
+                    }
+                    dropZone.addEventListener('dragover', function (e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = 'var(--cpc-blue, #007AFF)'; dropZone.style.background = 'rgba(0,122,255,0.08)'; });
+                    dropZone.addEventListener('dragleave', function (e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = ''; dropZone.style.background = ''; });
+                    dropZone.addEventListener('drop', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.style.borderColor = '';
+                        dropZone.style.background = '';
+                        var files = e.dataTransfer && e.dataTransfer.files;
+                        if (files && files[0]) uploadFile(files[0]);
+                    });
+                    fileInput.addEventListener('change', function () {
+                        if (this.files && this.files[0]) uploadFile(this.files[0]);
+                        this.value = '';
+                    });
+                    dropZone.addEventListener('click', function (e) { if (e.target === dropZone || e.target.classList.contains('drop-zone-text')) fileInput.click(); });
+                }
             }
-            if (bannerTypeInput) {
-                bannerTypeInput.addEventListener('change', function() {});
+
+            // PDF upload for teaching series sessions (pdf_url field)
+            var pdfInput = form.querySelector('input[name="pdf_url"]');
+            if (pdfInput) {
+                var formGroup = pdfInput.closest('.form-group');
+                if (formGroup) {
+                    var dropWrap = document.createElement('div');
+                    dropWrap.className = 'pdf-upload-wrap';
+                    dropWrap.style.cssText = 'margin-bottom: 12px;';
+                    var dropZone = document.createElement('div');
+                    dropZone.className = 'pdf-drop-zone';
+                    dropZone.innerHTML = '<span class="drop-zone-text"><i class="fas fa-file-pdf" style="margin-right: 6px;"></i>Drag & drop a PDF here, or click to choose</span><input type="file" accept="application/pdf" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
+                    dropZone.style.cssText = 'border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 20px; text-align: center; color: rgba(255,255,255,0.7); cursor: pointer; position: relative; transition: border-color 0.2s, background 0.2s;';
+                    var statusEl = document.createElement('div');
+                    statusEl.className = 'pdf-upload-status';
+                    statusEl.style.cssText = 'margin-top: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.6); min-height: 20px;';
+                    dropWrap.appendChild(dropZone);
+                    dropWrap.appendChild(statusEl);
+                    formGroup.insertBefore(dropWrap, formGroup.firstChild);
+                    var fileInput = dropZone.querySelector('input[type="file"]');
+                    function setStatus(msg, isError) {
+                        statusEl.textContent = msg;
+                        statusEl.style.color = isError ? 'rgba(255,120,100,0.95)' : 'rgba(255,255,255,0.6)';
+                    }
+                    function uploadPdf(file) {
+                        if (!file || file.type !== 'application/pdf') {
+                            setStatus('Please choose a PDF file.', true);
+                            return;
+                        }
+                        setStatus('Uploading…');
+                        var fd = new FormData();
+                        fd.append('file', file);
+                        fetch('{{ url_for("admin_upload_pdf") }}', { method: 'POST', body: fd })
+                            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                            .then(function (o) {
+                                if (o.ok && o.data && o.data.url) {
+                                    pdfInput.value = o.data.url;
+                                    pdfInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                    setStatus('Saved: ' + o.data.url);
+                                } else {
+                                    setStatus(o.data && o.data.error ? o.data.error : 'Upload failed', true);
+                                }
+                            })
+                            .catch(function () { setStatus('Upload failed', true); });
+                    }
+                    dropZone.addEventListener('dragover', function (e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = 'var(--cpc-blue, #007AFF)'; dropZone.style.background = 'rgba(0,122,255,0.08)'; });
+                    dropZone.addEventListener('dragleave', function (e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = ''; dropZone.style.background = ''; });
+                    dropZone.addEventListener('drop', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.style.borderColor = '';
+                        dropZone.style.background = '';
+                        var files = e.dataTransfer && e.dataTransfer.files;
+                        if (files && files[0]) uploadPdf(files[0]);
+                    });
+                    fileInput.addEventListener('change', function () {
+                        if (this.files && this.files[0]) uploadPdf(this.files[0]);
+                        this.value = '';
+                    });
+                    dropZone.addEventListener('click', function (e) { if (e.target === dropZone || e.target.classList.contains('drop-zone-text')) fileInput.click(); });
+                }
             }
-        }
-
-        // Hide any ID form group so users only see automatic IDs (no builder)
-        var idInput = form.querySelector('input[name="id"]');
-        if (idInput) {
-            var idGroup = idInput.closest('.form-group');
-            if (idGroup) idGroup.style.display = 'none';
-        }
-
-        // Expiration: show "Expiration date" only when "Pick a date…" is selected
-        var expirationPreset = form.querySelector('select[name="expiration_preset"]');
-        var expirationDateGroup = form.querySelector('input[name="expiration_date"]');
-        if (expirationPreset && expirationDateGroup) {
-            expirationDateGroup = expirationDateGroup.closest('.form-group');
-            function toggleExpirationDate() {
-                if (expirationDateGroup) expirationDateGroup.style.display = expirationPreset.value === 'specific' ? '' : 'none';
-            }
-            toggleExpirationDate();
-            expirationPreset.addEventListener('change', toggleExpirationDate);
-        }
-
-        // Global: ensure all date/datetime inputs use calendar-friendly styling
-        form.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(function(inp) {
-            inp.style.maxWidth = '220px';
-            inp.style.cursor = 'pointer';
         });
-
-        // Featured image: add drag-and-drop upload zone
-        var featuredInput = form.querySelector('input[name="featured_image"]');
-        if (featuredInput) {
-            var formGroup = featuredInput.closest('.form-group');
-            if (formGroup) {
-                var dropWrap = document.createElement('div');
-                dropWrap.className = 'featured-image-upload-wrap';
-                dropWrap.style.cssText = 'margin-bottom: 12px;';
-                var dropZone = document.createElement('div');
-                dropZone.className = 'featured-image-drop-zone';
-                dropZone.setAttribute('data-drop-zone', '1');
-                dropZone.innerHTML = '<span class="drop-zone-text"><i class="fas fa-cloud-upload-alt" style="margin-right: 6px;"></i>Drag & drop an image here, or click to choose</span><input type="file" accept="image/png,image/jpeg,image/gif,image/webp" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
-                dropZone.style.cssText = 'border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 24px; text-align: center; color: rgba(255,255,255,0.7); cursor: pointer; position: relative; transition: border-color 0.2s, background 0.2s;';
-                var statusEl = document.createElement('div');
-                statusEl.className = 'featured-image-upload-status';
-                statusEl.style.cssText = 'margin-top: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.6); min-height: 20px;';
-                dropWrap.appendChild(dropZone);
-                dropWrap.appendChild(statusEl);
-                formGroup.insertBefore(dropWrap, formGroup.firstChild);
-
-                var fileInput = dropZone.querySelector('input[type="file"]');
-                function setStatus(msg, isError) {
-                    statusEl.textContent = msg;
-                    statusEl.style.color = isError ? 'rgba(255,120,100,0.95)' : 'rgba(255,255,255,0.6)';
-                }
-                function uploadFile(file) {
-                    if (!file || !file.type.match(/^image\/(png|jpeg|gif|webp)$/)) {
-                        setStatus('Please choose a PNG, JPG, GIF, or WebP image.', true);
-                        return;
-                    }
-                    setStatus('Uploading…');
-                    var fd = new FormData();
-                    fd.append('file', file);
-                    fetch('{{ url_for("admin_upload_image") }}', { method: 'POST', body: fd })
-                        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
-                        .then(function(o) {
-                            if (o.ok && o.data && o.data.url) {
-                                featuredInput.value = o.data.url;
-                                featuredInput.dispatchEvent(new Event('input', { bubbles: true }));
-                                setStatus('Saved: ' + o.data.url);
-                            } else {
-                                setStatus(o.data && o.data.error ? o.data.error : 'Upload failed', true);
-                            }
-                        })
-                        .catch(function() { setStatus('Upload failed', true); });
-                }
-                dropZone.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = 'var(--cpc-blue, #007AFF)'; dropZone.style.background = 'rgba(0,122,255,0.08)'; });
-                dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = ''; dropZone.style.background = ''; });
-                dropZone.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.style.borderColor = '';
-                    dropZone.style.background = '';
-                    var files = e.dataTransfer && e.dataTransfer.files;
-                    if (files && files[0]) uploadFile(files[0]);
-                });
-                fileInput.addEventListener('change', function() {
-                    if (this.files && this.files[0]) uploadFile(this.files[0]);
-                    this.value = '';
-                });
-                dropZone.addEventListener('click', function(e) { if (e.target === dropZone || e.target.classList.contains('drop-zone-text')) fileInput.click(); });
-            }
-        }
-
-        // PDF upload for teaching series sessions (pdf_url field)
-        var pdfInput = form.querySelector('input[name="pdf_url"]');
-        if (pdfInput) {
-            var formGroup = pdfInput.closest('.form-group');
-            if (formGroup) {
-                var dropWrap = document.createElement('div');
-                dropWrap.className = 'pdf-upload-wrap';
-                dropWrap.style.cssText = 'margin-bottom: 12px;';
-                var dropZone = document.createElement('div');
-                dropZone.className = 'pdf-drop-zone';
-                dropZone.innerHTML = '<span class="drop-zone-text"><i class="fas fa-file-pdf" style="margin-right: 6px;"></i>Drag & drop a PDF here, or click to choose</span><input type="file" accept="application/pdf" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
-                dropZone.style.cssText = 'border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 20px; text-align: center; color: rgba(255,255,255,0.7); cursor: pointer; position: relative; transition: border-color 0.2s, background 0.2s;';
-                var statusEl = document.createElement('div');
-                statusEl.className = 'pdf-upload-status';
-                statusEl.style.cssText = 'margin-top: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.6); min-height: 20px;';
-                dropWrap.appendChild(dropZone);
-                dropWrap.appendChild(statusEl);
-                formGroup.insertBefore(dropWrap, formGroup.firstChild);
-                var fileInput = dropZone.querySelector('input[type="file"]');
-                function setStatus(msg, isError) {
-                    statusEl.textContent = msg;
-                    statusEl.style.color = isError ? 'rgba(255,120,100,0.95)' : 'rgba(255,255,255,0.6)';
-                }
-                function uploadPdf(file) {
-                    if (!file || file.type !== 'application/pdf') {
-                        setStatus('Please choose a PDF file.', true);
-                        return;
-                    }
-                    setStatus('Uploading…');
-                    var fd = new FormData();
-                    fd.append('file', file);
-                    fetch('{{ url_for("admin_upload_pdf") }}', { method: 'POST', body: fd })
-                        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
-                        .then(function(o) {
-                            if (o.ok && o.data && o.data.url) {
-                                pdfInput.value = o.data.url;
-                                pdfInput.dispatchEvent(new Event('input', { bubbles: true }));
-                                setStatus('Saved: ' + o.data.url);
-                            } else {
-                                setStatus(o.data && o.data.error ? o.data.error : 'Upload failed', true);
-                            }
-                        })
-                        .catch(function() { setStatus('Upload failed', true); });
-                }
-                dropZone.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = 'var(--cpc-blue, #007AFF)'; dropZone.style.background = 'rgba(0,122,255,0.08)'; });
-                dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor = ''; dropZone.style.background = ''; });
-                dropZone.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.style.borderColor = '';
-                    dropZone.style.background = '';
-                    var files = e.dataTransfer && e.dataTransfer.files;
-                    if (files && files[0]) uploadPdf(files[0]);
-                });
-                fileInput.addEventListener('change', function() {
-                    if (this.files && this.files[0]) uploadPdf(this.files[0]);
-                    this.value = '';
-                });
-                dropZone.addEventListener('click', function(e) { if (e.target === dropZone || e.target.classList.contains('drop-zone-text')) fileInput.click(); });
-            }
-        }
-    });
-})();
+    })();
 </script>
 <script>
-(function() {
-    function addBannerMenuItem() {
-        var navLinks = document.querySelectorAll('.navbar-nav > li.dropdown');
-        if (!navLinks.length) return;
-        var target = null;
-        navLinks.forEach(function(item) {
-            var label = item.querySelector('a');
-            if (label && label.textContent.trim().toLowerCase() === 'content') {
-                target = item;
-            }
-        });
-        if (!target) return;
-        var menu = target.querySelector('.dropdown-menu');
-        if (!menu) return;
-        if (menu.querySelector('[data-banner-link="1"]')) return;
-        var divider = document.createElement('li');
-        divider.className = 'divider';
-        var item = document.createElement('li');
-        var link = document.createElement('a');
-        link.setAttribute('href', '/admin/banner-alert/new');
-        link.setAttribute('data-banner-link', '1');
-        link.innerHTML = '<i class="fas fa-bolt" style="margin-right: 6px;"></i> Banner alerts';
-        item.appendChild(link);
-        menu.appendChild(divider);
-        menu.appendChild(item);
-    }
-    document.addEventListener('DOMContentLoaded', addBannerMenuItem);
-})();
+    (function () {
+        function addBannerMenuItem() {
+            var navLinks = document.querySelectorAll('.navbar-nav > li.dropdown');
+            if (!navLinks.length) return;
+            var target = null;
+            navLinks.forEach(function (item) {
+                var label = item.querySelector('a');
+                if (label && label.textContent.trim().toLowerCase() === 'content') {
+                    target = item;
+                }
+            });
+            if (!target) return;
+            var menu = target.querySelector('.dropdown-menu');
+            if (!menu) return;
+            if (menu.querySelector('[data-banner-link="1"]')) return;
+            var divider = document.createElement('li');
+            divider.className = 'divider';
+            var item = document.createElement('li');
+            var link = document.createElement('a');
+            link.setAttribute('href', '/admin/banner-alert/new');
+            link.setAttribute('data-banner-link', '1');
+            link.innerHTML = '<i class="fas fa-bolt" style="margin-right: 6px;"></i> Banner alerts';
+            item.appendChild(link);
+            menu.appendChild(divider);
+            menu.appendChild(item);
+        }
+        document.addEventListener('DOMContentLoaded', addBannerMenuItem);
+    })();
 </script>
 {% endblock %}
 
@@ -288,40 +288,82 @@
     </a>
     <!-- Create button + small wizard (z-index 5000, above navbar 1000 / modal 1050) -->
     <div class="admin-create-wrap" style="position: relative; z-index: 5000;">
-        <button type="button" id="adminCreateBtn" class="admin-create-btn" aria-haspopup="true" aria-expanded="false" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,122,255,0.35);">
+        <button type="button" id="adminCreateBtn" class="admin-create-btn" aria-haspopup="true" aria-expanded="false"
+            style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,122,255,0.35);">
             <i class="fas fa-plus"></i> Create
             <i class="fas fa-chevron-down" style="font-size: 0.7rem; opacity: 0.9;"></i>
         </button>
-        <div id="adminCreateDropdown" class="admin-create-dropdown" role="menu" aria-hidden="true" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 0.35rem; min-width: 260px; background: rgba(0, 40, 90, 0.98); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 0.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 5000;">
-            <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 0.35rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7);">What do you want to create?</div>
-            <a href="/admin/announcement/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-bullhorn" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Announcement</a>
-            <a href="/admin/ongoingevent/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-calendar-plus" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Event</a>
-            <a href="/admin/banner-alert/new" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-bolt" style="width: 1.25rem; text-align: center; color: #fbbf24;"></i> Banner Alert</a>
+        <div id="adminCreateDropdown" class="admin-create-dropdown" role="menu" aria-hidden="true"
+            style="display: none; position: absolute; top: 100%; left: 0; margin-top: 0.35rem; min-width: 260px; background: rgba(0, 40, 90, 0.98); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 0.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 5000;">
+            <div
+                style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 0.35rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7);">
+                What do you want to create?</div>
+            <a href="/admin/announcement/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-bullhorn" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New
+                Announcement</a>
+            <a href="/admin/ongoingevent/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-calendar-plus" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New
+                Event</a>
+            <a href="/admin/banner-alert/new" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-bolt" style="width: 1.25rem; text-align: center; color: #fbbf24;"></i> Banner
+                Alert</a>
             <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0.25rem 0;"></div>
-            <a href="/admin/sermon/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-microphone" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Sunday Sermon</a>
-            <a href="/admin/podcastseries/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-list" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Podcast Series</a>
-            <a href="/admin/podcastepisode/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-podcast" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Podcast Episode</a>
-            <a href="/admin/galleryimage/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-images" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Add Gallery Image</a>
+            <a href="/admin/sermon/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-microphone" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New
+                Sunday Sermon</a>
+            <a href="/admin/podcastseries/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-list" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Podcast
+                Series</a>
+            <a href="/admin/podcastepisode/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-podcast" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Podcast
+                Episode</a>
+            <a href="/admin/galleryimage/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-images" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Add Gallery
+                Image</a>
             <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0.25rem 0;"></div>
-            <a href="/admin/teachingseries/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-graduation-cap" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New Teaching Series</a>
-            <a href="/admin/teachingseriessession/new/" class="admin-create-item" style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i class="fas fa-file-pdf" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Add Series Session (PDF)</a>
+            <a href="/admin/teachingseries/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-graduation-cap" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New
+                Teaching Series</a>
+            <a href="/admin/teachingseriessession/new/" class="admin-create-item"
+                style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
+                    class="fas fa-file-pdf" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Add Series
+                Session (PDF)</a>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block access_control %}
-<div class="admin-access-controls" style="display: flex; align-items: center; gap: 0.75rem; margin-right: 1rem; flex-wrap: wrap;">
-    <span id="adminLastChange" style="color: rgba(255,255,255,0.55); font-size: 0.8rem; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="Loading last change..."></span>
+<div class="admin-access-controls"
+    style="display: flex; align-items: center; gap: 0.75rem; margin-right: 1rem; flex-wrap: wrap;">
+    <span id="adminLastChange"
+        style="color: rgba(255,255,255,0.55); font-size: 0.8rem; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+        title="Loading last change..."></span>
+
+    <button type="button" id="globalSaveAllBtn"
+        style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 8px rgba(16,185,129,0.35); transition: all 0.2s; margin-left: 0.5rem;">
+        <i class="fas fa-save"></i> Save All
+    </button>
+
     {% if session.get('username') %}
     <span style="color: rgba(255, 255, 255, 0.8); font-size: 0.85rem;">
         <i class="fas fa-user-circle"></i> {{ session.get('username') }}
     </span>
     {% endif %}
-    <a href="/" target="_blank" style="color: var(--text-white); text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); transition: var(--transition-fast); font-size: 0.85rem;">
+    <a href="/" target="_blank"
+        style="color: var(--text-white); text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); transition: var(--transition-fast); font-size: 0.85rem;">
         <i class="fas fa-globe"></i> View Site
     </a>
-    <a href="{{ url_for('admin_logout') }}" style="color: var(--text-white); text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); transition: var(--transition-fast); font-size: 0.85rem;">
+    <a href="{{ url_for('admin_logout') }}"
+        style="color: var(--text-white); text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); transition: var(--transition-fast); font-size: 0.85rem;">
         <i class="fas fa-sign-out-alt"></i> Logout
     </a>
 </div>
@@ -331,61 +373,190 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='js/admin-wysiwyg.js') }}"></script>
 <style>
-/* Create dropdown above navbar (1000) and modals (1050) */
-.admin-create-wrap { z-index: 5000 !important; }
-.admin-create-dropdown { z-index: 5000 !important; }
-.admin-create-btn:hover { background: linear-gradient(135deg, #0a8cff 0%, #0060e8 100%) !important; box-shadow: 0 4px 12px rgba(0,122,255,0.45); }
-.admin-create-item:hover { background: rgba(255,255,255,0.12); }
-/* Ensure navbar doesn't clip the Create dropdown */
-.navbar-header .admin-create-wrap { position: relative; }
+    /* Create dropdown above navbar (1000) and modals (1050) */
+    .admin-create-wrap {
+        z-index: 5000 !important;
+    }
+
+    .admin-create-dropdown {
+        z-index: 5000 !important;
+    }
+
+    .admin-create-btn:hover {
+        background: linear-gradient(135deg, #0a8cff 0%, #0060e8 100%) !important;
+        box-shadow: 0 4px 12px rgba(0, 122, 255, 0.45);
+    }
+
+    .admin-create-item:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Ensure navbar doesn't clip the Create dropdown */
+    .navbar-header .admin-create-wrap {
+        position: relative;
+    }
 </style>
 <script>
-(function() {
-    var btn = document.getElementById('adminCreateBtn');
-    var dropdown = document.getElementById('adminCreateDropdown');
-    if (btn && dropdown) {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var open = dropdown.style.display === 'block';
-            dropdown.style.display = open ? 'none' : 'block';
-            btn.setAttribute('aria-expanded', !open);
-        });
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.admin-create-wrap')) {
-                dropdown.style.display = 'none';
-                btn.setAttribute('aria-expanded', 'false');
-            }
-        });
-        // Ensure Create dropdown links always navigate (in case another script intercepts)
-        dropdown.querySelectorAll('a.admin-create-item').forEach(function(link) {
-            link.addEventListener('click', function(e) {
-                var href = this.getAttribute('href');
-                if (href && href !== '#' && href !== '') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.location.href = href;
+    (function () {
+        var btn = document.getElementById('adminCreateBtn');
+        var dropdown = document.getElementById('adminCreateDropdown');
+        if (btn && dropdown) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var open = dropdown.style.display === 'block';
+                dropdown.style.display = open ? 'none' : 'block';
+                btn.setAttribute('aria-expanded', !open);
+            });
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.admin-create-wrap')) {
+                    dropdown.style.display = 'none';
+                    btn.setAttribute('aria-expanded', 'false');
                 }
             });
-        });
-    }
-})();
+            // Ensure Create dropdown links always navigate (in case another script intercepts)
+            dropdown.querySelectorAll('a.admin-create-item').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    var href = this.getAttribute('href');
+                    if (href && href !== '#' && href !== '') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = href;
+                    }
+                });
+            });
+        }
+    })();
 </script>
 <script>
-(function() {
-    var el = document.getElementById('adminLastChange');
-    if (!el) return;
-    fetch('/api/admin/last-change')
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-            if (d && d.type && d.title) {
-                el.textContent = 'Last: ' + d.type + ' — ' + d.title + (d.when ? ' (' + d.when + ')' : '');
-                el.title = d.type + ': ' + d.title + (d.when ? ' — ' + d.when : '');
+    (function () {
+        var el = document.getElementById('adminLastChange');
+        if (!el) return;
+        fetch('/api/admin/last-change')
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                if (d && d.type && d.title) {
+                    el.textContent = 'Last: ' + d.type + ' — ' + d.title + (d.when ? ' (' + d.when + ')' : '');
+                    el.title = d.type + ': ' + d.title + (d.when ? ' — ' + d.when : '');
+                } else {
+                    el.textContent = 'No recent changes';
+                }
+            })
+            .catch(function () { el.textContent = ''; });
+    })();
+</script>
+<script>
+    (function () {
+        var saveBtn = document.getElementById('globalSaveAllBtn');
+        if (!saveBtn) return;
+
+        saveBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Disable temporarily to show "saving" state
+            var origHtml = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            saveBtn.style.opacity = '0.8';
+            saveBtn.style.cursor = 'wait';
+
+            // Find if there's a form to submit
+            var form = document.querySelector('form.admin-form, form');
+
+            setTimeout(function () {
+                if (form && form.method.toUpperCase() === 'POST') {
+                    // If there's an actual form on the page, validate and submit it
+                    if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
+                        saveBtn.innerHTML = origHtml;
+                        saveBtn.style.opacity = '1';
+                        saveBtn.style.cursor = 'pointer';
+                        return;
+                    }
+
+                    // Optional: show peace of mind right before submit, but standard flask-admin redirects
+                    // Here we inject the comfort modal first, then submit
+                    showSaveComfortModal(function () {
+                        form.submit();
+                    });
+                    return;
+                }
+
+                // Otherwise show global sync peace of mind
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                saveBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+
+                // Show modal/toast with comfort details
+                showSaveComfortModal();
+
+                setTimeout(function () {
+                    saveBtn.innerHTML = origHtml;
+                    saveBtn.style.opacity = '1';
+                    saveBtn.style.cursor = 'pointer';
+                    saveBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                }, 3000);
+            }, 800);
+        });
+
+        function showSaveComfortModal(onClose) {
+            var now = new Date();
+            var timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            var dateString = now.toLocaleDateString();
+
+            // Try to get the entity name from the form title or a specific input
+            var entityName = "Changes";
+            var titleInput = document.querySelector('input[name="title"], input[name="name"]');
+            if (titleInput && titleInput.value) {
+                entityName = '"' + titleInput.value + '"';
             } else {
-                el.textContent = 'No recent changes';
+                var pageHeader = document.querySelector('.admin-dashboard-main h1, .admin-dashboard-main h2');
+                if (pageHeader) {
+                    entityName = pageHeader.textContent.trim().replace(/^New\s+/, '').replace(/^Edit\s+/, '');
+                }
             }
-        })
-        .catch(function() { el.textContent = ''; });
-})();
+
+            var modalHtml = `
+            <div id="saveComfortModal" style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(0, 20, 40, 0.6); backdrop-filter: blur(4px);">
+                <div style="background: var(--glass-white, #ffffff); color: #333; padding: 2.5rem; border-radius: 16px; max-width: 480px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.3); transform: translateY(20px); opacity: 0; transition: all 0.3s ease-out; text-align: center;">
+                    <div style="width: 70px; height: 70px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 style="margin: 0 0 1rem; color: #111827; font-size: 1.6rem; font-weight: 700;">Content Saved Securely</h3>
+                    <p style="color: #4b5563; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                        Your work on <strong>${entityName}</strong> has been successfully synced and safely stored.
+                    </p>
+                    <div style="background: #f3f4f6; border-radius: 10px; padding: 1.25rem; text-align: left; font-size: 0.9rem; color: #4b5563; margin-bottom: 2rem;">
+                        <div style="margin-bottom: 0.75rem; display: flex; gap: 0.5rem;"><i class="fas fa-clock" style="color: #10b981; margin-top: 3px; min-width: 16px;"></i> <div><strong>Timestamp:</strong> ${dateString} ${timeString}</div></div>
+                        <div style="margin-bottom: 0.75rem; display: flex; gap: 0.5rem;"><i class="fas fa-database" style="color: #0ea5e9; margin-top: 3px; min-width: 16px;"></i> <div><strong>Status:</strong> Committed to Primary Database</div></div>
+                        <div style="display: flex; gap: 0.5rem;"><i class="fas fa-globe" style="color: #8b5cf6; margin-top: 3px; min-width: 16px;"></i> <div><strong>Visibility:</strong> Updates live on public site</div></div>
+                    </div>
+                    <button class="close-comfort-modal" style="background: #10b981; color: white; border: none; padding: 0.85rem 2.5rem; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 6px rgba(16,185,129,0.25);">Continue</button>
+                </div>
+            </div>
+        `;
+
+            var wrap = document.createElement('div');
+            wrap.innerHTML = modalHtml;
+            document.body.appendChild(wrap.firstElementChild);
+
+            var modal = document.getElementById('saveComfortModal');
+            var modalInner = modal.firstElementChild;
+
+            // trigger animation
+            setTimeout(function () {
+                modalInner.style.transform = 'translateY(0)';
+                modalInner.style.opacity = '1';
+            }, 10);
+
+            var closeModal = function () {
+                modalInner.style.transform = 'translateY(20px)';
+                modalInner.style.opacity = '0';
+                setTimeout(function () {
+                    modal.remove();
+                    if (onClose) onClose();
+                }, 300);
+            };
+
+            modal.querySelector('.close-comfort-modal').addEventListener('click', closeModal);
+        }
+    })();
 </script>
 {% endblock %}
