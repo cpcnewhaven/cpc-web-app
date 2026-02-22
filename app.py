@@ -2361,17 +2361,13 @@ class PaperView(AuthenticatedModelView):
         'thumbnail_url': 'Thumbnail URL',
     }
     form_overrides = {
-        'speaker': SelectField,
+        'speaker': StringField,
         'date_published': DatePickerField,
     }
     
-    def get_form(self):
-        form = super().get_form()
-        if form and hasattr(form, 'speaker') and has_app_context():
-            form.speaker.choices = _admin_speaker_choices()
-            if not form.speaker.choices:
-                form.speaker.choices = [('', '— No admins —')]
-        return form
+    form_widget_args = {
+        'speaker': {'placeholder': 'e.g. Pastor Alex Rodriguez'},
+    }
 
 class SermonView(AuthenticatedModelView):
     column_list = ('id', 'title', 'series', 'episode_number', 'speaker', 'date', 'scripture', 'active', 'expires_at')
@@ -2415,8 +2411,8 @@ class SermonView(AuthenticatedModelView):
     }
 
     form_overrides = {
-        'date': DatePickerField, 
-        'speaker': SelectField
+        'date': DatePickerField,
+        'speaker': StringField,
     }
     
     form_args = {
@@ -2432,10 +2428,10 @@ class SermonView(AuthenticatedModelView):
             'query_factory': lambda: PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all(),
             'allow_blank': True
         },
-        'speaker': {'choices': []}, # populated in get_form
     }
 
     form_widget_args = {
+        'speaker': {'placeholder': 'e.g. Pastor Alex Rodriguez'},
         'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
         'youtube_url': {'placeholder': 'https://youtube.com/watch?v=...'},
         'apple_podcasts_url': {'placeholder': 'https://podcasts.apple.com/podcast/...'},
@@ -2443,18 +2439,6 @@ class SermonView(AuthenticatedModelView):
         'audio_file_url': {'placeholder': 'https://storage.googleapis.com/.../sermon.mp3'},
         'video_file_url': {'placeholder': 'https://storage.googleapis.com/.../video.mp4'}
     }
-
-    def get_form(self):
-        form = super().get_form()
-        if form and hasattr(form, 'speaker') and has_app_context():
-            form.speaker.choices = _admin_speaker_choices()
-            if not form.speaker.choices:
-                form.speaker.choices = [('', '— No admins —')]
-            if has_request_context():
-                current = session.get('username')
-                if current and (not form.speaker.data or not str(form.speaker.data).strip()):
-                    form.speaker.data = current
-        return form
 
     def on_form_prefill(self, form, id):
         sermon = self.get_one(id)
