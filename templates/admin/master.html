@@ -332,10 +332,10 @@
                 style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
                     class="fas fa-graduation-cap" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> New
                 Teaching Series</a>
-            <a href="/admin/teachingseriessession/new/" class="admin-create-item"
+            <a href="/admin/teachingseries/" class="admin-create-item"
                 style="display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9rem;"><i
-                    class="fas fa-file-pdf" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Add Series
-                Session (PDF)</a>
+                    class="fas fa-bolt" style="width: 1.25rem; text-align: center; color: #7dd8ff;"></i> Manage Series &
+                Sessions</a>
         </div>
     </div>
 </div>
@@ -350,7 +350,7 @@
 
     <button type="button" id="globalSaveAllBtn"
         style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 8px rgba(16,185,129,0.35); transition: all 0.2s; margin-left: 0.5rem;">
-        <i class="fas fa-save"></i> Save All
+        <i class="fas fa-rocket"></i> Save & Deploy
     </button>
 
     {% if session.get('username') %}
@@ -481,7 +481,7 @@
                 }
 
                 // Otherwise show global sync peace of mind
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Deployed!';
                 saveBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
 
                 // Show modal/toast with comfort details
@@ -519,7 +519,7 @@
                     <div style="width: 70px; height: 70px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
                         <i class="fas fa-check"></i>
                     </div>
-                    <h3 style="margin: 0 0 1rem; color: #111827; font-size: 1.6rem; font-weight: 700;">Content Saved Securely</h3>
+                    <h3 style="margin: 0 0 1rem; color: #111827; font-size: 1.6rem; font-weight: 700;">Content Deployed Securely</h3>
                     <p style="color: #4b5563; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.5;">
                         Your work on <strong>${entityName}</strong> has been successfully synced and safely stored.
                     </p>

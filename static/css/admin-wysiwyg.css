@@ -81,8 +81,12 @@
 .admin-body .admin-preview-card .preview-description {
   font-size: 0.85rem;
   line-height: 1.55;
-  color: #ffffff;
+  color: #ffffff !important;
   margin: 0;
+}
+
+.admin-body .admin-preview-card .preview-description * {
+  color: #ffffff !important;
 }
 
 .admin-body .admin-preview-card .preview-description p { margin: 0 0 0.5em 0; }

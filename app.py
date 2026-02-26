@@ -513,6 +513,7 @@ def api_pastor_teaching_series_detail(series_id):
                 'number': sess.number,
                 'title': sess.title,
                 'description': sess.description or '',
+                'session_date': sess.session_date.isoformat() if sess.session_date else None,
                 'pdf_url': sess.pdf_url,
             }
             for sess in sessions
@@ -2863,6 +2864,9 @@ class TeachingSeriesOverviewView(BaseView):
 
 class TeachingSeriesView(AuthenticatedModelView):
     """Admin for pastor teaching series (e.g. Total Christ). Hidden from menu; use Overview page."""
+    create_template = 'admin/teaching_series_create.html'
+    edit_template = 'admin/teaching_series_edit.html'
+    inline_models = (TeachingSeriesSession,)
     column_list = ('id', 'title', 'active', 'sort_order', 'start_date', 'end_date', 'date_entered', 'session_count')
     column_searchable_list = ('title', 'description', 'event_info')
     column_filters = ('active',)
@@ -2945,6 +2949,70 @@ class TeachingSeriesSessionView(AuthenticatedModelView):
 
     def on_model_change(self, form, model, is_created):
         pass  # no special handling needed, model event listener handles auto-numbering
+
+
+class QuickAddSessionsView(BaseView):
+    """Admin view for quick adding bulk sessions to a teaching series."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    def is_visible(self):
+        return False
+
+    @expose('/', methods=['GET', 'POST'])
+    def index(self):
+        import calendar
+        series_id = request.args.get('series_id', type=int)
+        if not series_id:
+            flash('No series specified.', 'error')
+            return redirect(url_for('teaching_series_overview.index'))
+            
+        series = TeachingSeries.query.get_or_404(series_id)
+        
+        if request.method == 'POST':
+            num_sessions = request.form.get('num_sessions', type=int, default=5)
+            start_date_str = request.form.get('start_date')
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                start_date = date.today()
+
+            def get_last_friday(year, month):
+                last_day = calendar.monthrange(year, month)[1]
+                last_date = date(year, month, last_day)
+                offset = (last_date.weekday() - 4) % 7
+                return last_date - timedelta(days=offset)
+
+            current_year = start_date.year
+            current_month = start_date.month
+            
+            existing_count = len(series.sessions) if series.sessions else 0
+            
+            for i in range(1, num_sessions + 1):
+                session_date = get_last_friday(current_year, current_month)
+                sess_num = existing_count + i
+                
+                sess = TeachingSeriesSession(
+                    series_id=series.id,
+                    number=sess_num,
+                    title=f'Session {sess_num}',
+                    session_date=session_date
+                )
+                db.session.add(sess)
+                
+                current_month += 1
+                if current_month > 12:
+                    current_month = 1
+                    current_year += 1
+                    
+            db.session.commit()
+            flash(f'Successfully added {num_sessions} sessions starting from {start_date.strftime("%b %Y")}.', 'success')
+            return redirect(url_for('teachingseriessession.index_view', flt0_0=series.id))
+            
+        return self.render('admin/quick_add_sessions.html', series=series, today=date.today())
 
 
 # Custom Admin Dashboard
@@ -3162,6 +3230,7 @@ with app.app_context():
     admin.add_view(BannerAlertView(name='Banner alert', endpoint='banner_alert', category='More features'))
     admin.add_view(ReorderSessionsView(name='Reorder Sessions', endpoint='reorder_sessions', category='More features'))
     admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Series Sessions', category='More features'))
+    admin.add_view(QuickAddSessionsView(name='Quick Add Sessions', endpoint='quick_add_sessions', category='More features'))
     admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
 
 if __name__ == '__main__':

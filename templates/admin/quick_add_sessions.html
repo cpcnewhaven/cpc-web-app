@@ -1,0 +1,135 @@
+{% extends 'admin/master.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    .qa-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(0, 50, 120, 0.26);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 80, 160, 0.45);
+        border-radius: var(--radius-lg);
+        color: white;
+    }
+    .qa-header {
+        margin-bottom: 2rem;
+    }
+    .qa-header h1 {
+        font-size: 1.5rem;
+        margin: 0 0 0.5rem 0;
+    }
+    .qa-header p {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+    }
+    .qa-form-group {
+        margin-bottom: 1.5rem;
+    }
+    .qa-form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+    }
+    .qa-form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-md);
+        color: white;
+        font-size: 1rem;
+    }
+    .qa-form-group input:focus {
+        outline: none;
+        border-color: var(--cpc-blue-light);
+        background: rgba(255, 255, 255, 0.15);
+    }
+    .qa-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .btn-create {
+        background: var(--cpc-blue);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background 0.2s;
+    }
+    .btn-create:hover {
+        background: var(--cpc-blue-dark);
+    }
+    .btn-cancel {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s;
+    }
+    .btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+    }
+    .qa-info-box {
+        background: rgba(0, 163, 136, 0.15);
+        border-left: 4px solid var(--cpc-green);
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+    }
+    .qa-info-box p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: rgba(255,255,255,0.9);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="qa-container">
+    <div class="qa-header">
+        <h1><i class="fas fa-bolt"></i> Quick Add Sessions</h1>
+        <p>Adding sessions for: <strong>{{ series.title }}</strong></p>
+    </div>
+
+    <div class="qa-info-box">
+        <p><i class="fas fa-info-circle"></i> Sessions will be automatically scheduled for the <strong>last Friday</strong> of each consecutive month, starting from the month you select.</p>
+    </div>
+
+    <form method="POST">
+        <div class="qa-form-group">
+            <label for="num_sessions">Number of Sessions to Add</label>
+            <input type="number" id="num_sessions" name="num_sessions" value="5" min="1" max="24" required>
+        </div>
+
+        <div class="qa-form-group">
+            <label for="start_date">Start Month (Date)</label>
+            <input type="date" id="start_date" name="start_date" value="{{ today.strftime('%Y-%m-%d') }}" required>
+        </div>
+
+        <div class="qa-actions">
+            <button type="submit" class="btn-create">
+                <i class="fas fa-plus"></i> Create Sessions
+            </button>
+            <a href="{{ url_for('teaching_series_overview.index') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
