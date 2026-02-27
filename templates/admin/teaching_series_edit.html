@@ -10,3 +10,50 @@
         Sessions</strong> section below.
 </div>
 {% endblock %}
+
+{% block tail %}
+{{ super() }}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Look for the "Add" button that flask-admin creates for Inline Models.
+        // Specifically for TeachingSeriesSession. It'll be inside a container with class .inline-field-list
+        const addBtns = document.querySelectorAll('.inline-add-field');
+        if (!addBtns || addBtns.length === 0) return;
+
+        // Assuming there's only one inline model (Sessions), we target its container
+        const addBtn = addBtns[0];
+        const container = addBtn.closest('.form-group') || addBtn.parentElement;
+
+        // Create the wizard UI
+        const wizardMarkup = `
+        <div id="sessions-wizard" style="background:rgba(0,122,255,0.05); padding:20px; border-radius:8px; margin-bottom:20px; border:1px solid rgba(0,122,255,0.2);">
+            <h4 style="margin-top:0; color:var(--cpc-blue);"><i class="fas fa-magic"></i> Class Setup Wizard</h4>
+            <p>Adding more classes to this existing series? Enter how many new classes you need:</p>
+            <div class="input-group" style="max-width:300px;">
+                <input type="number" id="wizard-session-count" class="form-control" min="1" max="50" value="1" placeholder="e.g. 3">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" id="wizard-generate-btn" type="button" style="background-color: var(--cpc-blue); border-color: var(--cpc-blue);">Add Entries</button>
+                </span>
+            </div>
+            <small style="display:block; margin-top:10px; color:#666;">(Scroll down to see the existing and newly added classes below)</small>
+        </div>
+    `;
+
+        // Insert wizard before the sessions inline list
+        container.insertAdjacentHTML('beforebegin', wizardMarkup);
+
+        document.getElementById('wizard-generate-btn').addEventListener('click', function () {
+            const count = parseInt(document.getElementById('wizard-session-count').value, 10) || 1;
+            // Click the Flask-Admin exact add button 'count' times
+            for (let i = 0; i < count; i++) {
+                addBtn.click();
+            }
+
+            // Auto-scroll slightly so they see the new fields
+            setTimeout(() => {
+                window.scrollBy({ top: 400, behavior: 'smooth' });
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}
