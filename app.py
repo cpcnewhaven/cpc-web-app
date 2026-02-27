@@ -55,6 +55,15 @@ try:
         Select2Field.iter_choices = patch_iter_choices(Select2Field.iter_choices)
     except (ImportError, AttributeError):
         pass
+
+    # Patch RenderTemplateWidget to return Markup (prevents inline forms from rendering as raw HTML)
+    from flask_admin.model.widgets import RenderTemplateWidget
+    from markupsafe import Markup
+    original_call = RenderTemplateWidget.__call__
+    def render_template_widget_call(self, field, **kwargs):
+        return Markup(original_call(self, field, **kwargs))
+    RenderTemplateWidget.__call__ = render_template_widget_call
+
 except (ImportError, AttributeError) as e:
     # If imports fail, log but don't crash — maybe a different version
     import logging
