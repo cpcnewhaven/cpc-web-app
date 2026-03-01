@@ -98,7 +98,8 @@ class Sermon(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
-    speaker = db.Column(db.String(100), nullable=True)
+    speaker = db.Column(db.String(100), nullable=True)  # Legacy field, kept for backward compatibility
+    speaker_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # Foreign key to User
     scripture = db.Column(db.String(200))
     date = db.Column(db.Date, nullable=False)
     active = db.Column(db.Boolean, default=True)
@@ -131,6 +132,7 @@ class Sermon(db.Model):
     series = db.relationship('SermonSeries', backref='sermons')
     book = db.relationship('BibleBook')
     beyond_episode = db.relationship('PodcastEpisode', foreign_keys=[beyond_episode_id])
+    speaker_user = db.relationship('User', foreign_keys=[speaker_id], backref='sermons')
 
 class PodcastEpisode(db.Model):
     __tablename__ = 'podcast_episodes'

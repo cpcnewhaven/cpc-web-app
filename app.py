@@ -200,6 +200,7 @@ def ensure_db_columns():
             ('video_file_url', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('beyond_episode_id', 'INTEGER', 'INTEGER'),
             ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
+            ('speaker_id', 'INTEGER', 'INTEGER'),
         ],
         'podcast_episodes': [
             ('expires_at', 'DATE', 'DATE'),
@@ -1824,6 +1825,9 @@ def admin_bulk_sermons():
     if action == 'delete':
         from admin_utils import bulk_delete_content
         return jsonify({'success': bulk_delete_content(Sermon, ids)})
+    elif action in ('publish', 'archive', 'draft'):
+        from admin_utils import bulk_update_sermons
+        return jsonify({'success': bulk_update_sermons(ids, action)})
     
     return jsonify({'success': False, 'error': 'Invalid action'})
 
@@ -2375,22 +2379,18 @@ class PaperView(AuthenticatedModelView):
         'date_published': DatePickerField,
     }
     
-    form_widget_args = {
-        'speaker': {'placeholder': 'e.g. Pastor Alex Rodriguez'},
-    }
-
 class SermonView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'series', 'episode_number', 'speaker', 'date', 'scripture', 'active', 'expires_at')
-    column_searchable_list = ('title', 'speaker', 'scripture')
-    column_filters = ('series', 'speaker', 'date', 'active')
-    column_sortable_list = ('date', 'title', 'speaker', 'episode_number')
+    column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'active', 'expires_at')
+    column_searchable_list = ('title', 'scripture')
+    column_filters = ('series', 'speaker_user', 'date', 'active')
+    column_sortable_list = ('date', 'title', 'episode_number')
     column_default_sort = ('date', True)
-    form_excluded_columns = ['id']
+    form_excluded_columns = ['id', 'speaker']  # Exclude legacy speaker field from form
 
     form_columns = (
         'series', 'episode_number',
         'book', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end',
-        'title', 'speaker', 'date',
+        'title', 'speaker_user', 'date',
         'audio_file_url', 'video_file_url',
         'beyond_episode',
         'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url',
@@ -2410,10 +2410,16 @@ class SermonView(AuthenticatedModelView):
         'podcast_thumbnail_url': 'Thumbnail',
         'active': 'Status',
         'expires_at': 'Expires',
-        'speaker': 'Speaker',
+        'speaker_user': 'Speaker',
     }
     
-    column_formatters = {'active': _format_sermon_status}
+    column_formatters = {
+        'active': _format_sermon_status,
+        'speaker_user': lambda view, context, model, name: (
+            model.speaker_user.username if model.speaker_user 
+            else (model.speaker if model.speaker else '—')
+        )
+    }
 
     form_extra_fields = {
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
@@ -2422,7 +2428,6 @@ class SermonView(AuthenticatedModelView):
 
     form_overrides = {
         'date': DatePickerField,
-        'speaker': StringField,
     }
     
     form_args = {
@@ -2438,10 +2443,14 @@ class SermonView(AuthenticatedModelView):
             'query_factory': lambda: PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all(),
             'allow_blank': True
         },
+        'speaker_user': {
+            'query_factory': lambda: User.query.order_by(User.username).all(),
+            'allow_blank': True,
+            'get_label': lambda u: u.username
+        },
     }
 
     form_widget_args = {
-        'speaker': {'placeholder': 'e.g. Pastor Alex Rodriguez'},
         'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
         'youtube_url': {'placeholder': 'https://youtube.com/watch?v=...'},
         'apple_podcasts_url': {'placeholder': 'https://podcasts.apple.com/podcast/...'},
@@ -2454,6 +2463,9 @@ class SermonView(AuthenticatedModelView):
         sermon = self.get_one(id)
         if not sermon:
             return
+        # Ensure speaker_user field is populated from database when editing
+        if hasattr(form, 'speaker_user') and sermon.speaker_user:
+            form.speaker_user.data = sermon.speaker_user
         if hasattr(form, 'expiration_preset'):
             form.expiration_preset.data = 'specific' if getattr(sermon, 'expires_at', None) else 'never'
         if hasattr(form, 'expiration_date') and getattr(sermon, 'expires_at', None):
@@ -2520,6 +2532,40 @@ class SermonView(AuthenticatedModelView):
         db.session.commit()
         flash('Status updated.', 'success')
         return redirect(url_for('sermon.index_view'))
+    
+    @action('bulk_publish', 'Publish Selected', 'Are you sure you want to publish the selected sermons?')
+    def bulk_publish(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                sermon = Sermon.query.get(id)
+                if sermon:
+                    sermon.active = True
+                    sermon.archived = False
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully published {count} sermons', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error publishing sermons: {str(e)}', 'error')
+            return False
+    
+    @action('bulk_archive', 'Archive Selected', 'Are you sure you want to archive the selected sermons?')
+    def bulk_archive(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                sermon = Sermon.query.get(id)
+                if sermon:
+                    sermon.active = False
+                    sermon.archived = True
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully archived {count} sermons', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error archiving sermons: {str(e)}', 'error')
+            return False
     
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected sermons?')
     def bulk_delete(self, ids):

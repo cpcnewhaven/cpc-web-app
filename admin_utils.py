@@ -89,6 +89,31 @@ def bulk_update_announcements(ids, field, value):
         flash(f'Error updating announcements: {str(e)}', 'error')
         return False
 
+def bulk_update_sermons(ids, status):
+    """Bulk update sermon status (publish, archive, draft)"""
+    try:
+        count = 0
+        for id in ids:
+            sermon = Sermon.query.get(id)
+            if sermon:
+                if status == 'publish':
+                    sermon.active = True
+                    sermon.archived = False
+                elif status == 'archive':
+                    sermon.active = False
+                    sermon.archived = True
+                elif status == 'draft':
+                    sermon.active = False
+                    sermon.archived = False
+                count += 1
+        
+        db.session.commit()
+        flash(f'Successfully updated {count} sermons', 'success')
+        return True
+    except Exception as e:
+        flash(f'Error updating sermons: {str(e)}', 'error')
+        return False
+
 def bulk_delete_content(model_class, ids):
     """Bulk delete content"""
     try:

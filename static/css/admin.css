@@ -370,7 +370,7 @@ body.admin-body {
   margin-bottom: 0.25rem;
 }
 
-/* Short fields (dropdowns, toggles) – one or two per row */
+/* Short fields (dropdowns, toggles, dates, numbers) – one or two per row */
 .admin-body form.admin-form-compact .form-group.form-group-short {
   min-width: 0;
 }
@@ -378,6 +378,22 @@ body.admin-body {
 .admin-body form.admin-form-compact .form-group.form-group-short label {
   margin-bottom: 0.25rem;
   font-size: 0.8125rem;
+}
+
+/* Paired fields (start/end dates, chapter/verse pairs, etc.) - ensure they stay side-by-side */
+.admin-body form.admin-form-compact .form-group.form-group-paired {
+  min-width: 0;
+}
+
+/* Date and number inputs - compact styling */
+.admin-body form.admin-form-compact .form-group-short input[type="date"],
+.admin-body form.admin-form-compact .form-group-short input[type="datetime-local"],
+.admin-body form.admin-form-compact .form-group-short input[type="number"] {
+  max-width: 100%;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.875rem;
+  min-height: 34px;
 }
 
 /* Dropdowns: compact select styling */
