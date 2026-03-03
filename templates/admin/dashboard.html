@@ -3,8 +3,7 @@
 {% block head_css %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
     /* Liquid Glass Admin Override */
     body {
@@ -12,19 +11,21 @@
         font-family: var(--font-primary) !important;
         color: var(--text-primary) !important;
     }
-    
-    .navbar, .navbar-default {
+
+    .navbar,
+    .navbar-default {
         background: var(--glass-bg) !important;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: none !important;
         box-shadow: var(--glass-shadow) !important;
     }
-    
-    .navbar-brand, .navbar-nav > li > a {
+
+    .navbar-brand,
+    .navbar-nav>li>a {
         color: var(--text-white) !important;
     }
-    
+
     /* Welcome Header */
     .admin-welcome {
         background: var(--glass-white);
@@ -38,7 +39,7 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .admin-welcome::before {
         content: '';
         position: absolute;
@@ -48,14 +49,14 @@
         height: 1px;
         background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
     }
-    
+
     .admin-welcome h1 {
         color: var(--text-white);
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
         font-weight: 700;
     }
-    
+
     .admin-date {
         color: rgba(255, 255, 255, 0.8);
         font-size: 1.1rem;
@@ -64,17 +65,17 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .admin-date i {
         color: var(--cpc-blue-light);
     }
-    
+
     .admin-welcome p {
         color: rgba(255, 255, 255, 0.9);
         font-size: 1.1rem;
         margin: 0;
     }
-    
+
     /* Glass Stats Cards */
     .stat-card {
         background: rgba(0, 50, 120, 0.28);
@@ -87,13 +88,13 @@
         transition: var(--transition-base);
         text-align: center;
     }
-    
+
     .stat-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 40px rgba(0, 50, 120, 0.35);
         background: rgba(0, 50, 120, 0.38);
     }
-    
+
     .stat-number {
         font-size: 3rem;
         font-weight: 700;
@@ -101,7 +102,7 @@
         margin-bottom: 0.5rem;
         line-height: 1;
     }
-    
+
     .stat-label {
         color: rgba(255, 255, 255, 0.8);
         font-size: 1rem;
@@ -109,32 +110,34 @@
         letter-spacing: 1px;
         margin-bottom: 0.5rem;
     }
-    
+
     .stat-sub {
         color: rgba(255, 255, 255, 0.6);
         font-size: 0.9rem;
     }
-    
+
     .stat-card-link {
         text-decoration: none !important;
         color: inherit;
         display: block;
         cursor: pointer;
     }
+
     .stat-card-link:hover {
         color: inherit;
     }
-    
+
     .wizard-btn-amber {
         background: #f59e0b !important;
         border-color: #f59e0b !important;
     }
+
     .wizard-btn-amber:hover {
         background: #d97706 !important;
         border-color: #d97706 !important;
         color: white !important;
     }
-    
+
     /* Wizard Cards */
     .wizard-card {
         background: rgba(0, 50, 120, 0.26);
@@ -150,7 +153,7 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .wizard-card::before {
         content: '';
         position: absolute;
@@ -160,34 +163,34 @@
         height: 3px;
         background: linear-gradient(90deg, var(--cpc-blue), var(--cpc-blue-light));
     }
-    
+
     .wizard-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 40px rgba(0, 50, 120, 0.35);
         background: rgba(0, 50, 120, 0.36);
     }
-    
+
     .wizard-icon {
         font-size: 2.5rem;
         color: var(--cpc-blue-light);
         margin-bottom: 1rem;
         display: block;
     }
-    
+
     .wizard-title {
         color: var(--text-white);
         font-size: 1.3rem;
         font-weight: 600;
         margin-bottom: 0.5rem;
     }
-    
+
     .wizard-desc {
         color: rgba(255, 255, 255, 0.7);
         font-size: 0.95rem;
         line-height: 1.6;
         margin-bottom: 1rem;
     }
-    
+
     .wizard-btn {
         background: var(--cpc-blue);
         color: white;
@@ -202,7 +205,7 @@
         gap: 0.5rem;
         text-decoration: none;
     }
-    
+
     .wizard-btn:hover {
         background: var(--cpc-blue-dark);
         transform: translateY(-2px);
@@ -210,7 +213,7 @@
         color: white;
         text-decoration: none;
     }
-    
+
     /* Recent Content Cards */
     .content-card {
         background: rgba(0, 50, 120, 0.26);
@@ -223,31 +226,31 @@
         box-shadow: 0 6px 24px rgba(0, 50, 120, 0.25);
         transition: var(--transition-base);
     }
-    
+
     .content-card:hover {
         background: rgba(0, 50, 120, 0.34);
         transform: translateY(-2px);
         box-shadow: 0 10px 30px rgba(0, 50, 120, 0.32);
     }
-    
+
     .content-card h5 {
         color: var(--text-white);
         font-size: 1.1rem;
         margin-bottom: 0.5rem;
         font-weight: 600;
     }
-    
+
     .content-card p {
         color: rgba(255, 255, 255, 0.8);
         font-size: 0.95rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .content-card small {
         color: rgba(255, 255, 255, 0.6);
         font-size: 0.85rem;
     }
-    
+
     .badge-glass {
         background: rgba(255, 255, 255, 0.2);
         color: var(--text-white);
@@ -257,7 +260,7 @@
         font-weight: 600;
         margin-left: 0.5rem;
     }
-    
+
     /* Single responsive dashboard grid – no sidebars */
     .dashboard-grid {
         display: grid;
@@ -265,16 +268,19 @@
         gap: 1.5rem 2rem;
         margin-bottom: 2rem;
     }
+
     @media (min-width: 640px) {
         .dashboard-grid {
             grid-template-columns: repeat(2, 1fr);
         }
     }
+
     @media (min-width: 900px) {
         .dashboard-grid {
             grid-template-columns: repeat(3, 1fr);
         }
     }
+
     @media (min-width: 1200px) {
         .dashboard-grid {
             grid-template-columns: repeat(4, 1fr);
@@ -285,6 +291,7 @@
     .dashboard-grid.stat-cards {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
+
     @media (min-width: 640px) {
         .dashboard-grid.stat-cards {
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -295,11 +302,13 @@
     .dashboard-grid.wizard-cards {
         grid-template-columns: 1fr;
     }
+
     @media (min-width: 640px) {
         .dashboard-grid.wizard-cards {
             grid-template-columns: repeat(2, 1fr);
         }
     }
+
     @media (min-width: 1000px) {
         .dashboard-grid.wizard-cards {
             grid-template-columns: repeat(3, 1fr);
@@ -310,6 +319,7 @@
     .dashboard-grid.recent-content {
         grid-template-columns: 1fr;
     }
+
     @media (min-width: 768px) {
         .dashboard-grid.recent-content {
             grid-template-columns: repeat(2, 1fr);
@@ -323,12 +333,13 @@
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
+
     @media (min-width: 640px) {
         .quick-actions.stat-cards {
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         }
     }
-    
+
     /* Cozy touches */
     .welcome-emoji {
         font-size: 2rem;
@@ -376,16 +387,16 @@
         }
 
         /* Banner alerts: stack buttons below text */
-        .banner-alerts-card .wizard-card > div {
+        .banner-alerts-card .wizard-card>div {
             flex-direction: column !important;
             align-items: flex-start !important;
         }
 
-        .banner-alerts-card .wizard-card > div > div:last-child {
+        .banner-alerts-card .wizard-card>div>div:last-child {
             width: 100%;
         }
 
-        .banner-alerts-card .wizard-card > div > div:last-child .wizard-btn {
+        .banner-alerts-card .wizard-card>div>div:last-child .wizard-btn {
             width: 100%;
             justify-content: center;
             text-align: center;
@@ -455,9 +466,10 @@
             <div class="stat-label">Gallery Images</div>
             <div class="stat-sub">Total Photos</div>
         </a>
-        
+
         {% if latest_luke %}
-        <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link" style="background: linear-gradient(135deg, var(--cpc-blue), var(--cpc-blue-dark)); border: 2px solid var(--cpc-blue-light);">
+        <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link"
+            style="background: linear-gradient(135deg, var(--cpc-blue), var(--cpc-blue-dark)); border: 2px solid var(--cpc-blue-light);">
             <div class="stat-number" style="font-size: 2.5rem;">Luke {{ latest_luke.latest_by_date.chapter }}</div>
             <div class="stat-label">Latest Luke Chapter</div>
             <div class="stat-sub" style="color: rgba(255, 255, 255, 0.9); margin-top: 0.5rem;">
@@ -475,21 +487,26 @@
     <!-- Yellow bar / Banner alerts (front-end top bar) – full width -->
     <div class="banner-alerts-card" style="margin-bottom: 2rem;">
         <div class="wizard-card" style="border-left: 4px solid #f59e0b;">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+            <div
+                style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
                 <div>
                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                         <span style="width: 12px; height: 12px; border-radius: 2px; background: #f59e0b;"></span>
-                        <h3 style="color: var(--text-white); font-size: 1.25rem; margin: 0;">Top yellow bar (banner alerts)</h3>
+                        <h3 style="color: var(--text-white); font-size: 1.25rem; margin: 0;">Top yellow bar (banner
+                            alerts)</h3>
                     </div>
                     <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.95rem;">
-                        Weather, parking, and site-wide alerts shown at the top of every page. Create an announcement and check <strong>Show in top bar</strong> to display it in the yellow bar.
+                        Weather, parking, and site-wide alerts shown at the top of every page. Create an announcement
+                        and check <strong>Show in top bar</strong> to display it in the yellow bar.
                     </p>
                 </div>
                 <div style="display: flex; gap: 0.75rem; flex-shrink: 0;">
-                    <a href="{{ url_for('announcement.index_view') }}" class="wizard-btn" style="text-decoration: none;">
+                    <a href="{{ url_for('announcement.index_view') }}" class="wizard-btn"
+                        style="text-decoration: none;">
                         <i class="fas fa-list"></i> Manage announcements
                     </a>
-                    <a href="/admin/banner-alert/new" class="wizard-btn wizard-btn-amber" style="text-decoration: none;">
+                    <a href="/admin/banner-alert/new" class="wizard-btn wizard-btn-amber"
+                        style="text-decoration: none;">
                         <i class="fas fa-plus"></i> Add banner alert
                     </a>
                 </div>
@@ -498,8 +515,7 @@
     </div>
 
     <!-- Content Wizards -->
-    <h2
-        style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.8rem;">
+    <h2 style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.8rem;">
         <i class="fas fa-magic"></i> Quick Wizards
     </h2>
     <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
@@ -509,8 +525,7 @@
 
     <div class="dashboard-grid wizard-cards">
         <!-- Announcement Wizard -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/announcement/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/announcement/new/'">
             <i class="fas fa-bullhorn wizard-icon"></i>
             <div class="wizard-title">New Announcement</div>
             <div class="wizard-desc">
@@ -523,8 +538,7 @@
         </div>
 
         <!-- Sunday Sermon Wizard (book → chapter → verse) -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/sermon/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/sermon/new/'">
             <i class="fas fa-microphone wizard-icon"></i>
             <div class="wizard-title">New Sunday Sermon</div>
             <div class="wizard-desc">
@@ -538,8 +552,7 @@
         </div>
 
         <!-- Podcast Wizard -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/podcastepisode/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/podcastepisode/new/'">
             <i class="fas fa-podcast wizard-icon"></i>
             <div class="wizard-title">New Podcast Episode</div>
             <div class="wizard-desc">
@@ -552,8 +565,7 @@
         </div>
 
         <!-- Event Wizard -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/ongoingevent/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/ongoingevent/new/'">
             <i class="fas fa-calendar-plus wizard-icon"></i>
             <div class="wizard-title">New Event</div>
             <div class="wizard-desc">
@@ -566,8 +578,7 @@
         </div>
 
         <!-- Gallery Wizard -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/galleryimage/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/galleryimage/new/'">
             <i class="fas fa-images wizard-icon"></i>
             <div class="wizard-title">Add Gallery Image</div>
             <div class="wizard-desc">
@@ -580,8 +591,7 @@
         </div>
 
         <!-- Podcast Series Wizard -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/podcastseries/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/podcastseries/new/'">
             <i class="fas fa-list wizard-icon"></i>
             <div class="wizard-title">New Podcast Series</div>
             <div class="wizard-desc">
@@ -594,8 +604,7 @@
         </div>
 
         <!-- Teaching Series (Pastor) -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/teachingseries/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/teachingseries/new/'">
             <i class="fas fa-graduation-cap wizard-icon"></i>
             <div class="wizard-title">New Teaching Series</div>
             <div class="wizard-desc">
@@ -608,8 +617,7 @@
         </div>
 
         <!-- Teaching Series Session (add PDFs) -->
-        <div class="wizard-card"
-            onclick="window.location.href='/admin/teachingseriessession/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/teachingseriessession/new/'">
             <i class="fas fa-file-pdf wizard-icon"></i>
             <div class="wizard-title">Add Series Session</div>
             <div class="wizard-desc">
@@ -620,20 +628,30 @@
                 <i class="fas fa-arrow-right"></i> Start Wizard
             </div>
         </div>
+
+        <!-- Edit About Page -->
+        <div class="wizard-card" onclick="window.location.href='/admin/about-edit/'">
+            <i class="fas fa-file-alt wizard-icon" style="color: #a78bfa;"></i>
+            <div class="wizard-title">Edit About Page</div>
+            <div class="wizard-desc">
+                Update the church's About page: mission statement, Total Christ section,
+                staff team, and our story milestones. Changes appear live immediately.
+            </div>
+            <div class="wizard-btn" style="background: #7c3aed;">
+                <i class="fas fa-arrow-right"></i> Edit Content
+            </div>
+        </div>
     </div>
 
     <!-- Recent Content – responsive 2-column grid -->
     <div class="dashboard-grid recent-content" style="margin-top: 2rem;">
         <!-- Recent Announcements -->
         <div class="wizard-card">
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3
-                    style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
                     <i class="fas fa-clock"></i> Recent Announcements
                 </h3>
-                <a href="{{ url_for('announcement.index_view') }}"
-                    class="wizard-btn"
+                <a href="{{ url_for('announcement.index_view') }}" class="wizard-btn"
                     style="font-size: 0.9rem; padding: 0.5rem 1rem;">
                     View All
                 </a>
@@ -645,12 +663,10 @@
                 <h5>
                     {{ announcement.title }}
                     {% if announcement.superfeatured %}
-                    <span class="badge-glass"
-                        style="background: var(--cpc-blue);">⭐ Featured</span>
+                    <span class="badge-glass" style="background: var(--cpc-blue);">⭐ Featured</span>
                     {% endif %}
                     {% if not announcement.active %}
-                    <span class="badge-glass"
-                        style="background: rgba(255,255,255,0.2);">Inactive</span>
+                    <span class="badge-glass" style="background: rgba(255,255,255,0.2);">Inactive</span>
                     {% endif %}
                 </h5>
                 <p>{{ announcement.description[:100] }}{% if
@@ -666,9 +682,7 @@
                     }}
                 </small>
                 <div style="margin-top: 1rem;">
-                    <a
-                        href="{{ url_for('announcement.edit_view', id=announcement.id) }}"
-                        class="wizard-btn"
+                    <a href="{{ url_for('announcement.edit_view', id=announcement.id) }}" class="wizard-btn"
                         style="font-size: 0.85rem; padding: 0.4rem 1rem;">
                         <i class="fas fa-edit"></i> Edit
                     </a>
@@ -676,8 +690,7 @@
             </div>
             {% endfor %}
             {% else %}
-            <p
-                style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
+            <p style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
                 <i class="fas fa-inbox"
                     style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
                 No announcements yet. Create your first one above!
@@ -687,10 +700,8 @@
 
         <!-- Recent Sermons -->
         <div class="wizard-card">
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3
-                    style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
                     <i class="fas fa-book"></i> Recent Sermons
                 </h3>
                 <a href="{{ url_for('sermon.index_view') }}" class="wizard-btn"
@@ -715,8 +726,7 @@
                     sermon.date.strftime('%B %d, %Y') }}
                 </small>
                 <div style="margin-top: 1rem;">
-                    <a href="{{ url_for('sermon.edit_view', id=sermon.id) }}"
-                        class="wizard-btn"
+                    <a href="{{ url_for('sermon.edit_view', id=sermon.id) }}" class="wizard-btn"
                         style="font-size: 0.85rem; padding: 0.4rem 1rem;">
                         <i class="fas fa-edit"></i> Edit
                     </a>
@@ -724,8 +734,7 @@
             </div>
             {% endfor %}
             {% else %}
-            <p
-                style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
+            <p style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
                 <i class="fas fa-inbox"
                     style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
                 No sermons yet. Add your first sermon above!
@@ -736,19 +745,22 @@
 
     <!-- Quick Links -->
     <div class="wizard-card" style="margin-top: 2rem;">
-        <h3
-            style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.3rem;">
+        <h3 style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.3rem;">
             <i class="fas fa-link"></i> Quick Links
         </h3>
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            <a href="/sermons" target="_blank" class="wizard-btn"
-                style="font-size: 0.9rem; padding: 0.75rem 1rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="/sermons" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
                 <i class="fas fa-book-open"></i> View Sunday Sermons
             </a>
-            <a href="/" target="_blank" class="wizard-btn"
-                style="font-size: 0.9rem; padding: 0.75rem 1rem;">
+            <a href="/" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
                 <i class="fas fa-globe"></i> View Website
+            </a>
+            <a href="/about" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
+                <i class="fas fa-info-circle"></i> View About Page
+            </a>
+            <a href="/admin/about-edit/" class="wizard-btn"
+                style="font-size: 0.9rem; padding: 0.75rem 1rem; background: #7c3aed;">
+                <i class="fas fa-pencil-alt"></i> Edit About Page
             </a>
             <a href="{{ url_for('admin_logout') }}" class="wizard-btn"
                 style="font-size: 0.9rem; padding: 0.75rem 1rem; background: rgba(255,255,255,0.2);">
@@ -759,19 +771,19 @@
 </div>
 
 <script>
-// Add smooth animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate cards on load
-    const cards = document.querySelectorAll('.wizard-card, .stat-card, .content-card');
-    cards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        setTimeout(() => {
-            card.style.transition = 'all 0.5s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 100);
+    // Add smooth animations
+    document.addEventListener('DOMContentLoaded', function () {
+        // Animate cards on load
+        const cards = document.querySelectorAll('.wizard-card, .stat-card, .content-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
     });
-});
 </script>
 {% endblock %}

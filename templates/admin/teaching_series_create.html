@@ -7,86 +7,140 @@
     <i class="fas fa-info-circle" style="color: var(--cpc-blue); margin-right: 0.5rem;"></i>
     <strong>Adding Classes:</strong>
     You can add classes (sessions) and upload PDFs directly from this page using the <strong>Teaching Series
-        Sessions</strong> section below. When you're done, click <strong>Save & Deploy</strong>.
+        Sessions</strong> section below. When you're done, click <strong>Save &amp; Deploy</strong>.
 </div>
 {% endblock %}
 
 {% block tail %}
 {{ super() }}
+<style>
+    /* ── Prominent ADD SESSION button ── */
+    #add-session-prominent-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.85rem 2.2rem;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #fff;
+        background: linear-gradient(135deg, #005bb5 0%, #0071e3 100%);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0, 113, 227, 0.5);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        margin: 1.1rem 0 0.5rem;
+    }
+
+    #add-session-prominent-btn:hover {
+        background: linear-gradient(135deg, #004eaa 0%, #005bb5 100%);
+        box-shadow: 0 6px 22px rgba(0, 113, 227, 0.65);
+        transform: translateY(-2px);
+    }
+
+    #add-session-prominent-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(0, 113, 227, 0.35);
+    }
+
+    #add-session-prominent-btn i {
+        font-size: 1.15rem;
+    }
+
+    /* Wizard section card */
+    #sessions-wizard {
+        background: rgba(0, 113, 227, 0.07);
+        border: 1px solid rgba(0, 113, 227, 0.28);
+        border-radius: 10px;
+        padding: 1.25rem 1.5rem 0.5rem;
+        margin-bottom: 0;
+    }
+
+    #sessions-wizard h4 {
+        margin-top: 0;
+        color: var(--cpc-blue, #0071e3);
+        font-size: 1.05rem;
+    }
+
+    /* Hide the original tiny Flask-Admin add button */
+    .fa-inline-add-hidden {
+        display: none !important;
+    }
+</style>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // 1. Rename "New Sessions" block titles that Flask-Admin auto-generates
+
+        // Rename "Sessions" -> "Class" in Flask-Admin auto-generated labels
         function renameSessionLabels() {
-            document.querySelectorAll('legend small').forEach(el => {
-                if (el.textContent.includes('New Sessions') || el.textContent.includes('Sessions') || el.textContent.includes('Session')) {
-                    el.textContent = el.textContent.replace('Sessions', 'Class').replace('Session', 'Class');
+            document.querySelectorAll('legend small').forEach(function (el) {
+                if (el.textContent.includes('Sessions') || el.textContent.includes('Session')) {
+                    el.textContent = el.textContent.replace(/Sessions/g, 'Class').replace(/Session/g, 'Class');
                 }
             });
-            document.querySelectorAll('th').forEach(el => {
+            document.querySelectorAll('th').forEach(function (el) {
                 if (el.textContent.includes('Sessions')) {
-                    el.textContent = el.textContent.replace('Sessions', 'Classes');
+                    el.textContent = el.textContent.replace(/Sessions/g, 'Classes');
                 }
             });
         }
 
-        // Look for the "Add" button that flask-admin creates for Inline Models.
-        // Specifically for TeachingSeriesSession. It'll be inside a container with class .inline-field-list
-        const addBtns = document.querySelectorAll('.inline-add-field');
-        if (!addBtns || addBtns.length === 0) return;
+        // Locate the Flask-Admin inline "add" button
+        var hiddenAddBtn = document.querySelector('.inline-add-field');
+        if (!hiddenAddBtn) return; // No inline model found on page
 
-        // Assuming there's only one inline model (Sessions), we target its container
-        const addBtn = addBtns[0];
+        // Hide the original small button
+        hiddenAddBtn.classList.add('fa-inline-add-hidden');
 
-        // Rename the Flask-Admin default add button
-        addBtn.innerHTML = '<i class="fa fa-plus glyphicon glyphicon-plus"></i> Add Class Manually';
+        // Find the container element (the form-group wrapping the inline list)
+        var container = hiddenAddBtn.closest('.form-group') || hiddenAddBtn.parentElement;
 
-        const container = addBtn.closest('.form-group') || addBtn.parentElement;
+        // Inject the wizard card + the big ADD SESSION button before the inline list
+        var wizardHTML =
+            '<div id="sessions-wizard">' +
+            '<h4><i class="fas fa-layer-group"></i> &nbsp;Class Setup Wizard</h4>' +
+            '<p style="color:rgba(255,255,255,0.75); margin-bottom:0.85rem; font-size:0.9rem;">' +
+            'How many classes are in this series? Enter a count then click <strong>Generate</strong> to auto-create all entry forms at once.' +
+            '</p>' +
+            '<div class="input-group" style="max-width:320px;">' +
+            '<input type="number" id="wizard-session-count" class="form-control" min="1" max="50" value="1" placeholder="e.g. 8">' +
+            '<span class="input-group-btn">' +
+            '<button class="btn btn-primary" id="wizard-generate-btn" type="button" ' +
+            'style="background:var(--cpc-blue,#0071e3); border-color:var(--cpc-blue,#0071e3); font-weight:600;">' +
+            '<i class="fas fa-magic"></i> Generate' +
+            '</button>' +
+            '</span>' +
+            '</div>' +
+            '<small style="display:block; margin-top:0.5rem; color:rgba(255,255,255,0.45);">' +
+            'You can still add or remove individual classes below after generating.' +
+            '</small>' +
+            '</div>' +
+            '<button type="button" id="add-session-prominent-btn">' +
+            '<i class="fas fa-plus-circle"></i> ADD SESSION' +
+            '</button>';
 
-        // Create the wizard UI
-        const wizardMarkup = `
-        <div id="sessions-wizard" style="background:rgba(0,122,255,0.05); padding:20px; border-radius:8px; margin-bottom:20px; border:1px solid rgba(0,122,255,0.2);">
-            <h4 style="margin-top:0; color:var(--cpc-blue);"><i class="fas fa-magic"></i> Class Setup Wizard</h4>
-            <p>How many classes will be in this series? Enter a number to automatically generate the class entry forms.</p>
-            <div class="input-group" style="max-width:300px;">
-                <input type="number" id="wizard-session-count" class="form-control" min="1" max="50" value="1" placeholder="e.g. 8">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" id="wizard-generate-btn" type="button" style="background-color: var(--cpc-blue); border-color: var(--cpc-blue);">Generate Entries</button>
-                </span>
-            </div>
-            <small style="display:block; margin-top:10px; color:#666;">(You can still manually add or remove classes below after generating)</small>
-        </div>
-    `;
+        container.insertAdjacentHTML('beforebegin', wizardHTML);
 
-        // Insert wizard before the sessions inline list
-        container.insertAdjacentHTML('beforebegin', wizardMarkup);
-
-        document.getElementById('wizard-generate-btn').addEventListener('click', function () {
-            const count = parseInt(document.getElementById('wizard-session-count').value, 10) || 1;
-            // Click the Flask-Admin exact add button 'count' times
-            for (let i = 0; i < count; i++) {
-                addBtn.click();
-            }
-
-            // Rename the newly generated labels
-            setTimeout(renameSessionLabels, 50);
-
-            // Auto-scroll slightly so they see the new fields
-            setTimeout(() => {
-                window.scrollBy({ top: 300, behavior: 'smooth' });
-            }, 100);
+        // Wire up the prominent ADD SESSION button
+        document.getElementById('add-session-prominent-btn').addEventListener('click', function () {
+            hiddenAddBtn.click();
+            setTimeout(renameSessionLabels, 80);
+            setTimeout(function () { window.scrollBy({ top: 360, behavior: 'smooth' }); }, 130);
         });
 
-        // Rename right away for any existing fields
-        renameSessionLabels();
+        // Wire up the Generate button in the wizard
+        document.getElementById('wizard-generate-btn').addEventListener('click', function () {
+            var count = parseInt(document.getElementById('wizard-session-count').value, 10) || 1;
+            for (var i = 0; i < count; i++) {
+                hiddenAddBtn.click();
+            }
+            setTimeout(renameSessionLabels, 80);
+            setTimeout(function () { window.scrollBy({ top: 360, behavior: 'smooth' }); }, 130);
+        });
 
-        // 3. Form Submission Tracking - To trigger git push hook
-        const form = document.querySelector('form.admin-form');
-        if (form) {
-            form.addEventListener('submit', function (e) {
-                // Let the form submit normally, the backend handles git push
-                // No extra javascript required for the git push logic if we handle it in Flask
-            });
-        }
+        // Rename any labels already on the page
+        renameSessionLabels();
     });
 </script>
 {% endblock %}

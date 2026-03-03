@@ -70,8 +70,31 @@ try:
     from markupsafe import Markup
     original_call = RenderTemplateWidget.__call__
     def render_template_widget_call(self, field, **kwargs):
-        return Markup(original_call(self, field, **kwargs))
+        result = original_call(self, field, **kwargs)
+        return Markup(result) if not isinstance(result, Markup) else result
     RenderTemplateWidget.__call__ = render_template_widget_call
+
+    # Additional patch: InlineFieldListWidget (renders the outer fieldset with all inline rows)
+    try:
+        from flask_admin.model.widgets import InlineFieldListWidget
+        _orig_inline_list_call = InlineFieldListWidget.__call__
+        def _patched_inline_list_call(self, field, **kwargs):
+            result = _orig_inline_list_call(self, field, **kwargs)
+            return Markup(result) if not isinstance(result, Markup) else result
+        InlineFieldListWidget.__call__ = _patched_inline_list_call
+    except (ImportError, AttributeError):
+        pass
+
+    # Additional patch: wrap the InlineModelFormField __call__ if it exists
+    try:
+        from flask_admin.contrib.sqla.fields import InlineModelFormField
+        _orig_inline_form_call = InlineModelFormField.__call__
+        def _patched_inline_form_call(self, **kwargs):
+            result = _orig_inline_form_call(self, **kwargs)
+            return Markup(result) if not isinstance(result, Markup) else result
+        InlineModelFormField.__call__ = _patched_inline_form_call
+    except (ImportError, AttributeError):
+        pass
 
 except (ImportError, AttributeError) as e:
     # If imports fail, log but don't crash — maybe a different version
@@ -166,7 +189,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent
 
 def ensure_db_columns():
     """Add any missing columns to existing tables (SQLite and PostgreSQL).
@@ -376,7 +399,59 @@ def index():
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    # Load editable content from the DB; fall back gracefully if row doesn't exist
+    rows = SiteContent.query.all()
+    about_content = {r.key: r.value for r in rows}
+    return render_template('about.html', about_content=about_content)
+
+@app.route('/admin/about-edit/', methods=['GET', 'POST'])
+def admin_about_edit():
+    """Admin page to edit About page content sections."""
+    if not is_authenticated():
+        return redirect(url_for('admin_login'))
+
+    # Keys we expose for editing
+    ABOUT_KEYS = [
+        ('hero_description', 'Hero Description',
+         'We are a community of believers in New Haven, Connecticut, committed to growing in the truth and grace of Jesus Christ, acting as faithful witnesses in our community and world, and trusting in the grace and power of the Holy Spirit.'),
+        ('mission_text', 'Our Mission (paragraph)',
+         'We are a church that is ambitious for the glory of God by <span class="highlight-word">GROWING</span> in the truth and grace of Jesus Christ, <span class="highlight-word">ACTING</span> as a faithful witness in the greater New Haven community and world, <span class="highlight-word">TRUSTING</span> in the grace and power of the Holy Spirit.'),
+        ('total_christ_text', 'Total Christ (paragraph)',
+         'We want this to be all about Christ—his work, not ours, as the basis of our relationship to God and one another, and his glory, not ours or any popular leader, as the object of our ultimate affection and respect. It is our desire to experience total Christ, not just one or another brand of Christ.'),
+        ('augustine_quote', 'Augustine Quote',
+         '"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."'),
+        ('staff_json', 'Staff Members (JSON)',
+         '[{"initials":"CL","name":"Craig Luekens","title":"Senior Pastor"},{"initials":"JO","name":"Jerry Ornelas","title":"Assistant Pastor"},{"initials":"AV","name":"Alexis Vano","title":"Administrative Coordinator"},{"initials":"AG","name":"Alex Gonzalez","title":"AV Director"},{"initials":"CB","name":"Christopher Battista","title":"Audio and IT Specialist"},{"initials":"PW","name":"Paul Wildey","title":"Sexton"},{"initials":"JC","name":"Jennifer Cheng","title":"Music Coordinator"}]'),
+        ('story_milestones_json', 'Story Milestones (JSON)',
+         '[{"year":"1991","title":"The Beginning","text":"It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY."},{"year":"1991-1992","title":"The Vision Takes Shape","text":"Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale."},{"year":"1992","title":"First Worship Service","text":"On October 11, 1992 at 9:30 am, the mission stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT."},{"year":"2017","title":"Mission Anabaino","text":"As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting."}]'),
+    ]
+
+    saved = False
+    if request.method == 'POST':
+        for key, _label, _default in ABOUT_KEYS:
+            val = request.form.get(key, '')
+            row = SiteContent.query.filter_by(key=key).first()
+            if row:
+                row.value = val
+                row.updated_at = datetime.utcnow()
+            else:
+                db.session.add(SiteContent(key=key, value=val))
+        db.session.commit()
+        flash('About page content saved successfully!', 'success')
+        saved = True
+
+    # Load current values
+    rows = {r.key: r.value for r in SiteContent.query.all()}
+    fields = []
+    for key, label, default in ABOUT_KEYS:
+        fields.append({
+            'key': key,
+            'label': label,
+            'value': rows.get(key, default) or default,
+            'is_json': key.endswith('_json'),
+        })
+
+    return render_template('admin/about_edit.html', fields=fields, saved=saved)
 
 @app.route('/about/what-we-believe')
 def what_we_believe():
