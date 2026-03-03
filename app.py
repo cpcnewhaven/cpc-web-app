@@ -2762,8 +2762,14 @@ class GalleryImageView(AuthenticatedModelView):
     form_excluded_columns = ['id']
 
     form_columns = ('name', 'url', 'description', 'location', 'photographer', 'size', 'type', 'tags', 'event', 'created', 'expiration_preset', 'expiration_date')
+    
+    form_args = {
+        'url': {
+            'validators': [Optional()]
+        }
+    }
     form_extra_fields = {
-        'url': URLField('Image URL', validators=[DataRequired(), URL()]),
+        'url': URLField('Image URL', validators=[Optional(), URL()]),
         'tags': TextAreaField('Tags (comma-separated)', widget=TextArea()),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
         'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),

@@ -166,7 +166,7 @@ class GalleryImage(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String(200))
-    url = db.Column(db.String(500), nullable=False)
+    url = db.Column(db.String(500), nullable=True)  # Added nullable=True
     size = db.Column(db.String(50))
     type = db.Column(db.String(50))
     tags = db.Column(JSON)  # Store as JSON array
