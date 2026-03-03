@@ -1,0 +1,408 @@
+{% extends 'admin/model/list.html' %}
+
+{% block model_list_table %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    .gallery-admin-container {
+        padding: 20px 0;
+    }
+
+    .gallery-section {
+        margin-bottom: 40px;
+    }
+
+    .gallery-section h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .gallery-card {
+        background: rgba(0, 40, 90, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .gallery-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        border-color: rgba(0, 122, 255, 0.4);
+    }
+
+    .gallery-card-drag-handle {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        z-index: 10;
+        backdrop-filter: blur(4px);
+        transition: background 0.2s;
+    }
+
+    .gallery-card-drag-handle:hover {
+        background: rgba(0, 122, 255, 0.8);
+    }
+
+    .gallery-card-checkbox {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 4px;
+        border-radius: 4px;
+    }
+
+    .gallery-card-image {
+        width: 100%;
+        height: 180px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .gallery-card-image:hover img {
+        transform: scale(1.05);
+    }
+
+    .gallery-card-content {
+        padding: 12px 16px;
+        flex-grow: 1;
+    }
+
+    .gallery-card-title {
+        font-weight: 600;
+        color: #fff;
+        font-size: 1rem;
+        margin-bottom: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .gallery-card-meta {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .gallery-card-actions {
+        padding: 10px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        gap: 8px;
+        background: rgba(0, 0, 0, 0.1);
+        align-items: center;
+    }
+
+    .gallery-card-actions .btn {
+        padding: 4px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .gallery-card-actions .inline-form {
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+    }
+
+    .gallery-ghost {
+        opacity: 0.4;
+        background: rgba(0, 122, 255, 0.1);
+        border: 2px dashed rgba(0, 122, 255, 0.5);
+    }
+
+    /* Lightbox Styles */
+    .lightbox {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(8px);
+    }
+
+    .lightbox-content {
+        margin: auto;
+        display: block;
+        max-width: 90%;
+        max-height: 80vh;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .lightbox-caption {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .lightbox-close:hover,
+    .lightbox-close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .empty-state {
+        color: rgba(255, 255, 255, 0.6);
+        padding: 20px 0;
+        font-style: italic;
+    }
+</style>
+
+<div class="gallery-admin-container">
+    {% set event_photos = [] %}
+    {% set general_photos = [] %}
+
+    {% for row in data %}
+    {% if row.event %}
+    {% set _ = event_photos.append(row) %}
+    {% else %}
+    {% set _ = general_photos.append(row) %}
+    {% endif %}
+    {% endfor %}
+
+    <!-- Global "Update sorting" indicator -->
+    <div id="saving-indicator"
+        style="display: none; position: fixed; bottom: 20px; right: 20px; background: rgba(0, 122, 255, 0.9); color: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; font-weight: 500;">
+        <i class="fas fa-spinner fa-spin"></i> Saving order...
+    </div>
+
+    <!-- Event Photos Section -->
+    <div class="gallery-section">
+        <h2><i class="fas fa-calendar-alt" style="margin-right:8px; color:#0e94f1;"></i> Event Photos</h2>
+        <div class="gallery-grid sortable-grid" id="event-grid">
+            {% for row in event_photos %}
+            {{ render_gallery_card(row) }}
+            {% endfor %}
+            {% if not event_photos %}
+            <p class="empty-state">No event photos found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- General Media Section -->
+    <div class="gallery-section">
+        <h2><i class="fas fa-images" style="margin-right:8px; color:#0e94f1;"></i> General Media</h2>
+        <div class="gallery-grid sortable-grid" id="general-grid">
+            {% for row in general_photos %}
+            {{ render_gallery_card(row) }}
+            {% endfor %}
+            {% if not general_photos %}
+            <p class="empty-state">No general media found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% macro render_gallery_card(row) %}
+<div class="gallery-card" data-id="{{ row.id }}">
+    <div class="gallery-card-drag-handle" title="Drag to reorder">
+        <i class="fas fa-grip-vertical"></i>
+    </div>
+
+    <div class="gallery-card-checkbox">
+        <input type="checkbox" name="rowid" class="action-checkbox" value="{{ get_pk_value(row) }}"
+            title="{{ _gettext('Select record') }}" />
+    </div>
+
+    <div class="gallery-card-image" onclick="openLightbox('{{ row.url }}', '{{ row.name | default('Untitled') | e }}')">
+        <img src="{{ row.url }}" alt="{{ row.name }}">
+    </div>
+
+    <div class="gallery-card-content">
+        <div class="gallery-card-title">{{ row.name or 'Untitled' }}</div>
+        {% if row.photographer %}
+        <div class="gallery-card-meta"><i class="fas fa-camera"></i> {{ row.photographer }}</div>
+        {% endif %}
+    </div>
+
+    <div class="gallery-card-actions">
+        <!-- Edit -->
+        {%- if admin_view.can_edit -%}
+        <a class="btn btn-sm btn-info" href="{{ get_url('.edit_view', id=get_pk_value(row), url=return_url) }}"
+            title="Edit">
+            <i class="fas fa-pencil-alt"></i> Edit
+        </a>
+        {%- endif -%}
+        <!-- Download -->
+        <a class="btn btn-sm btn-success" href="{{ row.url }}" download title="Download" target="_blank">
+            <i class="fas fa-download"></i>
+        </a>
+        <!-- Delete -->
+        {%- if admin_view.can_delete -%}
+        <form class="inline-form" method="POST" action="{{ get_url('.delete_view') }}">
+            {% if id is defined %}
+            <input type="hidden" name="id" value="{{ get_pk_value(row) }}">
+            {% else %}
+            <input type="hidden" name="id" value="{{ get_pk_value(row) }}">
+            {% endif %}
+            <input type="hidden" name="url" value="{{ return_url }}">
+            {% if csrf_token %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            {% endif %}
+            <button class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure you want to delete this image?');" title="Delete">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
+        {%- endif -%}
+    </div>
+</div>
+{% endmacro %}
+
+<!-- Lightbox Modal -->
+<div id="gallery-lightbox" class="lightbox">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img class="lightbox-content" id="lightbox-img">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+    function openLightbox(url, title) {
+        document.getElementById('lightbox-img').src = url;
+        document.getElementById('lightbox-caption').innerText = title;
+        document.getElementById('gallery-lightbox').style.display = 'block';
+    }
+
+    function closeLightbox() {
+        document.getElementById('gallery-lightbox').style.display = 'none';
+    }
+
+    // Close lightbox on click outside image
+    window.onclick = function (event) {
+        var modal = document.getElementById('gallery-lightbox');
+        if (event.target == modal) {
+            closeLightbox();
+        }
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var grids = document.querySelectorAll('.sortable-grid');
+        grids.forEach(function (grid) {
+            new Sortable(grid, {
+                animation: 150,
+                handle: '.gallery-card-drag-handle',
+                ghostClass: 'gallery-ghost',
+                onEnd: function (evt) {
+                    saveOrder();
+                }
+            });
+        });
+
+        function saveOrder() {
+            var allCards = document.querySelectorAll('.gallery-card');
+            var orderData = [];
+            // Assign sequential sort_order to all cards on the page
+            // Notes: In a paginated view, this updates the relative order of items on this page.
+            allCards.forEach(function (card, index) {
+                var id = card.getAttribute('data-id');
+                if (id) {
+                    orderData.push({ id: id, sort_order: index });
+                }
+            });
+
+            var indicator = document.getElementById('saving-indicator');
+            indicator.style.display = 'block';
+
+            fetch('/api/admin/reorder-gallery', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ order: orderData })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setTimeout(function () {
+                        if (data.status === 'success') {
+                            indicator.innerHTML = '<i class="fas fa-check"></i> Order saved!';
+                            indicator.style.background = 'rgba(46, 204, 113, 0.9)';
+                            setTimeout(function () {
+                                indicator.style.display = 'none';
+                                // Reset style for next save
+                                indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving order...';
+                                indicator.style.background = 'rgba(0, 122, 255, 0.9)';
+                            }, 2000);
+                        } else {
+                            indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed to save';
+                            indicator.style.background = 'rgba(231, 76, 60, 0.9)';
+                        }
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error saving order', error);
+                    indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Network error';
+                    indicator.style.background = 'rgba(231, 76, 60, 0.9)';
+                });
+        }
+    });
+</script>
+{% endblock model_list_table %}

@@ -29,6 +29,8 @@ from ics import Calendar, Event
 from dateutil import tz
 import pytz
 from dotenv import load_dotenv
+import zipfile
+import io
 
 # Optional integration with Google Cloud Storage for media
 try:
@@ -220,6 +222,7 @@ def ensure_db_columns():
             ('description', 'TEXT', 'TEXT'),
             ('location', 'VARCHAR(200)', 'VARCHAR(200)'),
             ('photographer', 'VARCHAR(100)', 'VARCHAR(100)'),
+            ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
         ],
         'users': [
             ('last_login_at', 'DATETIME', 'TIMESTAMP'),
@@ -2750,11 +2753,12 @@ class PodcastEpisodeView(AuthenticatedModelView):
             return False
 
 class GalleryImageView(AuthenticatedModelView):
+    list_template = 'admin/gallery_list.html'
     column_list = ('id', 'name', 'event', 'photographer', 'created', 'expires_at', 'tags_display')
     column_searchable_list = ('name', 'description', 'location', 'photographer')
     column_filters = ('event', 'photographer')
-    column_sortable_list = ('name', 'created', 'photographer')
-    column_default_sort = ('created', True)
+    column_sortable_list = ('name', 'created', 'photographer', 'sort_order')
+    column_default_sort = [('sort_order', False), ('created', True)]
     form_excluded_columns = ['id']
 
     form_columns = ('name', 'url', 'description', 'location', 'photographer', 'size', 'type', 'tags', 'event', 'created', 'expiration_preset', 'expiration_date')
@@ -2832,6 +2836,30 @@ class GalleryImageView(AuthenticatedModelView):
         except Exception as e:
             flash(f'Error toggling event status: {str(e)}', 'error')
             return False
+
+@app.route('/api/admin/reorder-gallery', methods=['POST'])
+def api_admin_reorder_gallery():
+    """Admin only: Save changes to gallery image display order."""
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.json
+    if not data or 'order' not in data:
+        return jsonify({'error': 'Bad request'}), 400
+        
+    try:
+        new_order = data['order']  # list of dicts: [{'id': id, 'sort_order': num}, ...]
+        for item in new_order:
+            img = GalleryImage.query.get(item.get('id'))
+            if img:
+                img.sort_order = item.get('sort_order', 0)
+                
+        db.session.commit()
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        db.session.rollback()
+        log.error("Error reordering gallery images: %s", e)
+        return jsonify({'error': str(e)}), 500
 
 def _format_event_status(view, context, model, name):
     from flask import url_for
@@ -3239,6 +3267,52 @@ class BannerAlertView(BaseView):
         return self.render('admin/banner_manage.html', banners=banners, now=date.today())
 
 
+class BackupGalleryView(BaseView):
+    """Download all gallery images as a ZIP file."""
+    def is_accessible(self):
+        return 'username' in session
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        images = GalleryImage.query.all()
+        memory_file = io.BytesIO()
+        
+        with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+            for img in images:
+                if img.url:
+                    try:
+                        # Fetch the image content
+                        response = requests.get(img.url, timeout=10)
+                        if response.status_code == 200:
+                            # Generate a safe filename
+                            filename = img.name or f"image_{img.id}"
+                            ext = img.url.split('.')[-1]
+                            if len(ext) > 4 or '/' in ext:
+                                ext = 'jpg'
+                            if not filename.endswith(f".{ext}"):
+                                filename = f"{filename}.{ext}"
+                                
+                            # Safe filename string
+                            safe_name = "".join([c for c in filename if c.isalpha() or c.isdigit() or c in [' ', '.', '_']]).rstrip()
+                            if not safe_name:
+                                safe_name = f"image_{img.id}.{ext}"
+                                
+                            zf.writestr(safe_name, response.content)
+                    except Exception as e:
+                        log.error(f"Failed to backup image {img.id} ({img.url}): {e}")
+                        
+        memory_file.seek(0)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        return Response(
+            memory_file.getvalue(),
+            mimetype="application/zip",
+            headers={"Content-Disposition": f"attachment;filename=cpc_gallery_backup_{timestamp}.zip"}
+        )
+
 class HistoryView(BaseView):
     """Admin audit-log / history view — see who added, edited, or deleted content."""
     def is_accessible(self):
@@ -3365,6 +3439,7 @@ with app.app_context():
     admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Series Sessions', category='More features'))
     admin.add_view(QuickAddSessionsView(name='Quick Add Sessions', endpoint='quick_add_sessions', category='More features'))
     admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
+    admin.add_view(BackupGalleryView(name='Backup all media', endpoint='backup_gallery', category='More features'))
 
 if __name__ == '__main__':
     # Use one port for both main and reloader (so URL doesn't change after restart)

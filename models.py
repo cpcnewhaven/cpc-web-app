@@ -176,6 +176,7 @@ class GalleryImage(db.Model):
     photographer = db.Column(db.String(100))
     created = db.Column(db.DateTime, default=datetime.utcnow)
     expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
+    sort_order = db.Column(db.Integer, default=0)
 
 class OngoingEvent(db.Model):
     __tablename__ = 'ongoing_events'
