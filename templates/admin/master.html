@@ -19,7 +19,7 @@
                 var formGroups = form.querySelectorAll('.form-group');
                 if (!formGroups.length) return;
                 form.classList.add('admin-form-compact');
-                
+
                 // Define field pairs that should be displayed side-by-side (2 per row)
                 var fieldPairs = [
                     ['start_date', 'end_date'],
@@ -30,7 +30,7 @@
                     ['date_entered', 'date_published'],
                     ['session_date', 'number']
                 ];
-                
+
                 // Process each form group
                 formGroups.forEach(function (grp) {
                     var selects = grp.querySelectorAll('select');
@@ -43,7 +43,7 @@
                     var visible = function (nodes) { return Array.prototype.filter.call(nodes, function (n) { return n.offsetParent !== null || n.type === 'hidden'; }); };
                     var s = visible(selects).length, t = visible(textareas).length, c = visible(checkboxes).length;
                     var tx = visible(textInputs).length, n = visible(numberInputs).length, d = visible(dateInputs).length, f = visible(files).length;
-                    
+
                     // Check if this field is part of a pair
                     var input = grp.querySelector('input, select');
                     var isPaired = false;
@@ -56,22 +56,22 @@
                             }
                         }
                     }
-                    
+
                     // Checkbox toggle
                     if (c === 1 && s === 0 && t === 0 && tx === 0 && n === 0 && d === 0) {
                         grp.classList.add('form-group-short', 'form-group-toggle');
-                    } 
+                    }
                     // Single select dropdown
                     else if (s === 1 && t === 0 && c === 0 && tx === 0 && n === 0 && d === 0 && f === 0) {
                         grp.classList.add('form-group-short');
-                    } 
+                    }
                     // Date or number fields (should be compact, 2 per row)
                     else if ((d === 1 || n === 1) && t === 0 && tx === 0 && s === 0 && f === 0) {
                         grp.classList.add('form-group-short');
                         if (isPaired) {
                             grp.classList.add('form-group-paired');
                         }
-                    } 
+                    }
                     // Full width fields (textareas, long text inputs, URLs, files)
                     else {
                         grp.classList.add('form-group-full');
@@ -217,25 +217,37 @@
                 }
             }
 
-            // PDF upload for media gallery (url field) - supports both images and PDFs
+            // Image upload for media gallery (url field) - supports images
             var galleryUrlInput = form.querySelector('input[name="url"]');
             // Only add if this is a gallery image form (check if we're on galleryimage page)
             if (galleryUrlInput && window.location.pathname.includes('galleryimage')) {
                 var formGroup = galleryUrlInput.closest('.form-group');
                 if (formGroup) {
                     var dropWrap = document.createElement('div');
-                    dropWrap.className = 'gallery-pdf-upload-wrap';
-                    dropWrap.style.cssText = 'margin-bottom: 16px;';
+                    dropWrap.className = 'gallery-image-upload-wrap';
+                    dropWrap.style.cssText = 'margin-bottom: 16px; display: flex; gap: 20px; flex-wrap: wrap;';
+
+                    var uploaderCol = document.createElement('div');
+                    uploaderCol.style.cssText = 'flex: 1; min-width: 300px;';
+
+                    var previewCol = document.createElement('div');
+                    previewCol.style.cssText = 'flex: 1; min-width: 300px; max-width: 400px;';
+                    previewCol.innerHTML = '<div style="margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em;">Live Media Gallery Preview</div><div id="gallery-live-preview" class="gallery-grid" style="display: block; width: 100%;"><div class="gallery-item gallery"><div class="photo-container" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; aspect-ratio: 4/3;"><img id="preview-img" src="" style="width: 100%; height: 100%; object-fit: cover; background: rgba(255,255,255,0.05);" alt="Preview"><div class="photo-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.8));"><div class="photo-info"><h3 id="preview-title" style="margin: 0; font-size: 1.1rem; color: #fff;">Untitled</h3><p id="preview-tags" class="photo-tags" style="margin: 5px 0 0 0; font-size: 0.85rem; color: rgba(255,255,255,0.8);"></p><span id="preview-event-badge" class="event-badge" style="display: none; margin-top: 8px; font-size: 0.75rem; background: rgba(0, 122, 255, 0.8); color: white; padding: 2px 8px; border-radius: 4px; display: inline-block;">Event</span></div></div></div></div></div>';
+
                     var dropZone = document.createElement('div');
-                    dropZone.className = 'gallery-pdf-drop-zone';
-                    dropZone.innerHTML = '<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;"><div style="width: 64px; height: 64px; background: linear-gradient(135deg, rgba(0,122,255,0.2) 0%, rgba(0,122,255,0.1) 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #007AFF;"><i class="fas fa-file-pdf"></i></div><div class="drop-zone-text" style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><span style="font-size: 1rem; font-weight: 600; color: rgba(255,255,255,0.95);">Drop your PDF here</span><span style="font-size: 0.875rem; color: rgba(255,255,255,0.7);">or <span style="color: #007AFF; text-decoration: underline; cursor: pointer;">click to browse</span></span></div></div><input type="file" accept="application/pdf" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
+                    dropZone.className = 'gallery-image-drop-zone';
+                    dropZone.innerHTML = '<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;"><div style="width: 64px; height: 64px; background: linear-gradient(135deg, rgba(0,122,255,0.2) 0%, rgba(0,122,255,0.1) 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #007AFF;"><i class="fas fa-images"></i></div><div class="drop-zone-text" style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><span style="font-size: 1rem; font-weight: 600; color: rgba(255,255,255,0.95);">Drag JPEG or PNG file</span><span style="font-size: 0.875rem; color: rgba(255,255,255,0.7);">or <span style="color: #007AFF; text-decoration: underline; cursor: pointer;">click to browse</span></span></div></div><input type="file" accept="image/png,image/jpeg,image/gif,image/webp" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" tabindex="-1">';
                     dropZone.style.cssText = 'border: 2px dashed rgba(0,122,255,0.4); border-radius: 12px; padding: 32px 24px; text-align: center; background: linear-gradient(135deg, rgba(0,122,255,0.05) 0%, rgba(0,122,255,0.02) 100%); cursor: pointer; position: relative; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.1);';
                     var statusEl = document.createElement('div');
-                    statusEl.className = 'gallery-pdf-upload-status';
+                    statusEl.className = 'gallery-image-upload-status';
                     statusEl.style.cssText = 'margin-top: 12px; font-size: 0.875rem; color: rgba(255,255,255,0.7); min-height: 24px; display: flex; align-items: center; justify-content: center; gap: 6px;';
-                    dropWrap.appendChild(dropZone);
-                    dropWrap.appendChild(statusEl);
+
+                    uploaderCol.appendChild(dropZone);
+                    uploaderCol.appendChild(statusEl);
+                    dropWrap.appendChild(uploaderCol);
+                    dropWrap.appendChild(previewCol);
                     formGroup.insertBefore(dropWrap, formGroup.firstChild);
+
                     var fileInput = dropZone.querySelector('input[type="file"]');
                     function setStatus(msg, isError, icon) {
                         if (icon) {
@@ -243,29 +255,74 @@
                         } else {
                             statusEl.textContent = msg;
                         }
-                        statusEl.style.color = isError ? '#ff6b6b' : (msg.includes('Saved') ? '#51cf66' : 'rgba(255,255,255,0.7)');
+                        statusEl.style.color = isError ? '#ff6b6b' : (msg.includes('Saved') || msg.includes('successfully') ? '#51cf66' : 'rgba(255,255,255,0.7)');
                         if (msg.includes('Uploading')) {
                             statusEl.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 0.875rem;"></i> ' + msg;
                         }
                     }
-                    function uploadPdf(file) {
-                        if (!file || file.type !== 'application/pdf') {
-                            setStatus('Please choose a PDF file.', true, 'fas fa-exclamation-circle');
+                    function updateLivePreview() {
+                        var imgUrl = galleryUrlInput.value || '';
+                        var imgTitle = form.querySelector('input[name="name"]');
+                        var imgTags = form.querySelector('textarea[name="tags"]');
+                        var isEvent = form.querySelector('input[name="event"]');
+
+                        var previewImg = document.getElementById('preview-img');
+                        if (imgUrl) {
+                            previewImg.src = imgUrl;
+                            previewImg.style.display = 'block';
+                        } else {
+                            previewImg.src = '';
+                            previewImg.style.display = 'block';
+                        }
+
+                        document.getElementById('preview-title').textContent = (imgTitle && imgTitle.value) ? imgTitle.value : 'Untitled';
+
+                        var tagsContainer = document.getElementById('preview-tags');
+                        var badgeContainer = document.getElementById('preview-event-badge');
+
+                        if (imgTags && imgTags.value) {
+                            tagsContainer.textContent = imgTags.value;
+                            tagsContainer.style.display = 'block';
+                        } else {
+                            tagsContainer.style.display = 'none';
+                        }
+
+                        if (isEvent && isEvent.checked) {
+                            badgeContainer.style.display = 'inline-block';
+                        } else {
+                            badgeContainer.style.display = 'none';
+                        }
+                    }
+
+                    galleryUrlInput.addEventListener('input', updateLivePreview);
+                    var nameInput = form.querySelector('input[name="name"]');
+                    if (nameInput) nameInput.addEventListener('input', updateLivePreview);
+                    var tagsInput = form.querySelector('textarea[name="tags"]');
+                    if (tagsInput) tagsInput.addEventListener('input', updateLivePreview);
+                    var eventInput = form.querySelector('input[name="event"]');
+                    if (eventInput) eventInput.addEventListener('change', updateLivePreview);
+
+                    // Initial update
+                    setTimeout(updateLivePreview, 500);
+
+                    function uploadImage(file) {
+                        if (!file || !file.type.match(/^image\/(png|jpeg|gif|webp)$/)) {
+                            setStatus('Please choose a JPEG or PNG file.', true, 'fas fa-exclamation-circle');
                             return;
                         }
-                        setStatus('Uploading your PDF...', false);
+                        setStatus('Uploading your image...', false);
                         var fd = new FormData();
                         fd.append('file', file);
-                        fetch('{{ url_for("admin_upload_pdf") }}', { method: 'POST', body: fd })
+                        fetch('{{ url_for("admin_upload_gallery_image") }}', { method: 'POST', body: fd })
                             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                             .then(function (o) {
                                 if (o.ok && o.data && o.data.url) {
                                     galleryUrlInput.value = o.data.url;
                                     galleryUrlInput.dispatchEvent(new Event('input', { bubbles: true }));
-                                    setStatus('✓ PDF uploaded successfully!', false, 'fas fa-check-circle');
+                                    setStatus('✓ Image uploaded successfully!', false, 'fas fa-check-circle');
                                     dropZone.style.borderColor = '#51cf66';
                                     dropZone.style.background = 'linear-gradient(135deg, rgba(81,207,102,0.1) 0%, rgba(81,207,102,0.05) 100%)';
-                                    setTimeout(function() {
+                                    setTimeout(function () {
                                         dropZone.style.borderColor = 'rgba(0,122,255,0.4)';
                                         dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.05) 0%, rgba(0,122,255,0.02) 100%)';
                                     }, 2000);
@@ -275,7 +332,7 @@
                             })
                             .catch(function () { setStatus('Upload failed. Please try again.', true, 'fas fa-times-circle'); });
                     }
-                    dropZone.addEventListener('mouseenter', function() {
+                    dropZone.addEventListener('mouseenter', function () {
                         if (!dropZone.classList.contains('dragging')) {
                             dropZone.style.borderColor = 'rgba(0,122,255,0.6)';
                             dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.1) 0%, rgba(0,122,255,0.05) 100%)';
@@ -283,7 +340,7 @@
                             dropZone.style.boxShadow = '0 4px 12px rgba(0,122,255,0.2)';
                         }
                     });
-                    dropZone.addEventListener('mouseleave', function() {
+                    dropZone.addEventListener('mouseleave', function () {
                         if (!dropZone.classList.contains('dragging')) {
                             dropZone.style.borderColor = 'rgba(0,122,255,0.4)';
                             dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.05) 0%, rgba(0,122,255,0.02) 100%)';
@@ -291,18 +348,18 @@
                             dropZone.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                         }
                     });
-                    dropZone.addEventListener('dragover', function (e) { 
-                        e.preventDefault(); 
-                        e.stopPropagation(); 
+                    dropZone.addEventListener('dragover', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         dropZone.classList.add('dragging');
                         dropZone.style.borderColor = '#007AFF';
                         dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.2) 0%, rgba(0,122,255,0.15) 100%)';
                         dropZone.style.transform = 'scale(1.02)';
                         dropZone.style.boxShadow = '0 6px 20px rgba(0,122,255,0.3)';
                     });
-                    dropZone.addEventListener('dragleave', function (e) { 
-                        e.preventDefault(); 
-                        e.stopPropagation(); 
+                    dropZone.addEventListener('dragleave', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         dropZone.classList.remove('dragging');
                         dropZone.style.borderColor = 'rgba(0,122,255,0.4)';
                         dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.05) 0%, rgba(0,122,255,0.02) 100%)';
@@ -318,10 +375,10 @@
                         dropZone.style.transform = 'scale(1)';
                         dropZone.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                         var files = e.dataTransfer && e.dataTransfer.files;
-                        if (files && files[0]) uploadPdf(files[0]);
+                        if (files && files[0]) uploadImage(files[0]);
                     });
                     fileInput.addEventListener('change', function () {
-                        if (this.files && this.files[0]) uploadPdf(this.files[0]);
+                        if (this.files && this.files[0]) uploadImage(this.files[0]);
                         this.value = '';
                     });
                     dropZone.addEventListener('click', function (e) { if (e.target === dropZone || e.target === dropZone.firstElementChild || e.target.closest('.drop-zone-text')) fileInput.click(); });
@@ -375,7 +432,7 @@
                                     setStatus('✓ PDF uploaded successfully!', false, 'fas fa-check-circle');
                                     dropZone.style.borderColor = '#51cf66';
                                     dropZone.style.background = 'linear-gradient(135deg, rgba(81,207,102,0.1) 0%, rgba(81,207,102,0.05) 100%)';
-                                    setTimeout(function() {
+                                    setTimeout(function () {
                                         dropZone.style.borderColor = 'rgba(0,122,255,0.4)';
                                         dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.05) 0%, rgba(0,122,255,0.02) 100%)';
                                     }, 2000);
@@ -385,7 +442,7 @@
                             })
                             .catch(function () { setStatus('Upload failed. Please try again.', true, 'fas fa-times-circle'); });
                     }
-                    dropZone.addEventListener('mouseenter', function() {
+                    dropZone.addEventListener('mouseenter', function () {
                         if (!dropZone.classList.contains('dragging')) {
                             dropZone.style.borderColor = 'rgba(0,122,255,0.6)';
                             dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.1) 0%, rgba(0,122,255,0.05) 100%)';
@@ -393,7 +450,7 @@
                             dropZone.style.boxShadow = '0 4px 12px rgba(0,122,255,0.2)';
                         }
                     });
-                    dropZone.addEventListener('mouseleave', function() {
+                    dropZone.addEventListener('mouseleave', function () {
                         if (!dropZone.classList.contains('dragging')) {
                             dropZone.style.borderColor = 'rgba(0,122,255,0.4)';
                             dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.05) 0%, rgba(0,122,255,0.02) 100%)';
@@ -401,18 +458,18 @@
                             dropZone.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                         }
                     });
-                    dropZone.addEventListener('dragover', function (e) { 
-                        e.preventDefault(); 
-                        e.stopPropagation(); 
+                    dropZone.addEventListener('dragover', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         dropZone.classList.add('dragging');
                         dropZone.style.borderColor = '#007AFF';
                         dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.2) 0%, rgba(0,122,255,0.15) 100%)';
                         dropZone.style.transform = 'scale(1.02)';
                         dropZone.style.boxShadow = '0 6px 20px rgba(0,122,255,0.3)';
                     });
-                    dropZone.addEventListener('dragleave', function (e) { 
-                        e.preventDefault(); 
-                        e.stopPropagation(); 
+                    dropZone.addEventListener('dragleave', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         dropZone.classList.remove('dragging');
                         dropZone.style.borderColor = 'rgba(0,122,255,0.4)';
                         dropZone.style.background = 'linear-gradient(135deg, rgba(0,122,255,0.05) 0%, rgba(0,122,255,0.02) 100%)';

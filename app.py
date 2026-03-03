@@ -30,6 +30,13 @@ from dateutil import tz
 import pytz
 from dotenv import load_dotenv
 
+# Optional integration with Google Cloud Storage for media
+try:
+    from google.cloud import storage
+    GCS_ENABLED = True
+except ImportError:
+    GCS_ENABLED = False
+
 # ---------------------------------------------------------------------------
 # Global monkeypatch to fix WTForms 3.0+ unpacking error (expected 4, got 3)
 # for relationship fields in Flask-Admin 1.6.x.
@@ -1911,6 +1918,77 @@ def admin_upload_image():
     # URL that works on this host (relative so it works behind a reverse proxy)
     url = url_for('static', filename='uploads/' + unique)
     return jsonify({'url': url})
+
+@app.route('/admin/upload-gallery-image', methods=['POST'])
+@require_auth
+def admin_upload_gallery_image():
+    """Accept an image file; upload directly to Google Cloud Storage bucket if configured, else fallback to local."""
+    if 'file' not in request.files and 'image' not in request.files:
+        return jsonify({'error': 'No file in request'}), 400
+        
+    f = request.files.get('file') or request.files.get('image')
+    if not f or f.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+        
+    if not _allowed_image(f.filename):
+        return jsonify({'error': 'Invalid file type. Use PNG, JPG, GIF, or WebP.'}), 400
+        
+    ext = (f.filename.rsplit('.', 1)[1].lower() or 'jpg')
+    safe_name = secure_filename(f.filename)
+    if not safe_name:
+        safe_name = 'image'
+        
+    # Create unique filename
+    unique = str(uuid.uuid4())[:8] + '_' + (safe_name[:50] if len(safe_name) > 50 else safe_name)
+    unique = secure_filename(unique)
+    if not unique.endswith('.' + ext):
+        unique = unique + '.' + ext
+
+    # If GCS is enabled, attempt upload to GCS first
+    if GCS_ENABLED:
+        try:
+            client = storage.Client() 
+            # Note: storage.Client() relies on Google Application Default Credentials or GOOGLE_APPLICATION_CREDENTIALS
+            
+            # Use public bucket shown in screenshot
+            bucket_name = 'cpc-public-website' 
+            bucket = client.bucket(bucket_name)
+            
+            # Destination inside bucket
+            destination_blob_name = f"cpc-web-app-gallery/{unique}"
+            blob = bucket.blob(destination_blob_name)
+            
+            # Upload from stream
+            f.stream.seek(0)
+            blob.upload_from_file(f.stream, content_type=f.content_type)
+            
+            # The bucket is public as per screenshot. We can form the URL easily.
+            # E.g. https://storage.googleapis.com/cpc-public-website/cpc-web-app-gallery/...
+            public_url = f"https://storage.googleapis.com/{bucket_name}/{destination_blob_name}"
+            
+            return jsonify({'url': public_url})
+            
+        except Exception as e:
+            # If GCS upload fails (e.g., credentials missing), fallback to local storage
+            import logging
+            logging.error(f"Failed to upload to GCS: {str(e)}")
+            # rewind file stream
+            f.stream.seek(0)
+            pass # Continue to local upload below
+
+    # Fallback to local uploads directory
+    base = os.path.join(os.path.dirname(__file__), 'static', 'uploads', 'gallery')
+    os.makedirs(base, exist_ok=True)
+    
+    path = os.path.join(base, unique)
+    try:
+        f.save(path)
+    except Exception as e:
+        return jsonify({'error': 'Failed to save file: ' + str(e)}), 500
+        
+    url = url_for('static', filename='uploads/gallery/' + unique)
+    return jsonify({'url': url})
+
 
 # PDF upload for teaching series (pastor uploads)
 ALLOWED_PDF_EXTENSIONS = {'pdf'}
