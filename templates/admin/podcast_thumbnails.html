@@ -1,0 +1,322 @@
+{% extends 'admin/master.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    .pt-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .pt-header {
+        color: var(--text-white);
+        margin-bottom: 1.5rem;
+    }
+
+    .pt-header h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .pt-header p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .pt-series-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .pt-series-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #7dd8ff;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .pt-episodes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .pt-episode-card {
+        background: rgba(0, 40, 90, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .pt-episode-card:hover {
+        border-color: rgba(0, 122, 255, 0.4);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .pt-episode-thumb-wrap {
+        width: 100%;
+        aspect-ratio: 1;
+        background: rgba(0, 0, 0, 0.25);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pt-episode-thumb-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pt-episode-thumb-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.35);
+        font-size: 2.5rem;
+    }
+
+    .pt-episode-body {
+        padding: 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .pt-episode-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .pt-episode-meta {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .pt-drop-zone {
+        border: 2px dashed rgba(0, 122, 255, 0.4);
+        border-radius: 8px;
+        padding: 12px 10px;
+        text-align: center;
+        background: rgba(0, 122, 255, 0.06);
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .pt-drop-zone:hover {
+        border-color: rgba(0, 122, 255, 0.7);
+        background: rgba(0, 122, 255, 0.12);
+    }
+
+    .pt-drop-zone.dragging {
+        border-color: #007AFF;
+        background: rgba(0, 122, 255, 0.2);
+    }
+
+    .pt-drop-zone .pt-drop-text {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .pt-drop-zone .pt-drop-sub {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 2px;
+    }
+
+    .pt-drop-zone input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+
+    .pt-status {
+        font-size: 0.75rem;
+        min-height: 18px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .pt-status.success { color: #51cf66; }
+    .pt-status.error { color: #ff6b6b; }
+
+    .pt-edit-link {
+        font-size: 0.8rem;
+        color: #7dd8ff;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .pt-edit-link:hover { color: #a8e4ff; text-decoration: underline; }
+
+    .pt-empty {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .pt-empty i { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.6; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="pt-container">
+    <div class="pt-header">
+        <h1><i class="fas fa-podcast"></i> Podcast thumbnails</h1>
+        <p>Upload artwork for each podcast episode. Images are stored in the same bucket as the media gallery.</p>
+    </div>
+
+    {% if series_list %}
+        {% for series in series_list %}
+        <div class="pt-series-section">
+            <h2 class="pt-series-title">
+                <i class="fas fa-list"></i> {{ series.title }}
+            </h2>
+            {% set episodes = series._episodes %}
+            {% if episodes %}
+            <div class="pt-episodes-grid">
+                {% for ep in episodes %}
+                <div class="pt-episode-card" data-episode-id="{{ ep.id }}">
+                    <div class="pt-episode-thumb-wrap">
+                        {% if ep.podcast_thumbnail_url %}
+                        <img src="{{ ep.podcast_thumbnail_url }}" alt="" class="pt-thumb-img" loading="lazy">
+                        <div class="pt-episode-thumb-placeholder" style="display: none;"></div>
+                        {% else %}
+                        <img src="" alt="" class="pt-thumb-img" style="display: none;" loading="lazy">
+                        <div class="pt-episode-thumb-placeholder"><i class="fas fa-image"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="pt-episode-body">
+                        <h3 class="pt-episode-title">{{ ep.title }}</h3>
+                        {% if ep.number or ep.date_added %}
+                        <div class="pt-episode-meta">
+                            {% if ep.number %}#{{ ep.number }}{% endif %}
+                            {% if ep.date_added %}{{ ep.date_added.strftime('%b %d, %Y') }}{% endif %}
+                        </div>
+                        {% endif %}
+                        <div class="pt-drop-zone" data-episode-id="{{ ep.id }}" tabindex="0">
+                            <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" data-episode-id="{{ ep.id }}">
+                            <div class="pt-drop-text"><i class="fas fa-upload"></i> Drag image or click</div>
+                            <div class="pt-drop-sub">PNG, JPG, GIF, WebP</div>
+                        </div>
+                        <div class="pt-status" data-episode-id="{{ ep.id }}"></div>
+                        <a href="/admin/podcastepisode/edit/?id={{ ep.id }}" class="pt-edit-link"><i class="fas fa-pencil-alt"></i> Edit episode</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="pt-episode-meta" style="padding-left: 0;">No episodes in this series.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="pt-empty">
+        <i class="fas fa-podcast"></i>
+        <p style="margin: 0 0 0.5rem 0;">No podcast series yet.</p>
+        <p style="margin: 0;"><a href="/admin/podcastseries/new/" style="color: #7dd8ff;">Add a podcast series</a> and episodes to manage thumbnails here.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+(function() {
+    var uploadUrl = '{{ url_for("admin_upload_podcast_thumbnail") }}';
+    function setStatus(episodeId, msg, isError) {
+        var el = document.querySelector('.pt-status[data-episode-id="' + episodeId + '"]');
+        if (!el) return;
+        el.textContent = msg;
+        el.className = 'pt-status' + (isError ? ' error' : (msg.indexOf('✓') !== -1 ? ' success' : ''));
+    }
+    function setThumbImg(episodeId, url) {
+        var card = document.querySelector('.pt-episode-card[data-episode-id="' + episodeId + '"]');
+        if (!card) return;
+        var img = card.querySelector('.pt-thumb-img');
+        var placeholder = card.querySelector('.pt-episode-thumb-placeholder');
+        if (img && placeholder) {
+            img.src = url;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+        }
+    }
+    function uploadForEpisode(episodeId, file) {
+        if (!file || !file.type.match(/^image\/(png|jpeg|gif|webp)$/)) {
+            setStatus(episodeId, 'Use a JPEG or PNG image.', true);
+            return;
+        }
+        setStatus(episodeId, 'Uploading…');
+        var fd = new FormData();
+        fd.append('file', file);
+        fetch(uploadUrl, { method: 'POST', body: fd })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(o) {
+                if (!o.ok || !o.data || !o.data.url) {
+                    setStatus(episodeId, o.data && o.data.error ? o.data.error : 'Upload failed.', true);
+                    return;
+                }
+                var url = o.data.url;
+                return fetch('/api/admin/podcast-episode/' + episodeId + '/thumbnail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                }).then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+                    .then(function(res) {
+                        if (res.ok && res.data && res.data.status === 'success') {
+                            setThumbImg(episodeId, url);
+                            setStatus(episodeId, '✓ Thumbnail saved.');
+                        } else {
+                            setStatus(episodeId, res.data && res.data.error ? res.data.error : 'Save failed.', true);
+                        }
+                    });
+            })
+            .catch(function() { setStatus(episodeId, 'Network error.', true); });
+    }
+    document.querySelectorAll('.pt-drop-zone').forEach(function(zone) {
+        var episodeId = zone.getAttribute('data-episode-id');
+        var input = zone.querySelector('input[type="file"]');
+        zone.addEventListener('click', function(e) { if (e.target === zone || e.target.closest('.pt-drop-text') || e.target.closest('.pt-drop-sub')) input.click(); });
+        zone.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('dragging'); });
+        zone.addEventListener('dragleave', function(e) { e.preventDefault(); zone.classList.remove('dragging'); });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            zone.classList.remove('dragging');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) uploadForEpisode(episodeId, e.dataTransfer.files[0]);
+        });
+        input.addEventListener('change', function() {
+            if (this.files && this.files[0]) uploadForEpisode(episodeId, this.files[0]);
+            this.value = '';
+        });
+    });
+})();
+</script>
+{% endblock %}

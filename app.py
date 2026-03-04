@@ -2068,6 +2068,53 @@ def admin_upload_gallery_image():
     return jsonify({'url': url})
 
 
+@app.route('/admin/upload-podcast-thumbnail', methods=['POST'])
+@require_auth
+def admin_upload_podcast_thumbnail():
+    """Accept an image file; upload to GCS bucket (podcast-thumbnails prefix) or local fallback; return public URL."""
+    if 'file' not in request.files and 'image' not in request.files:
+        return jsonify({'error': 'No file in request'}), 400
+    f = request.files.get('file') or request.files.get('image')
+    if not f or f.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    if not _allowed_image(f.filename):
+        return jsonify({'error': 'Invalid file type. Use PNG, JPG, GIF, or WebP.'}), 400
+    ext = (f.filename.rsplit('.', 1)[1].lower() or 'jpg')
+    safe_name = secure_filename(f.filename)
+    if not safe_name:
+        safe_name = 'thumbnail'
+    unique = str(uuid.uuid4())[:8] + '_' + (safe_name[:50] if len(safe_name) > 50 else safe_name)
+    unique = secure_filename(unique)
+    if not unique.endswith('.' + ext):
+        unique = unique + '.' + ext
+
+    if GCS_ENABLED:
+        try:
+            client = storage.Client()
+            bucket_name = 'cpc-public-website'
+            bucket = client.bucket(bucket_name)
+            destination_blob_name = f"cpc-web-app-podcast-thumbnails/{unique}"
+            blob = bucket.blob(destination_blob_name)
+            f.stream.seek(0)
+            blob.upload_from_file(f.stream, content_type=f.content_type)
+            public_url = f"https://storage.googleapis.com/{bucket_name}/{destination_blob_name}"
+            return jsonify({'url': public_url})
+        except Exception as e:
+            import logging
+            logging.error(f"Failed to upload podcast thumbnail to GCS: {str(e)}")
+            f.stream.seek(0)
+
+    base = os.path.join(os.path.dirname(__file__), 'static', 'uploads', 'podcast-thumbnails')
+    os.makedirs(base, exist_ok=True)
+    path = os.path.join(base, unique)
+    try:
+        f.save(path)
+    except Exception as e:
+        return jsonify({'error': 'Failed to save file: ' + str(e)}), 500
+    url = url_for('static', filename='uploads/podcast-thumbnails/' + unique)
+    return jsonify({'url': url})
+
+
 # PDF upload for teaching series (pastor uploads)
 ALLOWED_PDF_EXTENSIONS = {'pdf'}
 
@@ -2942,6 +2989,29 @@ def api_admin_reorder_gallery():
         log.error("Error reordering gallery images: %s", e)
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/api/admin/podcast-episode/<int:episode_id>/thumbnail', methods=['POST'])
+def api_admin_set_podcast_episode_thumbnail(episode_id):
+    """Admin only: Set podcast_thumbnail_url for a podcast episode."""
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.get_json() or {}
+    url = (data.get('url') or '').strip()
+    if not url:
+        return jsonify({'error': 'Missing url'}), 400
+    episode = PodcastEpisode.query.get(episode_id)
+    if not episode:
+        return jsonify({'error': 'Episode not found'}), 404
+    try:
+        episode.podcast_thumbnail_url = url
+        db.session.commit()
+        return jsonify({'status': 'success', 'url': url})
+    except Exception as e:
+        db.session.rollback()
+        log.error("Error setting podcast episode thumbnail: %s", e)
+        return jsonify({'error': str(e)}), 500
+
+
 def _format_event_status(view, context, model, name):
     from flask import url_for
     base = url_for('ongoingevent.set_status')
@@ -3348,6 +3418,27 @@ class BannerAlertView(BaseView):
         return self.render('admin/banner_manage.html', banners=banners, now=date.today())
 
 
+class PodcastThumbnailsView(BaseView):
+    """Upload and manage podcast thumbnails — list all podcasts (series + episodes) with gallery-style upload to GCS."""
+    def is_accessible(self):
+        return 'username' in session
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        series_list = PodcastSeries.query.order_by(PodcastSeries.title.asc()).all()
+        # Load episodes per series (ordered by date_added desc)
+        for s in series_list:
+            s._episodes = (
+                PodcastEpisode.query.filter_by(series_id=s.id)
+                .order_by(PodcastEpisode.date_added.desc(), PodcastEpisode.number.desc())
+                .all()
+            )
+        return self.render('admin/podcast_thumbnails.html', series_list=series_list)
+
+
 class BackupGalleryView(BaseView):
     """Download all gallery images as a ZIP file."""
     def is_accessible(self):
@@ -3520,6 +3611,7 @@ with app.app_context():
     admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Series Sessions', category='More features'))
     admin.add_view(QuickAddSessionsView(name='Quick Add Sessions', endpoint='quick_add_sessions', category='More features'))
     admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
+    admin.add_view(PodcastThumbnailsView(name='Podcast thumbnails', endpoint='podcast_thumbnails', category='More features'))
     admin.add_view(BackupGalleryView(name='Backup all media', endpoint='backup_gallery', category='More features'))
 
 if __name__ == '__main__':
