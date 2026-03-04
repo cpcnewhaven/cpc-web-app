@@ -46,7 +46,8 @@ except ImportError:
 # ---------------------------------------------------------------------------
 try:
     from flask_admin.contrib.sqla.fields import QuerySelectField, QuerySelectMultipleField
-    
+    from markupsafe import Markup
+
     def patch_iter_choices(original_iter):
         def iter_choices(self):
             for choice in original_iter(self):
@@ -58,48 +59,41 @@ try:
 
     QuerySelectField.iter_choices = patch_iter_choices(QuerySelectField.iter_choices)
     QuerySelectMultipleField.iter_choices = patch_iter_choices(QuerySelectMultipleField.iter_choices)
-    # Also patch Select2Field if it exists (for some custom implementations)
-    try:
-        from flask_admin.form.fields import Select2Field
-        Select2Field.iter_choices = patch_iter_choices(Select2Field.iter_choices)
-    except (ImportError, AttributeError):
-        pass
 
-    # Patch RenderTemplateWidget to return Markup (prevents inline forms from rendering as raw HTML)
-    from flask_admin.model.widgets import RenderTemplateWidget
-    from markupsafe import Markup
-    original_call = RenderTemplateWidget.__call__
-    def render_template_widget_call(self, field, **kwargs):
-        result = original_call(self, field, **kwargs)
-        return Markup(result) if not isinstance(result, Markup) else result
-    RenderTemplateWidget.__call__ = render_template_widget_call
+    # Patch widgets to return Markup (prevents raw HTML escaping)
+    from flask_admin.model.widgets import RenderTemplateWidget, InlineFieldListWidget
+    
+    def wrap_markup(original_func):
+        def patched_func(self, *args, **kwargs):
+            res = original_func(self, *args, **kwargs)
+            return Markup(res) if res is not None else res
+        return patched_func
 
-    # Additional patch: InlineFieldListWidget (renders the outer fieldset with all inline rows)
-    try:
-        from flask_admin.model.widgets import InlineFieldListWidget
-        _orig_inline_list_call = InlineFieldListWidget.__call__
-        def _patched_inline_list_call(self, field, **kwargs):
-            result = _orig_inline_list_call(self, field, **kwargs)
-            return Markup(result) if not isinstance(result, Markup) else result
-        InlineFieldListWidget.__call__ = _patched_inline_list_call
-    except (ImportError, AttributeError):
-        pass
+    RenderTemplateWidget.__call__ = wrap_markup(RenderTemplateWidget.__call__)
+    InlineFieldListWidget.__call__ = wrap_markup(InlineFieldListWidget.__call__)
 
-    # Additional patch: wrap the InlineModelFormField __call__ if it exists
+    # Also patch InlineModelFormField if it exists
     try:
         from flask_admin.contrib.sqla.fields import InlineModelFormField
-        _orig_inline_form_call = InlineModelFormField.__call__
-        def _patched_inline_form_call(self, **kwargs):
-            result = _orig_inline_form_call(self, **kwargs)
-            return Markup(result) if not isinstance(result, Markup) else result
-        InlineModelFormField.__call__ = _patched_inline_form_call
+        InlineModelFormField.__call__ = wrap_markup(InlineModelFormField.__call__)
     except (ImportError, AttributeError):
         pass
 
-except (ImportError, AttributeError) as e:
-    # If imports fail, log but don't crash — maybe a different version
+    # Global WTForms widget patch for safety
+    try:
+        import wtforms.widgets.core
+        if hasattr(wtforms.widgets.core, 'HTMLString'):
+            # Ensure WTForms' HTMLString is treated as Markup by Jinja
+            class PatchedHTMLString(Markup):
+                def __new__(cls, value='', **kwargs):
+                    return super(PatchedHTMLString, cls).__new__(cls, value)
+            wtforms.widgets.core.HTMLString = PatchedHTMLString
+    except Exception:
+        pass
+
+except Exception as e:
     import logging
-    logging.getLogger("cpc").warning("Failed to apply WTForms 3.0 monkeypatch: %s", e)
+    logging.getLogger("cpc").warning("Failed to apply robust WTForms 3.0 monkeypatch: %s", e)
 
 from enhanced_api import enhanced_api
 from json_api import json_api
@@ -2521,6 +2515,56 @@ class AnnouncementView(AuthenticatedModelView):
                 return False
         return False
 
+    @action('bulk_publish', 'Publish Selected', 'Are you sure you want to publish the selected announcements?')
+    def bulk_publish(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                announcement = Announcement.query.get(id)
+                if announcement:
+                    announcement.active = True
+                    announcement.archived = False
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully published {count} announcements', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error publishing announcements: {str(e)}', 'error')
+            return False
+
+    @action('bulk_archive', 'Archive Selected', 'Are you sure you want to archive the selected announcements?')
+    def bulk_archive(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                announcement = Announcement.query.get(id)
+                if announcement:
+                    announcement.active = False
+                    announcement.archived = True
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully archived {count} announcements', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error archiving announcements: {str(e)}', 'error')
+            return False
+
+    @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected announcements? This cannot be undone.')
+    def bulk_delete(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                announcement = Announcement.query.get(id)
+                if announcement:
+                    db.session.delete(announcement)
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully deleted {count} announcements', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error deleting announcements: {str(e)}', 'error')
+            return False
+
 # Gospel books for sermon wizard (series -> chapter -> verse)
 SERMON_BOOK_CHOICES = [('', '— Select book —'), ('Matthew', 'Matthew'), ('Mark', 'Mark'), ('Luke', 'Luke'), ('John', 'John')]
 SERMON_CHAPTER_CHOICES = [('', '—')] + [(str(i), str(i)) for i in range(1, 29)]
@@ -2581,6 +2625,38 @@ class PaperView(AuthenticatedModelView):
         'speaker': StringField,
         'date_published': DatePickerField,
     }
+
+    @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected papers?')
+    def toggle_active(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                paper = Paper.query.get(id)
+                if paper:
+                    paper.active = not paper.active
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully toggled active status for {count} papers', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error toggling active status: {str(e)}', 'error')
+            return False
+
+    @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected papers? This cannot be undone.')
+    def bulk_delete(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                paper = Paper.query.get(id)
+                if paper:
+                    db.session.delete(paper)
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully deleted {count} papers', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error deleting papers: {str(e)}', 'error')
+            return False
     
 class SermonView(AuthenticatedModelView):
     column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'active', 'expires_at')
@@ -3139,6 +3215,40 @@ class OngoingEventView(AuthenticatedModelView):
             flash(f'Error toggling active status: {str(e)}', 'error')
             return False
     
+    @action('bulk_publish', 'Publish Selected', 'Are you sure you want to publish the selected events?')
+    def bulk_publish(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                event = OngoingEvent.query.get(id)
+                if event:
+                    event.active = True
+                    event.archived = False
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully published {count} events', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error publishing events: {str(e)}', 'error')
+            return False
+
+    @action('bulk_archive', 'Archive Selected', 'Are you sure you want to archive the selected events?')
+    def bulk_archive(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                event = OngoingEvent.query.get(id)
+                if event:
+                    event.active = False
+                    event.archived = True
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully archived {count} events', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error archiving events: {str(e)}', 'error')
+            return False
+
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected events?')
     def bulk_delete(self, ids):
         try:
@@ -3228,6 +3338,41 @@ class TeachingSeriesView(AuthenticatedModelView):
         specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
         base = model.date_entered or datetime.utcnow()
         model.expires_at = _compute_expires_at(preset, specific, base)
+
+    @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected teaching series?')
+    def toggle_active(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                series = TeachingSeries.query.get(id)
+                if series:
+                    series.active = not series.active
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully toggled active status for {count} teaching series', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error toggling active status: {str(e)}', 'error')
+            return False
+
+    @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected teaching series? This will also delete all sessions within them.')
+    def bulk_delete(self, ids):
+        try:
+            count = 0
+            for id in ids:
+                series = TeachingSeries.query.get(id)
+                if series:
+                    # Delete sessions first
+                    for sess in series.sessions:
+                        db.session.delete(sess)
+                    db.session.delete(series)
+                    count += 1
+            db.session.commit()
+            flash(f'Successfully deleted {count} teaching series and their sessions', 'success')
+            return True
+        except Exception as e:
+            flash(f'Error deleting teaching series: {str(e)}', 'error')
+            return False
 
     def is_visible(self):
         """Hide from admin menu; access only via Teaching Series overview page."""

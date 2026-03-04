@@ -51,21 +51,59 @@
 
     /* Wizard section card */
     #sessions-wizard {
-        background: rgba(0, 113, 227, 0.07);
-        border: 1px solid rgba(0, 113, 227, 0.28);
-        border-radius: 10px;
-        padding: 1.25rem 1.5rem 0.5rem;
-        margin-bottom: 0;
+        background: rgba(0, 113, 227, 0.12);
+        backdrop-filter: blur(8px);
+        border: 2px solid rgba(0, 113, 227, 0.4);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
 
     #sessions-wizard h4 {
         margin-top: 0;
-        color: var(--cpc-blue, #0071e3);
-        font-size: 1.05rem;
+        color: #fff;
+        font-size: 1.25rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    #sessions-wizard p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Translucent inputs for the wizard */
+    #wizard-session-count {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
+        backdrop-filter: blur(4px);
     }
 
     /* Hide the original tiny Flask-Admin add button */
     .fa-inline-add-hidden {
+        display: none !important;
+    }
+
+    /* Reordered form adjustment */
+    .admin-form-compact {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #sessions-top-container {
+        order: -1;
+    }
+
+    /* Force hide for templates that are leaking */
+    .hide,
+    .hidden,
+    [style*="display:none"] {
         display: none !important;
     }
 </style>
@@ -87,46 +125,69 @@
         }
 
         // Locate the Flask-Admin inline "add" button
-        var hiddenAddBtn = document.querySelector('.inline-add-field');
+        // It could be .inline-add-field (standard) or #sessions-button (specific to this series)
+        var hiddenAddBtn = document.querySelector('#sessions-button') || document.querySelector('.inline-add-field');
         if (!hiddenAddBtn) return; // No inline model found on page
 
         // Hide the original small button
         hiddenAddBtn.classList.add('fa-inline-add-hidden');
 
         // Find the container element (the form-group wrapping the inline list)
-        var container = hiddenAddBtn.closest('.form-group') || hiddenAddBtn.parentElement;
+        var inlineContainer = hiddenAddBtn.closest('.form-group') || hiddenAddBtn.parentElement;
 
-        // Inject the wizard card + the big ADD SESSION button before the inline list
+        // Wrap the inline list in a container we can move
+        var topContainer = document.createElement('div');
+        topContainer.id = 'sessions-top-container';
+
+        // Inject the wizard card + the big ADD SESSION button
         var wizardHTML =
             '<div id="sessions-wizard">' +
-            '<h4><i class="fas fa-layer-group"></i> &nbsp;Class Setup Wizard</h4>' +
-            '<p style="color:rgba(255,255,255,0.75); margin-bottom:0.85rem; font-size:0.9rem;">' +
-            'How many classes are in this series? Enter a count then click <strong>Generate</strong> to auto-create all entry forms at once.' +
+            '<h4><i class="fas fa-layer-group"></i> Step 1: Set Up Your Classes</h4>' +
+            '<p>' +
+            'A teaching series is made up of individual classes or sessions. Start by adding as many sessions as you need. ' +
+            'You can upload a different PDF for each session below.' +
             '</p>' +
-            '<div class="input-group" style="max-width:320px;">' +
-            '<input type="number" id="wizard-session-count" class="form-control" min="1" max="50" value="1" placeholder="e.g. 8">' +
+            '<div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">' +
+            '<div class="input-group" style="max-width:280px; margin-bottom: 0;">' +
+            '<span class="input-group-addon" style="background:rgba(255,255,255,0.1); border:none; color:rgba(255,255,255,0.7);">Count:</span>' +
+            '<input type="number" id="wizard-session-count" class="form-control" min="1" max="50" value="1">' +
             '<span class="input-group-btn">' +
             '<button class="btn btn-primary" id="wizard-generate-btn" type="button" ' +
-            'style="background:var(--cpc-blue,#0071e3); border-color:var(--cpc-blue,#0071e3); font-weight:600;">' +
-            '<i class="fas fa-magic"></i> Generate' +
+            'style="background:#0071e3; border:none; font-weight:700; height: 34px;">' +
+            '<i class="fas fa-magic"></i> Generate Multiple' +
             '</button>' +
             '</span>' +
             '</div>' +
-            '<small style="display:block; margin-top:0.5rem; color:rgba(255,255,255,0.45);">' +
-            'You can still add or remove individual classes below after generating.' +
-            '</small>' +
+            '<div style="color: rgba(255,255,255,0.5); font-weight: 600;">— OR —</div>' +
+            '<button type="button" id="add-session-prominent-btn" style="margin: 0;">' +
+            '<i class="fas fa-plus-circle"></i> Add Single Session' +
+            '</button>' +
             '</div>' +
-            '<button type="button" id="add-session-prominent-btn">' +
-            '<i class="fas fa-plus-circle"></i> ADD SESSION' +
-            '</button>';
+            '</div>';
 
-        container.insertAdjacentHTML('beforebegin', wizardHTML);
+        topContainer.innerHTML = wizardHTML;
+
+        // Find the form and move things to the top
+        var form = hiddenAddBtn.closest('form');
+        if (form) {
+            // First, move the wizard to the very top of the form
+            form.prepend(topContainer);
+
+            // Then move the actual inline fields container right after the wizard
+            topContainer.appendChild(inlineContainer);
+        }
 
         // Wire up the prominent ADD SESSION button
         document.getElementById('add-session-prominent-btn').addEventListener('click', function () {
             hiddenAddBtn.click();
             setTimeout(renameSessionLabels, 80);
-            setTimeout(function () { window.scrollBy({ top: 360, behavior: 'smooth' }); }, 130);
+            // Scroll to the bottom of the newly added session
+            setTimeout(function () {
+                var fields = inlineContainer.querySelectorAll('.inline-field');
+                if (fields.length) {
+                    fields[fields.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150);
         });
 
         // Wire up the Generate button in the wizard
@@ -136,11 +197,55 @@
                 hiddenAddBtn.click();
             }
             setTimeout(renameSessionLabels, 80);
-            setTimeout(function () { window.scrollBy({ top: 360, behavior: 'smooth' }); }, 130);
+            setTimeout(function () {
+                var fields = inlineContainer.querySelectorAll('.inline-field');
+                if (fields.length) {
+                    fields[fields.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150);
         });
 
         // Rename any labels already on the page
         renameSessionLabels();
+
+        // ── CUSTOMIZE SAVE BUTTONS ──
+        const saveBtn = document.querySelector('input[name="_save"]');
+        if (saveBtn) {
+            saveBtn.value = '🚀 Deploy Teaching Series';
+            saveBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            saveBtn.style.border = 'none';
+            saveBtn.style.boxShadow = '0 4px 12px rgba(16,185,129,0.35)';
+            saveBtn.style.fontWeight = '700';
+            saveBtn.style.padding = '0.65rem 1.5rem';
+            saveBtn.style.transition = 'all 0.2s';
+            saveBtn.addEventListener('mouseenter', () => saveBtn.style.transform = 'translateY(-2px)');
+            saveBtn.addEventListener('mouseleave', () => saveBtn.style.transform = 'translateY(0)');
+            saveBtn.addEventListener('mousedown', () => saveBtn.style.transform = 'translateY(1px)');
+        }
+
+        const addAnotherBtn = document.querySelector('input[name="_add_another"]');
+        if (addAnotherBtn) {
+            addAnotherBtn.value = 'Save & Add Another';
+            addAnotherBtn.style.background = 'rgba(255,255,255,0.05)';
+            addAnotherBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+            addAnotherBtn.style.color = 'white';
+        }
+
+        const continueBtn = document.querySelector('input[name="_continue_editing"]');
+        if (continueBtn) {
+            continueBtn.value = 'Save & Continue Editing';
+            continueBtn.style.background = 'rgba(255,255,255,0.05)';
+            continueBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+            continueBtn.style.color = 'white';
+        }
+
+        const cancelBtn = document.querySelector('a.btn-danger'); // Handle simple bootstrap cancel button
+        if (cancelBtn) {
+            cancelBtn.style.background = 'rgba(239, 68, 68, 0.8)';
+            cancelBtn.style.border = 'none';
+            cancelBtn.style.backdropFilter = 'blur(4px)';
+            cancelBtn.style.color = 'white';
+        }
     });
 </script>
 {% endblock %}

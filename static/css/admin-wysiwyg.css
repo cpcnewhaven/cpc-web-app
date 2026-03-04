@@ -16,7 +16,11 @@
   .admin-body .admin-form-with-preview {
     grid-template-columns: 1fr;
   }
-  .admin-body .admin-preview-panel { position: relative !important; top: auto !important; }
+
+  .admin-body .admin-preview-panel {
+    position: relative !important;
+    top: auto !important;
+  }
 }
 
 .admin-body .admin-form-col {
@@ -89,13 +93,33 @@
   color: #ffffff !important;
 }
 
-.admin-body .admin-preview-card .preview-description p { margin: 0 0 0.5em 0; }
-.admin-body .admin-preview-card .preview-description p:last-child { margin-bottom: 0; }
+.admin-body .admin-preview-card .preview-description p {
+  margin: 0 0 0.5em 0;
+}
+
+.admin-body .admin-preview-card .preview-description p:last-child {
+  margin-bottom: 0;
+}
+
 .admin-body .admin-preview-card .preview-description ul,
-.admin-body .admin-preview-card .preview-description ol { margin: 0 0 0.5em 0; padding-left: 1.2em; }
-.admin-body .admin-preview-card .preview-description strong { font-weight: 600; color: #ffffff; }
-.admin-body .admin-preview-card .preview-description a { color: #e8f2ff; text-decoration: none; }
-.admin-body .admin-preview-card .preview-description a:hover { text-decoration: underline; }
+.admin-body .admin-preview-card .preview-description ol {
+  margin: 0 0 0.5em 0;
+  padding-left: 1.2em;
+}
+
+.admin-body .admin-preview-card .preview-description strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.admin-body .admin-preview-card .preview-description a {
+  color: #e8f2ff;
+  text-decoration: none;
+}
+
+.admin-body .admin-preview-card .preview-description a:hover {
+  text-decoration: underline;
+}
 
 .admin-body .admin-preview-placeholder {
   color: rgba(255, 255, 255, 0.7);
@@ -104,47 +128,48 @@
 }
 
 /* ---------------------------------------------------------------------------
-   WYSIWYG wrapper – Theme 2: white background, dark text
+   WYSIWYG wrapper – Premium Translucent Theme
    --------------------------------------------------------------------------- */
 .admin-body .admin-wysiwyg-wrap {
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow {
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 10px 12px;
-  background: #f5f7fa;
+  background: rgba(0, 0, 0, 0.15);
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow .ql-stroke {
-  stroke: rgba(0, 0, 0, 0.45);
+  stroke: rgba(255, 255, 255, 0.7);
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow .ql-fill {
-  fill: rgba(0, 0, 0, 0.55);
+  fill: rgba(255, 255, 255, 0.7);
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow button:hover .ql-stroke,
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow .ql-picker-label:hover .ql-stroke {
-  stroke: #0052a3;
+  stroke: #7dd8ff;
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow button:hover .ql-fill,
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow .ql-picker-label:hover .ql-fill {
-  fill: #0052a3;
+  fill: #7dd8ff;
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow button.ql-active .ql-stroke {
-  stroke: #0052a3;
+  stroke: #7dd8ff;
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-toolbar.ql-snow button.ql-active .ql-fill {
-  fill: #0052a3;
+  fill: #7dd8ff;
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-container.ql-snow {
@@ -156,33 +181,35 @@
 .admin-body .admin-wysiwyg-wrap .ql-editor {
   min-height: 200px;
   padding: 14px 16px;
-  color: #1a1a1a;
-  background: #ffffff;
+  color: rgba(255, 255, 255, 0.9);
+  background: transparent;
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-editor.ql-blank::before {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.4);
   font-style: normal;
 }
 
-/* Picker dropdown (headers, etc.) – light theme */
+/* Picker dropdown (headers, etc.) – dark theme */
 .admin-body .admin-wysiwyg-wrap .ql-snow .ql-picker.ql-expanded .ql-picker-options {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 26, 51, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-snow .ql-picker-label {
-  color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-snow .ql-picker-options .ql-picker-item {
-  color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .admin-body .admin-wysiwyg-wrap .ql-snow .ql-picker-options .ql-picker-item:hover {
-  color: #0052a3;
+  color: #7dd8ff;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Smaller editor for event_info (when/where) */
