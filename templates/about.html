@@ -57,6 +57,39 @@
         color: white;
     }
 
+    /* Lightbox Styles */
+    .gallery-item {
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+
+    .gallery-item:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .gallery-item::after {
+        content: '\f00e';
+        /* FontAwesome zoom-in icon */
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 2rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+    }
+
+    .gallery-item:hover::after {
+        opacity: 0.8;
+    }
+
     /* Page Submenu - Vertical List Format */
     .page-submenu {
         background: rgba(255, 255, 255, 0.05);
@@ -456,6 +489,48 @@
             <a href="#mission" class="hero-cta">Explore Our Mission</a>
         </div>
 
+        <!-- Image Gallery (Homepage Featured Images) -->
+        <div class="about-gallery" x-data="{ lightboxOpen: false, activeImage: '' }" style="position: relative;">
+            <div
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; border-radius: 8px; overflow: hidden; max-height: 250px;">
+                <div class="gallery-item"
+                    @click="activeImage = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg'; lightboxOpen = true"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg'); background-size: cover; background-position: center; min-height: 150px;">
+                </div>
+                <div class="gallery-item"
+                    @click="activeImage = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'; lightboxOpen = true"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'); background-size: cover; background-position: center; min-height: 150px;">
+                </div>
+                <div class="gallery-item"
+                    @click="activeImage = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'; lightboxOpen = true"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'); background-size: cover; background-position: center; min-height: 150px;">
+                </div>
+            </div>
+
+            <!-- Lightbox Modal -->
+            <template x-teleport="body">
+                <div x-show="lightboxOpen" style="display: none;"
+                    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+                    x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+
+                    <button @click="lightboxOpen = false"
+                        class="absolute top-6 right-6 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors">
+                        &times;
+                    </button>
+
+                    <div class="max-w-7xl max-h-[90vh] w-full px-4" @click.away="lightboxOpen = false">
+                        <img :src="activeImage" alt="Expanded Gallery Image"
+                            class="w-full h-full object-contain mx-auto rounded shadow-2xl"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100">
+                    </div>
+                </div>
+            </template>
+        </div>
+
         <!-- Page Submenu -->
         <nav class="page-submenu">
             <div class="submenu-section">
@@ -476,6 +551,9 @@
                 <div class="submenu-title">Leadership</div>
                 <ul class="submenu-list">
                     <li><a href="#staff" class="submenu-link">Staff Team</a></li>
+                    <li><a href="#session" class="submenu-link">Session of Elders</a></li>
+                    <li><a href="#wlb" class="submenu-link">Women's Leadership Board</a></li>
+                    <li><a href="#slb" class="submenu-link">Servant Leadership</a></li>
                 </ul>
             </div>
             <div class="submenu-section">
@@ -659,6 +737,64 @@
                     type="application/json">{{ about_content.get('staff_json', '[{"initials":"CL","name":"Craig Luekens","title":"Senior Pastor"},{"initials":"JO","name":"Jerry Ornelas","title":"Assistant Pastor"},{"initials":"AV","name":"Alexis Vano","title":"Administrative Coordinator"},{"initials":"AG","name":"Alex Gonzalez","title":"AV Director"},{"initials":"CB","name":"Christopher Battista","title":"Audio and IT Specialist"},{"initials":"PW","name":"Paul Wildey","title":"Sexton"},{"initials":"JC","name":"Jennifer Cheng","title":"Music Coordinator"}]') | safe }}</script>
             </section>
 
+            <!-- Session Section -->
+            <section id="session" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Session of Elders</h2>
+                </div>
+                <div class="section-content">
+                    <p style="margin-bottom: 1rem;">
+                        It belongs to those in the office of elder, both severally and jointly, to watch diligently over
+                        the flock committed to his charge, that no corruption of doctrine or of morals enter therein.
+                        They must exercise government and discipline, and take oversight not only of the spiritual
+                        interests of the particular church, but also the Church generally when called thereunto. They
+                        should visit the people at their homes, especially the sick. They should instruct the ignorant,
+                        comfort the mourner, nourish and guard the children of the Church. They should set a worthy
+                        example to the flock entrusted to their care by their zeal to evangelize the unconverted and
+                        make disciples. All those duties which private Christians are bound to discharge by the law of
+                        love are especially incumbent upon them by divine vocation, and are to be discharged as official
+                        duties. They should pray with and for the people, being careful and diligent in seeking the
+                        fruit of the preached Word among the flock. (BCO 8-3.)
+                    </p>
+                </div>
+                <div class="staff-grid" id="session-grid-container">
+                </div>
+                <script id="session-data"
+                    type="application/json">[{"initials":"CL","name":"Craig Luekens","title":"Senior Pastor"},{"initials":"RH","name":"Rob Hawkes","title":"Emeritus"},{"initials":"GL","name":"George Levesque","title":""},{"initials":"DT","name":"David Taylor","title":""},{"initials":"TR","name":"Tyler Rice","title":"Clerk"},{"initials":"JK","name":"Josh Kebabian","title":""},{"initials":"PC","name":"Peter Chuchta","title":""},{"initials":"AP","name":"Alan Phillips","title":"Emeritus Member"}]</script>
+            </section>
+
+            <!-- Women's Leadership Board Section -->
+            <section id="wlb" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Women's Leadership Board</h2>
+                </div>
+                <div class="section-content">
+                    <p style="margin-bottom: 1rem;">
+                        In general, all those duties which private Christians are bound to discharge by the law of love
+                        are especially incumbent upon WLB by way of a godly example. It also belongs to the WLB to
+                        assist the elders and pastors in making disciples of Christ through active involvement in life
+                        on life discipleship. They are also together responsible for the planning and execution of
+                        organized activities for women as needed. They should pray with and for the women of the church,
+                        being careful and diligent in seeking the fruit of the preached Word among the flock.
+                    </p>
+                </div>
+                <div class="staff-grid" id="wlb-grid-container">
+                </div>
+                <script id="wlb-data"
+                    type="application/json">[{"initials":"LH","name":"Lisa Hawkes","title":""},{"initials":"DM","name":"Diane Miller","title":"Clerk"},{"initials":"PK","name":"Peggy Kebabian","title":""},{"initials":"JC","name":"Jennifer Cheng","title":"(Sabbatical 24-25)"},{"initials":"MB","name":"Meg Bogue","title":""},{"initials":"SR","name":"Stacy Roney","title":"Moderator"},{"initials":"TB","name":"Tanilla Brown","title":""},{"initials":"PC","name":"Patty Chuchta","title":""}]</script>
+            </section>
+
+            <!-- Servant Leadership Board Section -->
+            <section id="slb" class="about-section">
+                <div class="section-header">
+                    <h2 class="section-title">Servant Leadership Board</h2>
+                </div>
+                <div class="staff-grid" id="slb-grid-container">
+                </div>
+                <script id="slb-data"
+                    type="application/json">[{"initials":"CL","name":"Craig Luekens","title":"(Moderator)"},{"initials":"GW","name":"Gary Wininger","title":"(Security)"},{"initials":"PW","name":"Paul Wildey","title":"(Sexton)"},{"initials":"CC","name":"Crossan Cooper","title":"(Welcome)"},{"initials":"CR","name":"Colleen Rice","title":"(Sabbatical 24-25)"},{"initials":"EG","name":"Elena Gerard","title":"(Sabbatical 24-25)"},{"initials":"KJ","name":"Kaitlyn Jessee","title":"(Mercy)"},{"initials":"JW","name":"Julie Walker","title":"(Nursery)"},{"initials":"BB","name":"Barbara Battista","title":"(Facilities)"},{"initials":"EF","name":"Evan Finch","title":""},{"initials":"MP","name":"Megan Paek","title":"(Food Service)"},{"initials":"JS","name":"Josh Sanders","title":""},{"initials":"PC","name":"Pat Clendenen","title":""}]</script>
+            </section>
+
             <!-- Our Story Section -->
             <section id="ourStory" class="about-section">
                 <div class="section-header">
@@ -681,24 +817,29 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        // ── Render staff grid from JSON data ──
-        (function () {
-            var staffScript = document.getElementById('staff-data');
-            var staffContainer = document.getElementById('staff-grid-container');
-            if (staffScript && staffContainer) {
+        // ── Render staff/leadership grids from JSON data ──
+        function renderGrid(dataId, containerId) {
+            var script = document.getElementById(dataId);
+            var container = document.getElementById(containerId);
+            if (script && container) {
                 try {
-                    var staff = JSON.parse(staffScript.textContent);
-                    staffContainer.innerHTML = staff.map(function (m) {
+                    var data = JSON.parse(script.textContent);
+                    container.innerHTML = data.map(function (m) {
                         return '<div class="staff-member">' +
                             '<div class="staff-photo">' + (m.initials || '') + '</div>' +
                             '<h3>' + (m.name || '') + '</h3>' +
-                            '<h4>' + (m.title || '') + '</h4>' +
+                            (m.title ? '<h4>' + m.title + '</h4>' : '') +
                             '<a href="#contact" class="staff-contact-btn">Contact</a>' +
                             '</div>';
                     }).join('');
-                } catch (e) { console.warn('Staff JSON parse error:', e); }
+                } catch (e) { console.warn(dataId + ' JSON parse error:', e); }
             }
-        })();
+        }
+
+        renderGrid('staff-data', 'staff-grid-container');
+        renderGrid('session-data', 'session-grid-container');
+        renderGrid('wlb-data', 'wlb-grid-container');
+        renderGrid('slb-data', 'slb-grid-container');
 
         // ── Render story milestones from JSON data ──
         (function () {

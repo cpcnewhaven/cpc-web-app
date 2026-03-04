@@ -4,87 +4,202 @@
 
 {% block head %}
 <style>
-.about-page { min-height: calc(100vh - 200px); padding: 0; margin: 0; }
-.about-main-container { max-width: 100%; margin: 0; padding: 0; }
-.about-hero {
-    grid-column: 1 / -1;
-    padding: 0.5rem 0;
-    text-align: center;
-    background: transparent;
-    margin: 0 0 0.75rem 0;
-}
-.about-hero h1 { font-size: 1.75rem; color: rgba(255, 255, 255, 0.95); margin: 0 0 0.25rem 0; font-weight: 600; }
-.about-hero p { color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin: 0; line-height: 1.5; }
-.about-hero .hero-cta {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-    margin-top: 0.5rem;
-}
-.about-hero .hero-cta:hover { background: rgba(255, 255, 255, 0.15); color: white; }
+    .about-page {
+        min-height: calc(100vh - 200px);
+        padding: 0;
+        margin: 0;
+    }
 
-.page-submenu {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
-}
-.submenu-section { margin-bottom: 0.75rem; }
-.submenu-section:last-child { margin-bottom: 0; }
-.submenu-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-.submenu-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.submenu-list li { margin: 0; }
-.submenu-list a {
-    display: block;
-    padding: 0.4rem 0.75rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-.submenu-list a:hover,
-.submenu-list a.active { background: rgba(255, 255, 255, 0.15); color: rgba(255, 255, 255, 0.95); border-color: rgba(255, 255, 255, 0.2); }
+    .about-main-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
-.about-content-area { display: flex; flex-direction: column; gap: 0.75rem; max-width: 100%; }
-.about-section {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    padding: 1rem;
-    scroll-margin-top: 1rem;
-}
-.section-header { margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-.section-title { font-size: 1.25rem; color: rgba(255, 255, 255, 0.95); margin: 0 0 0.25rem 0; font-weight: 600; }
-.section-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); margin: 0; }
-.section-content { color: rgba(255, 255, 255, 0.85); line-height: 1.6; font-size: 0.9rem; }
-.highlight-word { font-weight: 700; color: rgba(255, 255, 255, 1); background: rgba(0, 82, 163, 0.3); padding: 0.1rem 0.4rem; border-radius: 4px; }
+    .about-hero {
+        grid-column: 1 / -1;
+        padding: 0.5rem 0;
+        text-align: center;
+        background: transparent;
+        margin: 0 0 0.75rem 0;
+    }
 
-.class-schedule { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 0.5rem; }
-.class-schedule strong { color: rgba(255, 255, 255, 0.95); }
-.class-note { font-size: 0.85rem; color: rgba(255, 255, 255, 0.65); margin-bottom: 1rem; font-style: italic; }
-.lesson-list { list-style: none; padding: 0; margin: 0.75rem 0 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.4rem; }
-.lesson-list li { padding: 0.35rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.9rem; color: rgba(255, 255, 255, 0.88); }
-.lesson-list li:last-child { border-bottom: none; }
+    .about-hero h1 {
+        font-size: 1.75rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.25rem 0;
+        font-weight: 600;
+    }
+
+    .about-hero p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .about-hero .hero-cta {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        margin-top: 0.5rem;
+    }
+
+    .about-hero .hero-cta:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .page-submenu {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .submenu-section {
+        margin-bottom: 0.75rem;
+    }
+
+    .submenu-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .submenu-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .submenu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .submenu-list li {
+        margin: 0;
+    }
+
+    .submenu-list a {
+        display: block;
+        padding: 0.4rem 0.75rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 0.85rem;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .submenu-list a:hover,
+    .submenu-list a.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.95);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .about-content-area {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        max-width: 100%;
+    }
+
+    .about-section {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 1rem;
+        scroll-margin-top: 1rem;
+    }
+
+    .section-header {
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.25rem 0;
+        font-weight: 600;
+    }
+
+    .section-subtitle {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+    }
+
+    .section-content {
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    .highlight-word {
+        font-weight: 700;
+        color: rgba(255, 255, 255, 1);
+        background: rgba(0, 82, 163, 0.3);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+    }
+
+    .class-schedule {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0.5rem;
+    }
+
+    .class-schedule strong {
+        color: rgba(255, 255, 255, 0.95);
+    }
+
+    .class-note {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.65);
+        margin-bottom: 1rem;
+        font-style: italic;
+    }
+
+    .lesson-list {
+        list-style: none;
+        padding: 0;
+        margin: 0.75rem 0 0 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 0.4rem;
+    }
+
+    .lesson-list li {
+        padding: 0.35rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.88);
+    }
+
+    .lesson-list li:last-child {
+        border-bottom: none;
+    }
 </style>
 {% endblock %}
 
@@ -93,7 +208,8 @@
     <div class="about-main-container compact-content">
         <div class="about-hero">
             <h1>What We Believe</h1>
-            <p>Christ Presbyterian Church holds to the historic Christian faith as summarized in the Scriptures and expressed in the Reformed confessions.</p>
+            <p>Christ Presbyterian Church holds to the historic Christian faith as summarized in the Scriptures and
+                expressed in the Reformed confessions.</p>
             <a href="{{ url_for('about') }}" class="hero-cta">About CPC</a>
         </div>
 
@@ -117,52 +233,106 @@
         <div class="about-content-area" id="beliefs">
             <section id="scripture" class="about-section">
                 <div class="section-header">
-                    <h2 class="section-title">Scripture</h2>
-                    <p class="section-subtitle">Our final authority</p>
+                    <h2 class="section-title">1. Scripture</h2>
+                    <p class="section-subtitle">Our only rule of faith and practice</p>
                 </div>
                 <div class="section-content">
-                    <p>We believe the <span class="highlight-word">Bible</span> is the inspired, inerrant, and sufficient Word of God. It is our supreme authority in all matters of faith and life.</p>
+                    <p>We are committed to the Old and New Testament Scriptures as our only rule of faith and practice.
+                        While believing that God powerfully manifests his infinite glory in a general way through
+                        creation, our Christian faith and practice is grounded in God's works of redemption in history
+                        as explained to us through the divinely appointed means of inspired Scripture. We believe that
+                        all things necessary for salvation are sufficiently revealed to us by the Holy Spirit speaking
+                        through the Scriptures of the Old and New Testaments. It is, therefore, our ambition to teach
+                        the whole counsel of God's word, not adding to, or subtracting from, anything contained within
+                        it, recognizing no other source for divine revelation, whether by ecclesiastical traditions or
+                        private revelations.</p>
+                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> To liberate all of us from
+                        oppressive, human-made opinions and guard the gracious gospel against manipulation and
+                        self-serving abuses. We want the God of grace and glory to be our only Lord.</p>
                 </div>
             </section>
 
-            <section id="god" class="about-section">
+            <section id="teachings-of-grace" class="about-section">
                 <div class="section-header">
-                    <h2 class="section-title">God</h2>
-                    <p class="section-subtitle">One God in three persons</p>
+                    <h2 class="section-title">2. Teachings of Grace</h2>
+                    <p class="section-subtitle">Commitment to historic teachings</p>
                 </div>
                 <div class="section-content">
-                    <p>We believe in one God, eternally existing in three persons—<span class="highlight-word">Father</span>, <span class="highlight-word">Son</span>, and <span class="highlight-word">Holy Spirit</span>—equal in power and glory, and worthy of the same worship and obedience.</p>
+                    <p>We are committed to the teachings of grace as they are summarized in the historic Westminster
+                        Confession of Faith. Whereas the Holy Scriptures is our only rule of faith and practice, Church
+                        unity is predicated upon a consensus about what the Scriptures principally teach. Our consensus
+                        is reflected in the 350-year-old Westminster Confession of Faith. In summary, it affirms that
+                        God is no less sovereign in our salvation than He is sovereign in our creation, to the praise of
+                        God's glorious grace! This means that we are accepted by God, from beginning to end, not by our
+                        own works or attempts to perform for God, but by faith alone in the perfect and all sufficient
+                        work of Christ on our behalf, faith itself being the free gift of God.</p>
+                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> To affirm the sovereignty of grace,
+                        to connect us to wise men and women who have gone before us, and to prevent as much as possible
+                        our historical and cultural blind-spots.</p>
                 </div>
             </section>
 
-            <section id="christ" class="about-section">
+            <section id="worship" class="about-section">
                 <div class="section-header">
-                    <h2 class="section-title">Christ</h2>
-                    <p class="section-subtitle">Lord and Savior</p>
+                    <h2 class="section-title">3. God-Centered Worship</h2>
+                    <p class="section-subtitle">Following a covenantal pattern</p>
                 </div>
                 <div class="section-content">
-                    <p>We believe Jesus Christ is the eternal Son of God, who became man, lived a sinless life, died for our sins, rose from the dead, and will return in glory. Salvation is found in <span class="highlight-word">him alone</span>.</p>
+                    <p>We are committed to God-centered worship designed after a covenantal pattern, where Christ
+                        promises to be present through Word and Sacrament. In every period of redemptive history, God
+                        has chosen to be with his people through the divine institutions of word, sacrament and prayers.
+                        Today, through the sacraments of the Lord's Supper and Christian Baptism, together with the
+                        preaching of God's word and corporate prayers (both sung and unsung), God has promised to be
+                        with us until the end of the age. Our worship is set to the pattern of covenant initiation and
+                        renewal including the weekly participation of the Lord's supper. Our music and style of worship
+                        is "blended" to reflect the vernacular context of those God has brought to our city. Our desire
+                        is for our worship to be as God-centered as our theology, communicating the truth and grace of
+                        God to the nations. We welcome all believers together with those who are searching.</p>
+                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> Not only is it biblical, but it
+                        keeps us grounded in the gospel every week, secured upon Christ's redemption accomplished. Our
+                        worship embodies the gospel as we experience God's presence.</p>
                 </div>
             </section>
 
-            <section id="church" class="about-section">
+            <section id="church-planting" class="about-section">
                 <div class="section-header">
-                    <h2 class="section-title">The Church</h2>
-                    <p class="section-subtitle">God’s people in the world</p>
+                    <h2 class="section-title">4. Multi-Cultural Church and Church Planting</h2>
+                    <p class="section-subtitle">Growing as a community and movement</p>
                 </div>
                 <div class="section-content">
-                    <p>We believe the church is the body of Christ, called to worship, grow in grace, and make disciples. Christ Presbyterian Church is a congregation of the <span class="highlight-word">Presbyterian Church in America (PCA)</span>, committed to the Westminster Standards.</p>
+                    <p>We are committed to being a multi-cultural church and church planting movement. We believe that
+                        the church, the household of God, is an essential element of the gospel into which people of
+                        every tribe and nation are welcomed. While affirming that every follower of Christ is called to
+                        be a witness to the truth and grace of God revealed in Jesus Christ, we also believe that true
+                        evangelism is best accomplished through church planting. It is therefore our ambition to be not
+                        only a growing church, but also a growing church planting movement. While holding to a
+                        time-honored understanding of faith, we are strategically progressive. Our aim is to plant
+                        churches that reach the different cultures in our city, New England and the world. For more info
+                        on church planting, visit <a href="https://anabaino.org" target="_blank"
+                            style="text-decoration: underline;">anabaino.org</a>.</p>
+                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> Because no one culture is closer to
+                        God than another, you don't have to become American (or Western, or whatever!) to become
+                        Christian, and the communal witness of the gospel is the best testament to its power!</p>
                 </div>
             </section>
 
-            <section id="confession" class="about-section">
+            <section id="calling" class="about-section">
                 <div class="section-header">
-                    <h2 class="section-title">Confessional Standards</h2>
-                    <p class="section-subtitle">What we teach and confess</p>
+                    <h2 class="section-title">5. High View of Christian Calling</h2>
+                    <p class="section-subtitle">Vocations of family, church, and public service</p>
                 </div>
                 <div class="section-content">
-                    <p>Our pastors and elders subscribe to the <span class="highlight-word">Westminster Confession of Faith</span> and the <span class="highlight-word">Larger and Shorter Catechisms</span> as faithful summaries of biblical doctrine. We welcome anyone seeking to know more—visit, ask questions, and explore with us.</p>
-                    <p style="margin-top: 0.75rem;"><a href="{{ url_for('resources') }}" class="hero-cta">Resources</a></p>
+                    <p>We are committed to a high view of Christian calling as reflected in the vocational spheres of
+                        family, church, and public service. We believe that God has given us roles that reflect his own
+                        sovereign design to accomplish his work in the world, which extends into the spheres of family,
+                        church and civil vocations. We desire to help people find a balance that is unique to their
+                        individual callings and spheres of service. While believing that the Christian Scriptures do not
+                        address all things pertaining to life in this world, we do affirm that we should take "every
+                        thought captive to the obedience of Christ" and that the Christian worldview is applicable and
+                        relevant to all spheres of life.</p>
+                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> Because God didn't make us just one
+                        way or with one part of ourselves, but made ALL of us, and he deserves it all to be offered as
+                        thankful worship.</p>
                 </div>
             </section>
 
@@ -172,10 +342,18 @@
                     <p class="section-subtitle">School of Discipleship class</p>
                 </div>
                 <div class="section-content">
-                    <p class="class-schedule"><strong>Sundays 9/17/23 – 5/19/24</strong> at 9:30am in the Fellowship Hall.</p>
-                    <p class="class-note">No class: Thanksgiving weekend 11/26/23, winter recess 12/17/23 – 12/31/23, or Easter Sunday 3/31/24.</p>
-                    <p>We’re called to not just know about God, but to know God personally. This class walks through the historic Christian beliefs we hold to at CPC—grappling with why they’re important, where they come from, and how we can grow in our love for the Lord and His Word. Much more than just a lecture, we discuss real-life implications of how our theology can inform our spiritual, emotional, and relational health, to the glory of God and the building of His Church. This class also serves as the requirement for teaching Sunday School and other leadership roles at CPC.</p>
-                    <h3 class="section-title" style="margin-top: 1.25rem; font-size: 1rem;">Overall Schedule &amp; Lessons</h3>
+                    <p class="class-schedule"><strong>Sundays 9/17/23 – 5/19/24</strong> at 9:30am in the Fellowship
+                        Hall.</p>
+                    <p class="class-note">No class: Thanksgiving weekend 11/26/23, winter recess 12/17/23 – 12/31/23, or
+                        Easter Sunday 3/31/24.</p>
+                    <p>We’re called to not just know about God, but to know God personally. This class walks through the
+                        historic Christian beliefs we hold to at CPC—grappling with why they’re important, where they
+                        come from, and how we can grow in our love for the Lord and His Word. Much more than just a
+                        lecture, we discuss real-life implications of how our theology can inform our spiritual,
+                        emotional, and relational health, to the glory of God and the building of His Church. This class
+                        also serves as the requirement for teaching Sunday School and other leadership roles at CPC.</p>
+                    <h3 class="section-title" style="margin-top: 1.25rem; font-size: 1rem;">Overall Schedule &amp;
+                        Lessons</h3>
                     <ul class="lesson-list">
                         <li>Lesson 1: Intro – Why Theology?</li>
                         <li>Lesson 2: How Could the Finite ever Know the Infinite?</li>
