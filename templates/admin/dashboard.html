@@ -641,6 +641,18 @@
                 <i class="fas fa-arrow-right"></i> Edit Content
             </div>
         </div>
+
+        <!-- Edit Community Page -->
+        <div class="wizard-card" onclick="window.location.href='/admin/community-edit/'">
+            <i class="fas fa-users wizard-icon" style="color: #00a0a0;"></i>
+            <div class="wizard-title">Edit Community Page</div>
+            <div class="wizard-desc">
+                Update groups, service, info and stories.
+            </div>
+            <div class="wizard-btn" style="background: #00a0a0;">
+                <i class="fas fa-arrow-right"></i> Edit Content
+            </div>
+        </div>
     </div>
 
     <!-- Recent Content – responsive 2-column grid -->
@@ -761,6 +773,13 @@
             <a href="/admin/about-edit/" class="wizard-btn"
                 style="font-size: 0.9rem; padding: 0.75rem 1rem; background: #7c3aed;">
                 <i class="fas fa-pencil-alt"></i> Edit About Page
+            </a>
+            <a href="/community" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
+                <i class="fas fa-users"></i> View Community Page
+            </a>
+            <a href="/admin/community-edit/" class="wizard-btn"
+                style="font-size: 0.9rem; padding: 0.75rem 1rem; background: #00a0a0;">
+                <i class="fas fa-pencil-alt"></i> Edit Community Page
             </a>
             <a href="{{ url_for('admin_logout') }}" class="wizard-btn"
                 style="font-size: 0.9rem; padding: 0.75rem 1rem; background: rgba(255,255,255,0.2);">

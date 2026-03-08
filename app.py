@@ -451,6 +451,61 @@ def admin_about_edit():
 def what_we_believe():
     return render_template('what_we_believe.html')
 
+@app.route('/admin/community-edit/', methods=['GET', 'POST'])
+def admin_community_edit():
+    """Admin page to edit Community page content sections."""
+    if not is_authenticated():
+        return redirect(url_for('admin_login'))
+
+    # Keys we expose for editing
+    COMMUNITY_KEYS = [
+        ('community_hero_subtitle', 'Hero Subtitle',
+         'Join our vibrant community of believers and seekers'),
+        ('community_groups_intro', 'Groups Section Intro',
+         'Connect with others through our various community groups and ministries.'),
+        ('community_groups_json', 'Community Groups Cards (JSON)',
+         '[{"icon":"fas fa-users","title":"Small Groups","text":"Join a small group for Bible study, prayer, and fellowship in a more intimate setting.","bullets":["Westville Group - Thursdays at 7:00pm","Orange Group - Wednesdays at 7:00pm","Guilford Group - Fridays at 7:00pm"]},{"icon":"fas fa-child","title":"Children\'s Ministry","text":"Nurturing the faith of our youngest members through age-appropriate programs.","bullets":["Sunday School (ages 3-12)","Children\'s Church during worship","Vacation Bible School","Special events and activities"]},{"icon":"fas fa-graduation-cap","title":"Youth Ministry","text":"Engaging middle and high school students in their faith journey.","bullets":["Youth Group - Fridays at 7:00pm","Summer mission trips","Retreats and conferences","Service projects"]},{"icon":"fas fa-male","title":"Men\'s Ministry","text":"Building strong Christian men through fellowship and study.","bullets":["Men\'s Fellowship - Saturdays at 8:00am","Men\'s Bible Study","Service projects","Annual retreat"]},{"icon":"fas fa-female","title":"Women\'s Ministry","text":"Encouraging women in their walk with Christ and relationships with each other.","bullets":["Women\'s Bible Study","Women\'s Retreat","Mentoring program","Service opportunities"]},{"icon":"fas fa-music","title":"Music Ministry","text":"Using musical gifts to glorify God and lead in worship.","bullets":["Choir participation","Instrumental ensembles","Special music opportunities","Music education programs"]}]'),
+        ('community_service_intro', 'Service Section Intro',
+         'Get involved in serving our church and community.'),
+        ('community_service_json', 'Service Opportunities (JSON)',
+         '[{"title":"Welcome Team","text":"Help welcome visitors and new members to our church family.","tag":"Hospitality"},{"title":"Children\'s Ministry","text":"Teach, assist, or help with children\'s programs and activities.","tag":"Teaching"},{"title":"Audio/Visual","text":"Support our worship services with technical assistance.","tag":"Technical"},{"title":"Facilities","text":"Help maintain and improve our church building and grounds.","tag":"Maintenance"},{"title":"Community Outreach","text":"Participate in local service projects and community events.","tag":"Outreach"},{"title":"Prayer Ministry","text":"Join our prayer team and intercede for our church and community.","tag":"Prayer"}]'),
+        ('community_new_member_getting_connected', 'New Member: Getting Connected (text)',
+         'We\'re excited that you\'re interested in joining our community! Here\'s how you can get started:'),
+        ('community_new_member_steps_json', 'New Member Steps (JSON)',
+         '[{"bold":"Visit us on Sunday","text":"Join us for worship at 10:30am"},{"bold":"Stay for fellowship","text":"Meet people at our fellowship lunch after service"},{"bold":"Join a small group","text":"Connect with others in a more intimate setting"},{"bold":"Get involved","text":"Find a service opportunity that matches your gifts"},{"bold":"Consider membership","text":"Learn about becoming a member of CPC"}]'),
+        ('community_new_member_questions', 'New Member: Questions? (text)',
+         'If you have questions about getting involved or becoming a member, we\'d love to help!'),
+        ('community_stories_json', 'Community Stories (JSON)',
+         '[{"title":"Finding Family at CPC","text":"When I moved to New Haven for graduate school, I was looking for a church that would feel like home. CPC welcomed me with open arms and helped me find my place in the community.","author":"Sarah, Graduate Student"},{"title":"Growing in Faith Together","text":"Through our small group, I\'ve been able to grow deeper in my faith while building meaningful relationships with other believers. It\'s been a blessing to journey together.","author":"Michael, Small Group Member"},{"title":"Serving Our Community","text":"I love how CPC encourages us to serve not just within the church, but in our broader community. It\'s been amazing to see God at work through our outreach efforts.","author":"Jennifer, Community Outreach Volunteer"}]'),
+    ]
+
+    saved = False
+    if request.method == 'POST':
+        for key, _label, _default in COMMUNITY_KEYS:
+            val = request.form.get(key, '')
+            row = SiteContent.query.filter_by(key=key).first()
+            if row:
+                row.value = val
+                row.updated_at = datetime.utcnow()
+            else:
+                db.session.add(SiteContent(key=key, value=val))
+        db.session.commit()
+        flash('Community page content saved successfully!', 'success')
+        saved = True
+
+    # Load current values
+    rows = {r.key: r.value for r in SiteContent.query.all()}
+    fields = []
+    for key, label, default in COMMUNITY_KEYS:
+        fields.append({
+            'key': key,
+            'label': label,
+            'value': rows.get(key, default) or default,
+            'is_json': key.endswith('_json'),
+        })
+
+    return render_template('admin/community_edit.html', fields=fields, saved=saved)
+
 @app.route('/sermons')
 def sermons():
     return render_template('sermons.html')
@@ -474,7 +529,10 @@ def highlights():
 
 @app.route('/community')
 def community():
-    return render_template('community.html')
+    # Load editable content from the DB; fall back gracefully if row doesn't exist
+    rows = SiteContent.query.all()
+    community_content = {r.key: r.value for r in rows}
+    return render_template('community.html', community_content=community_content)
 
 @app.route('/sundays')
 def sundays():
