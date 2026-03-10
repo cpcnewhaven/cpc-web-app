@@ -1,157 +1,157 @@
 {% extends "base.html" %}
 
-{% block title %}New Content - CPC New Haven{% endblock %}
+{% block title %}Highlights - CPC New Haven{% endblock %}
 
 {% block head %}
 <style>
-.highlights-page {
-    min-height: calc(100vh - 200px);
-    padding: 0;
-    margin: 0;
-}
-
-.highlights-container {
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-.highlights-hero {
-    padding: 0.5rem 0;
-    text-align: center;
-    margin-bottom: 0.75rem;
-}
-
-.highlights-hero h1 {
-    font-size: 1.75rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.25rem 0;
-    font-weight: 600;
-}
-
-.highlights-hero p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-.filter-section {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.filter-btn {
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
-
-.filter-btn.active,
-.filter-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-.highlights-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 0.75rem;
-}
-
-@media (max-width: 640px) {
-    .highlights-grid {
-        grid-template-columns: 1fr;
+    .highlights-page {
+        min-height: calc(100vh - 200px);
+        padding: 0;
+        margin: 0;
     }
-}
 
-.highlight-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.75rem;
-    transition: all 0.3s ease;
-}
+    .highlights-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
-.highlight-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-}
+    .highlights-hero {
+        padding: 0.5rem 0;
+        text-align: center;
+        margin-bottom: 0.75rem;
+    }
 
-.highlight-card.hidden {
-    display: none;
-}
+    .highlights-hero h1 {
+        font-size: 1.75rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.25rem 0;
+        font-weight: 600;
+    }
 
-.highlight-card.featured {
-    border-color: rgba(255, 215, 0, 0.4);
-    border-width: 2px;
-}
+    .highlights-hero p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin: 0;
+    }
 
-.highlight-card h2 {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
-}
+    .filter-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
-.highlight-meta {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
-}
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
 
-.highlight-badge {
-    padding: 0.25rem 0.5rem;
-    background: rgba(0, 82, 163, 0.3);
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
-}
+    .filter-btn.active,
+    .filter-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
 
-.highlight-badge.featured {
-    background: rgba(255, 215, 0, 0.3);
-    color: rgba(255, 255, 255, 0.95);
-}
+    .highlights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 0.75rem;
+    }
 
-.highlight-image {
-    width: 100%;
-    max-width: 600px;
-    margin: 0.5rem auto;
-    display: block;
-    border-radius: 6px;
-    max-height: 300px;
-    object-fit: cover;
-}
+    @media (max-width: 640px) {
+        .highlights-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 
-.highlight-description {
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0;
-}
+    .highlight-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+    }
 
-.empty-state {
-    text-align: center;
-    padding: 2rem;
-    color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-}
+    .highlight-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .highlight-card.hidden {
+        display: none;
+    }
+
+    .highlight-card.featured {
+        border-color: rgba(255, 215, 0, 0.4);
+        border-width: 2px;
+    }
+
+    .highlight-card h2 {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+    }
+
+    .highlight-meta {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .highlight-badge {
+        padding: 0.25rem 0.5rem;
+        background: rgba(0, 82, 163, 0.3);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .highlight-badge.featured {
+        background: rgba(255, 215, 0, 0.3);
+        color: rgba(255, 255, 255, 0.95);
+    }
+
+    .highlight-image {
+        width: 100%;
+        max-width: 600px;
+        margin: 0.5rem auto;
+        display: block;
+        border-radius: 6px;
+        max-height: 300px;
+        object-fit: cover;
+    }
+
+    .highlight-description {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+    }
 </style>
 {% endblock %}
 
@@ -159,7 +159,7 @@
 <div class="highlights-page compact-page">
     <div class="highlights-container compact-content">
         <div class="highlights-hero compact-hero">
-            <h1>New Content</h1>
+            <h1>Highlights</h1>
             <p>Announcements, events, and the latest from CPC</p>
         </div>
 
@@ -172,89 +172,89 @@
         </div>
 
         <div id="highlights-container" class="highlights-grid">
-            <div class="empty-state">Loading new content...</div>
+            <div class="empty-state">Loading highlights...</div>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    let allHighlights = [];
-    
-    fetch('/api/highlights')
-        .then(response => response.json())
-        .then(data => {
-            allHighlights = data.announcements || [];
-            displayHighlights(allHighlights);
-            setupFilters();
-        })
-        .catch(error => {
-            console.error('Error loading new content:', error);
-            document.getElementById('highlights-container').innerHTML = '<div class="empty-state">Error loading new content.</div>';
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+        let allHighlights = [];
 
-    function displayHighlights(highlights) {
-        const container = document.getElementById('highlights-container');
-        container.innerHTML = '';
-        
-        if (highlights.length === 0) {
-            container.innerHTML = '<div class="empty-state">No new content at this time.</div>';
-            return;
+        fetch('/api/highlights')
+            .then(response => response.json())
+            .then(data => {
+                allHighlights = data.announcements || [];
+                displayHighlights(allHighlights);
+                setupFilters();
+            })
+            .catch(error => {
+                console.error('Error loading highlights:', error);
+                document.getElementById('highlights-container').innerHTML = '<div class="empty-state">Error loading highlights.</div>';
+            });
+
+        function displayHighlights(highlights) {
+            const container = document.getElementById('highlights-container');
+            container.innerHTML = '';
+
+            if (highlights.length === 0) {
+                container.innerHTML = '<div class="empty-state">No highlights at this time.</div>';
+                return;
+            }
+
+            highlights.forEach(highlight => {
+                const card = document.createElement('div');
+                card.classList.add('highlight-card', 'show');
+                if (highlight.superfeatured) card.classList.add('featured');
+                card.dataset.type = highlight.type || '';
+                card.dataset.superfeatured = highlight.superfeatured || false;
+
+                let html = '';
+                if (highlight.featuredImage) {
+                    const imageClass = highlight.imageDisplayType === 'poster' ? 'object-contain bg-white' : 'object-cover';
+                    html += `<img src="${highlight.featuredImage}" alt="${highlight.title}" class="highlight-image ${imageClass}">`;
+                }
+
+                html += `<h2>${highlight.title}</h2>`;
+                html += '<div class="highlight-meta">';
+                if (highlight.type) {
+                    html += `<span class="highlight-badge">${highlight.type}</span>`;
+                }
+                if (highlight.superfeatured) {
+                    html += '<span class="highlight-badge featured">⭐ Featured</span>';
+                }
+                if (highlight.dateEntered) {
+                    html += `<span style="color: rgba(255,255,255,0.5);">📅 ${highlight.dateEntered}</span>`;
+                }
+                html += '</div>';
+                html += `<div class="highlight-description">${highlight.description}</div>`;
+
+                card.innerHTML = html;
+                container.appendChild(card);
+            });
         }
 
-        highlights.forEach(highlight => {
-            const card = document.createElement('div');
-            card.classList.add('highlight-card', 'show');
-            if (highlight.superfeatured) card.classList.add('featured');
-            card.dataset.type = highlight.type || '';
-            card.dataset.superfeatured = highlight.superfeatured || false;
-            
-            let html = '';
-            if (highlight.featuredImage) {
-                const imageClass = highlight.imageDisplayType === 'poster' ? 'object-contain bg-white' : 'object-cover';
-                html += `<img src="${highlight.featuredImage}" alt="${highlight.title}" class="highlight-image ${imageClass}">`;
-            }
-            
-            html += `<h2>${highlight.title}</h2>`;
-            html += '<div class="highlight-meta">';
-            if (highlight.type) {
-                html += `<span class="highlight-badge">${highlight.type}</span>`;
-            }
-            if (highlight.superfeatured) {
-                html += '<span class="highlight-badge featured">⭐ Featured</span>';
-            }
-            if (highlight.dateEntered) {
-                html += `<span style="color: rgba(255,255,255,0.5);">📅 ${highlight.dateEntered}</span>`;
-            }
-            html += '</div>';
-            html += `<div class="highlight-description">${highlight.description}</div>`;
-            
-            card.innerHTML = html;
-            container.appendChild(card);
-        });
-    }
-
-    function setupFilters() {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                filterHighlights(this.dataset.filter);
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterHighlights(this.dataset.filter);
+                });
             });
-        });
-    }
+        }
 
-    function filterHighlights(filter) {
-        document.querySelectorAll('.highlight-card').forEach(card => {
-            if (filter === 'all') {
-                card.classList.remove('hidden');
-            } else if (filter === 'superfeatured') {
-                card.classList.toggle('hidden', card.dataset.superfeatured !== 'true');
-            } else {
-                card.classList.toggle('hidden', card.dataset.type !== filter);
-            }
-        });
-    }
-});
+        function filterHighlights(filter) {
+            document.querySelectorAll('.highlight-card').forEach(card => {
+                if (filter === 'all') {
+                    card.classList.remove('hidden');
+                } else if (filter === 'superfeatured') {
+                    card.classList.toggle('hidden', card.dataset.superfeatured !== 'true');
+                } else {
+                    card.classList.toggle('hidden', card.dataset.type !== filter);
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}

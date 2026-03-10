@@ -4,132 +4,129 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-{% endblock %}
-
-{% block head %}
 <style>
-.search-page {
-    min-height: calc(100vh - 200px);
-    padding: 0;
-    margin: 0;
-}
+    .search-page {
+        min-height: calc(100vh - 200px);
+        padding: 0;
+        margin: 0;
+    }
 
-.search-container {
-    max-width: 100%;
-    margin: 0;
-    padding: 0 0.75rem;
-}
+    .search-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0 0.75rem;
+    }
 
-.search-hero {
-    padding: 0.5rem 0;
-    text-align: center;
-    margin-bottom: 0.75rem;
-}
+    .search-hero {
+        padding: 0.5rem 0;
+        text-align: center;
+        margin-bottom: 0.75rem;
+    }
 
-.search-hero h1 {
-    font-size: 1.75rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.25rem 0;
-    font-weight: 600;
-}
+    .search-hero h1 {
+        font-size: 1.75rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.25rem 0;
+        font-weight: 600;
+    }
 
-.search-hero p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    margin: 0;
-}
+    .search-hero p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin: 0;
+    }
 
-.search-section {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
-}
+    .search-section {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
 
-.search-section label {
-    display: block;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.85rem;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
+    .search-section label {
+        display: block;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
 
-.search-section input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: white;
-    font-size: 0.9rem;
-}
+    .search-section input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        color: white;
+        font-size: 0.9rem;
+    }
 
-.search-section button {
-    padding: 0.5rem 1rem;
-    background: rgba(0, 82, 163, 0.4);
-    border: 1px solid rgba(0, 82, 163, 0.6);
-    border-radius: 6px;
-    color: white;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
+    .search-section button {
+        padding: 0.5rem 1rem;
+        background: rgba(0, 82, 163, 0.4);
+        border: 1px solid rgba(0, 82, 163, 0.6);
+        border-radius: 6px;
+        color: white;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
 
-.search-section button:hover {
-    background: rgba(0, 82, 163, 0.5);
-}
+    .search-section button:hover {
+        background: rgba(0, 82, 163, 0.5);
+    }
 
-.filter-tabs {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.75rem;
-}
+    .filter-tabs {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+    }
 
-.filter-tab {
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
+    .filter-tab {
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
 
-.filter-tab.active,
-.filter-tab:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-}
+    .filter-tab.active,
+    .filter-tab:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
 
-.results-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
+    .results-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
 
-.result-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.75rem;
-}
+    .result-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
 
-.result-card h3 {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
-}
+    .result-card h3 {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+    }
 
-.result-card p {
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0;
-}
+    .result-card p {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+    }
 </style>
 {% endblock %}
 
@@ -145,11 +142,8 @@
         <div class="search-section">
             <label>Search</label>
             <div style="display: flex; gap: 0.5rem;">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search for anything... (e.g., 'Luke', 'grace', 'worship')"
-                    autocomplete="off">
+                <input type="text" id="searchInput"
+                    placeholder="Search for anything... (e.g., 'Luke', 'grace', 'worship')" autocomplete="off">
                 <button id="searchButton">Go</button>
             </div>
         </div>
@@ -162,13 +156,11 @@
             <button class="filter-tab" data-type="announcements">Announcements</button>
             <button class="filter-tab" data-type="events">Events</button>
             <button class="filter-tab" data-type="gallery">Gallery</button>
-            data-type="papers">Papers</button>
-        <button
-            class="filter-tab px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
-            data-type="gallery">Gallery</button>
-    </div>
+            <button class="filter-tab" data-type="papers">Papers</button>
+            <button class="filter-tab" data-type="teaching_series">Teaching Series</button>
+        </div>
 
-    <!-- Search Results -->
+        <!-- Search Results -->
         <div class="results-container" id="searchResults">
             <!-- Results will be populated here -->
         </div>
@@ -232,23 +224,23 @@
     }
 
     function showLoading() {
-        searchResults.innerHTML = '<div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">Searching...</div>';
+        searchResults.innerHTML = '<div class="p-10 bg-white/5 border border-white/10 rounded-lg text-center text-gray-400">Searching...</div>';
     }
 
     function showEmptyState() {
         searchResults.innerHTML = `
-            <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
-                <h2 class="text-2xl font-semibold mb-2" style="color: white !important;">Start Your Search</h2>
-                <p class="text-base leading-relaxed text-gray-700">Enter a search query to find content across the site</p>
+            <div class="p-10 bg-white/5 border border-white/10 rounded-lg text-center text-gray-400">
+                <h2 class="text-2xl font-semibold mb-2 text-white">Start Your Search</h2>
+                <p class="text-base">Enter a search query to find content across the site</p>
             </div>
         `;
     }
 
     function showError() {
         searchResults.innerHTML = `
-            <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
-                <h2 class="text-2xl font-semibold mb-2" style="color: white !important;">Search Error</h2>
-                <p class="text-base leading-relaxed text-gray-700">Something went wrong. Please try again.</p>
+            <div class="p-10 bg-red-500/10 border border-red-500/20 rounded-lg text-center text-red-200">
+                <h2 class="text-2xl font-semibold mb-2">Search Error</h2>
+                <p class="text-base">Something went wrong. Please try again.</p>
             </div>
         `;
     }
@@ -256,37 +248,54 @@
     function displayResults(data) {
         if (data.total === 0) {
             searchResults.innerHTML = `
-                <div class="p-10 bg-gray-50 border rounded-lg text-center text-gray-600">
-                    <h2 class="text-2xl font-semibold mb-2" style="color: white !important;">No Results Found</h2>
-                    <p class="text-base leading-relaxed text-gray-700">Try a different search term or check the spelling</p>
+                <div class="p-10 bg-gray-50/5 border border-white/10 rounded-lg text-center text-gray-400">
+                    <h2 class="text-2xl font-semibold mb-2 text-white">No Results Found</h2>
+                    <p class="text-base">Try a different search term or check the spelling</p>
                 </div>
             `;
             return;
         }
 
+        const typeLabels = {
+            'sermon': 'Sermon',
+            'announcement': 'Announcement',
+            'podcast': 'Podcast',
+            'event': 'Event',
+            'gallery': 'Gallery',
+            'paper': 'Paper',
+            'teaching_series': 'Teaching Series',
+            'sermon_series': 'Sermon Series'
+        };
+
         let html = `
             <div class="mb-6">
-                <div class="text-base leading-relaxed text-gray-700">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
+                <div class="text-base text-gray-400">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
             </div>
             <div class="space-y-6">
         `;
 
         data.results.forEach(item => {
+            const label = typeLabels[item.type] || item.type;
+            const dateStr = item.date ? new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+
             html += `
-                <div class="p-6 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
-                    <div class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium inline-block mb-3">${item.type}</div>
-                    <h3 class="text-xl font-semibold mb-2" style="color: white !important;">${item.title}</h3>
-                    <div class="text-sm text-gray-500 mb-4">
-                        ${item.author ? `${item.author} • ` : ''}
-                        ${item.date ? new Date(item.date).toLocaleDateString() : ''}
-                        ${item.category ? ` • ${item.category}` : ''}
+                <div class="result-card p-6 border border-white/10 rounded-lg shadow-sm hover:shadow-md transition bg-white/5 backdrop-blur-md">
+                    <div class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold inline-block mb-3 uppercase tracking-wider">${label}</div>
+                    <h3 class="text-xl font-bold mb-2 text-white">${item.title}</h3>
+                    <div class="text-sm text-gray-400 mb-4 flex flex-wrap gap-2 items-center">
+                        ${item.speaker || item.author ? `<span>${item.speaker || item.author}</span><span class="opacity-30">•</span>` : ''}
+                        ${dateStr ? `<span>${dateStr}</span>` : ''}
+                        ${item.category ? `<span class="opacity-30">•</span><span>${item.category}</span>` : ''}
+                        ${item.series ? `<span class="opacity-30">•</span><span class="text-blue-400">${item.series}</span>` : ''}
                     </div>
-                    ${item.description ? `<p class="text-base leading-relaxed text-gray-700 mb-4">${item.description}</p>` : ''}
-                    ${item.url ? `<a href="${item.url}" class="text-blue-600 font-medium hover:underline" target="_blank">Read More →</a>` : ''}
+                    ${item.description ? `<p class="text-base leading-relaxed text-gray-300 mb-4">${item.description}</p>` : ''}
+                    ${item.url ? `<a href="${item.url}" class="inline-flex items-center text-blue-400 font-medium hover:text-blue-300 transition-colors" ${item.url.startsWith('http') ? 'target="_blank"' : ''}>
+                        View Details <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </a>` : ''}
                 </div>
             `;
         });
-        
+
         html += '</div>';
 
         if (data.pages > 1) {

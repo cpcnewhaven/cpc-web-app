@@ -1635,6 +1635,40 @@ def api_search():
                     'url': p.file_url
                 })
         
+        # Search series (SermonSeries & TeachingSeries)
+        if content_type in ['all', 'teaching_series']:
+            series_hits = SermonSeries.query.filter(
+                SermonSeries.active == True,
+                db.or_(
+                    SermonSeries.title.ilike(f'%{query}%'),
+                    SermonSeries.description.ilike(f'%{query}%')
+                )
+            ).all()
+            for ss in series_hits:
+                results['results'].append({
+                    'type': 'sermon_series',
+                    'title': ss.title,
+                    'description': ss.description[:200] if ss.description else '',
+                    'date': ss.start_date.strftime('%Y-%m-%d') if ss.start_date else None,
+                    'url': url_for('sermons') + f"?series={ss.id}"
+                })
+            
+            teaching_hits = TeachingSeries.query.filter(
+                TeachingSeries.active == True,
+                db.or_(
+                    TeachingSeries.title.ilike(f'%{query}%'),
+                    TeachingSeries.description.ilike(f'%{query}%')
+                )
+            ).all()
+            for ts in teaching_hits:
+                results['results'].append({
+                    'type': 'teaching_series',
+                    'title': ts.title,
+                    'description': ts.description[:200] if ts.description else '',
+                    'date': ts.date_entered.strftime('%Y-%m-%d') if ts.date_entered else None,
+                    'url': url_for('teaching_series') + f"?q={ts.title}"
+                })
+        
         # Sort by date descending
         results['results'].sort(key=lambda x: x.get('date', ''), reverse=True)
         results['total'] = len(results['results'])

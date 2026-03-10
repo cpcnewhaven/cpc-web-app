@@ -352,7 +352,7 @@
 <section class="highlights-section section-dark new-content-section" style="padding: 4rem 0; position: relative;">
     <div class="container" style="position: relative; z-index: 1;">
         <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
-            <h2 class="section-heading" style="margin-bottom: 0.5rem;">New Content</h2>
+            <h2 class="section-heading" style="margin-bottom: 0.5rem;">Highlights</h2>
             <p class="section-subheading">Announcements and the latest from CPC</p>
         </div>
         <div id="highlights" class="highlights-grid"></div>
@@ -360,8 +360,8 @@
         </div>
         <div id="new-content-actions"
             style="text-align: center; margin-top: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
-            <button type="button" id="show-all-new-content-btn" class="btn btn-secondary" style="display: none;">Show
-                all new content</button>
+            <button type="button" id="show-all-highlights-btn" class="btn btn-secondary" style="display: none;">Show
+                all highlights</button>
             <a href="{{ url_for('highlights') }}" class="glass-icon-button"><i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
@@ -535,7 +535,9 @@
 
         function formatEventDate(iso) {
             if (!iso) return '';
-            var d = new Date(iso);
+            // Handle ISO date strings (YYYY-MM-DD) by treating them as local time
+            // to avoid the "one day off" glitch caused by timezone shifts.
+            var d = new Date(iso + 'T12:00:00');
             return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
@@ -603,7 +605,7 @@
     })();
 </script>
 <script>
-    // New Content grid: latest 6, then "Show all new content" reveals rest as previews
+    // Highlights grid: latest 6, then "Show all highlights" reveals rest as previews
     document.addEventListener('DOMContentLoaded', function () {
         var INITIAL_COUNT = 6;
         var allActive = [];
@@ -643,7 +645,7 @@
         fetch('/api/highlights').then(function (r) { return r.json(); }).then(function (data) {
             var container = document.getElementById('highlights');
             var extraContainer = document.getElementById('highlights-extra');
-            var btn = document.getElementById('show-all-new-content-btn');
+            var btn = document.getElementById('show-all-highlights-btn');
             if (!container) return;
 
             allActive = (data.announcements || []).filter(function (h) { return h.active === 'true' || h.active === true; });
@@ -654,7 +656,7 @@
             });
 
             if (allActive.length === 0) {
-                container.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);grid-column:1/-1;">No new content at this time.</p>';
+                container.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);grid-column:1/-1;">No highlights at this time.</p>';
                 return;
             }
 
@@ -665,12 +667,12 @@
             if (rest.length > 0 && extraContainer && btn) {
                 renderItems(extraContainer, rest);
                 btn.style.display = 'inline-block';
-                btn.textContent = 'Show all new content';
+                btn.textContent = 'Show all highlights';
                 btn.addEventListener('click', function () {
                     var isExpanded = extraContainer.style.display === 'grid';
                     if (isExpanded) {
                         extraContainer.style.display = 'none';
-                        btn.textContent = 'Show all new content';
+                        btn.textContent = 'Show all highlights';
                     } else {
                         extraContainer.style.display = 'grid';
                         btn.textContent = 'Show less';
@@ -679,7 +681,7 @@
             }
         }).catch(function () {
             var c = document.getElementById('highlights');
-            if (c) c.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);">Unable to load new content.</p>';
+            if (c) c.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.6);">Unable to load highlights.</p>';
         });
     });
 </script>
