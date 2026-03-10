@@ -431,6 +431,10 @@ def admin_about_edit():
             else:
                 db.session.add(SiteContent(key=key, value=val))
         db.session.commit()
+        try:
+            _log_audit('edited', SiteContent(key='About Page'), 'About Page')
+        except:
+            pass
         flash('About page content saved successfully!', 'success')
         saved = True
 
@@ -490,6 +494,10 @@ def admin_community_edit():
             else:
                 db.session.add(SiteContent(key=key, value=val))
         db.session.commit()
+        try:
+            _log_audit('edited', SiteContent(key='Community Page'), 'Community Page')
+        except:
+            pass
         flash('Community page content saved successfully!', 'success')
         saved = True
 
@@ -645,7 +653,7 @@ def api_pastor_teaching_series_detail(series_id):
         .filter(_not_expired(TeachingSeries)).first()
     if not s:
         return jsonify({'error': 'Not found'}), 404
-    sessions = sorted(s.sessions, key=lambda x: x.number) if s.sessions else []
+    sessions = sorted(s.sessions, key=lambda x: x.number or 999) if s.sessions else []
     return jsonify({
         'id': s.id,
         'title': s.title,
@@ -830,7 +838,6 @@ def api_teaching_series():
     })
 
 # API Routes
-@app.route('/api/announcements')
 def _not_expired(model_klass):
     """SQLAlchemy filter: show only content that has no expiration or expires_at > today."""
     from sqlalchemy import text
@@ -840,6 +847,7 @@ def _not_expired(model_klass):
     return db.or_(col.is_(None), col > date.today())
 
 
+@app.route('/api/announcements')
 @cache.cached(timeout=60)
 def api_announcements():
     """API endpoint matching your highlights.json structure"""
@@ -970,7 +978,8 @@ def api_sermons():
     try:
         db_sermons = Sermon.query.filter(
             Sermon.active == True,
-            Sermon.archived == False
+            Sermon.archived == False,
+            Sermon.date <= date.today()
         ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).all()
         for s in db_sermons:
             sermon_data = {
@@ -2312,7 +2321,7 @@ def _log_audit(action, model, entity_type=None):
             entity_title=str(etitle)[:300] if etitle else None,
         )
         db.session.add(entry)
-        # Don't commit here — the caller (Flask-Admin) manages the session.
+        db.session.commit()
     except Exception as exc:
         log.warning("Audit log write failed: %s", exc)
 
@@ -2524,6 +2533,10 @@ class AnnouncementView(AuthenticatedModelView):
             ann.active = False
             ann.archived = True
         db.session.commit()
+        try:
+            _log_audit(status, ann)
+        except:
+            pass
         flash('Status updated.', 'success')
         return redirect(url_for('announcement.index_view'))
 
@@ -2535,6 +2548,13 @@ class AnnouncementView(AuthenticatedModelView):
                 if announcement:
                     announcement.active = not announcement.active
             db.session.commit()
+            try:
+                for id in ids:
+                    ann = Announcement.query.get(id)
+                    if ann:
+                        _log_audit('edited', ann)
+            except:
+                pass
             flash(f'Successfully toggled active status for {len(ids)} announcements', 'success')
             return True
         except Exception as e:
@@ -2549,6 +2569,13 @@ class AnnouncementView(AuthenticatedModelView):
                 if announcement:
                     announcement.superfeatured = not announcement.superfeatured
             db.session.commit()
+            try:
+                for id in ids:
+                    ann = Announcement.query.get(id)
+                    if ann:
+                        _log_audit('edited', ann)
+            except:
+                pass
             flash(f'Successfully toggled super featured status for {len(ids)} announcements', 'success')
             return True
         except Exception as e:
@@ -2566,6 +2593,13 @@ class AnnouncementView(AuthenticatedModelView):
                     if announcement:
                         announcement.category = category
                 db.session.commit()
+                try:
+                    for id in ids:
+                        ann = Announcement.query.get(id)
+                        if ann:
+                            _log_audit('edited', ann)
+                except:
+                    pass
                 flash(f'Successfully updated category for {len(ids)} announcements', 'success')
                 return True
             except Exception as e:
@@ -2584,6 +2618,13 @@ class AnnouncementView(AuthenticatedModelView):
                     announcement.archived = False
                     count += 1
             db.session.commit()
+            try:
+                for id in ids:
+                    ann = Announcement.query.get(id)
+                    if ann:
+                        _log_audit('published', ann)
+            except:
+                pass
             flash(f'Successfully published {count} announcements', 'success')
             return True
         except Exception as e:
@@ -2601,6 +2642,13 @@ class AnnouncementView(AuthenticatedModelView):
                     announcement.archived = True
                     count += 1
             db.session.commit()
+            try:
+                for id in ids:
+                    ann = Announcement.query.get(id)
+                    if ann:
+                        _log_audit('archived', ann)
+            except:
+                pass
             flash(f'Successfully archived {count} announcements', 'success')
             return True
         except Exception as e:
@@ -2614,6 +2662,10 @@ class AnnouncementView(AuthenticatedModelView):
             for id in ids:
                 announcement = Announcement.query.get(id)
                 if announcement:
+                    try:
+                        _log_audit('deleted', announcement)
+                    except:
+                        pass
                     db.session.delete(announcement)
                     count += 1
             db.session.commit()
@@ -2867,6 +2919,10 @@ class SermonView(AuthenticatedModelView):
             s.active = False
             s.archived = True
         db.session.commit()
+        try:
+            _log_audit(status, s)
+        except:
+            pass
         flash('Status updated.', 'success')
         return redirect(url_for('sermon.index_view'))
     
@@ -2881,6 +2937,13 @@ class SermonView(AuthenticatedModelView):
                     sermon.archived = False
                     count += 1
             db.session.commit()
+            try:
+                for id in ids:
+                    sermon = Sermon.query.get(id)
+                    if sermon:
+                        _log_audit('published', sermon)
+            except:
+                pass
             flash(f'Successfully published {count} sermons', 'success')
             return True
         except Exception as e:
@@ -2898,6 +2961,13 @@ class SermonView(AuthenticatedModelView):
                     sermon.archived = True
                     count += 1
             db.session.commit()
+            try:
+                for id in ids:
+                    sermon = Sermon.query.get(id)
+                    if sermon:
+                        _log_audit('archived', sermon)
+            except:
+                pass
             flash(f'Successfully archived {count} sermons', 'success')
             return True
         except Exception as e:
@@ -2910,6 +2980,10 @@ class SermonView(AuthenticatedModelView):
             for id in ids:
                 sermon = Sermon.query.get(id)
                 if sermon:
+                    try:
+                        _log_audit('deleted', sermon)
+                    except:
+                        pass
                     db.session.delete(sermon)
             db.session.commit()
             flash(f'Successfully deleted {len(ids)} sermons', 'success')
@@ -3000,6 +3074,10 @@ class PodcastEpisodeView(AuthenticatedModelView):
             for id in ids:
                 episode = PodcastEpisode.query.get(id)
                 if episode:
+                    try:
+                        _log_audit('deleted', episode)
+                    except:
+                        pass
                     db.session.delete(episode)
             db.session.commit()
             flash(f'Successfully deleted {len(ids)} podcast episodes', 'success')
@@ -3077,6 +3155,10 @@ class GalleryImageView(AuthenticatedModelView):
             for id in ids:
                 image = GalleryImage.query.get(id)
                 if image:
+                    try:
+                        _log_audit('deleted', image)
+                    except:
+                        pass
                     db.session.delete(image)
             db.session.commit()
             flash(f'Successfully deleted {len(ids)} gallery images', 'success')
@@ -3093,6 +3175,13 @@ class GalleryImageView(AuthenticatedModelView):
                 if image:
                     image.event = not image.event
             db.session.commit()
+            try:
+                for id in ids:
+                    image = GalleryImage.query.get(id)
+                    if image:
+                        _log_audit('edited', image)
+            except:
+                pass
             flash(f'Successfully toggled event status for {len(ids)} images', 'success')
             return True
         except Exception as e:
@@ -3139,6 +3228,10 @@ def api_admin_set_podcast_episode_thumbnail(episode_id):
     try:
         episode.podcast_thumbnail_url = url
         db.session.commit()
+        try:
+            _log_audit('edited', episode)
+        except:
+            pass
         return jsonify({'status': 'success', 'url': url})
     except Exception as e:
         db.session.rollback()
@@ -3256,6 +3349,10 @@ class OngoingEventView(AuthenticatedModelView):
             event.active = False
             event.archived = True
         db.session.commit()
+        try:
+            _log_audit(status, event)
+        except:
+            pass
         flash('Status updated.', 'success')
         return redirect(url_for('ongoingevent.index_view'))
 
@@ -3267,6 +3364,13 @@ class OngoingEventView(AuthenticatedModelView):
                 if event:
                     event.active = not event.active
             db.session.commit()
+            try:
+                for id in ids:
+                    evt = OngoingEvent.query.get(id)
+                    if evt:
+                        _log_audit('edited', evt)
+            except:
+                pass
             flash(f'Successfully toggled active status for {len(ids)} events', 'success')
             return True
         except Exception as e:
@@ -3284,6 +3388,13 @@ class OngoingEventView(AuthenticatedModelView):
                     event.archived = False
                     count += 1
             db.session.commit()
+            try:
+                for id in ids:
+                    evt = OngoingEvent.query.get(id)
+                    if evt:
+                        _log_audit('published', evt)
+            except:
+                pass
             flash(f'Successfully published {count} events', 'success')
             return True
         except Exception as e:
@@ -3301,6 +3412,13 @@ class OngoingEventView(AuthenticatedModelView):
                     event.archived = True
                     count += 1
             db.session.commit()
+            try:
+                for id in ids:
+                    evt = OngoingEvent.query.get(id)
+                    if evt:
+                        _log_audit('archived', evt)
+            except:
+                pass
             flash(f'Successfully archived {count} events', 'success')
             return True
         except Exception as e:
@@ -3313,6 +3431,10 @@ class OngoingEventView(AuthenticatedModelView):
             for id in ids:
                 event = OngoingEvent.query.get(id)
                 if event:
+                    try:
+                        _log_audit('deleted', event)
+                    except:
+                        pass
                     db.session.delete(event)
             db.session.commit()
             flash(f'Successfully deleted {len(ids)} events', 'success')
@@ -3346,7 +3468,12 @@ class TeachingSeriesView(AuthenticatedModelView):
     """Admin for pastor teaching series (e.g. Total Christ). Hidden from menu; use Overview page."""
     create_template = 'admin/teaching_series_create.html'
     edit_template = 'admin/teaching_series_edit.html'
-    inline_models = (TeachingSeriesSession,)
+    inline_models = [(TeachingSeriesSession, {
+        'form_overrides': {
+            'session_date': DatePickerField,
+            'date_entered': DateTimePickerField
+        }
+    })]
     column_list = ('id', 'title', 'active', 'sort_order', 'start_date', 'end_date', 'date_entered', 'session_count')
     column_searchable_list = ('title', 'description', 'event_info')
     column_filters = ('active',)
@@ -3407,6 +3534,13 @@ class TeachingSeriesView(AuthenticatedModelView):
                     series.active = not series.active
                     count += 1
             db.session.commit()
+            try:
+                for id in ids:
+                    ser = TeachingSeries.query.get(id)
+                    if ser:
+                        _log_audit('edited', ser)
+            except:
+                pass
             flash(f'Successfully toggled active status for {count} teaching series', 'success')
             return True
         except Exception as e:
@@ -3420,7 +3554,11 @@ class TeachingSeriesView(AuthenticatedModelView):
             for id in ids:
                 series = TeachingSeries.query.get(id)
                 if series:
-                    # Delete sessions first
+                    try:
+                        _log_audit('deleted', series)
+                    except:
+                        pass
+                    # Delete sessions first (maybe log these too? probably enough to log the series)
                     for sess in series.sessions:
                         db.session.delete(sess)
                     db.session.delete(series)
@@ -3524,6 +3662,10 @@ class QuickAddSessionsView(BaseView):
                     current_year += 1
                     
             db.session.commit()
+            try:
+                _log_audit('edited', series, 'Teaching Series (Quick Sessions Add)')
+            except:
+                pass
             flash(f'Successfully added {num_sessions} sessions starting from {start_date.strftime("%b %Y")}.', 'success')
             return redirect(url_for('teachingseriessession.index_view', flt0_0=series.id))
             
