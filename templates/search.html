@@ -158,6 +158,7 @@
             <button class="filter-tab" data-type="gallery">Gallery</button>
             <button class="filter-tab" data-type="papers">Papers</button>
             <button class="filter-tab" data-type="teaching_series">Teaching Series</button>
+            <button class="filter-tab" data-type="sermon_series">Sermon Series</button>
         </div>
 
         <!-- Search Results -->
@@ -230,10 +231,35 @@
     function showEmptyState() {
         searchResults.innerHTML = `
             <div class="p-10 bg-white/5 border border-white/10 rounded-lg text-center text-gray-400">
-                <h2 class="text-2xl font-semibold mb-2 text-white">Start Your Search</h2>
-                <p class="text-base">Enter a search query to find content across the site</p>
+                <h2 class="text-2xl font-semibold mb-4 text-white">Start Your Search</h2>
+                <p class="text-base mb-6">Enter a search query to find content across the site</p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="text-xs text-gray-500 uppercase tracking-widest w-full mb-2">Popular Searches</span>
+                    <button onclick="quickSearch('Total')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Total Christ</button>
+                    <button onclick="quickSearch('Luke')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Luke</button>
+                    <button onclick="quickSearch('Community')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Community</button>
+                    <button onclick="quickSearch('Service')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Service</button>
+                </div>
             </div>
         `;
+    }
+
+    window.quickSearch = function (term) {
+        searchInput.value = term;
+        performSearch();
+    };
+
+    function highlightText(text, query) {
+        if (!query) return text;
+        const words = query.split(' ').filter(word => word.length > 2);
+        if (words.length === 0) return text;
+
+        let highlighted = text;
+        words.forEach(word => {
+            const regex = new RegExp(`(${word})`, 'gi');
+            highlighted = highlighted.replace(regex, '<mark class="bg-blue-500/30 text-white rounded px-0.5">$1</mark>');
+        });
+        return highlighted;
     }
 
     function showError() {
@@ -278,17 +304,20 @@
             const label = typeLabels[item.type] || item.type;
             const dateStr = item.date ? new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
+            const highlightedTitle = highlightText(item.title, data.query);
+            const highlightedDescription = highlightText(item.description || '', data.query);
+
             html += `
                 <div class="result-card p-6 border border-white/10 rounded-lg shadow-sm hover:shadow-md transition bg-white/5 backdrop-blur-md">
                     <div class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold inline-block mb-3 uppercase tracking-wider">${label}</div>
-                    <h3 class="text-xl font-bold mb-2 text-white">${item.title}</h3>
+                    <h3 class="text-xl font-bold mb-2 text-white">${highlightedTitle}</h3>
                     <div class="text-sm text-gray-400 mb-4 flex flex-wrap gap-2 items-center">
                         ${item.speaker || item.author ? `<span>${item.speaker || item.author}</span><span class="opacity-30">•</span>` : ''}
                         ${dateStr ? `<span>${dateStr}</span>` : ''}
                         ${item.category ? `<span class="opacity-30">•</span><span>${item.category}</span>` : ''}
                         ${item.series ? `<span class="opacity-30">•</span><span class="text-blue-400">${item.series}</span>` : ''}
                     </div>
-                    ${item.description ? `<p class="text-base leading-relaxed text-gray-300 mb-4">${item.description}</p>` : ''}
+                    ${item.description ? `<p class="text-base leading-relaxed text-gray-300 mb-4">${highlightedDescription}</p>` : ''}
                     ${item.url ? `<a href="${item.url}" class="inline-flex items-center text-blue-400 font-medium hover:text-blue-300 transition-colors" ${item.url.startsWith('http') ? 'target="_blank"' : ''}>
                         View Details <i class="fas fa-arrow-right ml-2 text-xs"></i>
                     </a>` : ''}

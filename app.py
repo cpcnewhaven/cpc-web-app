@@ -1636,12 +1636,14 @@ def api_search():
                 })
         
         # Search series (SermonSeries & TeachingSeries)
-        if content_type in ['all', 'teaching_series']:
+        if content_type in ['all', 'teaching_series', 'sermon_series']:
+            # Sermon Series
             series_hits = SermonSeries.query.filter(
                 SermonSeries.active == True,
                 db.or_(
                     SermonSeries.title.ilike(f'%{query}%'),
-                    SermonSeries.description.ilike(f'%{query}%')
+                    SermonSeries.description.ilike(f'%{query}%'),
+                    SermonSeries.slug.ilike(f'%{query}%')
                 )
             ).all()
             for ss in series_hits:
@@ -1653,6 +1655,7 @@ def api_search():
                     'url': url_for('sermons') + f"?series={ss.id}"
                 })
             
+            # Teaching Series (including sessions)
             teaching_hits = TeachingSeries.query.filter(
                 TeachingSeries.active == True,
                 db.or_(
@@ -1660,6 +1663,19 @@ def api_search():
                     TeachingSeries.description.ilike(f'%{query}%')
                 )
             ).all()
+            
+            # Find teaching series by matching sessions too
+            session_matches = TeachingSeriesSession.query.filter(
+                TeachingSeriesSession.title.ilike(f'%{query}%')
+            ).all()
+            
+            seen_ts_ids = {ts.id for ts in teaching_hits}
+            for sess in session_matches:
+                ts = sess.series
+                if ts and ts.active and ts.id not in seen_ts_ids:
+                    teaching_hits.append(ts)
+                    seen_ts_ids.add(ts.id)
+            
             for ts in teaching_hits:
                 results['results'].append({
                     'type': 'teaching_series',
