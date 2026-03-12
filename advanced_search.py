@@ -2,6 +2,7 @@
 """
 Advanced Search & Filtering System
 Provides powerful search capabilities for sermon content.
+Uses the database (sermon_data_helper) when running inside Flask; falls back to data/sermons.json otherwise.
 """
 
 import json
@@ -12,19 +13,42 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def _in_flask_app():
+    try:
+        from flask import has_app_context
+        return has_app_context()
+    except ImportError:
+        return False
+
 class AdvancedSearch:
     def __init__(self, sermons_file: str = "data/sermons.json"):
         self.sermons_file = sermons_file
+        self.helper = None
+        self._json_cache = None  # sermons from JSON when not in app context
         try:
             from sermon_data_helper import get_sermon_helper
             self.helper = get_sermon_helper()
-            self.sermons = self.helper.get_all_sermons()
         except ImportError:
-            # Fallback to old method
-            self.helper = None
-            self.sermons_data = self.load_sermons()
-            self.sermons = self.sermons_data.get('sermons', [])
-    
+            pass
+
+    def _get_sermons(self) -> List[Dict]:
+        """Return sermon list from database when in Flask app context, else from JSON."""
+        if _in_flask_app() and self.helper is not None:
+            try:
+                return self.helper.get_all_sermons()
+            except Exception as e:
+                logger.warning("AdvancedSearch: DB fetch failed, using JSON fallback: %s", e)
+        if self._json_cache is not None:
+            return self._json_cache
+        data = self.load_sermons()
+        self._json_cache = data.get('sermons', [])
+        return self._json_cache
+
+    @property
+    def sermons(self) -> List[Dict]:
+        """Sermons list (from DB in Flask, else JSON)."""
+        return self._get_sermons()
+
     def load_sermons(self) -> Dict:
         """Load sermons data from JSON file."""
         try:
@@ -178,9 +202,9 @@ class AdvancedSearch:
                        sort_order: str = 'desc',
                        limit: int = None) -> List[Dict]:
         """Perform advanced search with multiple criteria."""
-        
+        sermons_list = self._get_sermons()
         # Start with all sermons
-        results = self.sermons.copy()
+        results = sermons_list.copy()
         
         # Apply filters
         if query:

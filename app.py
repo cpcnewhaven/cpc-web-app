@@ -205,6 +205,8 @@ def ensure_db_columns():
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
             ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
             ('expires_at', 'DATE', 'DATE'),
+            ('event_start_time', 'VARCHAR(100)', 'VARCHAR(100)'),
+            ('event_end_time', 'VARCHAR(100)', 'VARCHAR(100)'),
         ],
         'ongoing_events': [
             ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
@@ -869,7 +871,9 @@ def api_announcements():
                 'superfeatured': a.superfeatured,
                 'showInBanner': getattr(a, 'show_in_banner', False),
                 'featuredImage': a.featured_image,
-                'imageDisplayType': a.image_display_type
+                'imageDisplayType': a.image_display_type,
+                'eventStartTime': getattr(a, 'event_start_time', None),
+                'eventEndTime': getattr(a, 'event_end_time', None),
             } for a in announcements
         ]
     })
@@ -889,6 +893,8 @@ def api_banner_announcements():
                 'title': a.title,
                 'description': a.description,
                 'type': a.type or 'announcement',
+                'eventStartTime': getattr(a, 'event_start_time', None),
+                'eventEndTime': getattr(a, 'event_end_time', None),
             } for a in announcements
         ]
     })
@@ -914,7 +920,9 @@ def api_highlights():
                 'tag': a.tag,
                 'superfeatured': a.superfeatured,
                 'featuredImage': a.featured_image,
-                'imageDisplayType': a.image_display_type
+                'imageDisplayType': a.image_display_type,
+                'eventStartTime': getattr(a, 'event_start_time', None),
+                'eventEndTime': getattr(a, 'event_end_time', None),
             } for a in announcements
         ]
     })
@@ -1555,7 +1563,9 @@ def api_search():
                     'date': a.date_entered.strftime('%Y-%m-%d') if a.date_entered else None,
                     'category': a.category,
                     'tag': a.tag,
-                    'url': url_for('announcements')
+                    'url': url_for('announcements'),
+                    'eventStartTime': getattr(a, 'event_start_time', None),
+                    'eventEndTime': getattr(a, 'event_end_time', None),
                 })
         
         # Search podcasts
@@ -1758,6 +1768,8 @@ def api_archive():
                     'date': a.date_entered.strftime('%Y-%m-%d'),
                     'category': a.category,
                     'url': url_for('highlights', _external=False),
+                    'eventStartTime': getattr(a, 'event_start_time', None),
+                    'eventEndTime': getattr(a, 'event_end_time', None),
                 })
         
         # Get old podcast episodes
@@ -2264,7 +2276,7 @@ def admin_upload_pdf():
 # Enhanced Admin Interface
 from flask_admin import BaseView, expose
 from flask_admin.actions import action
-from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField, DateTimeField
+from wtforms import TextAreaField, SelectField, BooleanField, StringField, DateField, URLField, DateTimeField, PasswordField
 from wtforms.validators import DataRequired, URL, Length, Optional
 import re
 from wtforms.widgets import TextArea, Select, Input
@@ -2392,7 +2404,30 @@ class AuthenticatedModelView(ModelView):
     def after_model_delete(self, model):
         _log_audit('deleted', model)
 
-# Choices for announcement type/category — use form_args + form_overrides so we get
+
+class UserView(AuthenticatedModelView):
+    """Admin CRUD for login users (admin panel accounts)."""
+    column_list = ('id', 'username', 'created_at', 'last_login_at')
+    column_searchable_list = ('username',)
+    form_excluded_columns = ('password_hash',)
+    form_extra_fields = {
+        'password': PasswordField('Password (required for new user; leave blank to keep current)'),
+    }
+    form_columns = ('username', 'password')
+
+    def on_model_change(self, form, model, is_created):
+        pw = getattr(form, 'password', None)
+        if pw and pw.data:
+            from werkzeug.security import generate_password_hash
+            model.password_hash = generate_password_hash(pw.data)
+        elif is_created:
+            import os
+            from werkzeug.security import generate_password_hash
+            model.password_hash = generate_password_hash(os.urandom(24).hex())
+            flash('User created with a random password. Edit the user and set a real password.', 'warning')
+
+
+# Choices for announcement type/category
 # wtforms SelectField (4-tuple iter_choices), not Flask-Admin Select2Field (3-tuple, breaks widget)
 ANNOUNCEMENT_TYPE_CHOICES = [
     ('announcement', 'Announcement'),
@@ -2446,7 +2481,7 @@ def _format_announcement_status(view, context, model, name):
 
 
 class AnnouncementView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered', 'expires_at')
+    column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered', 'event_start_time', 'event_end_time', 'expires_at')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category', 'speaker')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'speaker')
@@ -2456,7 +2491,7 @@ class AnnouncementView(AuthenticatedModelView):
     page_size_choices = (20, 50, 100, 500, 1000)
     form_excluded_columns = ['id']
 
-    form_columns = ('title', 'description', 'type', 'category', 'tag', 'speaker', 'date_entered', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
+    form_columns = ('title', 'description', 'type', 'category', 'tag', 'speaker', 'date_entered', 'event_start_time', 'event_end_time', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -2488,7 +2523,9 @@ class AnnouncementView(AuthenticatedModelView):
     form_widget_args = {
         'description': {'rows': 10, 'style': 'width: 100%'},
         'featured_image': {'placeholder': 'https://example.com/image.jpg'},
-        'image_display_type': {'placeholder': 'poster or leave empty'}
+        'image_display_type': {'placeholder': 'poster or leave empty'},
+        'event_start_time': {'placeholder': 'e.g. 9:00 AM or Sunday 10:30'},
+        'event_end_time': {'placeholder': 'e.g. 11:00 AM or leave empty'},
     }
 
     column_labels = {
@@ -2502,6 +2539,8 @@ class AnnouncementView(AuthenticatedModelView):
         'image_display_type': 'Image Display Type',
         'active': 'Status',
         'speaker': 'Speaker',
+        'event_start_time': 'Event start time',
+        'event_end_time': 'Event end time',
     }
 
     column_formatters = {
@@ -4008,6 +4047,7 @@ with app.app_context():
     admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More features'))
     admin.add_view(PodcastThumbnailsView(name='Podcast thumbnails', endpoint='podcast_thumbnails', category='More features'))
     admin.add_view(BackupGalleryView(name='Backup all media', endpoint='backup_gallery', category='More features'))
+    admin.add_view(UserView(User, db.session, name='Users', category='More features'))
 
 if __name__ == '__main__':
     # Use one port for both main and reloader (so URL doesn't change after restart)

@@ -2,23 +2,54 @@
 """
 Podcast Analytics Dashboard
 Provides insights and analytics about your podcast content.
+Uses the database (sermon_data_helper) when running inside Flask; falls back to data/sermons.json otherwise.
 """
 
 import json
 import pandas as pd
 from datetime import datetime, timedelta
 from collections import Counter, defaultdict
-import matplotlib.pyplot as plt
-import seaborn as sns
-from typing import Dict, List, Tuple
 import logging
+from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
+
+def _in_flask_app():
+    try:
+        from flask import has_app_context
+        return has_app_context()
+    except ImportError:
+        return False
+
+def _sermons_from_db() -> List[Dict]:
+    """Load sermons from database when in Flask app; return list compatible with JSON format."""
+    if not _in_flask_app():
+        return []
+    try:
+        from sermon_data_helper import get_sermon_helper
+        helper = get_sermon_helper()
+        raw = helper.get_all_sermons()
+        # Normalize to analytics format (author, date, series, sermon_type)
+        return [
+            {
+                **s,
+                'author': s.get('author') or s.get('speaker', ''),
+                'sermon_type': s.get('sermon_type', 'sermon'),
+            }
+            for s in raw
+        ]
+    except Exception as e:
+        logger.warning("PodcastAnalytics: DB fetch failed, using JSON fallback: %s", e)
+        return []
 
 class PodcastAnalytics:
     def __init__(self, sermons_file: str = "data/sermons.json"):
         self.sermons_file = sermons_file
-        self.sermons_data = self.load_sermons()
+        sermons_list = _sermons_from_db()
+        if sermons_list:
+            self.sermons_data = {'sermons': sermons_list}
+        else:
+            self.sermons_data = self.load_sermons()
         self.df = self.create_dataframe()
     
     def load_sermons(self) -> Dict:
