@@ -340,11 +340,23 @@ def internal_error(exc):
     ), 500, {"Content-Type": "text/html; charset=utf-8"}
 
 # ---------------------------------------------------------------------------
-# Admin status: last content change across all tables
+# Admin status: last content change — uses audit log so it matches Activity History
 # ---------------------------------------------------------------------------
 @app.route('/api/admin/last-change')
 def api_admin_last_change():
-    """Return the single most-recent content change (for the admin status bar)."""
+    """Return the single most-recent content change (for the admin status bar).
+    Uses AuditLog so the navbar matches Activity History."""
+    try:
+        latest = AuditLog.query.order_by(AuditLog.timestamp.desc()).first()
+        if latest and latest.timestamp:
+            return jsonify({
+                'type': latest.entity_type or 'Content',
+                'title': (latest.entity_title or '—')[:80],
+                'when': latest.timestamp.strftime('%b %d, %Y %I:%M %p') if latest.timestamp else None,
+            })
+    except Exception:
+        pass
+    # Fallback when audit log is empty (e.g. fresh install)
     candidates = []
     try:
         a = Announcement.query.order_by(Announcement.date_entered.desc()).first()
@@ -2366,26 +2378,38 @@ def _log_audit(action, model, entity_type=None):
     """Write one row to the audit_log table.
 
     ``model`` is the SQLAlchemy instance being created/edited/deleted.
-    ``action`` is one of 'created', 'edited', 'deleted'.
+    ``action`` is one of 'created', 'edited', 'deleted', 'published', 'archived', 'draft'.
     """
+    if model is None:
+        return
     try:
-        username = session.get('username', 'unknown')
-        etype = entity_type or model.__class__.__name__
+        username = session.get('username') or 'unknown'
+        etype = entity_type or (getattr(model, '__class__', None) and model.__class__.__name__) or 'Content'
         eid = getattr(model, 'id', None)
+        if eid is not None and not isinstance(eid, int):
+            try:
+                eid = int(eid)
+            except (TypeError, ValueError):
+                eid = None
         etitle = (getattr(model, 'title', None)
                   or getattr(model, 'name', None)
-                  or str(eid))
+                  or (str(eid) if eid is not None else None))
+        entity_title = (str(etitle)[:300]) if etitle else None
         entry = AuditLog(
             user=username,
-            action=action,
-            entity_type=etype,
+            action=str(action)[:20],
+            entity_type=etype[:50] if etype else 'Content',
             entity_id=eid,
-            entity_title=str(etitle)[:300] if etitle else None,
+            entity_title=entity_title,
         )
         db.session.add(entry)
         db.session.commit()
     except Exception as exc:
         log.warning("Audit log write failed: %s", exc)
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
 
 
 # Authenticated ModelView
@@ -2490,6 +2514,7 @@ class AnnouncementView(AuthenticatedModelView):
     can_set_page_size = True
     page_size_choices = (20, 50, 100, 500, 1000)
     form_excluded_columns = ['id']
+    create_template = 'admin/announcement_create.html'
 
     form_columns = ('title', 'description', 'type', 'category', 'tag', 'speaker', 'date_entered', 'event_start_time', 'event_end_time', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
@@ -2577,6 +2602,9 @@ class AnnouncementView(AuthenticatedModelView):
             form.expiration_date.data = announcement.expires_at
 
     def on_model_change(self, form, model, is_created):
+        if request.form.get('_save_and_publish'):
+            model.active = True
+            model.archived = False
         # "Featured in top bar": banner_type selection (e.g. Weather) turns it on; otherwise use checkbox
         banner_field = getattr(form, 'banner_type', None)
         raw = getattr(banner_field, 'data', None) if banner_field else None
@@ -3330,7 +3358,7 @@ def api_admin_set_podcast_episode_thumbnail(episode_id):
 
 def _format_event_status(view, context, model, name):
     from flask import url_for
-    base = url_for('ongoingevent.set_status')
+    base = url_for('event.set_status')
     publish_url = base + '?id=' + str(model.id) + '&status=publish'
     draft_url = base + '?id=' + str(model.id) + '&status=draft'
     archive_url = base + '?id=' + str(model.id) + '&status=archive'
@@ -3360,39 +3388,44 @@ class OngoingEventView(AuthenticatedModelView):
     column_sortable_list = ('title', 'type', 'active', 'sort_order', 'date_entered')
     column_default_sort = ('sort_order', False)
     form_excluded_columns = ['id']
+    create_template = 'admin/event_create.html'
 
-    form_columns = ('title', 'description', 'type', 'category', 'active', 'date_entered', 'expiration_preset', 'expiration_date')
+    form_columns = ('date_entered', 'title', 'description', 'type', 'category', 'active', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
         'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
-    form_overrides = {'date_entered': DateTimePickerField}
-
+    form_overrides = {
+        'date_entered': DateTimePickerField,
+        'type': SelectField,
+        'category': SelectField,
+    }
     form_widget_args = {
         'description': {'rows': 8, 'style': 'width: 100%'}
     }
-    form_widgets = {'type': Select(), 'category': Select()}
 
-    form_choices = {
-        'type': [
-            ('ongoing', 'Ongoing'),
-            ('recurring', 'Recurring'),
-            ('special', 'Special Event')
-        ],
-        'category': [
-            ('worship', 'Worship'),
-            ('education', 'Education'),
-            ('fellowship', 'Fellowship'),
-            ('missions', 'Missions'),
-            ('youth', 'Youth'),
-            ('children', 'Children'),
-            ('prayer', 'Prayer')
-        ]
+    ONGOING_EVENT_TYPE_CHOICES = [
+        ('ongoing', 'Ongoing'),
+        ('recurring', 'Recurring'),
+        ('special', 'Special Event'),
+    ]
+    ONGOING_EVENT_CATEGORY_CHOICES = [
+        ('worship', 'Worship'),
+        ('education', 'Education'),
+        ('fellowship', 'Fellowship'),
+        ('missions', 'Missions'),
+        ('youth', 'Youth'),
+        ('children', 'Children'),
+        ('prayer', 'Prayer'),
+    ]
+    form_args = {
+        'type': {'choices': ONGOING_EVENT_TYPE_CHOICES},
+        'category': {'choices': ONGOING_EVENT_CATEGORY_CHOICES},
     }
 
     column_labels = {
-        'date_entered': 'Date Created',
+        'date_entered': 'Event date',
         'expires_at': 'Expires',
         'active': 'Status'
     }
@@ -3410,6 +3443,9 @@ class OngoingEventView(AuthenticatedModelView):
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
+        if request.form.get('_save_and_publish'):
+            model.active = True
+            model.archived = False
         preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
         specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
         base = model.date_entered or datetime.utcnow()
@@ -3423,11 +3459,11 @@ class OngoingEventView(AuthenticatedModelView):
         status = request.args.get('status')
         if not id_val or status not in ('publish', 'draft', 'archive'):
             flash('Invalid request.', 'error')
-            return redirect(url_for('ongoingevent.index_view'))
+            return redirect(url_for('event.index_view'))
         event = OngoingEvent.query.get(id_val)
         if not event:
             flash('Not found.', 'error')
-            return redirect(url_for('ongoingevent.index_view'))
+            return redirect(url_for('event.index_view'))
         if status == 'publish':
             event.active = True
             event.archived = False
@@ -3443,7 +3479,7 @@ class OngoingEventView(AuthenticatedModelView):
         except:
             pass
         flash('Status updated.', 'success')
-        return redirect(url_for('ongoingevent.index_view'))
+        return redirect(url_for('event.index_view'))
 
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):
@@ -3935,22 +3971,36 @@ class HistoryView(BaseView):
         type_filter = request.args.get('type', '')
         user_filter = request.args.get('user', '')
 
-        query = AuditLog.query.order_by(AuditLog.timestamp.desc())
+        logs = []
+        pagination = None
+        all_actions = []
+        all_types = []
+        all_users = []
+        history_error = None
 
-        if action_filter:
-            query = query.filter(AuditLog.action == action_filter)
-        if type_filter:
-            query = query.filter(AuditLog.entity_type == type_filter)
-        if user_filter:
-            query = query.filter(AuditLog.user == user_filter)
+        try:
+            query = AuditLog.query.order_by(AuditLog.timestamp.desc())
 
-        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-        logs = pagination.items
+            if action_filter:
+                query = query.filter(AuditLog.action == action_filter)
+            if type_filter:
+                query = query.filter(AuditLog.entity_type == type_filter)
+            if user_filter:
+                query = query.filter(AuditLog.user == user_filter)
 
-        # Gather distinct values for the filter dropdowns
-        all_actions = [r[0] for r in db.session.query(AuditLog.action).distinct().all()]
-        all_types = [r[0] for r in db.session.query(AuditLog.entity_type).distinct().all()]
-        all_users = [r[0] for r in db.session.query(AuditLog.user).distinct().all()]
+            pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+            logs = pagination.items
+
+            all_actions = [r[0] for r in db.session.query(AuditLog.action).distinct().all() if r[0]]
+            all_types = [r[0] for r in db.session.query(AuditLog.entity_type).distinct().all() if r[0]]
+            all_users = [r[0] for r in db.session.query(AuditLog.user).distinct().all() if r[0]]
+        except Exception as e:
+            history_error = str(e)
+            log.warning("Activity history query failed: %s", e)
+            try:
+                db.session.rollback()
+            except Exception:
+                pass
 
         return self.render(
             'admin/history.html',
@@ -3962,6 +4012,77 @@ class HistoryView(BaseView):
             all_actions=sorted(all_actions),
             all_types=sorted(all_types),
             all_users=sorted(all_users),
+            history_error=history_error,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Unified content list — events, announcements, banners in one list by month
+# ---------------------------------------------------------------------------
+class ContentFeedView(BaseView):
+    """Single list of all content (events, announcements, banners) grouped by month."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        type_filter = request.args.get('type', '')  # '' | 'announcement' | 'event' | 'banner'
+        items = []
+
+        for ann in Announcement.query.order_by(Announcement.date_entered.desc()).all():
+            dt = ann.date_entered or datetime.utcnow()
+            content_type = 'Banner' if getattr(ann, 'show_in_banner', False) else 'Announcement'
+            items.append({
+                'date': dt,
+                'title': ann.title or '—',
+                'content_type': content_type,
+                'active': getattr(ann, 'active', True),
+                'archived': getattr(ann, 'archived', False),
+                'edit_url': url_for('announcement.edit_view', id=ann.id),
+                'id': ann.id,
+            })
+
+        for ev in OngoingEvent.query.order_by(OngoingEvent.date_entered.desc()).all():
+            dt = ev.date_entered or datetime.utcnow()
+            items.append({
+                'date': dt,
+                'title': ev.title or '—',
+                'content_type': 'Event',
+                'active': getattr(ev, 'active', True),
+                'archived': getattr(ev, 'archived', False),
+                'edit_url': url_for('event.edit_view', id=ev.id),
+                'id': ev.id,
+            })
+
+        if type_filter:
+            type_map = {'announcement': 'Announcement', 'event': 'Event', 'banner': 'Banner'}
+            want = type_map.get(type_filter.lower())
+            if want:
+                items = [i for i in items if i['content_type'] == want]
+
+        items.sort(key=lambda x: x['date'], reverse=True)
+
+        # Group by (year, month), label e.g. "March 2025"
+        months = []
+        current_key = None
+        current_list = None
+        for i in items:
+            dt = i['date']
+            key = (dt.year, dt.month)
+            if key != current_key:
+                current_key = key
+                month_label = dt.strftime('%B %Y')
+                current_list = []
+                months.append({'label': month_label, 'items': current_list})
+            current_list.append(i)
+
+        return self.render(
+            'admin/content_feed.html',
+            months=months,
+            type_filter=type_filter,
         )
 
 
@@ -4029,8 +4150,9 @@ with app.app_context():
 
     # 7. Register admin views (inside app context so get_form() can use DB)
     admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
+    admin.add_view(ContentFeedView(name='All content', endpoint='content_feed', category='Content'))
     admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
-    admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content'))
+    admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content', endpoint='event'))
     admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))
     admin.add_view(SermonSeriesView(SermonSeries, db.session, name='Sermon Series', category='Media'))
     admin.add_view(PaperView(Paper, db.session, name='Papers & Bulletins', category='Media'))

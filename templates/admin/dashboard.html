@@ -455,7 +455,7 @@
             <div class="stat-sub">{{ stats.podcast_series }} Series</div>
         </a>
 
-        <a href="{{ url_for('ongoingevent.index_view') }}" class="stat-card stat-card-link">
+        <a href="{{ url_for('event.index_view') }}" class="stat-card stat-card-link">
             <div class="stat-number">{{ stats.ongoing_events }}</div>
             <div class="stat-label">Events</div>
             <div class="stat-sub">{{ stats.active_events }} Active</div>
@@ -565,7 +565,7 @@
         </div>
 
         <!-- Event Wizard -->
-        <div class="wizard-card" onclick="window.location.href='/admin/ongoingevent/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/event/new/'">
             <i class="fas fa-calendar-plus wizard-icon"></i>
             <div class="wizard-title">New Event</div>
             <div class="wizard-desc">

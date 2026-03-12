@@ -1,0 +1,42 @@
+{% extends 'admin/model/create.html' %}
+{% import 'admin/lib.html' as lib with context %}
+
+{% block create_form %}
+{% macro event_extra_buttons() %}
+<input name="_save_and_publish" type="submit" class="btn btn-primary" value="Save and Publish"
+    style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 600; margin-right: 0.5rem;" />
+{% endmacro %}
+{{ lib.render_form(form, return_url, event_extra_buttons(), form_opts) }}
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var publishBtn = document.querySelector('input[name="_save_and_publish"]');
+    var form = publishBtn ? publishBtn.closest('form') : document.querySelector('form');
+    if (!form) return;
+    var row = form.querySelector('.submit-row');
+    if (row) {
+        var saveBtn = row.querySelector('input[type=submit]:not([name])');
+        if (saveBtn) saveBtn.value = 'Save as a draft';
+    }
+    var programmaticPublish = false;
+    if (publishBtn && typeof window.showSaveComfortModal === 'function') {
+        publishBtn.addEventListener('click', function(e) {
+            if (programmaticPublish) {
+                programmaticPublish = false;
+                return;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof form.reportValidity === 'function' && !form.reportValidity()) return;
+            window.showSaveComfortModal(function() {
+                programmaticPublish = true;
+                publishBtn.click();
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

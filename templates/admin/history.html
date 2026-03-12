@@ -299,7 +299,13 @@
 
     <!-- Table -->
     <div class="history-table-card">
-        {% if logs %}
+        {% if history_error %}
+        <div class="history-empty">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p style="font-size:1.1rem;margin-bottom:0.5rem;color:rgba(255,255,255,0.65);">Activity history unavailable</p>
+            <p style="font-size:0.9rem;">The audit log could not be loaded. Make sure the database has been initialized (run the app once so tables are created).</p>
+        </div>
+        {% elif logs %}
         <table class="history-table">
             <thead>
                 <tr>
@@ -344,7 +350,7 @@
         </table>
 
         <!-- Pagination -->
-        {% if pagination.pages > 1 %}
+        {% if pagination and pagination.pages > 1 %}
         <div class="history-pagination">
             {% if pagination.has_prev %}
             <a href="{{ url_for('history.index', page=pagination.prev_num, action=action_filter, type=type_filter, user=user_filter) }}">
