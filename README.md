@@ -86,6 +86,40 @@ python start_app.py --kill-ports
 ./fix_ports.sh
 ```
 
+### 6. Sync local database with production (optional)
+
+To make your **local** database match **live** (production) so you're not developing against different data:
+
+**Option A — One command (paste your live URL once):**
+
+```bash
+LIVE_DATABASE_URL='postgresql://user:pass@host/dbname' python sync_db.py
+```
+
+**Option B — Reusable: store URL in `.env`, then run:**
+
+```bash
+# Add to .env (do not commit; .env is gitignored):
+# LIVE_DATABASE_URL=postgresql://user:pass@host/dbname
+
+./sync_from_live.sh
+```
+
+**Option C — Full control with env vars:**
+
+```bash
+export LIVE_DATABASE_URL="postgresql://user:pass@host/dbname"
+export LOCAL_DATABASE_URL="sqlite:///cpc_newhaven.db"   # optional
+python sync_db.py
+```
+
+**Other options:**
+
+- `python sync_db.py --dry-run` — show what would be copied, no writes
+- `python sync_db.py --export live_backup.json` — export live to JSON only
+
+After running, your local DB will have the same announcements, sermons, podcasts, events, gallery, About/Community content, etc. as production.
+
 The application will be available at:
 - Main site: http://localhost:PORT (automatically detected)
 - Admin panel: http://localhost:PORT/admin
