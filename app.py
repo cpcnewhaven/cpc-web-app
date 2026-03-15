@@ -2310,6 +2310,42 @@ class DateTimePickerWidget(Input):
         return super().__call__(field, **kwargs)
 
 
+# ---------------------------------------------------------------------------
+# Datalist widget — text input with <datalist> suggestions (no forced dropdown)
+# ---------------------------------------------------------------------------
+from wtforms.widgets import html_params
+
+class DatalistWidget:
+    """Renders <input type="text" list="..."> + <datalist> for browser autocomplete."""
+    def __call__(self, field, **kwargs):
+        dl_id = f'dl-{field.id}'
+        kwargs.setdefault('id', field.id)
+        kwargs['list'] = dl_id
+        kwargs['autocomplete'] = 'off'
+        value = field._value() if field.data is not None else ''
+        from markupsafe import escape
+        input_tag = f'<input type="text" name="{field.name}" value="{escape(value)}" {html_params(**kwargs)}>'
+        choices = field.datalist_choices() if callable(getattr(field, 'datalist_choices', None)) else []
+        opts = ''.join(f'<option value="{escape(c)}">' for c in choices)
+        return Markup(f'{input_tag}<datalist id="{dl_id}">{opts}</datalist>')
+
+
+class DatalistField(StringField):
+    """StringField that renders with a <datalist> for suggestions."""
+    widget = DatalistWidget()
+
+    def __init__(self, label='', choices_func=None, **kwargs):
+        super().__init__(label, **kwargs)
+        self._choices_func = choices_func or (lambda: [])
+        self.widget = DatalistWidget()
+
+    def datalist_choices(self):
+        try:
+            return self._choices_func()
+        except Exception:
+            return []
+
+
 # Expiration preset choices for "when to stop showing" in all content wizards
 EXPIRATION_PRESET_CHOICES = [
     ('never', 'Never'),
@@ -2880,20 +2916,23 @@ class SermonView(AuthenticatedModelView):
     form_excluded_columns = ['id', 'speaker']  # Exclude legacy speaker field from form
 
     form_columns = (
-        'series', 'episode_number',
-        'book', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end',
-        'title', 'speaker_user', 'date',
+        'series_name', 'episode_number',
+        'book_name', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end',
+        'title', 'speaker_name', 'date',
         'audio_file_url', 'video_file_url',
-        'beyond_episode',
+        'beyond_episode_name',
         'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url',
         'expiration_preset', 'expiration_date', 'active', 'archived'
     )
     
     column_labels = {
         'series': 'Series',
+        'series_name': 'Series',
         'episode_number': 'Ep #',
         'book': 'Bible Book',
+        'book_name': 'Bible Book',
         'beyond_episode': 'Beyond Link',
+        'beyond_episode_name': 'Beyond Link',
         'audio_file_url': 'Audio File',
         'video_file_url': 'Video File',
         'spotify_url': 'Spotify',
@@ -2903,6 +2942,7 @@ class SermonView(AuthenticatedModelView):
         'active': 'Status',
         'expires_at': 'Expires',
         'speaker_user': 'Speaker',
+        'speaker_name': 'Speaker',
     }
     
     column_formatters = {
@@ -2916,31 +2956,21 @@ class SermonView(AuthenticatedModelView):
     form_extra_fields = {
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
         'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+        'series_name': DatalistField('Series',
+            choices_func=lambda: [s.title for s in SermonSeries.query.order_by(SermonSeries.start_date.desc()).all()]),
+        'book_name': DatalistField('Bible Book',
+            choices_func=lambda: [b.name for b in BibleBook.query.order_by(BibleBook.sort_order).all()]),
+        'speaker_name': DatalistField('Speaker',
+            choices_func=lambda: [u.username for u in User.query.order_by(User.username).all()]),
+        'beyond_episode_name': DatalistField('Beyond Link',
+            choices_func=lambda: [e.title for e in PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all()]),
     }
 
     form_overrides = {
         'date': DatePickerField,
     }
-    
-    form_args = {
-        'book': {
-            'query_factory': lambda: BibleBook.query.order_by(BibleBook.sort_order).all(),
-            'allow_blank': True
-        },
-        'series': {
-            'query_factory': lambda: SermonSeries.query.order_by(SermonSeries.start_date.desc()).all(),
-            'allow_blank': True
-        },
-        'beyond_episode': {
-            'query_factory': lambda: PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all(),
-            'allow_blank': True
-        },
-        'speaker_user': {
-            'query_factory': lambda: User.query.order_by(User.username).all(),
-            'allow_blank': True,
-            'get_label': lambda u: u.username
-        },
-    }
+
+    form_args = {}
 
     form_widget_args = {
         'spotify_url': {'placeholder': 'https://open.spotify.com/episode/...'},
@@ -2955,9 +2985,14 @@ class SermonView(AuthenticatedModelView):
         sermon = self.get_one(id)
         if not sermon:
             return
-        # Ensure speaker_user field is populated from database when editing
-        if hasattr(form, 'speaker_user') and sermon.speaker_user:
-            form.speaker_user.data = sermon.speaker_user
+        if hasattr(form, 'series_name'):
+            form.series_name.data = sermon.series.title if sermon.series else ''
+        if hasattr(form, 'book_name'):
+            form.book_name.data = sermon.book.name if sermon.book else ''
+        if hasattr(form, 'speaker_name'):
+            form.speaker_name.data = sermon.speaker_user.username if sermon.speaker_user else ''
+        if hasattr(form, 'beyond_episode_name'):
+            form.beyond_episode_name.data = sermon.beyond_episode.title if sermon.beyond_episode else ''
         if hasattr(form, 'expiration_preset'):
             form.expiration_preset.data = 'specific' if getattr(sermon, 'expires_at', None) else 'never'
         if hasattr(form, 'expiration_date') and getattr(sermon, 'expires_at', None):
@@ -2966,10 +3001,22 @@ class SermonView(AuthenticatedModelView):
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
-            
+
+        # Resolve text datalist fields → FK relationships
+        series_name = (getattr(form, 'series_name', None) and form.series_name.data or '').strip()
+        model.series = SermonSeries.query.filter_by(title=series_name).first() if series_name else None
+
+        book_name = (getattr(form, 'book_name', None) and form.book_name.data or '').strip()
+        book_obj = BibleBook.query.filter(BibleBook.name.ilike(book_name)).first() if book_name else None
+        model.book = book_obj
+
+        speaker_name = (getattr(form, 'speaker_name', None) and form.speaker_name.data or '').strip()
+        model.speaker_user = User.query.filter_by(username=speaker_name).first() if speaker_name else None
+
+        beyond_name = (getattr(form, 'beyond_episode_name', None) and form.beyond_episode_name.data or '').strip()
+        model.beyond_episode = PodcastEpisode.query.filter_by(title=beyond_name).first() if beyond_name else None
+
         # Auto-generate scripture string from book/chapter/verse
-        # book is a relationship, so form.book.data is a BibleBook object
-        book_obj = getattr(form, 'book', None) and getattr(form.book, 'data', None)
         ch_start = getattr(form, 'chapter_start', None) and getattr(form.chapter_start, 'data', None)
         v_start = getattr(form, 'verse_start', None) and getattr(form.verse_start, 'data', None)
         ch_end = getattr(form, 'chapter_end', None) and getattr(form.chapter_end, 'data', None)
