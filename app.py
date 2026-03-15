@@ -40,25 +40,11 @@ except ImportError:
     GCS_ENABLED = False
 
 # ---------------------------------------------------------------------------
-# Global monkeypatch to fix WTForms 3.0+ unpacking error (expected 4, got 3)
-# for relationship fields in Flask-Admin 1.6.x.
+# Global monkeypatch for Flask-Admin 1.6.x compatibility.
 # This must happen before model views are instantiated.
 # ---------------------------------------------------------------------------
 try:
-    from flask_admin.contrib.sqla.fields import QuerySelectField, QuerySelectMultipleField
     from markupsafe import Markup
-
-    def patch_iter_choices(original_iter):
-        def iter_choices(self):
-            for choice in original_iter(self):
-                if len(choice) == 3:
-                    yield choice + ({},)
-                else:
-                    yield choice
-        return iter_choices
-
-    QuerySelectField.iter_choices = patch_iter_choices(QuerySelectField.iter_choices)
-    QuerySelectMultipleField.iter_choices = patch_iter_choices(QuerySelectMultipleField.iter_choices)
 
     # Patch widgets to return Markup (prevents raw HTML escaping)
     from flask_admin.model.widgets import RenderTemplateWidget, InlineFieldListWidget
@@ -1005,7 +991,7 @@ def api_sermons():
             sermon_data = {
                 'id': s.id,
                 'title': s.title or '',
-                'speaker': s.speaker or '',
+                'speaker': (s.speaker_user.username if s.speaker_user else s.speaker) or '',
                 'scripture': s.scripture or '',
                 'date': s.date.strftime('%Y-%m-%d') if s.date else '',
                 'spotify_url': s.spotify_url or '',
