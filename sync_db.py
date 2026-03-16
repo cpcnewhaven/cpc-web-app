@@ -154,11 +154,15 @@ def pull_from_source(session_src):
     return data
 
 
-def apply_to_target(data, dry_run=False):
+def apply_to_target(data, dry_run=False, skip_models=None):
     """Replace local tables with data from the pulled snapshot."""
+    skip_models = skip_models or set()
     with app.app_context():
         for model in DELETE_ORDER:
             name = model.__name__
+            if name in skip_models:
+                print(f"  {name}: skipped (--skip)")
+                continue
             count = data.get(name, [])
             if dry_run:
                 print(f"  [dry-run] would replace {name}: {len(count)} rows")
@@ -167,23 +171,32 @@ def apply_to_target(data, dry_run=False):
             deleted = db.session.query(model).delete()
             if deleted:
                 print(f"  {name}: deleted {deleted} local rows")
+            inserted = 0
             for d in count:
                 try:
                     obj = dict_to_row(model, d)
                     db.session.add(obj)
+                    inserted += 1
                 except Exception as e:
                     print(f"  {name}: skip row {d.get('id', d)}: {e}", file=sys.stderr)
-            if count:
-                print(f"  {name}: inserted {len(count)} rows")
-        if not dry_run:
+            try:
+                db.session.flush()
+            except Exception as e:
+                db.session.rollback()
+                print(f"  {name}: flush failed ({e}), rolled back — table unchanged", file=sys.stderr)
+                continue
             db.session.commit()
-            print("Committed to local database.")
+            if inserted:
+                print(f"  {name}: inserted {inserted} rows")
+        if not dry_run:
+            print("Sync complete.")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Sync local DB with live (pull from production).")
     parser.add_argument("--dry-run", action="store_true", help="Only show row counts, do not write to local.")
     parser.add_argument("--export", type=str, metavar="FILE", help="Export live data to JSON file only (no local write).")
+    parser.add_argument("--skip", type=str, metavar="MODELS", default="", help="Comma-separated model names to skip entirely (e.g. Sermon,SermonSeries).")
     args = parser.parse_args()
 
     # Engine for source (live) — minimal options for read-only
@@ -194,6 +207,10 @@ def main():
         max_overflow=0,
     )
     SessionSrc = sessionmaker(bind=source_engine, autocommit=False, autoflush=False)
+
+    skip_models = {s.strip() for s in args.skip.split(",") if s.strip()}
+    if skip_models:
+        print(f"Skipping tables: {', '.join(skip_models)}")
 
     print("Source (live):", urlparse(SOURCE_URL).hostname or "sqlite")
     print("Target (local):", urlparse(TARGET_URL).path if TARGET_URL.startswith("sqlite") else urlparse(TARGET_URL).hostname)
@@ -217,7 +234,7 @@ def main():
         return
 
     print("Applying to local...")
-    apply_to_target(data, dry_run=args.dry_run)
+    apply_to_target(data, dry_run=args.dry_run, skip_models=skip_models)
     if args.dry_run:
         print("Dry run done. Run without --dry-run to apply.")
 
