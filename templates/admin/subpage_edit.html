@@ -4,16 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Community Page — CPC Admin</title>
+    <title>Edit {{ config.title }} — CPC Admin</title>
     <link rel="stylesheet" href="/static/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --cpc-blue: #008080;
-            /* Teal/Green for Community */
-            --cpc-blue-light: #00a0a0;
+            --cpc-blue: {{ config.color or '#0052a3' }};
+            --cpc-blue-light: {{ config.color or '#007aff' }};
             --text-white: #fff;
-            --bg-gradient: linear-gradient(135deg, #0a1e1e 0%, #0d3535 50%, #0a1e1e 100%);
+            --bg-gradient: linear-gradient(135deg, #0a0f1e 0%, #0d1a35 50%, #0a0f1e 100%);
             --glass-bg: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.12);
             --radius-lg: 12px;
@@ -32,7 +31,7 @@
         }
 
         /* ── Navbar ── */
-        .admin-edit-nav {
+        .page-edit-nav {
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
@@ -42,7 +41,7 @@
             gap: 1rem;
         }
 
-        .admin-edit-nav a {
+        .page-edit-nav a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             font-size: 0.88rem;
@@ -53,11 +52,11 @@
             transition: color 0.15s;
         }
 
-        .admin-edit-nav a:hover {
+        .page-edit-nav a:hover {
             color: #fff;
         }
 
-        .admin-edit-nav .nav-title {
+        .page-edit-nav .nav-title {
             margin-left: auto;
             font-weight: 600;
             color: rgba(255, 255, 255, 0.5);
@@ -65,16 +64,38 @@
         }
 
         /* ── Page layout ── */
-        .admin-editor-page {
+        .page-editor-page {
             max-width: 860px;
             margin: 0 auto;
             padding: 2rem 1.5rem 6rem;
         }
 
-        .admin-editor-page h2 {
+        .page-editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-editor-page h2 {
             color: #fff;
             font-size: 1.6rem;
-            margin: 1rem 0 0.3rem;
+            margin: 0;
+        }
+
+        .page-dropdown {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-lg);
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .page-dropdown option {
+            background: #0a0f1e;
         }
 
         .page-subtitle {
@@ -98,9 +119,9 @@
         }
 
         .json-badge {
-            background: rgba(0, 160, 160, 0.2);
-            color: #80ffff;
-            border: 1px solid rgba(128, 255, 255, 0.3);
+            background: rgba(0, 113, 227, 0.2);
+            color: #5aacff;
+            border: 1px solid rgba(90, 172, 255, 0.3);
         }
 
         .html-badge {
@@ -116,6 +137,12 @@
             border-radius: var(--radius-lg);
             padding: 1.5rem;
             margin-bottom: 1.25rem;
+            transition: border-color 0.2s;
+        }
+        
+        .editor-section:focus-within {
+            border-color: var(--cpc-blue-light);
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .editor-section label {
@@ -133,7 +160,7 @@
         }
 
         .field-hint a {
-            color: #80ffff;
+            color: #5aacff;
         }
 
         textarea {
@@ -147,12 +174,13 @@
             font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
             resize: vertical;
             line-height: 1.55;
+            transition: box-shadow 0.2s, border-color 0.2s;
         }
 
         textarea:focus {
             outline: none;
             border-color: var(--cpc-blue-light);
-            box-shadow: 0 0 0 2px rgba(0, 160, 160, 0.22);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
         }
 
         /* ── Alert ── */
@@ -176,7 +204,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(10, 25, 25, 0.96);
+            background: rgba(10, 15, 30, 0.96);
             backdrop-filter: blur(14px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding: 0.9rem 2rem;
@@ -194,17 +222,17 @@
             font-size: 0.95rem;
             font-weight: 700;
             color: #fff;
-            background: linear-gradient(135deg, #006060 0%, #00a0a0 100%);
+            background: var(--cpc-blue);
             border: none;
             border-radius: 7px;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0, 128, 128, 0.4);
-            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+            transition: transform 0.15s, filter 0.15s;
         }
 
         .btn-save:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 128, 128, 0.55);
+            filter: brightness(1.2);
         }
 
         .btn-preview {
@@ -232,17 +260,25 @@
 <body>
 
     <!-- Simple nav bar -->
-    <nav class="admin-edit-nav">
+    <nav class="page-edit-nav">
         <a href="/admin/dashboard/"><i class="fas fa-arrow-left"></i> Dashboard</a>
-        <a href="/community" target="_blank"><i class="fas fa-external-link-alt"></i> View Community Page</a>
-        <span class="nav-title">CPC Admin — Edit Community Page</span>
+        <a href="{{ config.url }}" target="_blank"><i class="fas fa-external-link-alt"></i> View Page</a>
+        <span class="nav-title">CPC Admin — Edit Subpages</span>
     </nav>
 
-    <div class="admin-editor-page">
-        <h2><i class="fas fa-users" style="color:#00a0a0; margin-right:0.5rem;"></i>Edit Community Page</h2>
+    <div class="page-editor-page">
+        <div class="page-editor-header">
+            <h2><i class="{{ config.icon }}" style="color:var(--cpc-blue-light); margin-right:0.5rem;"></i>Edit {{ config.title }}</h2>
+            <select class="page-dropdown" onchange="window.location.href='?page=' + this.value;">
+                {% for key, subconf in subpages.items() %}
+                    <option value="{{ key }}" {% if active_page == key %}selected{% endif %}>{{ subconf.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
         <p class="page-subtitle">
-            Changes save immediately to the database and appear live on the public <a href="/community" target="_blank"
-                style="color:#80ffff;">/community</a> page.
+            Changes save immediately to the database and appear live on the public <a href="{{ config.url }}" target="_blank"
+                style="color:var(--cpc-blue-light);">{{ config.url }}</a> page.
             Fields marked <span class="html-badge">HTML</span> support inline HTML tags.
             Fields marked <span class="json-badge">JSON</span> must be valid JSON arrays.
         </p>
@@ -253,7 +289,7 @@
         </div>
         {% endif %}
 
-        <form method="POST" action="/admin/community-edit/">
+        <form method="POST" action="/admin/subpage-edit/?page={{ active_page }}">
             {% for field in fields %}
             <div class="editor-section">
                 <label for="field_{{ field.key }}">
@@ -263,7 +299,7 @@
                 </label>
                 {% if field.is_json %}
                 <div class="field-hint">
-                    JSON array — each item must have the correct structure. Validate with
+                    JSON array — validate your format with 
                     <a href="https://jsonlint.com" target="_blank">jsonlint.com</a>.
                 </div>
                 {% else %}
@@ -277,10 +313,10 @@
 
             <div class="save-bar">
                 <button type="submit" class="btn-save">
-                    <i class="fas fa-save"></i> Save Changes
+                    <i class="fas fa-save"></i> Save Changes to {{ config.title }}
                 </button>
-                <a href="/community" target="_blank" class="btn-preview">
-                    <i class="fas fa-eye"></i> Preview Community Page
+                <a href="{{ config.url }}" target="_blank" class="btn-preview">
+                    <i class="fas fa-eye"></i> Preview List
                 </a>
             </div>
         </form>

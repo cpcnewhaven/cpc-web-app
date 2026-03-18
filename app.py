@@ -398,31 +398,56 @@ def about():
     about_content = {r.key: r.value for r in rows}
     return render_template('about.html', about_content=about_content)
 
-@app.route('/admin/about-edit/', methods=['GET', 'POST'])
-def admin_about_edit():
-    """Admin page to edit About page content sections."""
+SUBPAGE_CONFIGS = {
+    'about': {
+        'title': 'About Page',
+        'url': '/about',
+        'icon': 'fas fa-file-alt',
+        'color': '#7c3aed',
+        'keys': [
+            ('hero_description', 'Hero Description', 'We are a community of believers in New Haven, Connecticut, committed to growing in the truth and grace of Jesus Christ, acting as faithful witnesses in our community and world, and trusting in the grace and power of the Holy Spirit.'),
+            ('mission_text', 'Our Mission (paragraph)', 'We are a church that is ambitious for the glory of God by <span class="highlight-word">GROWING</span> in the truth and grace of Jesus Christ, <span class="highlight-word">ACTING</span> as a faithful witness in the greater New Haven community and world, <span class="highlight-word">TRUSTING</span> in the grace and power of the Holy Spirit.'),
+            ('total_christ_text', 'Total Christ (paragraph)', 'We want this to be all about Christ—his work, not ours, as the basis of our relationship to God and one another, and his glory, not ours or any popular leader, as the object of our ultimate affection and respect. It is our desire to experience total Christ, not just one or another brand of Christ.'),
+            ('augustine_quote', 'Augustine Quote', '"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."'),
+            ('staff_json', 'Staff Members (JSON)', '[{"initials":"CL","name":"Craig Luekens","title":"Senior Pastor"},{"initials":"JO","name":"Jerry Ornelas","title":"Assistant Pastor"},{"initials":"AV","name":"Alexis Vano","title":"Administrative Coordinator"},{"initials":"AG","name":"Alex Gonzalez","title":"AV Director"},{"initials":"CB","name":"Christopher Battista","title":"Audio and IT Specialist"},{"initials":"PW","name":"Paul Wildey","title":"Sexton"},{"initials":"JC","name":"Jennifer Cheng","title":"Music Coordinator"}]'),
+            ('story_milestones_json', 'Story Milestones (JSON)', '[{"year":"1991","title":"The Beginning","text":"It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY."},{"year":"1991-1992","title":"The Vision Takes Shape","text":"Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale."},{"year":"1992","title":"First Worship Service","text":"On October 11, 1992 at 9:30 am, the mission stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT."},{"year":"2017","title":"Mission Anabaino","text":"As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting."}]'),
+        ]
+    },
+    'community': {
+        'title': 'Community Page',
+        'url': '/community',
+        'icon': 'fas fa-users',
+        'color': '#00a0a0',
+        'keys': [
+            ('community_hero_subtitle', 'Hero Subtitle', 'Join our vibrant community of believers and seekers'),
+            ('community_groups_intro', 'Groups Section Intro', 'Connect with others through our various community groups and ministries.'),
+            ('community_groups_json', 'Community Groups Cards (JSON)', '[{"icon":"fas fa-users","title":"Small Groups","text":"Join a small group for Bible study, prayer, and fellowship in a more intimate setting.","bullets":["Westville Group - Thursdays at 7:00pm","Orange Group - Wednesdays at 7:00pm","Guilford Group - Fridays at 7:00pm"]},{"icon":"fas fa-child","title":"Children\'s Ministry","text":"Nurturing the faith of our youngest members through age-appropriate programs.","bullets":["Sunday School (ages 3-12)","Children\'s Church during worship","Vacation Bible School","Special events and activities"]},{"icon":"fas fa-graduation-cap","title":"Youth Ministry","text":"Engaging middle and high school students in their faith journey.","bullets":["Youth Group - Fridays at 7:00pm","Summer mission trips","Retreats and conferences","Service projects"]},{"icon":"fas fa-male","title":"Men\'s Ministry","text":"Building strong Christian men through fellowship and study.","bullets":["Men\'s Fellowship - Saturdays at 8:00am","Men\'s Bible Study","Service projects","Annual retreat"]},{"icon":"fas fa-female","title":"Women\'s Ministry","text":"Encouraging women in their walk with Christ and relationships with each other.","bullets":["Women\'s Bible Study","Women\'s Retreat","Mentoring program","Service opportunities"]},{"icon":"fas fa-music","title":"Music Ministry","text":"Using musical gifts to glorify God and lead in worship.","bullets":["Choir participation","Instrumental ensembles","Special music opportunities","Music education programs"]}]'),
+            ('community_service_intro', 'Service Section Intro', 'Get involved in serving our church and community.'),
+            ('community_service_json', 'Service Opportunities (JSON)', '[{"title":"Welcome Team","text":"Help welcome visitors and new members to our church family.","tag":"Hospitality"},{"title":"Children\'s Ministry","text":"Teach, assist, or help with children\'s programs and activities.","tag":"Teaching"},{"title":"Audio/Visual","text":"Support our worship services with technical assistance.","tag":"Technical"},{"title":"Facilities","text":"Help maintain and improve our church building and grounds.","tag":"Maintenance"},{"title":"Community Outreach","text":"Participate in local service projects and community events.","tag":"Outreach"},{"title":"Prayer Ministry","text":"Join our prayer team and intercede for our church and community.","tag":"Prayer"}]'),
+            ('community_new_member_getting_connected', 'New Member: Getting Connected (text)', 'We\'re excited that you\'re interested in joining our community! Here\'s how you can get started:'),
+            ('community_new_member_steps_json', 'New Member Steps (JSON)', '[{"bold":"Visit us on Sunday","text":"Join us for worship at 10:30am"},{"bold":"Stay for fellowship","text":"Meet people at our fellowship lunch after service"},{"bold":"Join a small group","text":"Connect with others in a more intimate setting"},{"bold":"Get involved","text":"Find a service opportunity that matches your gifts"},{"bold":"Consider membership","text":"Learn about becoming a member of CPC"}]'),
+            ('community_new_member_questions', 'New Member: Questions? (text)', 'If you have questions about getting involved or becoming a member, we\'d love to help!'),
+            ('community_stories_json', 'Community Stories (JSON)', '[{"title":"Finding Family at CPC","text":"When I moved to New Haven for graduate school, I was looking for a church that would feel like home. CPC welcomed me with open arms and helped me find my place in the community.","author":"Sarah, Graduate Student"},{"title":"Growing in Faith Together","text":"Through our small group, I\'ve been able to grow deeper in my faith while building meaningful relationships with other believers. It\'s been a blessing to journey together.","author":"Michael, Small Group Member"},{"title":"Serving Our Community","text":"I love how CPC encourages us to serve not just within the church, but in our broader community. It\'s been amazing to see God at work through our outreach efforts.","author":"Jennifer, Community Outreach Volunteer"}]'),
+        ]
+    }
+}
+
+@app.route('/admin/subpage-edit/', methods=['GET', 'POST'])
+def admin_subpage_edit():
+    """Unified admin page to edit various subpage contents."""
     if not is_authenticated():
         return redirect(url_for('admin_login'))
 
-    # Keys we expose for editing
-    ABOUT_KEYS = [
-        ('hero_description', 'Hero Description',
-         'We are a community of believers in New Haven, Connecticut, committed to growing in the truth and grace of Jesus Christ, acting as faithful witnesses in our community and world, and trusting in the grace and power of the Holy Spirit.'),
-        ('mission_text', 'Our Mission (paragraph)',
-         'We are a church that is ambitious for the glory of God by <span class="highlight-word">GROWING</span> in the truth and grace of Jesus Christ, <span class="highlight-word">ACTING</span> as a faithful witness in the greater New Haven community and world, <span class="highlight-word">TRUSTING</span> in the grace and power of the Holy Spirit.'),
-        ('total_christ_text', 'Total Christ (paragraph)',
-         'We want this to be all about Christ—his work, not ours, as the basis of our relationship to God and one another, and his glory, not ours or any popular leader, as the object of our ultimate affection and respect. It is our desire to experience total Christ, not just one or another brand of Christ.'),
-        ('augustine_quote', 'Augustine Quote',
-         '"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."'),
-        ('staff_json', 'Staff Members (JSON)',
-         '[{"initials":"CL","name":"Craig Luekens","title":"Senior Pastor"},{"initials":"JO","name":"Jerry Ornelas","title":"Assistant Pastor"},{"initials":"AV","name":"Alexis Vano","title":"Administrative Coordinator"},{"initials":"AG","name":"Alex Gonzalez","title":"AV Director"},{"initials":"CB","name":"Christopher Battista","title":"Audio and IT Specialist"},{"initials":"PW","name":"Paul Wildey","title":"Sexton"},{"initials":"JC","name":"Jennifer Cheng","title":"Music Coordinator"}]'),
-        ('story_milestones_json', 'Story Milestones (JSON)',
-         '[{"year":"1991","title":"The Beginning","text":"It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY."},{"year":"1991-1992","title":"The Vision Takes Shape","text":"Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale."},{"year":"1992","title":"First Worship Service","text":"On October 11, 1992 at 9:30 am, the mission stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT."},{"year":"2017","title":"Mission Anabaino","text":"As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting."}]'),
-    ]
+    # Load active page
+    active_page = request.args.get('page', 'about')
+    if active_page not in SUBPAGE_CONFIGS:
+        active_page = 'about'
 
+    config = SUBPAGE_CONFIGS[active_page]
     saved = False
+
     if request.method == 'POST':
-        for key, _label, _default in ABOUT_KEYS:
+        for key, _label, _default in config['keys']:
             val = request.form.get(key, '')
             row = SiteContent.query.filter_by(key=key).first()
             if row:
@@ -432,16 +457,16 @@ def admin_about_edit():
                 db.session.add(SiteContent(key=key, value=val))
         db.session.commit()
         try:
-            _log_audit('edited', SiteContent(key='About Page'), 'About Page')
+            _log_audit('edited', SiteContent(key=config['title']), config['title'])
         except:
             pass
-        flash('About page content saved successfully!', 'success')
+        flash(f"{config['title']} content saved successfully!", 'success')
         saved = True
 
     # Load current values
     rows = {r.key: r.value for r in SiteContent.query.all()}
     fields = []
-    for key, label, default in ABOUT_KEYS:
+    for key, label, default in config['keys']:
         fields.append({
             'key': key,
             'label': label,
@@ -449,70 +474,16 @@ def admin_about_edit():
             'is_json': key.endswith('_json'),
         })
 
-    return render_template('admin/about_edit.html', fields=fields, saved=saved)
+    return render_template('admin/subpage_edit.html',
+                           fields=fields,
+                           saved=saved,
+                           active_page=active_page,
+                           subpages=SUBPAGE_CONFIGS,
+                           config=config)
 
 @app.route('/about/what-we-believe')
 def what_we_believe():
     return render_template('what_we_believe.html')
-
-@app.route('/admin/community-edit/', methods=['GET', 'POST'])
-def admin_community_edit():
-    """Admin page to edit Community page content sections."""
-    if not is_authenticated():
-        return redirect(url_for('admin_login'))
-
-    # Keys we expose for editing
-    COMMUNITY_KEYS = [
-        ('community_hero_subtitle', 'Hero Subtitle',
-         'Join our vibrant community of believers and seekers'),
-        ('community_groups_intro', 'Groups Section Intro',
-         'Connect with others through our various community groups and ministries.'),
-        ('community_groups_json', 'Community Groups Cards (JSON)',
-         '[{"icon":"fas fa-users","title":"Small Groups","text":"Join a small group for Bible study, prayer, and fellowship in a more intimate setting.","bullets":["Westville Group - Thursdays at 7:00pm","Orange Group - Wednesdays at 7:00pm","Guilford Group - Fridays at 7:00pm"]},{"icon":"fas fa-child","title":"Children\'s Ministry","text":"Nurturing the faith of our youngest members through age-appropriate programs.","bullets":["Sunday School (ages 3-12)","Children\'s Church during worship","Vacation Bible School","Special events and activities"]},{"icon":"fas fa-graduation-cap","title":"Youth Ministry","text":"Engaging middle and high school students in their faith journey.","bullets":["Youth Group - Fridays at 7:00pm","Summer mission trips","Retreats and conferences","Service projects"]},{"icon":"fas fa-male","title":"Men\'s Ministry","text":"Building strong Christian men through fellowship and study.","bullets":["Men\'s Fellowship - Saturdays at 8:00am","Men\'s Bible Study","Service projects","Annual retreat"]},{"icon":"fas fa-female","title":"Women\'s Ministry","text":"Encouraging women in their walk with Christ and relationships with each other.","bullets":["Women\'s Bible Study","Women\'s Retreat","Mentoring program","Service opportunities"]},{"icon":"fas fa-music","title":"Music Ministry","text":"Using musical gifts to glorify God and lead in worship.","bullets":["Choir participation","Instrumental ensembles","Special music opportunities","Music education programs"]}]'),
-        ('community_service_intro', 'Service Section Intro',
-         'Get involved in serving our church and community.'),
-        ('community_service_json', 'Service Opportunities (JSON)',
-         '[{"title":"Welcome Team","text":"Help welcome visitors and new members to our church family.","tag":"Hospitality"},{"title":"Children\'s Ministry","text":"Teach, assist, or help with children\'s programs and activities.","tag":"Teaching"},{"title":"Audio/Visual","text":"Support our worship services with technical assistance.","tag":"Technical"},{"title":"Facilities","text":"Help maintain and improve our church building and grounds.","tag":"Maintenance"},{"title":"Community Outreach","text":"Participate in local service projects and community events.","tag":"Outreach"},{"title":"Prayer Ministry","text":"Join our prayer team and intercede for our church and community.","tag":"Prayer"}]'),
-        ('community_new_member_getting_connected', 'New Member: Getting Connected (text)',
-         'We\'re excited that you\'re interested in joining our community! Here\'s how you can get started:'),
-        ('community_new_member_steps_json', 'New Member Steps (JSON)',
-         '[{"bold":"Visit us on Sunday","text":"Join us for worship at 10:30am"},{"bold":"Stay for fellowship","text":"Meet people at our fellowship lunch after service"},{"bold":"Join a small group","text":"Connect with others in a more intimate setting"},{"bold":"Get involved","text":"Find a service opportunity that matches your gifts"},{"bold":"Consider membership","text":"Learn about becoming a member of CPC"}]'),
-        ('community_new_member_questions', 'New Member: Questions? (text)',
-         'If you have questions about getting involved or becoming a member, we\'d love to help!'),
-        ('community_stories_json', 'Community Stories (JSON)',
-         '[{"title":"Finding Family at CPC","text":"When I moved to New Haven for graduate school, I was looking for a church that would feel like home. CPC welcomed me with open arms and helped me find my place in the community.","author":"Sarah, Graduate Student"},{"title":"Growing in Faith Together","text":"Through our small group, I\'ve been able to grow deeper in my faith while building meaningful relationships with other believers. It\'s been a blessing to journey together.","author":"Michael, Small Group Member"},{"title":"Serving Our Community","text":"I love how CPC encourages us to serve not just within the church, but in our broader community. It\'s been amazing to see God at work through our outreach efforts.","author":"Jennifer, Community Outreach Volunteer"}]'),
-    ]
-
-    saved = False
-    if request.method == 'POST':
-        for key, _label, _default in COMMUNITY_KEYS:
-            val = request.form.get(key, '')
-            row = SiteContent.query.filter_by(key=key).first()
-            if row:
-                row.value = val
-                row.updated_at = datetime.utcnow()
-            else:
-                db.session.add(SiteContent(key=key, value=val))
-        db.session.commit()
-        try:
-            _log_audit('edited', SiteContent(key='Community Page'), 'Community Page')
-        except:
-            pass
-        flash('Community page content saved successfully!', 'success')
-        saved = True
-
-    # Load current values
-    rows = {r.key: r.value for r in SiteContent.query.all()}
-    fields = []
-    for key, label, default in COMMUNITY_KEYS:
-        fields.append({
-            'key': key,
-            'label': label,
-            'value': rows.get(key, default) or default,
-            'is_json': key.endswith('_json'),
-        })
-
-    return render_template('admin/community_edit.html', fields=fields, saved=saved)
 
 @app.route('/sermons')
 def sermons():
@@ -3845,6 +3816,30 @@ class DashboardView(BaseView):
     def index(self):
         from datetime import datetime
         
+        # Gamification: Calculate User XP based on AuditLog entries
+        username = session.get('username')
+        user_xp = 0
+        if username:
+            user_xp = AuditLog.query.filter_by(user=username).count()
+        
+        # Calculate level and next milestone
+        admin_level = 1
+        xp_next = 10
+        if user_xp >= 500:
+            admin_level = 5
+            xp_next = 1000
+        elif user_xp >= 100:
+            admin_level = 4
+            xp_next = 500
+        elif user_xp >= 30:
+            admin_level = 3
+            xp_next = 100
+        elif user_xp >= 10:
+            admin_level = 2
+            xp_next = 30
+            
+        progress_pct = min(100, int((user_xp / xp_next) * 100)) if xp_next > 0 else 100
+        
         stats = {
             'announcements': Announcement.query.count(),
             'active_announcements': Announcement.query.filter_by(active=True).count(),
@@ -3874,7 +3869,11 @@ class DashboardView(BaseView):
                          recent_announcements=recent_announcements,
                          recent_sermons=recent_sermons,
                          today=today,
-                         latest_luke=latest_luke)
+                         latest_luke=latest_luke,
+                         user_xp=user_xp,
+                         admin_level=admin_level,
+                         xp_next=xp_next,
+                         progress_pct=progress_pct)
 
 
 class ReorderSessionsView(BaseView):
