@@ -15,7 +15,8 @@
       "Bash(/Users/agworkywork/.pyenv/versions/3.11.0/bin/python3 -c \"import wtforms.fields.choices; import inspect; print\\(inspect.getsource\\(wtforms.fields.choices.SelectField._choices_generator\\)\\)\")",
       "Bash(/Users/agworkywork/.pyenv/versions/3.11.0/bin/python3 -c \"from flask_admin.contrib.sqla.fields import QuerySelectField; import inspect; print\\(inspect.getsource\\(QuerySelectField.iter_choices\\)\\)\")",
       "Bash(/Users/agworkywork/.pyenv/versions/3.11.0/bin/python3 -c \"from flask_admin.contrib.sqla.fields import QuerySelectMultipleField; import inspect; print\\(inspect.getsource\\(QuerySelectMultipleField.iter_choices\\)\\)\")",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(DATABASE_URL=\"postgresql://cpc_admin:Vi6LSZ2vOP3emQPV9HZLtkMnXxTMzvcj@dpg-d64bql24d50c73eaqle0-a.oregon-postgres.render.com/cpc_newhaven\" python migrate_add_podcast_source.py)"
     ]
   }
 }
