@@ -1,0 +1,152 @@
+{% extends 'admin/master.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    body { background: var(--bg-gradient) !important; font-family: var(--font-primary) !important; color: var(--text-primary) !important; }
+    .live-content-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .live-content-header {
+        background: var(--glass-white);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--glass-shadow);
+    }
+    .live-content-header h1 { color: var(--text-white); font-size: 1.75rem; margin: 0 0 0.35rem; font-weight: 700; }
+    .live-content-header p { color: rgba(255,255,255,0.8); margin: 0; font-size: 0.95rem; }
+    .live-counts {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    .live-count-card {
+        background: rgba(0,50,120,0.26);
+        border: 1px solid rgba(0,80,160,0.4);
+        border-radius: var(--radius-md);
+        padding: 0.85rem 1rem;
+        text-align: center;
+    }
+    .live-count-card .num { font-size: 1.5rem; font-weight: 700; color: var(--text-white); display: block; }
+    .live-count-card .label { font-size: 0.8rem; color: rgba(255,255,255,0.75); }
+    .live-section {
+        background: rgba(0,50,120,0.2);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(0,80,160,0.45);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0,50,120,0.2);
+    }
+    .live-section h2 {
+        margin: 0;
+        padding: 0.85rem 1.25rem;
+        background: rgba(0,40,100,0.4);
+        color: rgba(255,255,255,0.95);
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .live-table-wrap { overflow-x: auto; }
+    .live-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        color: var(--text-white);
+    }
+    .live-table th, .live-table td {
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .live-table th {
+        background: rgba(0,40,100,0.35);
+        color: rgba(255,255,255,0.9);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .live-table tr:hover { background: rgba(255,255,255,0.04); }
+    .live-table .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+    .live-table .status-active { background: #2ecc71; }
+    .live-table .status-draft { background: #f39c12; }
+    .live-table .status-archived { background: #95a5a6; }
+    .live-table .rev { font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.85); }
+    .live-table a.edit-link { color: var(--cpc-blue-light); text-decoration: none; }
+    .live-table a.edit-link:hover { text-decoration: underline; }
+    .live-table .date { white-space: nowrap; color: rgba(255,255,255,0.8); }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="live-content-wrap">
+    <div class="live-content-header">
+        <h1><i class="fas fa-database"></i> Live content snapshot</h1>
+        <p>What is currently in this app’s database. On Render, this is the live production data. Use revision and last updated to see what is what.</p>
+    </div>
+
+    <div class="live-counts">
+        <div class="live-count-card"><span class="num">{{ counts.announcements }}</span><span class="label">Announcements</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.announcements_active }}</span><span class="label">Active</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.announcements_banner }}</span><span class="label">Banners</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.events }}</span><span class="label">Events</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.events_active }}</span><span class="label">Events active</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.sermons }}</span><span class="label">Sermons</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.podcast_series }}</span><span class="label">Podcast series</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.podcast_episodes }}</span><span class="label">Podcast episodes</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.gallery_images }}</span><span class="label">Gallery images</span></div>
+        <div class="live-count-card"><span class="num">{{ counts.teaching_series }}</span><span class="label">Teaching series</span></div>
+    </div>
+
+    <div class="live-section">
+        <h2><i class="fas fa-bullhorn"></i> Announcements (all)</h2>
+        <div class="live-table-wrap">
+            <table class="live-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Rev</th>
+                        <th>Created</th>
+                        <th>Last updated</th>
+                        <th>By</th>
+                        <th>Status</th>
+                        <th>Banner</th>
+                        <th>Expires</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in announcements %}
+                    <tr>
+                        <td>{{ a.id }}</td>
+                        <td>{{ (a.title or '—')[:50] }}{% if (a.title or '')|length > 50 %}…{% endif %}</td>
+                        <td class="rev">{{ getattr(a, 'revision', 1) }}</td>
+                        <td class="date">{% if a.date_entered %}{{ a.date_entered.strftime('%Y-%m-%d %H:%M') }}{% else %}—{% endif %}</td>
+                        <td class="date">{% if getattr(a, 'updated_at', None) %}{{ a.updated_at.strftime('%Y-%m-%d %H:%M') }}{% else %}—{% endif %}</td>
+                        <td>{{ getattr(a, 'updated_by', None) or '—' }}</td>
+                        <td>
+                            {% if getattr(a, 'archived', False) %}
+                                <span class="status-dot status-archived"></span> Archived
+                            {% elif getattr(a, 'active', True) %}
+                                <span class="status-dot status-active"></span> Active
+                            {% else %}
+                                <span class="status-dot status-draft"></span> Draft
+                            {% endif %}
+                        </td>
+                        <td>{% if getattr(a, 'show_in_banner', False) %}✓{% else %}—{% endif %}</td>
+                        <td class="date">{% if getattr(a, 'expires_at', None) %}{{ a.expires_at.strftime('%Y-%m-%d') }}{% else %}—{% endif %}</td>
+                        <td><a href="{{ url_for('announcement.edit_view', id=a.id) }}" class="edit-link">Edit</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="10" style="color: rgba(255,255,255,0.6);">No announcements yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

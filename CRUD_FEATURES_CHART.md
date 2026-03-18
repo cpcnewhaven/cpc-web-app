@@ -3,6 +3,8 @@
 Review of Create, Read, Update, and Delete across admin and custom flows.  
 **Legend:** ✅ Implemented and wired | ⚠️ Partial / via other flow | ❌ Not applicable (read-only or N/A)
 
+**Versioning:** Announcements have a **revision** number (incremented on each edit), **updated_at**, and **updated_by**. Shown in Admin → Announcements list and in **Admin → Live content** so editors can see what is what. See `WHAT_STILL_LEFT_TO_DO.md` for how to see what’s live on Render.
+
 ---
 
 ## 1. Flask-Admin model views (full CRUD)
@@ -11,7 +13,7 @@ All of these use `AuthenticatedModelView` with **no** `can_create` / `can_edit` 
 
 | Resource | Create | Read | Update | Delete | Notes |
 |----------|--------|------|--------|--------|--------|
-| **Announcements** | ✅ | ✅ | ✅ | ✅ | Bulk update/delete via `/admin/bulk/announcements` |
+| **Announcements** | ✅ | ✅ | ✅ | ✅ | Bulk update/delete via `/admin/bulk/announcements`. Versioning: revision, updated_at, updated_by. |
 | **Events** | ✅ | ✅ | ✅ | ✅ | Custom create template; reorder via Reorder Events view |
 | **Sunday Sermons** | ✅ | ✅ | ✅ | ✅ | Bulk delete/archive via `/admin/bulk/sermons` |
 | **Sermon Series** | ✅ | ✅ | ✅ | ✅ | |
@@ -46,6 +48,7 @@ All of these use `AuthenticatedModelView` with **no** `can_create` / `can_edit` 
 |------|--------|
 | **Dashboard** | Stats + recent content; no create/edit/delete. |
 | **All content (Content Feed)** | Read-only list with links to edit (Announcement/Event edit views). |
+| **Live content** | Snapshot of what’s in the DB right now: counts + full announcements list with revision/last updated. Use on Render to see live production data. |
 | **Teaching Series Overview** | Read-only list; CRUD via “Teaching Series” and “Series Sessions”. |
 | **Activity History** | Read-only audit log. |
 | **Backup all media** | Read + download ZIP; no create/update/delete. |

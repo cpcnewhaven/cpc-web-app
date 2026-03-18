@@ -138,14 +138,18 @@ if database_url.startswith('postgres://'):
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Connection-pool tuning (PostgreSQL) — recycle connections before the
-# server-side 5-min idle timeout, and keep a small pool for the free tier.
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_size': 3,
-    'max_overflow': 2,
-    'pool_recycle': 270,      # recycle before PG's idle timeout
-    'pool_pre_ping': True,    # test connections before handing them out
+# Connection-pool tuning — keep always connected to Postgres when DATABASE_URL is set.
+# pool_pre_ping: test each connection before use (auto-reconnect if dropped).
+# pool_recycle: refresh connections before server idle timeout (e.g. Render ~5 min).
+_engine_opts = {
+    'pool_size': 5,
+    'max_overflow': 3,
+    'pool_recycle': 240,
+    'pool_pre_ping': True,
 }
+if database_url.startswith('postgresql'):
+    _engine_opts['connect_args'] = {'connect_timeout': 10}
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = _engine_opts
 
 # Log DB type + host (NEVER log the full URL — it contains credentials)
 try:
@@ -154,7 +158,10 @@ try:
     _db_kind = _parsed.scheme.split('+')[0]       # "postgresql" or "sqlite"
     _db_host = _parsed.hostname or 'localhost'
     _db_name = _parsed.path.lstrip('/')
-    log.info("DB init: engine=%s host=%s dbname=%s", _db_kind, _db_host, _db_name)
+    if _db_kind == 'postgresql':
+        log.info("DB init: PostgreSQL host=%s db=%s (always connected: pool_pre_ping + pool_recycle)", _db_host, _db_name)
+    else:
+        log.info("DB init: engine=%s host=%s dbname=%s", _db_kind, _db_host, _db_name)
 except Exception:
     log.info("DB init: engine=unknown (URL parsing failed)")
 
@@ -193,6 +200,9 @@ def ensure_db_columns():
             ('expires_at', 'DATE', 'DATE'),
             ('event_start_time', 'VARCHAR(100)', 'VARCHAR(100)'),
             ('event_end_time', 'VARCHAR(100)', 'VARCHAR(100)'),
+            ('revision', 'INTEGER DEFAULT 1', 'INTEGER DEFAULT 1'),
+            ('updated_at', 'DATETIME', 'TIMESTAMP'),
+            ('updated_by', 'VARCHAR(80)', 'VARCHAR(80)'),
         ],
         'ongoing_events': [
             ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
@@ -2498,7 +2508,7 @@ def _format_announcement_status(view, context, model, name):
 
 
 class AnnouncementView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'date_entered', 'event_start_time', 'event_end_time', 'expires_at')
+    column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'revision', 'date_entered', 'updated_at', 'updated_by', 'event_start_time', 'event_end_time', 'expires_at')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category', 'speaker')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'speaker')
@@ -2548,6 +2558,9 @@ class AnnouncementView(AuthenticatedModelView):
 
     column_labels = {
         'date_entered': 'Date Created',
+        'revision': 'Rev',
+        'updated_at': 'Last Updated',
+        'updated_by': 'Updated By',
         'expires_at': 'Expires',
         'expiration_preset': 'Expiration',
         'expiration_date': 'Expiration date',
@@ -2619,6 +2632,11 @@ class AnnouncementView(AuthenticatedModelView):
             if not model.date_entered:
                 model.date_entered = datetime.utcnow()
             model.id = next_global_id()
+        else:
+            # Versioning: so editors know what is what
+            model.updated_at = datetime.utcnow()
+            model.updated_by = session.get('username') or None
+            model.revision = (getattr(model, 'revision', None) or 1) + 1
 
     @expose('set-status/', methods=['GET'])
     def set_status(self):
@@ -2642,6 +2660,9 @@ class AnnouncementView(AuthenticatedModelView):
         else:
             ann.active = False
             ann.archived = True
+        ann.updated_at = datetime.utcnow()
+        ann.updated_by = session.get('username') or None
+        ann.revision = (getattr(ann, 'revision', None) or 1) + 1
         db.session.commit()
         try:
             _log_audit(status, ann)
@@ -4121,6 +4142,39 @@ class ContentFeedView(BaseView):
         )
 
 
+# ---------------------------------------------------------------------------
+# Live content snapshot — what is in the DB right now (e.g. on Render)
+# ---------------------------------------------------------------------------
+class LiveContentView(BaseView):
+    """Show what is presently live in the database: counts and full announcements list with versioning."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        counts = {
+            'announcements': Announcement.query.count(),
+            'announcements_active': Announcement.query.filter_by(active=True).filter_by(archived=False).count(),
+            'announcements_banner': Announcement.query.filter_by(show_in_banner=True).count(),
+            'events': OngoingEvent.query.count(),
+            'events_active': OngoingEvent.query.filter_by(active=True).count(),
+            'sermons': Sermon.query.count(),
+            'podcast_series': PodcastSeries.query.count(),
+            'podcast_episodes': PodcastEpisode.query.count(),
+            'gallery_images': GalleryImage.query.count(),
+            'teaching_series': TeachingSeries.query.count(),
+        }
+        announcements = Announcement.query.order_by(Announcement.date_entered.desc()).all()
+        return self.render(
+            'admin/live_content.html',
+            counts=counts,
+            announcements=announcements,
+        )
+
+
 # Protected index view — redirect /admin/ to login or dashboard
 class ProtectedAdminIndexView(_AdminIndexView):
     def is_accessible(self):
@@ -4186,6 +4240,7 @@ with app.app_context():
     # 7. Register admin views (inside app context so get_form() can use DB)
     admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
     admin.add_view(ContentFeedView(name='All content', endpoint='content_feed', category='Content'))
+    admin.add_view(LiveContentView(name='Live content', endpoint='live_content', category='Content'))
     admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', category='Content'))
     admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', category='Content', endpoint='event'))
     admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', category='Media'))

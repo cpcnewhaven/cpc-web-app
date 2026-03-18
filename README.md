@@ -18,7 +18,7 @@ A modern Flask web application for Christ Presbyterian Church New Haven, featuri
 ## Technology Stack
 
 - **Backend**: Flask, SQLAlchemy, Flask-Migrate
-- **Database**: SQLite (development) / PostgreSQL (production)
+- **Database**: SQLite (development) / PostgreSQL (production). When `DATABASE_URL` is set (e.g. Render or local `.env`), the app stays **always connected** (pool_pre_ping + pool_recycle).
 - **Frontend**: HTML5, CSS3, Alpine.js, Vanilla JavaScript
 - **Admin Interface**: Flask-Admin
 - **Deployment**: Ready for Heroku, Docker, or traditional hosting
@@ -45,7 +45,17 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Initialize Database
+### 4. Database (always connected to Postgres when set)
+
+- **On Render**: `DATABASE_URL` is set automatically; the app uses it and keeps the connection alive.
+- **Local**: To use your Render Postgres (or any Postgres) from now on:
+  1. Copy `.env.example` to `.env`.
+  2. Set `DATABASE_URL` to your PostgreSQL URL (e.g. from Render Dashboard → your DB → Internal/External URL).
+  3. Run the app; it will connect and stay connected (auto-reconnect if the server drops idle connections).
+
+If `DATABASE_URL` is not set locally, the app falls back to SQLite.
+
+### 5. Initialize Database
 
 ```bash
 # Create database tables
@@ -55,7 +65,7 @@ python -c "from app import app, db; app.app_context().push(); db.create_all()"
 python migrate_data.py
 ```
 
-### 5. Run the Application
+### 6. Run the Application
 
 #### **Smart Startup (Recommended)**
 ```bash
@@ -86,7 +96,7 @@ python start_app.py --kill-ports
 ./fix_ports.sh
 ```
 
-### 6. Sync local database with production (optional)
+### 7. Sync local database with production (optional)
 
 To make your **local** database match **live** (production) so you're not developing against different data:
 
