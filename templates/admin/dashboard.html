@@ -470,6 +470,9 @@
             <div class="stat-number">{{ stats.announcements }}</div>
             <div class="stat-label">Announcements</div>
             <div class="stat-sub">{{ stats.active_announcements }} Active</div>
+            {% if stats.draft_announcements or stats.expiring_soon %}
+            <div class="stat-sub" style="margin-top:0.25rem;">{{ stats.draft_announcements }} Drafts · {{ stats.expiring_soon }} Expiring soon</div>
+            {% endif %}
         </a>
 
         <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link">
@@ -734,7 +737,7 @@
             <p style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
                 <i class="fas fa-inbox"
                     style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
-                No announcements yet. Create your first one above!
+                No announcements yet. <a href="{{ url_for('announcement.create_view') }}" style="color: var(--cpc-blue-light);">Create your first one</a>.
             </p>
             {% endif %}
         </div>
@@ -778,7 +781,7 @@
             <p style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
                 <i class="fas fa-inbox"
                     style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
-                No sermons yet. Add your first sermon above!
+                No sermons yet. <a href="{{ url_for('sermon.create_view') }}" style="color: var(--cpc-blue-light);">Add your first sermon</a>.
             </p>
             {% endif %}
         </div>

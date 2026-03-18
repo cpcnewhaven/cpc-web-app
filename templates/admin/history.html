@@ -182,6 +182,14 @@
         color: rgba(255,255,255,0.85);
     }
 
+    .history-entity-link {
+        color: var(--cpc-blue-light, #38bdf8);
+        text-decoration: none;
+    }
+    .history-entity-link:hover {
+        text-decoration: underline;
+    }
+
     /* Timestamp */
     .ts-main {
         display: block;
@@ -341,7 +349,23 @@
                     </td>
                     <td><span class="entity-chip">{{ entry.entity_type }}</span></td>
                     <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ entry.entity_title }}">
+                        {% if entry.entity_type == 'Announcement' and entry.entity_id %}
+                        <a href="{{ url_for('announcement.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
+                        {% elif entry.entity_type == 'OngoingEvent' and entry.entity_id %}
+                        <a href="{{ url_for('event.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
+                        {% elif entry.entity_type == 'Sermon' and entry.entity_id %}
+                        <a href="{{ url_for('sermon.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
+                        {% elif entry.entity_type == 'PodcastEpisode' and entry.entity_id %}
+                        <a href="{{ url_for('podcastepisode.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
+                        {% elif entry.entity_type == 'TeachingSeries' and entry.entity_id %}
+                        <a href="{{ url_for('teachingseries.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
+                        {% elif entry.entity_type == 'TeachingSeriesSession' and entry.entity_id %}
+                        <a href="{{ url_for('teachingseriessession.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
+                        {% elif entry.entity_type == 'GalleryImage' and entry.entity_id %}
+                        <a href="{{ url_for('galleryimage.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
+                        {% else %}
                         {{ entry.entity_title or '—' }}
+                        {% endif %}
                     </td>
                     <td style="color:rgba(255,255,255,0.5);">{{ entry.entity_id or '—' }}</td>
                 </tr>

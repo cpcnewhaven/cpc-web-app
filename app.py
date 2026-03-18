@@ -3862,9 +3862,17 @@ class DashboardView(BaseView):
             
         progress_pct = min(100, int((user_xp / xp_next) * 100)) if xp_next > 0 else 100
         
+        from datetime import date, timedelta
+        today_d = date.today()
         stats = {
             'announcements': Announcement.query.count(),
-            'active_announcements': Announcement.query.filter_by(active=True).count(),
+            'active_announcements': Announcement.query.filter_by(active=True).filter_by(archived=False).count(),
+            'draft_announcements': Announcement.query.filter_by(active=False).filter_by(archived=False).count(),
+            'expiring_soon': Announcement.query.filter(
+                Announcement.expires_at.isnot(None),
+                Announcement.expires_at >= today_d,
+                Announcement.expires_at <= today_d + timedelta(days=7),
+            ).count(),
             'sermons': Sermon.query.count(),
             'podcast_series': PodcastSeries.query.count(),
             'podcast_episodes': PodcastEpisode.query.count(),

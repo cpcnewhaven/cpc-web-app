@@ -103,6 +103,9 @@
 
     <div class="live-section">
         <h2><i class="fas fa-bullhorn"></i> Announcements (all)</h2>
+        <p style="margin:0 0 0.75rem 1.25rem;">
+            <a href="{{ url_for('announcement.create_view') }}" class="edit-link" style="display:inline-flex;align-items:center;gap:0.35rem;"><i class="fas fa-plus"></i> New announcement</a>
+        </p>
         <div class="live-table-wrap">
             <table class="live-table">
                 <thead>
@@ -150,7 +153,7 @@
                         <td><a href="{{ url_for('announcement.edit_view', id=a.id) }}" class="edit-link">Edit</a></td>
                     </tr>
                     {% else %}
-                    <tr><td colspan="12" style="color: rgba(255,255,255,0.6);">No announcements yet.</td></tr>
+                    <tr><td colspan="12" style="color: rgba(255,255,255,0.6);">No announcements yet. <a href="{{ url_for('announcement.create_view') }}" class="edit-link">Create one</a>.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
