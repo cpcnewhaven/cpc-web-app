@@ -2518,6 +2518,7 @@ class AnnouncementView(AuthenticatedModelView):
     page_size_choices = (20, 50, 100, 500, 1000)
     form_excluded_columns = ['id']
     create_template = 'admin/announcement_create.html'
+    edit_template = 'admin/announcement_create.html'
 
     form_columns = ('title', 'description', 'type', 'category', 'tag', 'speaker', 'date_entered', 'event_start_time', 'event_end_time', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
     form_extra_fields = {

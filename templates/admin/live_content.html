@@ -116,6 +116,8 @@
                         <th>Status</th>
                         <th>Banner</th>
                         <th>Expires</th>
+                        <th>Preview</th>
+                        <th>History</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -139,10 +141,16 @@
                         </td>
                         <td>{% if getattr(a, 'show_in_banner', False) %}✓{% else %}—{% endif %}</td>
                         <td class="date">{% if getattr(a, 'expires_at', None) %}{{ a.expires_at.strftime('%Y-%m-%d') }}{% else %}—{% endif %}</td>
+                        <td>
+                            <a href="{{ url_for('announcements') }}" class="edit-link" title="Open public announcements page">Preview</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('history.index', type='Announcement') }}" class="edit-link" title="Audit log for announcements">History</a>
+                        </td>
                         <td><a href="{{ url_for('announcement.edit_view', id=a.id) }}" class="edit-link">Edit</a></td>
                     </tr>
                     {% else %}
-                    <tr><td colspan="10" style="color: rgba(255,255,255,0.6);">No announcements yet.</td></tr>
+                    <tr><td colspan="12" style="color: rgba(255,255,255,0.6);">No announcements yet.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
