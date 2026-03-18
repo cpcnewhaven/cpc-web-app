@@ -24,3 +24,17 @@ services:
           property: connectionString
     healthCheckPath: /healthz
     autoDeploy: true
+
+  - type: cron
+    name: cpc-podcast-sync
+    env: python
+    runtime: python-3.12.8
+    plan: starter
+    schedule: "0 */6 * * *"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python fetch_and_sync.py
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cpc-newhaven-db
+          property: connectionString

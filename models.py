@@ -152,6 +152,8 @@ class PodcastEpisode(db.Model):
     scripture = db.Column(db.String(200))
     podcast_thumbnail_url = db.Column(db.String(500))
     expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
+    source = db.Column(db.String(50), default='manual')  # 'anchor_rss', 'spotify', 'manual'
+    original_id = db.Column(db.String(200), nullable=True)  # ID from source API/RSS
 
     series = db.relationship('PodcastSeries', back_populates='episodes')
 

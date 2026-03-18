@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
+from datetime import datetime
 from app import app, db
 from models import PodcastSeries, PodcastEpisode, next_global_id
 
@@ -44,13 +45,21 @@ def populate_podcasts():
                 new_series_id = series_map.get(old_series_id)
                 if not new_series_id:
                     continue
-                
-                # Check if episode with this title and series already exists
-                existing = PodcastEpisode.query.filter_by(
-                    series_id=new_series_id,
-                    title=ep['title']
-                ).first()
-                
+
+                # Try dedup by original_id first (most reliable), then fall back to title+series
+                existing = None
+                original_id = ep.get('original_id')
+                if original_id:
+                    existing = PodcastEpisode.query.filter_by(
+                        original_id=original_id
+                    ).first()
+
+                if not existing:
+                    existing = PodcastEpisode.query.filter_by(
+                        series_id=new_series_id,
+                        title=ep['title']
+                    ).first()
+
                 if not existing:
                     new_id = next_global_id()
                     new_ep = PodcastEpisode(
@@ -65,7 +74,9 @@ def populate_podcasts():
                         date_added=datetime.strptime(ep['date_added'], '%Y-%m-%d').date() if ep.get('date_added') else None,
                         season=ep.get('season', 1),
                         scripture=ep.get('scripture'),
-                        podcast_thumbnail_url=ep.get('podcast_thumbnail_url')
+                        podcast_thumbnail_url=ep.get('podcast_thumbnail_url'),
+                        source=ep.get('source', 'manual'),
+                        original_id=original_id
                     )
                     db.session.add(new_ep)
                     count += 1

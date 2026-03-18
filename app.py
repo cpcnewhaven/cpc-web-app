@@ -3167,12 +3167,12 @@ class PodcastSeriesView(AuthenticatedModelView):
     episode_count.column_type = 'integer'
 
 class PodcastEpisodeView(AuthenticatedModelView):
-    column_list = ('number', 'title', 'series', 'guest', 'date_added', 'expires_at', 'scripture')
+    column_list = ('number', 'title', 'series', 'guest', 'date_added', 'source', 'expires_at', 'scripture')
     column_searchable_list = ('title', 'guest', 'scripture')
-    column_filters = ('series', 'guest', 'season')
+    column_filters = ('series', 'guest', 'season', 'source')
     column_sortable_list = ('number', 'title', 'date_added')
     column_default_sort = ('number', True)
-    form_excluded_columns = ['id']
+    form_excluded_columns = ['id', 'source', 'original_id']
 
     form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
@@ -3198,6 +3198,7 @@ class PodcastEpisodeView(AuthenticatedModelView):
         'listen_url': 'Listen URL',
         'handout_url': 'Handout URL',
         'podcast_thumbnail_url': 'Thumbnail',
+        'source': 'Added By',
         'expires_at': 'Expires',
     }
 
@@ -3213,6 +3214,8 @@ class PodcastEpisodeView(AuthenticatedModelView):
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = next_global_id()
+            if not getattr(model, 'source', None):
+                model.source = 'manual'
         preset = getattr(getattr(form, 'expiration_preset', None), 'data', None)
         specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
         base = model.date_added or date.today()

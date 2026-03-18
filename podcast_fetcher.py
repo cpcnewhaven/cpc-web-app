@@ -496,6 +496,7 @@ class PodcastFetcher:
                     'season': 1,
                     'scripture': sermon.get('scripture', ''),
                     'podcast_thumbnail_url': sermon.get('podcast_thumbnail_url', ''),
+                    'source': sermon.get('source', 'anchor_rss'),
                     'original_id': oid,
                 }
                 existing_episodes.append(ep)
