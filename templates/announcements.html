@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${announcement.tag ? badge('tag', announcement.tag) : ''}
                     </div>
                     <p class="announcement-description">${announcement.description}</p>
+                    ${(announcement.eventStartTime || announcement.eventEndTime) ? `<p class="announcement-date" style="margin-bottom: 0.25rem;"><i class="fas fa-clock"></i> ${announcement.eventStartTime || ''} ${announcement.eventEndTime ? '- ' + announcement.eventEndTime : ''}</p>` : ''}
                     ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
                 </div>
             `).join('');
