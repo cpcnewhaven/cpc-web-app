@@ -1918,6 +1918,27 @@ def admin_logout():
     return redirect(url_for('index'))
 
 # Admin Management Routes (all require authentication)
+@app.route('/admin/debug/announcements')
+@require_auth
+def admin_debug_announcements():
+    """Raw DB dump for debugging — returns every announcement row."""
+    rows = Announcement.query.order_by(Announcement.id.desc()).all()
+    return jsonify({
+        'count': len(rows),
+        'announcements': [
+            {
+                'id': a.id,
+                'title': a.title,
+                'active': a.active,
+                'archived': getattr(a, 'archived', None),
+                'type': a.type,
+                'date_entered': str(a.date_entered) if a.date_entered else None,
+                'description_len': len(a.description or ''),
+            }
+            for a in rows
+        ]
+    })
+
 @app.route('/admin/export/announcements')
 @require_auth
 def admin_export_announcements():
@@ -2609,6 +2630,11 @@ class AnnouncementView(AuthenticatedModelView):
             form.expiration_date.data = announcement.expires_at
 
     def on_model_change(self, form, model, is_created):
+        app.logger.info(
+            "ANNC on_model_change: is_created=%s title=%r form_keys=%s",
+            is_created, getattr(model, 'title', None),
+            list(request.form.keys())
+        )
         if request.form.get('_save_and_publish'):
             model.active = True
             model.archived = False

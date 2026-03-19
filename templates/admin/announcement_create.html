@@ -25,8 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (saveBtn) saveBtn.value = 'Save as a draft';
     }
     // No pre-submit modal intercept — let Save and Publish submit directly.
-    // (A false-success modal before the actual DB write caused saves to appear
-    //  to succeed while the form never actually submitted.)
+    form.addEventListener('submit', function(e) {
+        var desc = form.querySelector('textarea[name="description"]');
+        console.log('[ANNC SUBMIT] action=' + form.action
+            + ' title=' + (form.querySelector('input[name="title"]') || {}).value
+            + ' desc_len=' + (desc ? desc.value.length : 'NO FIELD')
+            + ' publish=' + !!form.querySelector('input[name="_save_and_publish"]')
+            + ' submitter=' + (e.submitter ? e.submitter.name || e.submitter.value : 'unknown'));
+    });
 });
 </script>
 {% endblock %}
