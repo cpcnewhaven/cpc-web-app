@@ -2599,6 +2599,8 @@ def _format_announcement_status(view, context, model, name):
     return Markup('<span class="admin-status-wrap announcement-status-wrap">' + ' '.join(tags) + '</span>')
 
 
+from flask_admin.form import rules
+
 class AnnouncementView(AuthenticatedModelView):
     column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'revision', 'date_entered', 'updated_at', 'updated_by', 'event_start_time', 'event_end_time', 'expires_at')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
@@ -2612,16 +2614,16 @@ class AnnouncementView(AuthenticatedModelView):
     create_template = 'admin/announcement_create.html'
     edit_template = 'admin/announcement_create.html'
 
-    form_fieldsets = (
-        ('Event Dates', {'fields': ('event_start_time', 'event_end_time')}),
-        ('Expiration details', {'fields': ('expiration_preset', 'expiration_date')}),
-        ('Content', {'fields': ('title', 'description', 'type', 'category', 'tag', 'speaker')}),
-        ('Styling and Placement', {'fields': ('active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')}),
-        ('System (Auto-managed)', {'fields': ('date_entered',)})
-    )
+    form_rules = [
+        rules.FieldSet(('event_start_time', 'event_end_time'), 'Event Dates'),
+        rules.FieldSet(('expiration_preset', 'expiration_date'), 'Expiration details'),
+        rules.FieldSet(('title', 'description', 'type', 'category', 'tag', 'speaker'), 'Content'),
+        rules.FieldSet(('active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type'), 'Styling and Placement'),
+        rules.FieldSet(('date_entered',), 'System (Auto-managed)')
+    ]
     form_columns = ('event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'date_entered', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
-        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
+        'description': TextAreaField('Description', widget=TextArea(), validators=[Optional(), Length(max=2000)]),
         'banner_type': SelectField(
             'Top bar banner',
             choices=[
@@ -3555,13 +3557,13 @@ class OngoingEventView(AuthenticatedModelView):
     form_excluded_columns = ['id']
     create_template = 'admin/event_create.html'
 
-    form_fieldsets = (
-        ('Event Basics', {'fields': ('title', 'description', 'type', 'category', 'active')}),
-        ('Dates & Expiration', {'fields': ('date_entered', 'expiration_preset', 'expiration_date')})
-    )
+    form_rules = [
+        rules.FieldSet(('title', 'description', 'type', 'category', 'active'), 'Event Basics'),
+        rules.FieldSet(('date_entered', 'expiration_preset', 'expiration_date'), 'Dates & Expiration')
+    ]
     form_columns = ('date_entered', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'active')
     form_extra_fields = {
-        'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
+        'description': TextAreaField('Description', widget=TextArea(), validators=[Optional(), Length(max=2000)]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
         'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
     }
