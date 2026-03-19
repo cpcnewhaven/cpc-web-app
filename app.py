@@ -592,6 +592,57 @@ def contact():
     """Contact page"""
     return render_template('contact.html')
 
+@app.route('/submit-announcement', methods=['GET', 'POST'])
+def submit_announcement():
+    """Public form for submitting announcements to drafts."""
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        event_start = request.form.get('event_start_time')
+        event_end = request.form.get('event_end_time')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        
+        if not title or not description:
+            flash('Title and description are required.', 'error')
+            return render_template('submit_announcement.html')
+            
+        # Optional bot protection honeypot
+        if request.form.get('website'):
+            return redirect(url_for('index'))
+            
+        full_desc = f"{description}\n\n[Submitted by: {name} | {email}]" if name else description
+        
+        # Use next_global_id logic manually to avoid circular import issues internally
+        from models import Announcement, GlobalIDCounter
+        counter = GlobalIDCounter.query.get(1)
+        if not counter:
+            counter = GlobalIDCounter(id=1, next_id=1)
+            db.session.add(counter)
+            db.session.flush()
+        new_id = counter.next_id
+        counter.next_id += 1
+        
+        ann = Announcement(
+            id=new_id,
+            title=title,
+            description=full_desc,
+            event_start_time=event_start,
+            event_end_time=event_end,
+            active=False,
+            archived=False,
+            date_entered=datetime.utcnow(),
+            type='announcement',
+            category='general'
+        )
+        db.session.add(ann)
+        db.session.commit()
+        
+        flash('Thank you! Your announcement has been submitted for review.', 'success')
+        return redirect(url_for('submit_announcement'))
+        
+    return render_template('submit_announcement.html')
+
 @app.route('/teaching-series')
 def teaching_series():
     """Teaching series page showing sermon series and Sunday school series"""
