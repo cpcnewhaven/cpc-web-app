@@ -2639,6 +2639,20 @@ class AnnouncementView(AuthenticatedModelView):
             model.updated_by = session.get('username') or None
             model.revision = (getattr(model, 'revision', None) or 1) + 1
 
+    def after_model_change(self, form, model, is_created):
+        _log_audit('created' if is_created else 'edited', model)
+        try:
+            cache.clear()
+        except Exception:
+            pass
+
+    def after_model_delete(self, model):
+        _log_audit('deleted', model)
+        try:
+            cache.clear()
+        except Exception:
+            pass
+
     @expose('set-status/', methods=['GET'])
     def set_status(self):
         if not is_authenticated():
@@ -2668,6 +2682,10 @@ class AnnouncementView(AuthenticatedModelView):
         try:
             _log_audit(status, ann)
         except:
+            pass
+        try:
+            cache.clear()
+        except Exception:
             pass
         flash('Status updated.', 'success')
         return redirect(url_for('announcement.index_view'))
