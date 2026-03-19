@@ -2541,7 +2541,7 @@ class AnnouncementView(AuthenticatedModelView):
     create_template = 'admin/announcement_create.html'
     edit_template = 'admin/announcement_create.html'
 
-    form_columns = ('date_entered', 'event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -4172,7 +4172,21 @@ class ContentFeedView(BaseView):
             if want:
                 items = [i for i in items if i['content_type'] == want]
 
-        items.sort(key=lambda x: x['date'], reverse=True)
+        # Robust sort in case some dates are strings or Naive vs Aware
+        def safe_sort_key(x):
+            d = x['date']
+            if not d:
+                return datetime.min
+            if isinstance(d, str):
+                try:
+                    from dateutil.parser import parse
+                    d = parse(d)
+                except Exception:
+                    return datetime.min
+            # ensure naive so we can sort without offset timezone crash
+            return d.replace(tzinfo=None)
+
+        items.sort(key=safe_sort_key, reverse=True)
 
         # Group by (year, month), label e.g. "March 2025"
         months = []
@@ -4180,6 +4194,16 @@ class ContentFeedView(BaseView):
         current_list = None
         for i in items:
             dt = i['date']
+            if isinstance(dt, str):
+                try:
+                    from dateutil.parser import parse
+                    dt = parse(dt)
+                except Exception:
+                    dt = datetime.utcnow()
+            elif not hasattr(dt, 'year'):
+                dt = datetime.utcnow()
+                
+            i['date'] = dt
             key = (dt.year, dt.month)
             if key != current_key:
                 current_key = key
