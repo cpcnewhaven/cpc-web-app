@@ -24,52 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var saveBtn = row.querySelector('input[type=submit]:not([name])');
         if (saveBtn) saveBtn.value = 'Save as a draft';
     }
-    // DEBUG: intercept submit, POST via fetch, show server response in-page
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        var submitter = e.submitter;
-        var fd = new FormData(form);
-        if (submitter && submitter.name) fd.append(submitter.name, submitter.value || '1');
-
-        var desc = form.querySelector('textarea[name="description"]');
-        var overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,20,0.85);color:#fff;padding:2rem;overflow:auto;font-family:monospace;font-size:13px;';
-        overlay.innerHTML = '<b style="font-size:16px">DEBUG: submitting via fetch…</b><br>'
-            + 'title: ' + (form.querySelector('input[name="title"]') || {}).value + '<br>'
-            + 'desc_len: ' + (desc ? desc.value.length : 'NO TEXTAREA') + '<br>'
-            + 'desc_val: ' + (desc ? desc.value.substring(0, 80) : '') + '<br>'
-            + 'submitter: ' + (submitter ? submitter.name || submitter.value : 'none') + '<br><br>'
-            + '<i>Waiting for server response…</i>';
-        document.body.appendChild(overlay);
-
-        fetch(form.action, { method: 'POST', body: fd, redirect: 'manual' })
-            .then(function(r) {
-                var status = r.status + ' ' + r.type;
-                if (r.type === 'opaqueredirect' || r.status === 302 || r.status === 301) {
-                    overlay.innerHTML = '<b style="color:#4ade80;font-size:18px">✓ SERVER RETURNED REDIRECT (save likely worked)</b><br>status=' + status
-                        + '<br><br><button onclick="window.location=\'' + (r.url || '/admin/announcement/') + '\'">Go to list</button>'
-                        + ' <button onclick="this.closest(\'div\').remove()">Close</button>';
-                } else {
-                    r.text().then(function(body) {
-                        var errors = [];
-                        var tmp = document.createElement('div');
-                        tmp.innerHTML = body;
-                        tmp.querySelectorAll('.control-group.error .help-block, .has-error .help-block, .alert-danger, .alert-error, .errors li').forEach(function(el) {
-                            errors.push(el.textContent.trim());
-                        });
-                        overlay.innerHTML = '<b style="color:#f87171;font-size:18px">✗ SERVER RETURNED ' + r.status + ' (form was NOT saved)</b><br>'
-                            + '<b>Errors found:</b> ' + (errors.length ? errors.join(' | ') : 'none extracted — see raw HTML below') + '<br><br>'
-                            + '<b>desc_len sent:</b> ' + (desc ? desc.value.length : 'NO TEXTAREA') + '<br>'
-                            + '<b>Raw body (first 2000 chars):</b><br><pre style="white-space:pre-wrap;max-height:400px;overflow:auto;background:#111;padding:8px">'
-                            + body.substring(0, 2000).replace(/</g,'&lt;') + '</pre>'
-                            + '<button onclick="this.closest(\'div\').remove()">Close</button>';
-                    });
-                }
-            })
-            .catch(function(err) {
-                overlay.innerHTML = '<b style="color:#f87171">NETWORK ERROR: ' + err + '</b><br><button onclick="this.closest(\'div\').remove()">Close</button>';
-            });
-    });
 });
 </script>
 {% endblock %}

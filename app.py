@@ -2541,7 +2541,7 @@ class AnnouncementView(AuthenticatedModelView):
     create_template = 'admin/announcement_create.html'
     edit_template = 'admin/announcement_create.html'
 
-    form_columns = ('title', 'description', 'type', 'category', 'tag', 'speaker', 'date_entered', 'event_start_time', 'event_end_time', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date')
+    form_columns = ('date_entered', 'event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -3463,7 +3463,7 @@ class OngoingEventView(AuthenticatedModelView):
     form_excluded_columns = ['id']
     create_template = 'admin/event_create.html'
 
-    form_columns = ('date_entered', 'title', 'description', 'type', 'category', 'active', 'expiration_preset', 'expiration_date')
+    form_columns = ('date_entered', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'active')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
