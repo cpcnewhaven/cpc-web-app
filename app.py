@@ -2395,6 +2395,26 @@ class DateTimePickerField(DateTimeField):
     """DateTimeField that uses HTML5 datetime-local input (calendar widget)."""
     widget = DateTimePickerWidget()
 
+    def process_formdata(self, valuelist):
+        if not valuelist or not valuelist[0]:
+            self.data = None
+            return
+        val = valuelist[0]
+        try:
+            from dateutil.parser import parse
+            self.data = parse(val)
+        except Exception:
+            # Fallback to standard formats
+            from datetime import datetime
+            for fmt in ('%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M', '%m/%d/%Y, %I:%M %p', '%m/%d/%Y %I:%M %p'):
+                try:
+                    self.data = datetime.strptime(val, fmt)
+                    return
+                except ValueError:
+                    pass
+            # If all else fails, don't throw a validation error
+            self.data = None
+
 # ---------------------------------------------------------------------------
 # Audit-log helper
 # ---------------------------------------------------------------------------
@@ -2541,7 +2561,7 @@ class AnnouncementView(AuthenticatedModelView):
     create_template = 'admin/announcement_create.html'
     edit_template = 'admin/announcement_create.html'
 
-    form_columns = ('event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'date_entered', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
         'banner_type': SelectField(
