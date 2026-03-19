@@ -791,11 +791,14 @@
                         return;
                     }
 
-                    // Optional: show peace of mind right before submit, but standard flask-admin redirects
-                    // Here we inject the comfort modal first, then submit
-                    showSaveComfortModal(function () {
+                    // Submit the form directly — the modal was showing "success" before
+                    // the actual DB write, which mislead users when saves failed.
+                    // Flask-Admin's own flash message on the list page confirms the save.
+                    if (typeof form.requestSubmit === 'function') {
+                        form.requestSubmit();
+                    } else {
                         form.submit();
-                    });
+                    }
                     return;
                 }
 

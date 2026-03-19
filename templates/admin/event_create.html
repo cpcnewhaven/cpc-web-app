@@ -21,22 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var saveBtn = row.querySelector('input[type=submit]:not([name])');
         if (saveBtn) saveBtn.value = 'Save as a draft';
     }
-    var programmaticPublish = false;
-    if (publishBtn && typeof window.showSaveComfortModal === 'function') {
-        publishBtn.addEventListener('click', function(e) {
-            if (programmaticPublish) {
-                programmaticPublish = false;
-                return;
-            }
-            e.preventDefault();
-            e.stopPropagation();
-            if (typeof form.reportValidity === 'function' && !form.reportValidity()) return;
-            window.showSaveComfortModal(function() {
-                programmaticPublish = true;
-                publishBtn.click();
-            });
-        });
-    }
+    // No pre-submit modal intercept — let Save and Publish submit directly.
 });
 </script>
 {% endblock %}
