@@ -3030,6 +3030,14 @@ class SermonView(AuthenticatedModelView):
     column_default_sort = ('date', True)
     form_excluded_columns = ['id', 'speaker']  # Exclude legacy speaker field from form
 
+    form_fieldsets = (
+        ('Basic Details', {'fields': ('title', 'speaker_name', 'date', 'series_name', 'episode_number', 'active')}),
+        ('Scripture Reference', {'fields': ('book_name', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end')}),
+        ('Media Links & Files', {'fields': ('audio_file_url', 'video_file_url', 'youtube_url', 'spotify_url', 'apple_podcasts_url', 'podcast_thumbnail_url')}),
+        ('Related Content', {'fields': ('beyond_episode_name',)}),
+        ('Visibility & Expiration', {'fields': ('archived', 'expiration_preset', 'expiration_date')}),
+    )
+    
     form_columns = (
         'series_name', 'episode_number',
         'book_name', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end',
@@ -3289,6 +3297,12 @@ class PodcastEpisodeView(AuthenticatedModelView):
     column_default_sort = ('number', True)
     form_excluded_columns = ['id', 'source', 'original_id']
 
+    form_fieldsets = (
+        ('Episode Information', {'fields': ('title', 'series', 'number', 'season', 'date_added')}),
+        ('Content & Guests', {'fields': ('guest', 'scripture', 'podcast_thumbnail_url')}),
+        ('Media Links & Resources', {'fields': ('link', 'listen_url', 'handout_url')}),
+        ('Visibility & Expiration', {'fields': ('expiration_preset', 'expiration_date')})
+    )
     form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url', 'expiration_preset', 'expiration_date')
     form_extra_fields = {
         'scripture': TextAreaField('Scripture', widget=TextArea()),
@@ -3759,6 +3773,12 @@ class TeachingSeriesView(AuthenticatedModelView):
     column_filters = ('active',)
     column_sortable_list = ('title', 'sort_order', 'start_date', 'end_date', 'date_entered')
     column_default_sort = ('sort_order', False)
+    form_fieldsets = (
+        ('Series Information', {'fields': ('title', 'description', 'image_url')}),
+        ('Schedule & Location', {'fields': ('start_date', 'end_date', 'event_info')}),
+        ('Status & Ordering', {'fields': ('active', 'sort_order', 'date_entered')}),
+        ('Visibility & Expiration', {'fields': ('expiration_preset', 'expiration_date')})
+    )
     form_columns = (
         'title', 'description', 'image_url', 'start_date', 'end_date', 'event_info',
         'active', 'sort_order', 'date_entered', 'expiration_preset', 'expiration_date'
