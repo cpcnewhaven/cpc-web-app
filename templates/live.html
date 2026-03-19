@@ -76,11 +76,11 @@
                 <div class="service-details">
                     <div class="service-time">
                         <i class="fas fa-clock"></i>
-                        <span>Every Sunday at 10:30am EST</span>
+                        <span>Every Sunday at {{ site_content.get('service_worship_time', '10:30am') }} EST</span>
                     </div>
                     <div class="service-location">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>135 Whitney Ave, New Haven, CT</span>
+                        <span>{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT') }}</span>
                     </div>
                 </div>
                 
@@ -103,32 +103,32 @@
         <h2>Service Schedule</h2>
         <div class="schedule-timeline">
             <div class="schedule-item">
-                <div class="schedule-time">8:30am</div>
+                <div class="schedule-time">{{ site_content.get('service_prayer_time', '8:30am') }}</div>
                 <div class="schedule-content">
                     <h3>Prayer in the Parlor</h3>
                     <p>Join us for prayer and fellowship in the church parlor</p>
                 </div>
             </div>
-            
+
             <div class="schedule-item">
-                <div class="schedule-time">9:30am</div>
+                <div class="schedule-time">{{ site_content.get('service_school_time', '9:30am') }}</div>
                 <div class="schedule-content">
                     <h3>Sunday School & Adult Studies</h3>
                     <p>Children's Sunday School and Adult Bible Studies</p>
                 </div>
             </div>
-            
+
             <div class="schedule-item featured">
-                <div class="schedule-time">10:30am</div>
+                <div class="schedule-time">{{ site_content.get('service_worship_time', '10:30am') }}</div>
                 <div class="schedule-content">
                     <h3>Sunday Worship Service</h3>
                     <p>Our main worship service with preaching, prayer, and communion</p>
                     <span class="live-badge">LIVE STREAM</span>
                 </div>
             </div>
-            
+
             <div class="schedule-item">
-                <div class="schedule-time">12:00pm</div>
+                <div class="schedule-time">{{ site_content.get('service_fellowship_time', '12:00pm') }}</div>
                 <div class="schedule-content">
                     <h3>Fellowship Lunch</h3>
                     <p>Stay for fellowship and community after worship</p>
@@ -209,7 +209,7 @@
             </div>
             <div class="support-item">
                 <i class="fas fa-phone"></i>
-                <span>(203) 555-0123</span>
+                <span>{{ site_content.get('contact_phone', '(203) 555-0123') }}</span>
             </div>
         </div>
     </div>

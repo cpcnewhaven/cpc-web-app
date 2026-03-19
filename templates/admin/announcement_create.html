@@ -2,6 +2,7 @@
 {% import 'admin/lib.html' as lib with context %}
 
 {% block create_form %}
+<div data-no-wysiwyg="1" style="display:none"></div>
 <p style="margin-bottom:1rem;font-size:0.9rem;">
     <a href="{{ url_for('announcements') }}" target="_blank" rel="noopener" style="color:var(--cpc-blue-light, #38bdf8);text-decoration:none;"><i class="fas fa-external-link-alt"></i> View on site</a>
 </p>

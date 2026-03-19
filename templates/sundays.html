@@ -15,28 +15,28 @@
         <h2>Sunday Service Schedule</h2>
         <div class="schedule-timeline">
             <div class="schedule-item">
-                <div class="schedule-time">8:30am</div>
+                <div class="schedule-time">{{ site_content.get('service_prayer_time', '8:30am') }}</div>
                 <div class="schedule-content">
                     <h3>Prayer in the Parlor</h3>
                     <p>Join us for prayer and fellowship in the church parlor</p>
                 </div>
             </div>
             <div class="schedule-item">
-                <div class="schedule-time">9:30am</div>
+                <div class="schedule-time">{{ site_content.get('service_school_time', '9:30am') }}</div>
                 <div class="schedule-content">
                     <h3>Sunday School & Adult Studies</h3>
                     <p>Children's Sunday School and Adult Bible Studies</p>
                 </div>
             </div>
             <div class="schedule-item featured">
-                <div class="schedule-time">10:30am</div>
+                <div class="schedule-time">{{ site_content.get('service_worship_time', '10:30am') }}</div>
                 <div class="schedule-content">
                     <h3>Sunday Worship Service</h3>
                     <p>Our main worship service with preaching, prayer, and communion</p>
                 </div>
             </div>
             <div class="schedule-item">
-                <div class="schedule-time">12:00pm</div>
+                <div class="schedule-time">{{ site_content.get('service_fellowship_time', '12:00pm') }}</div>
                 <div class="schedule-content">
                     <h3>Fellowship Lunch</h3>
                     <p>Stay for fellowship and community after worship</p>
@@ -45,6 +45,18 @@
         </div>
     </div>
 </section>
+
+{% if site_content.get('bulletin_text') %}
+<section class="service-schedule-section" id="bulletin">
+    <div class="container">
+        <h2>{{ site_content.get('bulletin_title', 'This Week at CPC') }}</h2>
+        {% if site_content.get('bulletin_date') %}
+        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1.25rem;">{{ site_content.get('bulletin_date') }}</p>
+        {% endif %}
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; color: rgba(255,255,255,0.85); line-height: 1.75; white-space: pre-wrap;">{{ site_content.get('bulletin_text') }}</div>
+    </div>
+</section>
+{% endif %}
 
 <!-- What to Expect Section -->
 <section class="what-to-expect-section">

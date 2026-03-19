@@ -57,6 +57,7 @@
   }
 
   ready(function () {
+    if (document.querySelector('[data-no-wysiwyg]')) return;
     var form = document.querySelector('form');
     if (!form) return;
     if (form.closest('.admin-form-with-preview')) return;

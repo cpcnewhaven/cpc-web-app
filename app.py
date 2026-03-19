@@ -423,6 +423,40 @@ SUBPAGE_CONFIGS = {
             ('story_milestones_json', 'Story Milestones (JSON)', '[{"year":"1991","title":"The Beginning","text":"It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY."},{"year":"1991-1992","title":"The Vision Takes Shape","text":"Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale."},{"year":"1992","title":"First Worship Service","text":"On October 11, 1992 at 9:30 am, the mission stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT."},{"year":"2017","title":"Mission Anabaino","text":"As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting."}]'),
         ]
     },
+    'bulletin': {
+        'title': 'Weekly Bulletin',
+        'url': '/sundays',
+        'icon': 'fas fa-newspaper',
+        'color': '#d97706',
+        'keys': [
+            ('bulletin_title', 'Bulletin Heading', 'This Week at CPC'),
+            ('bulletin_date', 'Bulletin Date (e.g. March 19, 2026)', ''),
+            ('bulletin_text', 'Bulletin Content', ''),
+        ]
+    },
+    'service_times': {
+        'title': 'Service Times',
+        'url': '/sundays',
+        'icon': 'fas fa-clock',
+        'color': '#0071e3',
+        'keys': [
+            ('service_prayer_time', 'Prayer Time', '8:30am'),
+            ('service_school_time', 'Sunday School Time', '9:30am'),
+            ('service_worship_time', 'Worship Service Time', '10:30am'),
+            ('service_fellowship_time', 'Fellowship Lunch Time', '12:00pm'),
+        ]
+    },
+    'contact': {
+        'title': 'Contact Info',
+        'url': '/contact',
+        'icon': 'fas fa-address-card',
+        'color': '#059669',
+        'keys': [
+            ('contact_address', 'Address', '135 Whitney Ave, New Haven, CT 06510'),
+            ('contact_phone', 'Phone', '(203) 555-0123'),
+            ('contact_email', 'General Email', 'admin@cpcnewhaven.org'),
+        ]
+    },
     'community': {
         'title': 'Community Page',
         'url': '/community',
@@ -506,7 +540,8 @@ def podcasts():
 
 @app.route('/events')
 def events():
-    return render_template('events.html')
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('events.html', site_content=site_content)
 
 @app.route('/announcements')
 def announcements():
@@ -525,7 +560,8 @@ def community():
 
 @app.route('/sundays')
 def sundays():
-    return render_template('sundays.html')
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('sundays.html', site_content=site_content)
 
 @app.route('/plan-a-vist')
 def plan_a_vist():
@@ -533,7 +569,8 @@ def plan_a_vist():
 
 @app.route('/give')
 def give():
-    return render_template('give.html')
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('give.html', site_content=site_content)
 
 # Liquid glass demo moved to possiblyDELETE folder
 # @app.route('/liquid-glass-demo')
@@ -542,7 +579,8 @@ def give():
 
 @app.route('/live')
 def live():
-    return render_template('live.html')
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('live.html', site_content=site_content)
 
 @app.route('/resources')
 def resources():
