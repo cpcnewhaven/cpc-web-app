@@ -802,84 +802,17 @@
                     return;
                 }
 
-                // Otherwise show global sync peace of mind
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Deployed!';
+                // No form on this page — just show a brief visual confirmation.
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Up to date';
                 saveBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
-
-                // Show modal/toast with comfort details
-                showSaveComfortModal();
-
                 setTimeout(function () {
                     saveBtn.innerHTML = origHtml;
                     saveBtn.style.opacity = '1';
                     saveBtn.style.cursor = 'pointer';
                     saveBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                }, 3000);
+                }, 2000);
             }, 800);
         });
-
-        function showSaveComfortModal(onClose) {
-            var now = new Date();
-            var timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            var dateString = now.toLocaleDateString();
-
-            // Try to get the entity name from the form title or a specific input
-            var entityName = "Changes";
-            var titleInput = document.querySelector('input[name="title"], input[name="name"]');
-            if (titleInput && titleInput.value) {
-                entityName = '"' + titleInput.value + '"';
-            } else {
-                var pageHeader = document.querySelector('.admin-dashboard-main h1, .admin-dashboard-main h2');
-                if (pageHeader) {
-                    entityName = pageHeader.textContent.trim().replace(/^New\s+/, '').replace(/^Edit\s+/, '');
-                }
-            }
-
-            var modalHtml = `
-            <div id="saveComfortModal" style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(0, 20, 40, 0.6); backdrop-filter: blur(4px);">
-                <div style="background: var(--glass-white, #ffffff); color: #333; padding: 2.5rem; border-radius: 16px; max-width: 480px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.3); transform: translateY(20px); opacity: 0; transition: all 0.3s ease-out; text-align: center;">
-                    <div style="width: 70px; height: 70px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <h3 style="margin: 0 0 1rem; color: #111827; font-size: 1.6rem; font-weight: 700;">Content Deployed Securely</h3>
-                    <p style="color: #4b5563; font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.5;">
-                        Your work on <strong>${entityName}</strong> has been successfully synced and safely stored.
-                    </p>
-                    <div style="background: #f3f4f6; border-radius: 10px; padding: 1.25rem; text-align: left; font-size: 0.9rem; color: #4b5563; margin-bottom: 2rem;">
-                        <div style="margin-bottom: 0.75rem; display: flex; gap: 0.5rem;"><i class="fas fa-clock" style="color: #10b981; margin-top: 3px; min-width: 16px;"></i> <div><strong>Timestamp:</strong> ${dateString} ${timeString}</div></div>
-                        <div style="margin-bottom: 0.75rem; display: flex; gap: 0.5rem;"><i class="fas fa-database" style="color: #0ea5e9; margin-top: 3px; min-width: 16px;"></i> <div><strong>Status:</strong> Committed to Primary Database</div></div>
-                        <div style="display: flex; gap: 0.5rem;"><i class="fas fa-globe" style="color: #8b5cf6; margin-top: 3px; min-width: 16px;"></i> <div><strong>Visibility:</strong> Updates live on public site</div></div>
-                    </div>
-                    <button class="close-comfort-modal" style="background: #10b981; color: white; border: none; padding: 0.85rem 2.5rem; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 6px rgba(16,185,129,0.25);">Continue</button>
-                </div>
-            </div>
-        `;
-
-            var wrap = document.createElement('div');
-            wrap.innerHTML = modalHtml;
-            document.body.appendChild(wrap.firstElementChild);
-
-            var modal = document.getElementById('saveComfortModal');
-            var modalInner = modal.firstElementChild;
-
-            // trigger animation
-            setTimeout(function () {
-                modalInner.style.transform = 'translateY(0)';
-                modalInner.style.opacity = '1';
-            }, 10);
-
-            var closeModal = function () {
-                modalInner.style.transform = 'translateY(20px)';
-                modalInner.style.opacity = '0';
-                setTimeout(function () {
-                    modal.remove();
-                    if (onClose) onClose();
-                }, 300);
-            };
-
-            modal.querySelector('.close-comfort-modal').addEventListener('click', closeModal);
-        }
-        window.showSaveComfortModal = showSaveComfortModal;
     })();
 </script>
 {% endblock %}
