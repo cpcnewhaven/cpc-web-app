@@ -2561,6 +2561,13 @@ class AnnouncementView(AuthenticatedModelView):
     create_template = 'admin/announcement_create.html'
     edit_template = 'admin/announcement_create.html'
 
+    form_fieldsets = (
+        ('Event Dates', {'fields': ('event_start_time', 'event_end_time')}),
+        ('Expiration details', {'fields': ('expiration_preset', 'expiration_date')}),
+        ('Content', {'fields': ('title', 'description', 'type', 'category', 'tag', 'speaker')}),
+        ('Styling and Placement', {'fields': ('active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')}),
+        ('System (Auto-managed)', {'fields': ('date_entered',)})
+    )
     form_columns = ('event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'date_entered', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
@@ -3483,6 +3490,10 @@ class OngoingEventView(AuthenticatedModelView):
     form_excluded_columns = ['id']
     create_template = 'admin/event_create.html'
 
+    form_fieldsets = (
+        ('Event Basics', {'fields': ('title', 'description', 'type', 'category', 'active')}),
+        ('Dates & Expiration', {'fields': ('date_entered', 'expiration_preset', 'expiration_date')})
+    )
     form_columns = ('date_entered', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'active')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[DataRequired(), Length(max=2000)]),
