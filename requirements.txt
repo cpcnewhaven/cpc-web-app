@@ -15,3 +15,4 @@ pytz==2025.2
 schedule==1.2.0
 ics==0.8.0.dev0
 rich==13.7.0
+anthropic>=0.40.0

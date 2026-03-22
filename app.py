@@ -2797,6 +2797,54 @@ class AnnouncementView(AuthenticatedModelView):
         except Exception:
             pass
 
+    @expose('/create/', methods=['GET', 'POST'])
+    def create_view(self):
+        if not is_authenticated():
+            return redirect(url_for('admin_login'))
+        speakers = _admin_speaker_choices() or [('', '— No admins —')]
+        errors = []
+        form_data = {}
+        if request.method == 'POST':
+            form_data = request.form.to_dict()
+            title = form_data.get('title', '').strip()
+            description = form_data.get('description', '').strip()
+            if not title:
+                errors.append('Title is required.')
+            if not description:
+                errors.append('Description is required.')
+            if not errors:
+                ann = Announcement(
+                    id=next_global_id(),
+                    title=title,
+                    description=description,
+                    type=form_data.get('type', 'announcement'),
+                    category=form_data.get('category', 'general'),
+                    tag=form_data.get('tag', '') or None,
+                    speaker=form_data.get('speaker', '') or None,
+                    event_start_time=form_data.get('event_start_time', '') or None,
+                    event_end_time=form_data.get('event_end_time', '') or None,
+                    active='_publish' in request.form,
+                    superfeatured=bool(form_data.get('superfeatured')),
+                    show_in_banner=bool(form_data.get('show_in_banner')),
+                    archived=False,
+                    date_entered=datetime.utcnow(),
+                )
+                db.session.add(ann)
+                db.session.commit()
+                _log_audit('created', ann)
+                try:
+                    cache.clear()
+                except Exception:
+                    pass
+                flash(f'"{title}" {"published" if ann.active else "saved as draft"}.', 'success')
+                return redirect(url_for('announcement.index_view'))
+        return self.render('admin/announcement_direct_create.html',
+                           form_data=form_data,
+                           errors=errors,
+                           type_choices=ANNOUNCEMENT_TYPE_CHOICES,
+                           category_choices=ANNOUNCEMENT_CATEGORY_CHOICES,
+                           speakers=speakers)
+
     @expose('set-status/', methods=['GET'])
     def set_status(self):
         if not is_authenticated():
