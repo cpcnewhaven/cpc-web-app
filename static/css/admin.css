@@ -122,6 +122,7 @@ body.admin-body {
   border: none;
   background: rgba(0, 50, 120, 0.35);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .admin-body .navbar-header {
@@ -160,12 +161,49 @@ body.admin-body {
   border-radius: 1px;
 }
 
+@media (max-width: 1024px) {
+  .admin-body .navbar-nav {
+    flex-wrap: wrap;
+  }
+
+  .admin-body .navbar-nav > li > a {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .admin-body .navbar-right {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 8px;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-body .navbar-toggle { display: block; }
   .admin-body .navbar-collapse { display: none; }
   .admin-body .navbar-collapse.in { display: block; }
-  .admin-body .navbar-nav { margin: 0; }
-  .admin-body .navbar-nav > li { display: block; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .admin-body .navbar-nav { margin: 0; flex-direction: column; }
+  .admin-body .navbar-nav > li { display: block; border-bottom: 1px solid rgba(255,255,255,0.1); width: 100%; }
+  .admin-body .navbar-nav > li > a { padding: 12px 15px; }
+
+  .admin-body .navbar-right {
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .admin-body .navbar-right > li {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .admin-body .navbar-right > li > a {
+    padding: 12px 15px;
+  }
 }
 
 .admin-body .navbar-nav {
@@ -304,7 +342,9 @@ body.admin-body {
 .admin-body .page-header {
   margin: 0 0 20px;
   padding: 15px 20px;
-  background: var(--admin-panel);
+  background: rgba(19, 47, 76, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--admin-border);
   border-radius: var(--radius);
 }
@@ -587,7 +627,9 @@ body.admin-body {
 .admin-body .table-responsive {
   overflow-x: auto;
   margin-bottom: 1.5rem;
-  background: var(--admin-panel);
+  background: rgba(19, 47, 76, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--admin-border);
   border-radius: var(--radius);
 }
@@ -709,7 +751,9 @@ body.admin-body {
 .admin-body .well,
 .admin-body .card {
   margin-bottom: 1.5rem;
-  background: var(--admin-panel);
+  background: rgba(19, 47, 76, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--admin-border);
   border-radius: var(--radius);
 }
@@ -1112,22 +1156,43 @@ body.admin-body {
     border-radius: 0;
     border-left: none;
     border-right: none;
+    border-top: 1px solid var(--admin-border);
+    background: rgba(19, 47, 76, 0.5);
   }
 
-  /* Tables: tighter cell padding */
+  .admin-body .dropdown-menu li {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-body .dropdown-menu a {
+    padding: 10px 15px;
+  }
+
+  /* Tables: tighter cell padding and responsive text */
+  .admin-body .table {
+    font-size: 13px;
+  }
+
   .admin-body .table th,
   .admin-body .table td {
     padding: 10px 12px;
   }
 
+  .admin-body .table th {
+    font-size: 11px;
+  }
+
   .admin-body .table-responsive {
     -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
   }
 
   /* Forms: full-width inputs, tighter padding */
   .admin-body .form-inline .form-group {
     display: block;
     margin-right: 0;
+    margin-bottom: 10px;
   }
 
   .admin-body .form-inline .form-control {
@@ -1138,7 +1203,67 @@ body.admin-body {
   /* Container: tighter padding */
   .admin-body .container,
   .admin-body .container-fluid {
-    padding: 0 10px;
+    padding: 0 12px;
+  }
+
+  /* Page header: responsive sizing */
+  .admin-body .page-header {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+  }
+
+  .admin-body .page-header h1 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens */
+  .admin-body .navbar {
+    min-height: 45px;
+    margin-bottom: 12px;
+  }
+
+  .admin-body .navbar-header {
+    width: 100%;
+  }
+
+  .admin-body .navbar-brand {
+    padding: 12px;
+    font-size: 16px;
+    flex: 1;
+  }
+
+  .admin-body .navbar-toggle {
+    margin: 6px;
+  }
+
+  .admin-body .nav-link {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .admin-body .table {
+    font-size: 12px;
+  }
+
+  .admin-body .table th,
+  .admin-body .table td {
+    padding: 8px 10px;
+  }
+
+  .admin-body .container,
+  .admin-body .container-fluid {
+    padding: 0 8px;
+  }
+
+  /* Form controls: better mobile sizing */
+  .admin-body input[type="text"],
+  .admin-body input[type="email"],
+  .admin-body input[type="password"],
+  .admin-body textarea,
+  .admin-body select {
+    font-size: 16px;
   }
 }
 
