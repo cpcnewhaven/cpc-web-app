@@ -633,53 +633,82 @@ def contact():
 @app.route('/submit-announcement', methods=['GET', 'POST'])
 def submit_announcement():
     """Public form for submitting announcements to drafts."""
+    # Public-facing type options (subset of admin choices — no internal alert types)
+    public_type_choices = [
+        ('announcement', 'Announcement'),
+        ('event', 'Event'),
+        ('ongoing', 'Ongoing / Recurring'),
+        ('highlight', 'Highlight'),
+    ]
+    public_category_choices = [
+        ('general', 'General'),
+        ('worship', 'Worship'),
+        ('education', 'Education'),
+        ('fellowship', 'Fellowship'),
+        ('missions', 'Missions'),
+        ('youth', 'Youth'),
+        ('children', 'Children'),
+    ]
+
     if request.method == 'POST':
-        title = request.form.get('title')
-        description = request.form.get('description')
-        event_start = request.form.get('event_start_time')
-        event_end = request.form.get('event_end_time')
-        name = request.form.get('name')
-        email = request.form.get('email')
-        
+        title = request.form.get('title', '').strip()
+        description = request.form.get('description', '').strip()
+        event_start = request.form.get('event_start_time', '').strip() or None
+        event_end = request.form.get('event_end_time', '').strip() or None
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        ann_type = request.form.get('type', 'announcement')
+        category = request.form.get('category', 'general')
+        tag = request.form.get('tag', '').strip() or None
+
+        # Validate type/category against allowed values
+        allowed_types = [v for v, _ in public_type_choices]
+        allowed_cats = [v for v, _ in public_category_choices]
+        if ann_type not in allowed_types:
+            ann_type = 'announcement'
+        if category not in allowed_cats:
+            category = 'general'
+
         if not title or not description:
             flash('Title and description are required.', 'error')
-            return render_template('submit_announcement.html')
-            
-        # Optional bot protection honeypot
+            return render_template('submit_announcement.html',
+                                   type_choices=public_type_choices,
+                                   category_choices=public_category_choices,
+                                   form_data=request.form)
+
+        # Honeypot bot protection
         if request.form.get('website'):
             return redirect(url_for('index'))
-            
-        full_desc = f"{description}\n\n[Submitted by: {name} | {email}]" if name else description
-        
-        # Use next_global_id logic manually to avoid circular import issues internally
-        from models import Announcement, GlobalIDCounter
-        counter = GlobalIDCounter.query.get(1)
-        if not counter:
-            counter = GlobalIDCounter(id=1, next_id=1)
-            db.session.add(counter)
-            db.session.flush()
-        new_id = counter.next_id
-        counter.next_id += 1
-        
+
+        # Embed submitter info in description so admins can see who sent it
+        submitter_line = f"\n\n— Submitted by: {name} ({email})" if name else ""
+        full_desc = description + submitter_line
+
         ann = Announcement(
-            id=new_id,
+            id=next_global_id(),
             title=title,
             description=full_desc,
             event_start_time=event_start,
             event_end_time=event_end,
+            type=ann_type,
+            category=category,
+            tag=tag,
+            speaker=name or None,   # store submitter name in speaker field so it shows in admin list
             active=False,
             archived=False,
             date_entered=datetime.utcnow(),
-            type='announcement',
-            category='general'
+            revision=1,
         )
         db.session.add(ann)
         db.session.commit()
-        
+
         flash('Thank you! Your announcement has been submitted for review.', 'success')
         return redirect(url_for('submit_announcement'))
-        
-    return render_template('submit_announcement.html')
+
+    return render_template('submit_announcement.html',
+                           type_choices=public_type_choices,
+                           category_choices=public_category_choices,
+                           form_data={})
 
 @app.route('/teaching-series')
 def teaching_series():

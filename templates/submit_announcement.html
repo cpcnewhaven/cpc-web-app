@@ -14,11 +14,15 @@
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
     }
     .submit-card h1 { color: #fff; font-weight: 700; margin-bottom: 0.5rem; }
-    .submit-card p { color: rgba(255,255,255,0.7); margin-bottom: 2rem; }
+    .submit-card > p { color: rgba(255,255,255,0.7); margin-bottom: 2rem; }
     .form-group { margin-bottom: 1.5rem; }
-    .form-label { display: block; color: rgba(255,255,255,0.9); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; }
+    .form-label {
+        display: block; color: rgba(255,255,255,0.9); font-weight: 600;
+        margin-bottom: 0.5rem; font-size: 0.95rem;
+    }
+    .form-label .optional { font-weight: 400; color: rgba(255,255,255,0.45); font-size: 0.875rem; }
     .form-control {
-        width: 100%;
+        width: 100%; box-sizing: border-box;
         background: rgba(0, 0, 0, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.15);
         color: #fff;
@@ -30,26 +34,33 @@
     }
     .form-control:focus { outline: none; border-color: var(--cpc-blue-light); background: rgba(0, 0, 0, 0.3); }
     .form-control::placeholder { color: rgba(255,255,255,0.3); }
-    textarea.form-control { resize: vertical; min-height: 120px; }
-    .submit-btn {
-        background: var(--cpc-blue);
-        color: white;
+    select.form-control option { background: #1a1a2e; color: #fff; }
+    textarea.form-control { resize: vertical; min-height: 130px; }
+    .form-row { display: grid; gap: 1rem; }
+    .form-row-2 { grid-template-columns: 1fr 1fr; }
+    .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 600px) {
+        .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+    }
+    .fieldset-divider {
         border: none;
-        padding: 0.8rem 2rem;
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        width: 100%;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        margin: 2rem 0 1.75rem;
+    }
+    .section-label {
+        font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+        color: rgba(255,255,255,0.4); margin-bottom: 1.25rem;
+    }
+    .submit-btn {
+        background: var(--cpc-blue); color: white; border: none;
+        padding: 0.85rem 2rem; border-radius: var(--radius-md);
+        font-weight: 600; font-size: 1rem; cursor: pointer; width: 100%;
         transition: all 0.3s;
     }
     .submit-btn:hover { background: #0050a0; box-shadow: 0 4px 12px rgba(0,102,204,0.3); }
-    .flash-msg {
-        padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 500;
-    }
-    .flash-success { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-    .flash-error { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-    /* Honeypot hidden */
+    .flash-msg { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 500; }
+    .flash-success { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .flash-error   { background: rgba(239,68,68,0.2);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
     .hp-field { display: none !important; }
 </style>
 {% endblock %}
@@ -59,8 +70,8 @@
     <div class="container">
         <div class="submit-card">
             <h1>Submit an Announcement</h1>
-            <p>Have news or an upcoming event? Submit it here and it will be sent to the pastors for review and publishing.</p>
-            
+            <p>Have news or an upcoming event? Submit it here and it will be sent to the pastors for review before publishing on the site.</p>
+
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
@@ -71,39 +82,96 @@
 
             <form method="POST" action="{{ url_for('submit_announcement') }}">
                 <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
-                
-                <div class="form-group">
-                    <label class="form-label">Your Name</label>
-                    <input type="text" name="name" class="form-control" placeholder="e.g. John Doe" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
-                </div>
 
-                <div class="form-group" style="margin-top: 2.5rem;">
-                    <label class="form-label">Announcement Title</label>
-                    <input type="text" name="title" class="form-control" placeholder="A short, catchy title" required>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <!-- Who's submitting -->
+                <p class="section-label">About You</p>
+                <div class="form-row form-row-2">
                     <div class="form-group">
-                        <label class="form-label">Event Start Time <span style="font-weight:400;color:rgba(255,255,255,0.5);">(Optional)</span></label>
-                        <input type="text" name="event_start_time" class="form-control" placeholder="e.g. Sunday 10:30 AM">
+                        <label class="form-label">Your Name <span class="optional">(optional)</span></label>
+                        <input type="text" name="name" class="form-control"
+                               value="{{ form_data.get('name', '') }}"
+                               placeholder="e.g. John Doe">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Event End Time <span style="font-weight:400;color:rgba(255,255,255,0.5);">(Optional)</span></label>
-                        <input type="text" name="event_end_time" class="form-control" placeholder="e.g. 12:00 PM">
+                        <label class="form-label">Email Address <span class="optional">(optional)</span></label>
+                        <input type="email" name="email" class="form-control"
+                               value="{{ form_data.get('email', '') }}"
+                               placeholder="john@example.com">
                     </div>
                 </div>
 
+                <hr class="fieldset-divider">
+
+                <!-- Announcement details -->
+                <p class="section-label">Announcement Details</p>
+
                 <div class="form-group">
-                    <label class="form-label">Description / Details</label>
-                    <textarea name="description" class="form-control" placeholder="Write exactly what you'd like the announcement to say..." required></textarea>
+                    <label class="form-label">Title <span style="color:#f87171;">*</span></label>
+                    <input type="text" name="title" class="form-control"
+                           value="{{ form_data.get('title', '') }}"
+                           placeholder="A short, clear title" required>
                 </div>
 
-                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i> Submit for Review</button>
+                <div class="form-row form-row-2" style="margin-bottom: 1.5rem;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Type</label>
+                        <select name="type" class="form-control">
+                            {% for val, label in type_choices %}
+                                <option value="{{ val }}"
+                                    {% if form_data.get('type', 'announcement') == val %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-control">
+                            {% for val, label in category_choices %}
+                                <option value="{{ val }}"
+                                    {% if form_data.get('category', 'general') == val %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tag <span class="optional">(optional — helps with organization)</span></label>
+                    <input type="text" name="tag" class="form-control"
+                           value="{{ form_data.get('tag', '') }}"
+                           placeholder="e.g. summer, missions, women">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description / Details <span style="color:#f87171;">*</span></label>
+                    <textarea name="description" class="form-control"
+                              placeholder="Write exactly what you'd like the announcement to say..." required>{{ form_data.get('description', '') }}</textarea>
+                </div>
+
+                <hr class="fieldset-divider">
+
+                <!-- Event timing (optional) -->
+                <p class="section-label">Event Timing <span class="optional" style="text-transform:none; letter-spacing:0;">(leave blank if not an event)</span></p>
+                <div class="form-row form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Start Time <span class="optional">(optional)</span></label>
+                        <input type="text" name="event_start_time" class="form-control"
+                               value="{{ form_data.get('event_start_time', '') }}"
+                               placeholder="e.g. Sunday 10:30 AM">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Time <span class="optional">(optional)</span></label>
+                        <input type="text" name="event_end_time" class="form-control"
+                               value="{{ form_data.get('event_end_time', '') }}"
+                               placeholder="e.g. 12:00 PM">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i> Submit for Review
+                </button>
             </form>
         </div>
     </div>
