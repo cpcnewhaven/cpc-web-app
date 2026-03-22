@@ -1,0 +1,51 @@
+{% macro menu() -%}
+  {# Render top-level items (no category) first #}
+  {% for item in admin_view.admin._views %}
+    {% if not item.category %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ item.url }}" title="{{ item.name }}">{{ item.name }}</a>
+      </li>
+    {% endif %}
+  {% endfor %}
+
+  {# Then render the "More" dropdown with all categorized items #}
+  {% set more_items = admin_view.admin._views | selectattr('category') | list %}
+  {% if more_items %}
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        {% set last_category = none %}
+        {% for item in more_items %}
+          {% if last_category and last_category != item.category %}
+            <li class="divider"></li>
+          {% endif %}
+          {% if not last_category or last_category != item.category %}
+            <li class="dropdown-header">{{ item.category }}</li>
+          {% endif %}
+          <li><a class="dropdown-item" href="{{ item.url }}" title="{{ item.name }}">{{ item.name }}</a></li>
+          {% set last_category = item.category %}
+        {% endfor %}
+      </ul>
+    </li>
+  {% endif %}
+{%- endmacro %}
+
+{% macro menu_links() -%}
+  {# Right-side menu items (logout, etc) #}
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('admin_logout') }}">Logout</a>
+  </li>
+{%- endmacro %}
+
+{% macro messages() -%}
+  {# Flash messages #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+{%- endmacro %}
