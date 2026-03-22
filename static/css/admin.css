@@ -1102,6 +1102,107 @@ body.admin-body {
 }
 
 /* ---------------------------------------------------------------------------
+   Smart Scrollbar
+   --------------------------------------------------------------------------- */
+
+/* Hide native scrollbar on admin pages — our custom one takes over */
+.admin-body {
+  scrollbar-width: none; /* Firefox */
+}
+.admin-body::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+#admin-scroll-rail {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  z-index: 9500;
+  background: rgba(13, 33, 55, 0.55);
+  transition: width 0.18s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+#admin-scroll-rail:hover,
+#admin-scroll-rail.is-dragging {
+  width: 14px;
+}
+
+#admin-scroll-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  min-height: 24px;
+  border-radius: 4px;
+  background: rgba(116, 192, 252, 0.45);
+  transition: background 0.15s, box-shadow 0.15s;
+  cursor: grab;
+}
+
+#admin-scroll-rail:hover #admin-scroll-thumb,
+#admin-scroll-rail.is-dragging #admin-scroll-thumb {
+  background: rgba(116, 192, 252, 0.85);
+  box-shadow: 0 0 6px rgba(116, 192, 252, 0.5);
+}
+
+#admin-scroll-rail.is-dragging #admin-scroll-thumb {
+  cursor: grabbing;
+}
+
+/* Tick marks — visual density guide */
+#admin-scroll-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.admin-scroll-tick {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(116, 192, 252, 0.18);
+}
+
+/* Floating label (row count / percentage) */
+#admin-scroll-label {
+  position: fixed;
+  right: 20px;
+  padding: 5px 10px;
+  background: rgba(0, 30, 80, 0.97);
+  border: 1px solid #1e4976;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #74c0fc;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.12s;
+  z-index: 9501;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+}
+
+#admin-scroll-label.is-visible {
+  opacity: 1;
+}
+
+#admin-scroll-label .scroll-label-main {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+#admin-scroll-label .scroll-label-sub {
+  font-size: 10px;
+  color: rgba(116, 192, 252, 0.65);
+  margin-top: 1px;
+}
+
+/* ---------------------------------------------------------------------------
    Announcement Table Highlighting
    --------------------------------------------------------------------------- */
 .admin-body .table tbody tr:has(.announcement-status-wrap .admin-status-banner) td {

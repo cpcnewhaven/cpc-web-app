@@ -1,0 +1,143 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div style="max-width: 760px; margin: 2rem auto; padding: 0 1rem;">
+
+  <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+    <a href="{{ url_for('announcement.index_view') }}" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem;">
+      ← Back to Announcements
+    </a>
+  </div>
+
+  <h2 style="color:#fff; font-weight:700; margin-bottom:0.25rem;">New Announcement</h2>
+  <p style="color:rgba(255,255,255,0.5); font-size:0.9rem; margin-bottom:2rem;">
+    Fill in the details below. Use <strong>Save as Draft</strong> to review before publishing.
+  </p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div style="padding:0.85rem 1rem; border-radius:8px; margin-bottom:1rem; font-size:0.9rem;
+          {% if category == 'success' %}background:rgba(34,197,94,0.15); color:#4ade80; border:1px solid rgba(34,197,94,0.3);
+          {% else %}background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3);{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if errors %}
+    <div style="padding:0.85rem 1rem; border-radius:8px; margin-bottom:1.5rem; background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3);">
+      {% for e in errors %}<div>{{ e }}</div>{% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('announcement.create_view') }}">
+
+    <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+      <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Content</legend>
+
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Title <span style="color:#f87171;">*</span></label>
+        <input type="text" name="title" value="{{ form_data.get('title', '') }}"
+          style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:1rem; box-sizing:border-box;"
+          placeholder="Short, descriptive title" required>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Description <span style="color:#f87171;">*</span></label>
+        <textarea name="description" rows="6"
+          style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:1rem; resize:vertical; box-sizing:border-box;"
+          placeholder="Full announcement text...">{{ form_data.get('description', '') }}</textarea>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+        <div>
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Type</label>
+          <select name="type" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+            {% for val, label in type_choices %}
+              <option value="{{ val }}" {% if form_data.get('type', 'announcement') == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Category</label>
+          <select name="category" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+            {% for val, label in category_choices %}
+              <option value="{{ val }}" {% if form_data.get('category', 'general') == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <div>
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Tag</label>
+          <input type="text" name="tag" value="{{ form_data.get('tag', '') }}"
+            style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
+            placeholder="e.g. summer, missions">
+        </div>
+        <div>
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Speaker</label>
+          <select name="speaker" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+            <option value="">— None —</option>
+            {% for val, label in speakers %}
+              <option value="{{ val }}" {% if form_data.get('speaker') == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+      <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Event Dates</legend>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <div>
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Start Time</label>
+          <input type="text" name="event_start_time" value="{{ form_data.get('event_start_time', '') }}"
+            style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
+            placeholder="e.g. Sunday 10:30 AM">
+        </div>
+        <div>
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">End Time</label>
+          <input type="text" name="event_end_time" value="{{ form_data.get('event_end_time', '') }}"
+            style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
+            placeholder="e.g. 12:00 PM">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:2rem;">
+      <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Placement</legend>
+      <div style="display:flex; gap:2rem; flex-wrap:wrap;">
+        <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
+          <input type="checkbox" name="superfeatured" value="1" {% if form_data.get('superfeatured') %}checked{% endif %}
+            style="width:16px; height:16px; cursor:pointer;">
+          Super Featured
+        </label>
+        <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
+          <input type="checkbox" name="show_in_banner" value="1" {% if form_data.get('show_in_banner') %}checked{% endif %}
+            style="width:16px; height:16px; cursor:pointer;">
+          Show in Top Bar Banner
+        </label>
+      </div>
+    </fieldset>
+
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button type="submit" name="_publish" value="1"
+        style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:0.75rem 1.75rem; border-radius:8px; font-weight:700; font-size:1rem; cursor:pointer;">
+        Save and Publish
+      </button>
+      <button type="submit"
+        style="background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.85); border:1px solid rgba(255,255,255,0.15); padding:0.75rem 1.75rem; border-radius:8px; font-weight:600; font-size:1rem; cursor:pointer;">
+        Save as Draft
+      </button>
+      <a href="{{ url_for('announcement.index_view') }}"
+        style="padding:0.75rem 1.25rem; border-radius:8px; color:rgba(255,255,255,0.45); text-decoration:none; font-size:0.95rem; display:inline-flex; align-items:center;">
+        Cancel
+      </a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
