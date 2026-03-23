@@ -2671,7 +2671,7 @@ def _format_announcement_status(view, context, model, name):
 from flask_admin.form import rules
 
 class AnnouncementView(AuthenticatedModelView):
-    column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'revision', 'date_entered', 'updated_at', 'updated_by', 'event_start_time', 'event_end_time', 'expires_at')
+    column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'revision', 'date_entered', 'updated_at', 'updated_by', 'event_date', 'event_start_time', 'event_end_time', 'expires_at')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category', 'speaker')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'speaker')
