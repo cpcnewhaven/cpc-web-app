@@ -117,8 +117,7 @@
         <h1><i class="fas fa-layer-group"></i> All content</h1>
         <p>Events, announcements, and banners in one list, organized by month.</p>
         <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem;">
-            <a href="{{ url_for('announcement.create_view') }}" class="content-feed-edit" style="margin-right:1rem;"><i class="fas fa-plus"></i> New announcement</a>
-            <a href="{{ url_for('event.create_view') }}" class="content-feed-edit"><i class="fas fa-plus"></i> New event</a>
+            <a href="{{ url_for('announcement.create_view') }}" class="content-feed-edit"><i class="fas fa-plus"></i> New announcement (or event/banner)</a>
         </p>
     </div>
 
@@ -156,7 +155,7 @@
         <div class="content-feed-empty">
             <i class="fas fa-inbox"></i>
             <p style="font-size:1.1rem;margin-bottom:0.5rem;color:rgba(255,255,255,0.65);">No content yet</p>
-            <p style="font-size:0.9rem;"> <a href="{{ url_for('announcement.create_view') }}" class="content-feed-edit">New announcement</a> · <a href="{{ url_for('event.create_view') }}" class="content-feed-edit">New event</a> · <a href="{{ url_for('admin_banner_alert_new') }}" class="content-feed-edit">New banner</a>. Changes show here and in Activity History.</p>
+            <p style="font-size:0.9rem;"> <a href="{{ url_for('announcement.create_view') }}" class="content-feed-edit">New announcement</a> (includes events and banners). Changes show here and in Activity History.</p>
         </div>
     {% endif %}
 </div>
