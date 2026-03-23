@@ -6,6 +6,11 @@
 <p style="margin-bottom:1rem;font-size:0.9rem;">
     <a href="{{ url_for('announcements') }}" target="_blank" rel="noopener" style="color:var(--cpc-blue-light, #38bdf8);text-decoration:none;"><i class="fas fa-external-link-alt"></i> View on site</a>
 </p>
+<div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+    <p style="color: rgba(255,255,255,0.85); margin: 0; font-size: 0.95rem;">
+        <strong style="color: var(--text-white);">📢 New Announcement</strong> — Create an announcement, event, banner alert, or other content in one place. Just select what you're making below.
+    </p>
+</div>
 {% macro announcement_extra_buttons() %}
 <input name="_save_and_publish" type="submit" class="btn btn-primary" value="Save and Publish"
     style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 600; margin-right: 0.5rem;" />
@@ -24,6 +29,33 @@ document.addEventListener('DOMContentLoaded', function() {
     if (row) {
         var saveBtn = row.querySelector('input[type=submit]:not([name])');
         if (saveBtn) saveBtn.value = 'Save as a draft';
+    }
+
+    // Show/hide fields based on type selection
+    var typeField = form.querySelector('[name="type"]');
+    if (typeField) {
+        function updateVisibility() {
+            var type = typeField.value || '';
+            var eventFields = form.querySelectorAll('[name="event_start_time"], [name="event_end_time"]');
+            var bannerFields = form.querySelectorAll('[name="banner_type"]');
+
+            // Show event fields for event/ongoing types
+            var showEventFields = type === 'event' || type === 'ongoing';
+            eventFields.forEach(function(f) {
+                var container = f.closest('.form-group');
+                if (container) container.style.display = showEventFields ? '' : 'none';
+            });
+
+            // Show banner type for announcement/event types
+            var showBannerFields = type === 'announcement' || type === 'event' || type === 'ongoing';
+            bannerFields.forEach(function(f) {
+                var container = f.closest('.form-group');
+                if (container) container.style.display = showBannerFields ? '' : 'none';
+            });
+        }
+
+        typeField.addEventListener('change', updateVisibility);
+        updateVisibility();
     }
 });
 </script>

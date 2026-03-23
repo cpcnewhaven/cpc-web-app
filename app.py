@@ -2683,13 +2683,14 @@ class AnnouncementView(AuthenticatedModelView):
     edit_template = 'admin/announcement_create.html'
 
     form_rules = [
-        rules.FieldSet(('event_start_time', 'event_end_time'), 'Event Dates'),
-        rules.FieldSet(('expiration_preset', 'expiration_date'), 'Expiration details'),
-        rules.FieldSet(('title', 'description', 'type', 'category', 'tag', 'speaker'), 'Content'),
+        rules.FieldSet(('type',), 'What kind of announcement?'),
+        rules.FieldSet(('title', 'description', 'category', 'tag', 'speaker'), 'Content'),
+        rules.FieldSet(('event_start_time', 'event_end_time'), 'Event Details (if applicable)'),
         rules.FieldSet(('active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type'), 'Styling and Placement'),
+        rules.FieldSet(('expiration_preset', 'expiration_date'), 'Expiration'),
         rules.FieldSet(('date_entered',), 'System (Auto-managed)')
     ]
-    form_columns = ('event_start_time', 'event_end_time', 'expiration_preset', 'expiration_date', 'date_entered', 'title', 'description', 'type', 'category', 'tag', 'speaker', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type')
+    form_columns = ('type', 'title', 'description', 'category', 'tag', 'speaker', 'event_start_time', 'event_end_time', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date', 'date_entered')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[Optional(), Length(max=2000)]),
         'banner_type': SelectField(
