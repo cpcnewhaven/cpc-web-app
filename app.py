@@ -4547,8 +4547,10 @@ with app.app_context():
     admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcasts'))
     admin.add_view(PaperView(Paper, db.session, name='Papers & Bulletins', category='More'))
     admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='More'))
+    admin.add_view(BannerAlertView(name='Banner Alerts', endpoint='banner_alerts', category='More'))
     admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More'))
     admin.add_view(BackupGalleryView(name='Backup all media', endpoint='backup_gallery', category='More'))
+    admin.add_view(PodcastThumbnailsView(name='Podcast Thumbnails', endpoint='podcast_thumbnails', category='More'))
     admin.add_view(UserView(User, db.session, name='Users', category='More'))
 
 if __name__ == '__main__':
