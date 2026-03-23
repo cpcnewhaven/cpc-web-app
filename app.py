@@ -1001,8 +1001,9 @@ def api_banner_announcements():
 def api_highlights():
     """API endpoint for highlights data - pulls from database"""
     # Get all announcements from database (not just active ones, for filtering on highlights page)
+    # Limit to last 50 to avoid loading thousands of announcements
     announcements = Announcement.query.filter(_not_expired(Announcement))\
-        .order_by(Announcement.date_entered.desc()).all()
+        .order_by(Announcement.date_entered.desc()).limit(50).all()
     
     return jsonify({
         'announcements': [
