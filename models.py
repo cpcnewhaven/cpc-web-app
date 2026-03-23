@@ -92,6 +92,7 @@ class Announcement(db.Model):
     image_display_type = db.Column(db.String(50))  # poster, cover, etc.
     speaker = db.Column(db.String(200))  # who created/wrote the announcement
     expires_at = db.Column(db.Date, nullable=True)  # when to stop showing; NULL = never
+    event_date = db.Column(db.Date, nullable=True)  # date of event (for event type announcements)
     event_start_time = db.Column(db.String(100), nullable=True)  # e.g. "9:00 AM" or "Sunday 10:30"
     event_end_time = db.Column(db.String(100), nullable=True)
     # Versioning: so editors know what is what

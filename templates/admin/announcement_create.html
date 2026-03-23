@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeField) {
         function updateVisibility() {
             var type = typeField.value || '';
-            var eventFields = form.querySelectorAll('[name="event_start_time"], [name="event_end_time"]');
+            var eventFields = form.querySelectorAll('[name="event_date"], [name="event_start_time"], [name="event_end_time"]');
             var bannerFields = form.querySelectorAll('[name="banner_type"]');
 
             // Show event fields for event/ongoing types

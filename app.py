@@ -198,6 +198,7 @@ def ensure_db_columns():
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
             ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
             ('expires_at', 'DATE', 'DATE'),
+            ('event_date', 'DATE', 'DATE'),
             ('event_start_time', 'VARCHAR(100)', 'VARCHAR(100)'),
             ('event_end_time', 'VARCHAR(100)', 'VARCHAR(100)'),
             ('revision', 'INTEGER DEFAULT 1', 'INTEGER DEFAULT 1'),
@@ -2685,12 +2686,12 @@ class AnnouncementView(AuthenticatedModelView):
     form_rules = [
         rules.FieldSet(('type',), 'What kind of announcement?'),
         rules.FieldSet(('title', 'description', 'category', 'tag', 'speaker'), 'Content'),
-        rules.FieldSet(('event_start_time', 'event_end_time'), 'Event Details (if applicable)'),
+        rules.FieldSet(('event_date', 'event_start_time', 'event_end_time'), 'Event Details (if applicable)'),
         rules.FieldSet(('active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type'), 'Styling and Placement'),
         rules.FieldSet(('expiration_preset', 'expiration_date'), 'Expiration'),
         rules.FieldSet(('date_entered',), 'System (Auto-managed)')
     ]
-    form_columns = ('type', 'title', 'description', 'category', 'tag', 'speaker', 'event_start_time', 'event_end_time', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date', 'date_entered')
+    form_columns = ('type', 'title', 'description', 'category', 'tag', 'speaker', 'event_date', 'event_start_time', 'event_end_time', 'active', 'show_in_banner', 'banner_type', 'superfeatured', 'featured_image', 'image_display_type', 'expiration_preset', 'expiration_date', 'date_entered')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[Optional(), Length(max=2000)]),
         'banner_type': SelectField(
@@ -2710,6 +2711,7 @@ class AnnouncementView(AuthenticatedModelView):
         'type': SelectField,
         'category': SelectField,
         'date_entered': DateTimePickerField,
+        'event_date': DatePickerField,
         'speaker': SelectField,
     }
 
@@ -2723,6 +2725,7 @@ class AnnouncementView(AuthenticatedModelView):
         'description': {'rows': 10, 'style': 'width: 100%'},
         'featured_image': {'placeholder': 'https://example.com/image.jpg'},
         'image_display_type': {'placeholder': 'poster or leave empty'},
+        'event_date': {'placeholder': 'Date of event'},
         'event_start_time': {'placeholder': 'e.g. 9:00 AM or Sunday 10:30'},
         'event_end_time': {'placeholder': 'e.g. 11:00 AM or leave empty'},
     }
@@ -2741,6 +2744,7 @@ class AnnouncementView(AuthenticatedModelView):
         'image_display_type': 'Image Display Type',
         'active': 'Status',
         'speaker': 'Speaker',
+        'event_date': 'Event date',
         'event_start_time': 'Event start time',
         'event_end_time': 'Event end time',
     }
