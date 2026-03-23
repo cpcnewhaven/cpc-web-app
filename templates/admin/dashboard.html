@@ -570,7 +570,7 @@
         </div>
 
         <!-- Sunday Sermon Wizard (book → chapter → verse) -->
-        <div class="wizard-card" onclick="window.location.href='/admin/sermon/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/sermon/create/?url=/admin/sermon/'">
             <i class="fas fa-microphone wizard-icon"></i>
             <div class="wizard-title">New Sunday Sermon</div>
             <div class="wizard-desc">
@@ -584,7 +584,7 @@
         </div>
 
         <!-- Podcast Wizard -->
-        <div class="wizard-card" onclick="window.location.href='/admin/podcastepisode/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/podcastepisode/create/?url=/admin/podcastepisode/'">
             <i class="fas fa-podcast wizard-icon"></i>
             <div class="wizard-title">New Podcast Episode</div>
             <div class="wizard-desc">
@@ -610,51 +610,12 @@
         </div>
 
         <!-- Gallery Wizard -->
-        <div class="wizard-card" onclick="window.location.href='/admin/galleryimage/new/'">
+        <div class="wizard-card" onclick="window.location.href='/admin/galleryimage/create/?url=/admin/galleryimage/'">
             <i class="fas fa-images wizard-icon"></i>
             <div class="wizard-title">Add Gallery Image</div>
             <div class="wizard-desc">
                 Add a new photo to the gallery. Include image URL, name, tags,
                 and mark if it's an event photo.
-            </div>
-            <div class="wizard-btn">
-                <i class="fas fa-arrow-right"></i> Start Wizard
-            </div>
-        </div>
-
-        <!-- Podcast Series Wizard -->
-        <div class="wizard-card" onclick="window.location.href='/admin/podcastseries/new/'">
-            <i class="fas fa-list wizard-icon"></i>
-            <div class="wizard-title">New Podcast Series</div>
-            <div class="wizard-desc">
-                Create a new podcast series to organize episodes. Give it a
-                title and description that describes the series.
-            </div>
-            <div class="wizard-btn">
-                <i class="fas fa-arrow-right"></i> Start Wizard
-            </div>
-        </div>
-
-        <!-- Teaching Series (Pastor) -->
-        <div class="wizard-card" onclick="window.location.href='/admin/teachingseries/new/'">
-            <i class="fas fa-graduation-cap wizard-icon"></i>
-            <div class="wizard-title">New Teaching Series</div>
-            <div class="wizard-desc">
-                Create a multi-week teaching series (e.g. Total Christ). Add
-                event info, dates, then add sessions 1, 2, 3… with PDF handouts.
-            </div>
-            <div class="wizard-btn">
-                <i class="fas fa-arrow-right"></i> Start Wizard
-            </div>
-        </div>
-
-        <!-- Teaching Series Session (add PDFs) -->
-        <div class="wizard-card" onclick="window.location.href='/admin/teachingseriessession/new/'">
-            <i class="fas fa-file-pdf wizard-icon"></i>
-            <div class="wizard-title">Add Series Session</div>
-            <div class="wizard-desc">
-                Add a session (1, 2, 3…) to a teaching series. Upload a PDF
-                handout or paste a link. Sessions stay in sequential order.
             </div>
             <div class="wizard-btn">
                 <i class="fas fa-arrow-right"></i> Start Wizard
