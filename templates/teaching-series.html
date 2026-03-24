@@ -186,14 +186,9 @@
         font-size: 0.8rem;
     }
 
-    .date-range-inputs {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .date-range-inputs input {
-        padding: 0.5rem;
+    .filter-select {
+        width: 100%;
+        padding: 0.55rem 0.75rem;
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 6px;
@@ -201,8 +196,9 @@
         font-size: 0.9rem;
     }
 
-    .date-range-inputs input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+    .filter-select option {
+        background: #1a1a2e;
+        color: white;
     }
 
     .clear-filters {
@@ -381,7 +377,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .author-tag {
+    .speaker-tag {
         background: rgba(255, 255, 255, 0.1);
         padding: 0.25rem 0.75rem;
         border-radius: 12px;
@@ -574,7 +570,7 @@
         <div class="search-controls">
             <div class="search-bar">
                 <i class="fas fa-search"></i>
-                <input type="text" id="search-input" placeholder="Search series, sermons, authors, scripture..."
+                <input type="text" id="search-input" placeholder="Search series, sermons, speakers, scripture..."
                     autocomplete="off">
             </div>
             <div class="controls-row">
@@ -628,32 +624,11 @@
             <div class="filter-section">
                 <div class="filter-title">
                     <i class="fas fa-user"></i>
-                    <span>Author</span>
+                    <span>Speaker</span>
                 </div>
-                <div class="filter-options" id="author-filters">
-                    <div class="loading" style="padding: 1rem; font-size: 0.85rem;">Loading...</div>
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <div class="filter-title">
-                    <i class="fas fa-calendar"></i>
-                    <span>Date Range</span>
-                </div>
-                <div class="date-range-inputs">
-                    <input type="date" id="date-from" placeholder="From">
-                    <input type="date" id="date-to" placeholder="To">
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <div class="filter-title">
-                    <i class="fas fa-tags"></i>
-                    <span>Tags</span>
-                </div>
-                <div class="filter-options" id="tag-filters">
-                    <div class="loading" style="padding: 1rem; font-size: 0.85rem;">Loading...</div>
-                </div>
+                <select id="speaker-filter" class="filter-select">
+                    <option value="">All speakers</option>
+                </select>
             </div>
         </aside>
 
@@ -699,10 +674,7 @@
     let activeFilters = {
         search: '',
         seriesType: { sermon: true, sundaySchool: true },
-        authors: [],
-        dateFrom: '',
-        dateTo: '',
-        tags: []
+        speaker: ''
     };
 
     // Load data
@@ -765,13 +737,9 @@
             applyFilters();
         });
 
-        // Date filters
-        document.getElementById('date-from').addEventListener('change', (e) => {
-            activeFilters.dateFrom = e.target.value;
-            applyFilters();
-        });
-        document.getElementById('date-to').addEventListener('change', (e) => {
-            activeFilters.dateTo = e.target.value;
+        // Speaker filter
+        document.getElementById('speaker-filter').addEventListener('change', (e) => {
+            activeFilters.speaker = e.target.value;
             applyFilters();
         });
 
@@ -780,72 +748,21 @@
             activeFilters = {
                 search: '',
                 seriesType: { sermon: true, sundaySchool: true },
-                authors: [],
-                dateFrom: '',
-                dateTo: '',
-                tags: []
+                speaker: ''
             };
             document.getElementById('search-input').value = '';
-            document.getElementById('date-from').value = '';
-            document.getElementById('date-to').value = '';
+            document.getElementById('speaker-filter').value = '';
             document.getElementById('filter-sermon').checked = true;
             document.getElementById('filter-sunday-school').checked = true;
-            document.querySelectorAll('#author-filters input[type="checkbox"]').forEach(cb => cb.checked = false);
-            document.querySelectorAll('#tag-filters input[type="checkbox"]').forEach(cb => cb.checked = false);
             applyFilters();
         });
     });
 
     function setupFilters(metadata) {
-        // Setup author filters
-        const authorContainer = document.getElementById('author-filters');
-        if (metadata.all_authors && metadata.all_authors.length > 0) {
-            authorContainer.innerHTML = metadata.all_authors.slice(0, 20).map(author => `
-            <div class="filter-option">
-                <input type="checkbox" id="author-${author.replace(/\s+/g, '-')}" data-author="${author}">
-                <label for="author-${author.replace(/\s+/g, '-')}">${author}</label>
-            </div>
-        `).join('');
-
-            document.querySelectorAll('#author-filters input[type="checkbox"]').forEach(cb => {
-                cb.addEventListener('change', () => {
-                    updateAuthorFilters();
-                });
-            });
-        } else {
-            authorContainer.innerHTML = '<div style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">No authors available</div>';
-        }
-
-        // Setup tag filters
-        const tagContainer = document.getElementById('tag-filters');
-        if (metadata.all_tags && metadata.all_tags.length > 0) {
-            tagContainer.innerHTML = metadata.all_tags.slice(0, 20).map(tag => `
-            <div class="filter-option">
-                <input type="checkbox" id="tag-${tag.replace(/\s+/g, '-')}" data-tag="${tag}">
-                <label for="tag-${tag.replace(/\s+/g, '-')}">${tag}</label>
-            </div>
-        `).join('');
-
-            document.querySelectorAll('#tag-filters input[type="checkbox"]').forEach(cb => {
-                cb.addEventListener('change', () => {
-                    updateTagFilters();
-                });
-            });
-        } else {
-            tagContainer.innerHTML = '<div style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">No tags available</div>';
-        }
-    }
-
-    function updateAuthorFilters() {
-        activeFilters.authors = Array.from(document.querySelectorAll('#author-filters input[type="checkbox"]:checked'))
-            .map(cb => cb.dataset.author);
-        applyFilters();
-    }
-
-    function updateTagFilters() {
-        activeFilters.tags = Array.from(document.querySelectorAll('#tag-filters input[type="checkbox"]:checked'))
-            .map(cb => cb.dataset.tag);
-        applyFilters();
+        const speakerSelect = document.getElementById('speaker-filter');
+        const speakers = (metadata.all_speakers || []).slice(0, 100);
+        speakerSelect.innerHTML = '<option value="">All speakers</option>' +
+            speakers.map(speaker => `<option value="${speaker}">${speaker}</option>`).join('');
     }
 
     function applyFilters() {
@@ -871,36 +788,16 @@
                     series.name.toLowerCase().includes(searchLower) ||
                     series.sermons.some(s =>
                         s.title.toLowerCase().includes(searchLower) ||
-                        (s.author && s.author.toLowerCase().includes(searchLower)) ||
+                        (s.speaker && s.speaker.toLowerCase().includes(searchLower)) ||
                         (s.scripture && s.scripture.toLowerCase().includes(searchLower))
                     );
                 if (!matchesSearch) return false;
             }
 
-            // Author filter
-            if (activeFilters.authors.length > 0) {
-                const hasAuthor = activeFilters.authors.some(author =>
-                    series.authors.includes(author)
-                );
-                if (!hasAuthor) return false;
-            }
-
-            // Date range filter
-            if (activeFilters.dateFrom && series.date_range.max) {
-                if (series.date_range.max < activeFilters.dateFrom) return false;
-            }
-            if (activeFilters.dateTo && series.date_range.min) {
-                if (series.date_range.min > activeFilters.dateTo) return false;
-            }
-
-            // Tag filter
-            if (activeFilters.tags.length > 0) {
-                const hasTag = series.sermons.some(sermon =>
-                    activeFilters.tags.some(tag =>
-                        sermon.tags && sermon.tags.some(st => st.toLowerCase() === tag.toLowerCase())
-                    )
-                );
-                if (!hasTag) return false;
+            // Speaker filter
+            if (activeFilters.speaker) {
+                const speakers = series.speakers || [];
+                if (!speakers.includes(activeFilters.speaker)) return false;
             }
 
             return true;
@@ -984,7 +881,7 @@
             <div class="sermon-info">
                 <a href="${sermon.link || '#'}" target="_blank">${sermon.title}</a>
                 <div class="sermon-meta">
-                    ${sermon.author ? `<span><i class="fas fa-user"></i> ${sermon.author}</span>` : ''}
+                    ${sermon.speaker ? `<span><i class="fas fa-user"></i> ${sermon.speaker}</span>` : ''}
                     ${sermon.date ? `<span><i class="fas fa-calendar"></i> ${sermon.date}</span>` : ''}
                     ${sermon.scripture ? `<span><i class="fas fa-book-bible"></i> ${sermon.scripture}</span>` : ''}
                 </div>
@@ -1022,9 +919,9 @@
             ${(series.description && hasExternalUrl) ? `<p class="series-description">${series.description}</p>` : ''}
             ${hasExternalUrl ? `<a href="${series.external_url}" class="series-external-link">View ${series.name} →</a>` : ''}
             
-            ${series.authors && series.authors.length > 0 ? `
+            ${series.speakers && series.speakers.length > 0 ? `
                 <div class="series-authors">
-                    ${series.authors.map(author => `<span class="author-tag">${author}</span>`).join('')}
+                    ${series.speakers.map(speaker => `<span class="speaker-tag">${speaker}</span>`).join('')}
                 </div>
             ` : ''}
             
@@ -1052,14 +949,14 @@
             return;
         }
 
-        let csv = 'Series Name,Episodes,Date Range,Authors,Scriptures\n';
+        let csv = 'Series Name,Episodes,Date Range,Speakers,Scriptures\n';
         series.forEach(s => {
-            const authors = s.authors.join('; ');
+            const speakers = (s.speakers || []).join('; ');
             const scriptures = s.scriptures.slice(0, 5).join('; ');
             const dateRange = s.date_range.min && s.date_range.max
                 ? `${s.date_range.min} to ${s.date_range.max}`
                 : s.date_range.min || s.date_range.max || '';
-            csv += `"${s.name}",${s.count},"${dateRange}","${authors}","${scriptures}"\n`;
+            csv += `"${s.name}",${s.count},"${dateRange}","${speakers}","${scriptures}"\n`;
         });
 
         const blob = new Blob([csv], { type: 'text/csv' });
