@@ -59,4 +59,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<!-- Flatpickr for Enhanced Date/Time Selection -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+<style>
+    /* Slight overrides for dark mode admin compatibility */
+    .flatpickr-calendar {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a brief moment to ensure admin JS is done, then unbind default datepicker if needed
+    setTimeout(function() {
+        var dateInput = document.querySelector('input[name="event_date"]');
+        if (dateInput && window.jQuery) {
+            // Attempt to remove bootstrap daterangepicker to prevent double-calendars
+            jQuery(dateInput).off('.daterangepicker');
+            jQuery(dateInput).parent().off();
+        }
+
+        // Initialize Flatpickr on the Date field
+        flatpickr('input[name="event_date"]', {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            altInput: true,
+            altFormat: "F j, Y",
+            placeholder: "Select Date..."
+        });
+        
+        // Initialize Flatpickr on the Time fields
+        flatpickr('input[name="event_start_time"], input[name="event_end_time"]', {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // e.g. 9:00 AM
+            allowInput: true,
+            time_24hr: false,
+            placeholder: "Select Time..."
+        });
+    }, 100);
+});
+</script>
 {% endblock %}

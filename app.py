@@ -654,6 +654,15 @@ def submit_announcement():
     if request.method == 'POST':
         title = request.form.get('title', '').strip()
         description = request.form.get('description', '').strip()
+        
+        event_date_str = request.form.get('event_date', '').strip()
+        event_date = None
+        if event_date_str:
+            try:
+                event_date = datetime.strptime(event_date_str, '%Y-%m-%d').date()
+            except ValueError:
+                pass
+                
         event_start = request.form.get('event_start_time', '').strip() or None
         event_end = request.form.get('event_end_time', '').strip() or None
         name = request.form.get('name', '').strip()
@@ -689,6 +698,7 @@ def submit_announcement():
             id=next_global_id(),
             title=title,
             description=full_desc,
+            event_date=event_date,
             event_start_time=event_start,
             event_end_time=event_end,
             type=ann_type,
@@ -2711,7 +2721,7 @@ class AnnouncementView(AuthenticatedModelView):
         'type': SelectField,
         'category': SelectField,
         'date_entered': DateTimePickerField,
-        'event_date': DatePickerField,
+        'event_date': DateField,
         'speaker': SelectField,
     }
 
@@ -2744,7 +2754,7 @@ class AnnouncementView(AuthenticatedModelView):
         'image_display_type': 'Image Display Type',
         'active': 'Status',
         'speaker': 'Speaker',
-        'event_date': 'Event date',
+        'event_date': 'Add an event date',
         'event_start_time': 'Event start time',
         'event_end_time': 'Event end time',
     }
