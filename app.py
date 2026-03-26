@@ -1096,7 +1096,6 @@ def api_sermons():
         db_sermons = Sermon.query.filter(
             Sermon.active == True,
             Sermon.archived == False,
-            Sermon.date <= date.today()
         ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).all()
         for s in db_sermons:
             sermon_data = {
