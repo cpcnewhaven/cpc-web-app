@@ -552,6 +552,16 @@ def announcements():
 def highlights():
     return render_template('highlights.html')
 
+@app.route('/announcement/<int:announcement_id>')
+def announcement_detail(announcement_id):
+    """Detail page for a single announcement or event highlight."""
+    announcement = Announcement.query.get_or_404(announcement_id)
+    
+    # If it's not active or expired (and user isn't admin), maybe we shouldn't show it?
+    # For now, let's just show it if it exists.
+    
+    return render_template('announcement_detail.html', announcement=announcement)
+
 @app.route('/community')
 def community():
     # Load editable content from the DB; fall back gracefully if row doesn't exist

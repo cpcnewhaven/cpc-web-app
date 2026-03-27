@@ -209,24 +209,26 @@
                 card.dataset.type = highlight.type || '';
                 card.dataset.superfeatured = highlight.superfeatured || false;
 
-                let html = '';
+                let imgHtml = '';
                 if (highlight.featuredImage) {
                     const imageClass = highlight.imageDisplayType === 'poster' ? 'object-contain bg-white' : 'object-cover';
-                    html += `<img src="${highlight.featuredImage}" alt="${highlight.title}" class="highlight-image ${imageClass}">`;
+                    imgHtml = `<img src="${highlight.featuredImage}" alt="${highlight.title}" class="highlight-image ${imageClass}">`;
                 }
 
-                html += `<h2>${highlight.title}</h2>`;
-                html += '<div class="highlight-meta">';
+                const detailUrl = `/announcement/${highlight.id}`;
+                
+                let contentHtml = `<h2>${highlight.title}</h2>`;
+                contentHtml += '<div class="highlight-meta">';
                 if (highlight.type) {
-                    html += `<span class="highlight-badge">${highlight.type}</span>`;
+                    contentHtml += `<span class="highlight-badge">${highlight.type}</span>`;
                 }
                 if (highlight.superfeatured) {
-                    html += '<span class="highlight-badge featured">⭐ Featured</span>';
+                    contentHtml += '<span class="highlight-badge featured">⭐ Featured</span>';
                 }
-                html += '</div>';
-                html += `<div class="highlight-description">${highlight.description}</div>`;
+                contentHtml += '</div>';
+                contentHtml += `<div class="highlight-description">${highlight.description}</div>`;
 
-                card.innerHTML = html;
+                card.innerHTML = `<a href="${detailUrl}" style="text-decoration:none;display:block;height:100%;">${imgHtml}${contentHtml}</a>`;
                 container.appendChild(card);
             });
         }

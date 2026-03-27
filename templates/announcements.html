@@ -192,16 +192,18 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             container.innerHTML = announcements.map(announcement => `
                 <div class="announcement-card">
-                    ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image">` : ''}
-                    <h3>${announcement.title}</h3>
-                    <div class="announcement-badges">
-                        ${announcement.type ? badge('type', announcement.type) : ''}
-                        ${announcement.category ? badge('category', announcement.category) : ''}
-                        ${announcement.tag ? badge('tag', announcement.tag) : ''}
-                    </div>
-                    <p class="announcement-description">${announcement.description}</p>
-                    ${(announcement.eventStartTime || announcement.eventEndTime) ? `<p class="announcement-date" style="margin-bottom: 0.25rem;"><i class="fas fa-clock"></i> ${announcement.eventStartTime || ''} ${announcement.eventEndTime ? '- ' + announcement.eventEndTime : ''}</p>` : ''}
-                    ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
+                    <a href="/announcement/${announcement.id}" style="text-decoration:none;display:block;height:100%;color:inherit;">
+                        ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image">` : ''}
+                        <h3>${announcement.title}</h3>
+                        <div class="announcement-badges">
+                            ${announcement.type ? badge('type', announcement.type) : ''}
+                            ${announcement.category ? badge('category', announcement.category) : ''}
+                            ${announcement.tag ? badge('tag', announcement.tag) : ''}
+                        </div>
+                        <p class="announcement-description">${announcement.description}</p>
+                        ${(announcement.eventStartTime || announcement.eventEndTime) ? `<p class="announcement-date" style="margin-bottom: 0.25rem;"><i class="fas fa-clock"></i> ${announcement.eventStartTime || ''} ${announcement.eventEndTime ? '- ' + announcement.eventEndTime : ''}</p>` : ''}
+                        ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
+                    </a>
                 </div>
             `).join('');
         } else {
