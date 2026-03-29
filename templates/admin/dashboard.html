@@ -1,823 +1,193 @@
 {% extends 'admin/master.html' %}
 
-{% block head_css %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-    /* Liquid Glass Admin Override */
-    body {
-        background: var(--bg-gradient) !important;
-        font-family: var(--font-primary) !important;
-        color: var(--text-primary) !important;
-    }
-
-    .navbar,
-    .navbar-default {
-        background: var(--glass-bg) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: none !important;
-        box-shadow: var(--glass-shadow) !important;
-    }
-
-    .navbar-brand,
-    .navbar-nav>li>a {
-        color: var(--text-white) !important;
-    }
-
-    /* Welcome Header */
-    .admin-welcome {
-        background: var(--glass-white);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: var(--radius-xl);
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        box-shadow: var(--glass-shadow);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .admin-welcome::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-    }
-
-    .admin-welcome h1 {
-        color: var(--text-white);
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        font-weight: 700;
-    }
-
-    .admin-date {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .admin-date i {
-        color: var(--cpc-blue-light);
-    }
-
-    .admin-welcome p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.1rem;
-        margin: 0;
-    }
-
-    /* Glass Stats Cards */
-    .stat-card {
-        background: rgba(0, 50, 120, 0.28);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(0, 80, 160, 0.45);
-        border-radius: var(--radius-lg);
-        padding: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 50, 120, 0.25);
-        transition: var(--transition-base);
-        text-align: center;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 40px rgba(0, 50, 120, 0.35);
-        background: rgba(0, 50, 120, 0.38);
-    }
-
-    .stat-number {
-        font-size: 3rem;
-        font-weight: 700;
-        color: var(--text-white);
-        margin-bottom: 0.5rem;
-        line-height: 1;
-    }
-
-    .stat-label {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-sub {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.9rem;
-    }
-
-    .stat-card-link {
-        text-decoration: none !important;
-        color: inherit;
-        display: block;
-        cursor: pointer;
-    }
-
-    .stat-card-link:hover {
-        color: inherit;
-    }
-
-    .wizard-btn-amber {
-        background: #f59e0b !important;
-        border-color: #f59e0b !important;
-    }
-
-    .wizard-btn-amber:hover {
-        background: #d97706 !important;
-        border-color: #d97706 !important;
-        color: white !important;
-    }
-
-    /* Wizard Cards */
-    .wizard-card {
-        background: rgba(0, 50, 120, 0.26);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(0, 80, 160, 0.45);
-        border-radius: var(--radius-lg);
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 8px 32px rgba(0, 50, 120, 0.25);
-        transition: var(--transition-base);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .wizard-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--cpc-blue), var(--cpc-blue-light));
-    }
-
-    .wizard-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 40px rgba(0, 50, 120, 0.35);
-        background: rgba(0, 50, 120, 0.36);
-    }
-
-    .wizard-icon {
-        font-size: 2.5rem;
-        color: var(--cpc-blue-light);
-        margin-bottom: 1rem;
-        display: block;
-    }
-
-    .wizard-title {
-        color: var(--text-white);
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .wizard-desc {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-    }
-
-    .wizard-btn {
-        background: var(--cpc-blue);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition-base);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        text-decoration: none;
-    }
-
-    .wizard-btn:hover {
-        background: var(--cpc-blue-dark);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-medium);
-        color: white;
-        text-decoration: none;
-    }
-
-    /* Recent Content Cards */
-    .content-card {
-        background: rgba(0, 50, 120, 0.26);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(0, 80, 160, 0.45);
-        border-radius: var(--radius-md);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 6px 24px rgba(0, 50, 120, 0.25);
-        transition: var(--transition-base);
-    }
-
-    .content-card:hover {
-        background: rgba(0, 50, 120, 0.34);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0, 50, 120, 0.32);
-    }
-
-    .content-card h5 {
-        color: var(--text-white);
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
-
-    .content-card p {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 0.95rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .content-card small {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.85rem;
-    }
-
-    .badge-glass {
-        background: rgba(255, 255, 255, 0.2);
-        color: var(--text-white);
-        padding: 0.25rem 0.75rem;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        margin-left: 0.5rem;
-    }
-
-    /* Single responsive dashboard grid – no sidebars */
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.5rem 2rem;
-        margin-bottom: 2rem;
-    }
-
-    @media (min-width: 640px) {
-        .dashboard-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (min-width: 900px) {
-        .dashboard-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .dashboard-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-
-    /* Stat cards: many per row in grid */
-    .dashboard-grid.stat-cards {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-
-    @media (min-width: 640px) {
-        .dashboard-grid.stat-cards {
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        }
-    }
-
-    /* Wizard cards: 2–3 per row */
-    .dashboard-grid.wizard-cards {
-        grid-template-columns: 1fr;
-    }
-
-    @media (min-width: 640px) {
-        .dashboard-grid.wizard-cards {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (min-width: 1000px) {
-        .dashboard-grid.wizard-cards {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    /* Recent content: 2 columns when wide, 1 when narrow */
-    .dashboard-grid.recent-content {
-        grid-template-columns: 1fr;
-    }
-
-    @media (min-width: 768px) {
-        .dashboard-grid.recent-content {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    /* Quick Actions Grid (legacy name, same as dashboard-grid) */
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    @media (min-width: 640px) {
-        .quick-actions.stat-cards {
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        }
-    }
-
-    /* Cozy touches */
-    .welcome-emoji {
-        font-size: 2rem;
-        margin-right: 0.5rem;
-    }
-
-    .cozy-note {
-        background: rgba(255, 255, 255, 0.1);
-        border-left: 3px solid var(--cpc-blue-light);
-        padding: 1rem;
-        border-radius: var(--radius-sm);
-        margin-top: 1rem;
-        color: rgba(255, 255, 255, 0.9);
-        font-style: italic;
-    }
-
-    /* Mobile overrides */
-    @media (max-width: 768px) {
-        .admin-dashboard-content {
-            padding: 1rem !important;
-        }
-
-        .admin-welcome h1 {
-            font-size: 1.5rem;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-        }
-
-        .stat-card {
-            padding: 1.25rem;
-        }
-
-        .wizard-card {
-            padding: 1.25rem;
-        }
-
-        .wizard-icon {
-            font-size: 1.8rem;
-        }
-
-        .wizard-title {
-            font-size: 1.1rem;
-        }
-
-        /* Banner alerts: stack buttons below text */
-        .banner-alerts-card .wizard-card>div {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-        }
-
-        .banner-alerts-card .wizard-card>div>div:last-child {
-            width: 100%;
-        }
-
-        .banner-alerts-card .wizard-card>div>div:last-child .wizard-btn {
-            width: 100%;
-            justify-content: center;
-            text-align: center;
-        }
-
-        /* Quick links grid: smaller minmax for mobile */
-        .wizard-card div[style*="minmax(200px"] {
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block body %}
-<div class="admin-dashboard-content" style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
-    <!-- Welcome Header with Today's Date -->
-    <div class="admin-welcome">
-        <h1><span class="welcome-emoji">👋</span> Welcome{% if
-            session.get('username') %}, {{ session.get('username')|title }}{%
-            endif %} to CPC Admin</h1>
-        <div class="admin-date">
-            <i class="fas fa-calendar-day"></i>
-            <span id="today-date">{{ today.strftime('%A, %B %d, %Y') }}</span>
-            {% if current_user_last_login %}
-            <span aria-hidden="true">•</span>
-            <span>
-                Last login: {{ current_user_last_login.strftime('%b %d, %Y %I:%M %p') }}
-            </span>
-            {% endif %}
-        </div>
-        <p>Your cozy workspace for updating the church website. Everything you
-            need is right here.</p>
-        <div class="cozy-note">
-            💡 <strong>Tip:</strong> Use the wizards below to quickly add new
-            content, or browse the menu for full management options.
-        </div>
-    </div>
-
-    <!-- Gamification Widget -->
-    <div class="wizard-card" style="margin-bottom: 2rem; border-left: 4px solid #3b82f6;">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-            <div>
-                <h3 style="color: var(--text-white); margin: 0 0 0.5rem 0; font-size: 1.4rem;">
-                    <i class="fas fa-trophy" style="color: #fbbf24; margin-right: 0.5rem;"></i>
-                    Admin Level {{ admin_level }}: 
-                    {% if admin_level == 1 %}Novice Admin
-                    {% elif admin_level == 2 %}Content Creator
-                    {% elif admin_level == 3 %}Master Editor
-                    {% elif admin_level == 4 %}Site Artisan
-                    {% else %}Legendary Webmaster{% endif %}
-                </h3>
-                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.95rem;">
-                    You have made <strong>{{ user_xp }}</strong> content edits. Next level at <strong>{{ xp_next }}</strong> edits. Keep up the great work!
-                </p>
-            </div>
-            <div style="flex: 1; max-width: 300px; min-width: 200px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem; color: rgba(255, 255, 255, 0.9);">
-                    <span>Lvl {{ admin_level }}</span>
-                    <span>Lvl {{ admin_level + 1 }}</span>
-                </div>
-                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 999px; height: 12px; overflow: hidden; width: 100%;">
-                    <div style="background: linear-gradient(90deg, #3b82f6, #06b6d4); height: 100%; border-radius: 999px; width: {{ progress_pct }}%; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); transition: width 1s ease-in-out;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Statistics Cards (click to open that table) – responsive grid -->
-    <div class="dashboard-grid stat-cards">
-        <a href="{{ url_for('announcement.index_view') }}" class="stat-card stat-card-link">
-            <div class="stat-number">{{ stats.announcements }}</div>
-            <div class="stat-label">Announcements</div>
-            <div class="stat-sub">{{ stats.active_announcements }} Active</div>
-            {% if stats.draft_announcements or stats.expiring_soon %}
-            <div class="stat-sub" style="margin-top:0.25rem;">{{ stats.draft_announcements }} Drafts · {{ stats.expiring_soon }} Expiring soon</div>
-            {% endif %}
-        </a>
-
-        <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link">
-            <div class="stat-number">{{ stats.sermons }}</div>
-            <div class="stat-label">Sunday Sermons</div>
-            <div class="stat-sub">Manage → appears on /sermons</div>
-        </a>
-
-        <a href="{{ url_for('podcastepisode.index_view') }}" class="stat-card stat-card-link">
-            <div class="stat-number">{{ stats.podcast_episodes }}</div>
-            <div class="stat-label">Podcast Episodes</div>
-            <div class="stat-sub">{{ stats.podcast_series }} Series</div>
-        </a>
-
-        <a href="{{ url_for('event.index_view') }}" class="stat-card stat-card-link">
-            <div class="stat-number">{{ stats.ongoing_events }}</div>
-            <div class="stat-label">Events</div>
-            <div class="stat-sub">{{ stats.active_events }} Active</div>
-        </a>
-
-        <a href="{{ url_for('galleryimage.index_view') }}" class="stat-card stat-card-link">
-            <div class="stat-number">{{ stats.gallery_images }}</div>
-            <div class="stat-label">Gallery Images</div>
-            <div class="stat-sub">Total Photos</div>
-        </a>
-
-        {% if latest_luke %}
-        <a href="{{ url_for('sermon.index_view') }}" class="stat-card stat-card-link"
-            style="background: linear-gradient(135deg, var(--cpc-blue), var(--cpc-blue-dark)); border: 2px solid var(--cpc-blue-light);">
-            <div class="stat-number" style="font-size: 2.5rem;">Luke {{ latest_luke.latest_by_date.chapter }}</div>
-            <div class="stat-label">Latest Luke Chapter</div>
-            <div class="stat-sub" style="color: rgba(255, 255, 255, 0.9); margin-top: 0.5rem;">
-                <i class="fas fa-book-open"></i> {{ latest_luke.latest_by_date.reference }}
-            </div>
-            {% if latest_luke.latest_by_date.date %}
-            <div class="stat-sub" style="color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; margin-top: 0.25rem;">
-                <i class="fas fa-calendar"></i> {{ latest_luke.latest_by_date.date }}
-            </div>
-            {% endif %}
-        </a>
-        {% endif %}
-    </div>
-
-    <!-- Yellow bar / Banner alerts (front-end top bar) – full width -->
-    <div class="banner-alerts-card" style="margin-bottom: 2rem;">
-        <div class="wizard-card" style="border-left: 4px solid #f59e0b;">
-            <div
-                style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+    <div class="space-y-10">
+        <!-- Dashboard Header -->
+        <div class="bg-surface-container rounded-3xl p-10 border border-outline-variant/10 shadow-xl relative overflow-hidden">
+             <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                        <span style="width: 12px; height: 12px; border-radius: 2px; background: #f59e0b;"></span>
-                        <h3 style="color: var(--text-white); font-size: 1.25rem; margin: 0;">Top yellow bar (banner
-                            alerts)</h3>
+                    <h1 class="font-manrope text-4xl font-black text-primary tracking-tight">System Dashboard</h1>
+                    <div class="flex items-center gap-4 mt-3">
+                        <div class="flex items-center gap-2 text-on-surface-variant font-bold text-[10px] uppercase tracking-[0.2em] bg-surface-container-highest px-3 py-1.5 rounded-lg border border-outline-variant/10">
+                            <span class="material-symbols-outlined text-sm text-secondary">calendar_today</span>
+                            {{ today.strftime('%A, %B %d, %Y') }}
+                        </div>
+                        {% if current_user_last_login %}
+                            <div class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em]">
+                                Last Login: <span class="text-on-surface-variant/70">{{ current_user_last_login.strftime('%b %d, %I:%M %p') }}</span>
+                            </div>
+                        {% endif %}
                     </div>
-                    <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.95rem;">
-                        Weather, parking, and site-wide alerts shown at the top of every page. Create an announcement
-                        and check <strong>Show in top bar</strong> to display it in the yellow bar.
-                    </p>
                 </div>
-                <div style="display: flex; gap: 0.75rem; flex-shrink: 0;">
-                    <a href="{{ url_for('announcement.index_view') }}" class="wizard-btn"
-                        style="text-decoration: none;">
-                        <i class="fas fa-list"></i> Manage announcements
-                    </a>
-                    <a href="{{ url_for('announcement.create_view', url='/admin/announcement/') }}" class="wizard-btn wizard-btn-amber"
-                        style="text-decoration: none;">
-                        <i class="fas fa-plus"></i> Add banner alert
-                    </a>
+                
+                <button onclick="toggleNewEntryOverlay()" class="px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">add_circle</span> Initiate New Entry
+                </button>
+             </div>
+        </div>
+
+        <!-- Quick Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <a href="{{ url_for('announcement.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-primary group-hover:scale-110 transition-transform">{{ stats.announcements }}</div>
+                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Announcements</div>
+            </a>
+            <a href="{{ url_for('sermon.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-tertiary/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-tertiary group-hover:scale-110 transition-transform">{{ stats.sermons }}</div>
+                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Sunday Sermons</div>
+            </a>
+            <a href="{{ url_for('podcastepisode.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-secondary/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-secondary group-hover:scale-110 transition-transform">{{ stats.podcast_episodes }}</div>
+                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Podcasts</div>
+            </a>
+            <a href="{{ url_for('galleryimage.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary-dim/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-primary-dim group-hover:scale-110 transition-transform">{{ stats.gallery_images }}</div>
+                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Gallery Assets</div>
+            </a>
+            <a href="{{ url_for('history.index') }}" class="group bg-surface-container-highest/30 rounded-2xl p-6 border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col items-center text-center gap-3">
+                <span class="material-symbols-outlined text-3xl text-on-surface-variant/40">monitoring</span>
+                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Audit Logs</div>
+            </a>
+        </div>
+
+        <!-- Main Dashboard Content (2 Columns) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left: Quick Wizards & Actions (8-col) -->
+            <div class="lg:col-span-8 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Sermon Wizard -->
+                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('sermon.create_view', url='/admin/sermon/') }}'">
+                        <div class="w-14 h-14 rounded-2xl bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">mic_external_on</span>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="font-manrope text-xl font-bold text-on-surface">Publish Sunday Sermon</h3>
+                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Record a new teaching with automatic scripture mapping and platform link syndication.</p>
+                        </div>
+                        <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] font-black text-tertiary uppercase tracking-widest">
+                            Initialize Workflow <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </div>
+                    </div>
+
+                    <!-- Announcement Wizard -->
+                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('announcement.create_view', url='/admin/announcement/') }}'">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">campaign</span>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="font-manrope text-xl font-bold text-on-surface">Broadcast News</h3>
+                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Deploy a new site-wide banner or informational update to all active channels.</p>
+                        </div>
+                        <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest">
+                            Initialize Workflow <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </div>
+                    </div>
+
+                    <!-- Subpage Editors Grid -->
+                    <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <a href="/admin/subpage-edit/?page=bulletin" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
+                            <span class="material-symbols-outlined text-xl text-yellow-500">newspaper</span>
+                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">Weekly Bulletin</div>
+                        </a>
+                        <a href="/admin/subpage-edit/?page=service_times" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
+                            <span class="material-symbols-outlined text-xl text-blue-500">schedule</span>
+                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">Service Times</div>
+                        </a>
+                        <a href="/admin/subpage-edit/?page=about" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
+                            <span class="material-symbols-outlined text-xl text-purple-500">info</span>
+                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">About Page</div>
+                        </a>
+                        <a href="/admin/subpage-edit/?page=community" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
+                            <span class="material-symbols-outlined text-xl text-teal-500">groups</span>
+                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">Groups/Community</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Feed -->
+                <div class="bg-surface-container rounded-3xl border border-outline-variant/10 overflow-hidden shadow-xl">
+                    <div class="px-8 py-6 bg-surface-container-highest/50 border-b border-outline-variant/10 flex items-center justify-between">
+                         <h3 class="font-manrope text-sm font-black text-primary uppercase tracking-[0.2em]">Latest Content Deployed</h3>
+                         <a href="{{ url_for('history.index') }}" class="text-[10px] font-black text-on-surface-variant/40 hover:text-primary transition-colors uppercase tracking-widest">View Master Logs</a>
+                    </div>
+                    {% if recent_announcements or recent_sermons %}
+                        <div class="divide-y divide-outline-variant/5">
+                            {% for item in (recent_announcements + recent_sermons)|sort(attribute='date_entered' if 'date_entered' in item else 'date', reverse=True) %}
+                            {% if loop.index <= 5 %}
+                            <div class="p-6 flex items-center justify-between group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 group-hover:text-primary transition-all">
+                                        <span class="material-symbols-outlined text-xl">{% if item.speaker %}menu_book{% else %}campaign{% endif %}</span>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">{{ item.title }}</div>
+                                        <div class="text-[9px] text-on-surface-variant/50 font-bold uppercase tracking-widest mt-0.5">
+                                            {{ item.date_entered.strftime('%b %d') if item.date_entered else item.date.strftime('%b %d') }} — 
+                                            {% if item.speaker %}Sermon by {{ item.speaker }}{% else %}{{ item.type|title }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{% if item.speaker %}{{ url_for('sermon.edit_view', id=item.id) }}{% else %}{{ url_for('announcement.edit_view', id=item.id) }}{% endif %}" class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-primary/10 hover:text-primary transition-all active:scale-95">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </a>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="p-12 text-center text-on-surface-variant/30 text-xs font-bold uppercase tracking-widest">No recent deployments recorded.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right: Contextual Cards (4-col) -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Status Card -->
+                <div class="bg-gradient-to-br from-surface-container to-surface-container-high rounded-3xl p-8 border border-outline-variant/10 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-tertiary"></div>
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3">
+                            <span class="relative flex h-3 w-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+                            </span>
+                            <span class="text-[10px] font-black text-on-surface uppercase tracking-[0.2em]">Operational Status</span>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Frontend Sync</span>
+                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest">Active</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Database Latency</span>
+                                <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">Optimized</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Banner Alerts</span>
+                                <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">{{ stats.active_announcements }} Live</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teaching Series Spotlight -->
+                <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6">
+                    <h3 class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em]">Curriculum Active</h3>
+                    {% if latest_luke %}
+                    <div class="space-y-4">
+                        <div class="text-3xl font-manrope font-black text-on-surface">Luke {{ latest_luke.latest_by_date.chapter }}</div>
+                        <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Most recently updated chapter in the Luke teaching series library.</p>
+                        <a href="{{ url_for('sermon.index_view') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">
+                            Browse Scripture <span class="material-symbols-outlined text-lg">menu_book</span>
+                        </a>
+                    </div>
+                    {% else %}
+                        <div class="text-xs font-bold text-on-surface-variant/30 text-center py-4 uppercase tracking-widest">No active series spotlight.</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Content Wizards -->
-    <h2 style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.8rem;">
-        <i class="fas fa-magic"></i> Quick Wizards
-    </h2>
-    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
-        Use these wizards to easily create new content. Each wizard guides you
-        through the process step by step.
-    </p>
-
-    <div class="dashboard-grid wizard-cards">
-        <!-- Announcement/Event/Banner Wizard – UNIFIED -->
-        <div class="wizard-card" onclick="window.location.href='{{ url_for('announcement.create_view', url='/admin/announcement/') }}'">
-            <i class="fas fa-bullhorn wizard-icon"></i>
-            <div class="wizard-title">New Announcement</div>
-            <div class="wizard-desc">
-                Create announcements, events, banner alerts, and more. Choose the type when you start—all content is managed in one place.
-            </div>
-            <div class="wizard-btn">
-                <i class="fas fa-arrow-right"></i> Start Wizard
-            </div>
-        </div>
-
-        <!-- Sunday Sermon Wizard (book → chapter → verse) -->
-        <div class="wizard-card" onclick="window.location.href='{{ url_for('sermon.create_view', url='/admin/sermon/') }}'">
-            <i class="fas fa-microphone wizard-icon"></i>
-            <div class="wizard-title">New Sunday Sermon</div>
-            <div class="wizard-desc">
-                Pick series (e.g. Luke), chapter, and verse. Auto-fills scripture.
-                Add author, date, and links to Spotify, YouTube, or Apple Podcasts.
-                Publish or save as draft.
-            </div>
-            <div class="wizard-btn">
-                <i class="fas fa-arrow-right"></i> Start Wizard
-            </div>
-        </div>
-
-        <!-- Podcast Wizard -->
-        <div class="wizard-card" onclick="window.location.href='{{ url_for('podcastepisode.create_view', url='/admin/podcastepisode/') }}'">
-            <i class="fas fa-podcast wizard-icon"></i>
-            <div class="wizard-title">New Podcast Episode</div>
-            <div class="wizard-desc">
-                Add a new episode to your podcast series. Include episode
-                number, title, guest speaker, and links.
-            </div>
-            <div class="wizard-btn">
-                <i class="fas fa-arrow-right"></i> Start Wizard
-            </div>
-        </div>
-
-        <!-- Gallery Wizard -->
-        <div class="wizard-card" onclick="window.location.href='{{ url_for('galleryimage.create_view', url='/admin/galleryimage/') }}'">
-            <i class="fas fa-images wizard-icon"></i>
-            <div class="wizard-title">Add Gallery Image</div>
-            <div class="wizard-desc">
-                Add a new photo to the gallery. Include image URL, name, tags,
-                and mark if it's an event photo.
-            </div>
-            <div class="wizard-btn">
-                <i class="fas fa-arrow-right"></i> Start Wizard
-            </div>
-        </div>
-
-        <!-- Weekly Bulletin -->
-        <div class="wizard-card" onclick="window.location.href='/admin/subpage-edit/?page=bulletin'">
-            <i class="fas fa-newspaper wizard-icon" style="color: #fbbf24;"></i>
-            <div class="wizard-title">Weekly Bulletin</div>
-            <div class="wizard-desc">
-                Update this week's bulletin notes shown on the Sundays page. Change the heading, date, and content each week.
-            </div>
-            <div class="wizard-btn" style="background: #d97706;">
-                <i class="fas fa-arrow-right"></i> Edit Bulletin
-            </div>
-        </div>
-
-        <!-- Service Times -->
-        <div class="wizard-card" onclick="window.location.href='/admin/subpage-edit/?page=service_times'">
-            <i class="fas fa-clock wizard-icon" style="color: #60a5fa;"></i>
-            <div class="wizard-title">Service Times</div>
-            <div class="wizard-desc">
-                Update Sunday service times shown across the site — Sundays, Events, and Live pages.
-            </div>
-            <div class="wizard-btn" style="background: #0071e3;">
-                <i class="fas fa-arrow-right"></i> Edit Times
-            </div>
-        </div>
-
-        <!-- Contact Info -->
-        <div class="wizard-card" onclick="window.location.href='/admin/subpage-edit/?page=contact'">
-            <i class="fas fa-address-card wizard-icon" style="color: #34d399;"></i>
-            <div class="wizard-title">Contact Info</div>
-            <div class="wizard-desc">
-                Update the church address, phone, and email shown across the site.
-            </div>
-            <div class="wizard-btn" style="background: #059669;">
-                <i class="fas fa-arrow-right"></i> Edit Contact
-            </div>
-        </div>
-
-        <!-- Edit About Page -->
-        <div class="wizard-card" onclick="window.location.href='/admin/subpage-edit/?page=about'">
-            <i class="fas fa-file-alt wizard-icon" style="color: #a78bfa;"></i>
-            <div class="wizard-title">Edit About Page</div>
-            <div class="wizard-desc">
-                Update the church's About page: mission statement, Total Christ section,
-                staff team, and our story milestones. Changes appear live immediately.
-            </div>
-            <div class="wizard-btn" style="background: #7c3aed;">
-                <i class="fas fa-arrow-right"></i> Edit Source
-            </div>
-        </div>
-
-        <!-- Edit Community Page -->
-        <div class="wizard-card" onclick="window.location.href='/admin/subpage-edit/?page=community'">
-            <i class="fas fa-users wizard-icon" style="color: #00a0a0;"></i>
-            <div class="wizard-title">Edit Community Page</div>
-            <div class="wizard-desc">
-                Update groups, service, info and stories via the unified subpage editor.
-            </div>
-            <div class="wizard-btn" style="background: #00a0a0;">
-                <i class="fas fa-arrow-right"></i> Edit Source
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Content – responsive 2-column grid -->
-    <div class="dashboard-grid recent-content" style="margin-top: 2rem;">
-        <!-- Recent Announcements -->
-        <div class="wizard-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
-                    <i class="fas fa-clock"></i> Recent Announcements
-                </h3>
-                <a href="{{ url_for('announcement.index_view') }}" class="wizard-btn"
-                    style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-                    View All
-                </a>
-            </div>
-
-            {% if recent_announcements %}
-            {% for announcement in recent_announcements %}
-            <div class="content-card">
-                <h5>
-                    {{ announcement.title }}
-                    {% if announcement.superfeatured %}
-                    <span class="badge-glass" style="background: var(--cpc-blue);">⭐ Featured</span>
-                    {% endif %}
-                    {% if not announcement.active %}
-                    <span class="badge-glass" style="background: rgba(255,255,255,0.2);">Inactive</span>
-                    {% endif %}
-                </h5>
-                <p>{{ announcement.description[:100] }}{% if
-                    announcement.description|length > 100 %}...{% endif %}</p>
-                <small>
-                    {% if announcement.author %}
-                    <i class="fas fa-user"></i> {{ announcement.author }} |
-                    {% endif %}
-                    <i class="fas fa-calendar"></i> {{
-                    announcement.date_entered.strftime('%B %d, %Y') }} |
-                    <i class="fas fa-tag"></i> {{ announcement.type|title }} |
-                    <i class="fas fa-folder"></i> {{ announcement.category|title
-                    }}
-                </small>
-                <div style="margin-top: 1rem;">
-                    <a href="{{ url_for('announcement.edit_view', id=announcement.id) }}" class="wizard-btn"
-                        style="font-size: 0.85rem; padding: 0.4rem 1rem;">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <p style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
-                <i class="fas fa-inbox"
-                    style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
-                No announcements yet. <a href="{{ url_for('announcement.create_view') }}" style="color: var(--cpc-blue-light);">Create your first one</a>.
-            </p>
-            {% endif %}
-        </div>
-
-        <!-- Recent Sermons -->
-        <div class="wizard-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="color: var(--text-white); margin: 0; font-size: 1.3rem;">
-                    <i class="fas fa-book"></i> Recent Sermons
-                </h3>
-                <a href="{{ url_for('sermon.index_view') }}" class="wizard-btn"
-                    style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-                    View All
-                </a>
-            </div>
-
-            {% if recent_sermons %}
-            {% for sermon in recent_sermons %}
-            <div class="content-card">
-                <h5>{{ sermon.title }}</h5>
-                <p>
-                    <i class="fas fa-user"></i> <strong>{{ sermon.author
-                        }}</strong>
-                    {% if sermon.scripture %}
-                    <br><i class="fas fa-book-open"></i> {{ sermon.scripture }}
-                    {% endif %}
-                </p>
-                <small>
-                    <i class="fas fa-calendar"></i> {{
-                    sermon.date.strftime('%B %d, %Y') }}
-                </small>
-                <div style="margin-top: 1rem;">
-                    <a href="{{ url_for('sermon.edit_view', id=sermon.id) }}" class="wizard-btn"
-                        style="font-size: 0.85rem; padding: 0.4rem 1rem;">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <p style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 2rem;">
-                <i class="fas fa-inbox"
-                    style="font-size: 2rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
-                No sermons yet. <a href="{{ url_for('sermon.create_view') }}" style="color: var(--cpc-blue-light);">Add your first sermon</a>.
-            </p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Quick Links -->
-    <div class="wizard-card" style="margin-top: 2rem;">
-        <h3 style="color: var(--text-white); margin-bottom: 1.5rem; font-size: 1.3rem;">
-            <i class="fas fa-link"></i> Quick Links
-        </h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            <a href="/sermons" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
-                <i class="fas fa-book-open"></i> View Sunday Sermons
-            </a>
-            <a href="/" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
-                <i class="fas fa-globe"></i> View Website
-            </a>
-            <a href="/about" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
-                <i class="fas fa-info-circle"></i> View About Page
-            </a>
-            <a href="/admin/subpage-edit/?page=about" class="wizard-btn"
-                style="font-size: 0.9rem; padding: 0.75rem 1rem; background: #7c3aed;">
-                <i class="fas fa-pencil-alt"></i> Edit About Page
-            </a>
-            <a href="/community" target="_blank" class="wizard-btn" style="font-size: 0.9rem; padding: 0.75rem 1rem;">
-                <i class="fas fa-users"></i> View Community Page
-            </a>
-            <a href="/admin/subpage-edit/?page=community" class="wizard-btn"
-                style="font-size: 0.9rem; padding: 0.75rem 1rem; background: #00a0a0;">
-                <i class="fas fa-pencil-alt"></i> Edit Community Page
-            </a>
-            <a href="{{ url_for('admin_logout') }}" class="wizard-btn"
-                style="font-size: 0.9rem; padding: 0.75rem 1rem; background: rgba(255,255,255,0.2);">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Add smooth animations
-    document.addEventListener('DOMContentLoaded', function () {
-        // Animate cards on load
-        const cards = document.querySelectorAll('.wizard-card, .stat-card, .content-card');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                card.style.transition = 'all 0.5s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 100);
-        });
-    });
-</script>
 {% endblock %}

@@ -2,6 +2,60 @@
 
 {% block head %}
 {{ super() }}
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#69daff",
+                    "primary-dim": "#00c0ea",
+                    "primary-fixed": "#00cffc",
+                    "primary-container": "#00cffc",
+                    "secondary": "#3fff8b",
+                    "secondary-dim": "#24f07e",
+                    "secondary-fixed": "#3fff8b",
+                    "secondary-container": "#006d35",
+                    "tertiary": "#89a5ff",
+                    "tertiary-dim": "#7999ff",
+                    "tertiary-fixed": "#95adff",
+                    "tertiary-container": "#7696fd",
+                    "surface": "#010e24",
+                    "surface-dim": "#010e24",
+                    "surface-bright": "#152c4e",
+                    "surface-container-lowest": "#000000",
+                    "surface-container-low": "#02132b",
+                    "surface-container": "#061934",
+                    "surface-container-high": "#0b203d",
+                    "surface-container-highest": "#102645",
+                    "background": "#010e24",
+                    "on-surface": "#dbe6ff",
+                    "on-surface-variant": "#9eabc8",
+                    "outline": "#687690",
+                    "outline-variant": "#3b4861",
+                },
+                fontFamily: {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+                },
+                borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+        },
+    }
+</script>
+<style>
+    body { font-family: 'Inter', sans-serif; background-color: #010e24; color: #dbe6ff; }
+    .font-manrope { font-family: 'Manrope', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .admin-body { background-color: #010e24; }
+    /* Overrides for Flask-Admin default styles that might bleed in */
+    .container { width: 100% !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
+    .navbar { display: none !important; } /* Hide old navbar */
+</style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
@@ -554,9 +608,183 @@
 {% endblock %}
 
 {% block page_body %}
-<main class="admin-dashboard-main">
-    {{ super() }}
-</main>
+<div class="flex min-h-screen bg-background text-on-surface selection:bg-primary/30">
+    <!-- SideNavBar (The Anchor) -->
+    <aside class="h-full w-64 fixed left-0 top-0 z-40 bg-surface flex flex-col py-6 border-r border-outline-variant/10 shadow-2xl">
+        <div class="px-6 mb-10">
+            <div class="text-lg font-black text-primary font-manrope uppercase tracking-tight">CPC Admin</div>
+            <div class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em] mt-1">Version 2.0</div>
+        </div>
+        
+        <nav class="flex-1 space-y-1 overflow-y-auto px-2">
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest" href="/" target="_blank">
+                <span class="material-symbols-outlined mr-3 text-lg">open_in_new</span> View Live Site
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/dashboard' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/dashboard/">
+                <span class="material-symbols-outlined mr-3 text-lg">dashboard</span> Dashboard
+            </a>
+            
+            <div class="pt-6 pb-2 px-4">
+                <div class="text-[9px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em]">Primary Content</div>
+            </div>
+
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/announcement' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/announcement/">
+                <span class="material-symbols-outlined mr-3 text-lg">campaign</span> Announcements
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/sermon' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/sermon/">
+                <span class="material-symbols-outlined mr-3 text-lg">menu_book</span> Sermons
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/podcastepisode' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/podcastepisode/">
+                <span class="material-symbols-outlined mr-3 text-lg">podcasts</span> Podcasts
+            </a>
+            
+            <div class="pt-6 pb-2 px-4">
+                <div class="text-[9px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em]">More Features</div>
+            </div>
+            
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/teachingseries' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/teachingseries/">
+                <span class="material-symbols-outlined mr-3 text-lg">folder_open</span> Teaching Series
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/history' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/history/">
+                <span class="material-symbols-outlined mr-3 text-lg">monitoring</span> Activity Monitor
+            </a>
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/galleryimage' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/galleryimage/">
+                <span class="material-symbols-outlined mr-3 text-lg">imagesmode</span> Gallery
+            </a>
+        </nav>
+
+        <div class="mt-auto px-6 space-y-4">
+            <button type="button" id="sidebarCreateBtn" class="w-full py-4 bg-surface-container-highest hover:bg-surface-bright text-primary font-bold rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">add_circle</span> New Entry
+            </button>
+            <div class="pt-6 border-t border-outline-variant/20 space-y-1">
+                <a class="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors font-manrope text-xs font-semibold uppercase tracking-widest" href="/admin/user/">
+                    <span class="material-symbols-outlined mr-3 text-lg">account_circle</span> Users
+                </a>
+                <a class="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors font-manrope text-xs font-semibold uppercase tracking-widest" href="{{ url_for('admin_logout') }}">
+                    <span class="material-symbols-outlined mr-3 text-lg">logout</span> Logout
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Canvas -->
+    <main class="flex-1 ml-64 min-h-screen relative flex flex-col bg-background">
+        <!-- New Entry Overlay Modal -->
+        <div id="newEntryOverlay" class="fixed inset-0 z-[100] hidden">
+            <div class="absolute inset-0 bg-surface/90 backdrop-blur-md"></div>
+            <div class="absolute inset-0 flex items-center justify-center p-6">
+                <div class="w-full max-w-2xl bg-surface-container rounded-3xl p-10 shadow-2xl border border-outline-variant/20 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary via-secondary to-tertiary"></div>
+                    
+                    <div class="flex items-center justify-between mb-10">
+                        <div>
+                            <h2 class="font-manrope text-3xl font-black text-primary tracking-tight">Create New Entry</h2>
+                            <p class="text-on-surface-variant text-[10px] uppercase tracking-[0.2em] font-bold mt-1">Select the type of content you want to publish</p>
+                        </div>
+                        <button onclick="toggleNewEntryOverlay()" class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface hover:text-error transition-all active:scale-95">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <a href="/admin/announcement/new/" class="group p-6 bg-surface-container-highest hover:bg-surface-bright rounded-2xl transition-all border border-outline-variant/10 flex flex-col items-center text-center gap-4 active:scale-[0.98]">
+                            <div class="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-3xl">campaign</span>
+                            </div>
+                            <div>
+                                <div class="font-manrope font-bold text-on-surface text-sm">Announcement</div>
+                                <div class="text-[9px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">Banners & News</div>
+                            </div>
+                        </a>
+                        <a href="/admin/sermon/new/" class="group p-6 bg-surface-container-highest hover:bg-surface-bright rounded-2xl transition-all border border-outline-variant/10 flex flex-col items-center text-center gap-4 active:scale-[0.98]">
+                            <div class="w-14 h-14 rounded-xl bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-3xl">menu_book</span>
+                            </div>
+                            <div>
+                                <div class="font-manrope font-bold text-on-surface text-sm">Sunday Sermon</div>
+                                <div class="text-[9px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">Teaching</div>
+                            </div>
+                        </a>
+                        <a href="/admin/podcastepisode/new/" class="group p-6 bg-surface-container-highest hover:bg-surface-bright rounded-2xl transition-all border border-outline-variant/10 flex flex-col items-center text-center gap-4 active:scale-[0.98]">
+                            <div class="w-14 h-14 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-3xl">podcasts</span>
+                            </div>
+                            <div>
+                                <div class="font-manrope font-bold text-on-surface text-sm">Podcast</div>
+                                <div class="text-[9px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">Episodes</div>
+                            </div>
+                        </a>
+                         <a href="/admin/teachingseries/new" class="group p-6 bg-surface-container-highest hover:bg-surface-bright rounded-2xl transition-all border border-outline-variant/10 flex flex-col items-center text-center gap-4 active:scale-[0.98]">
+                            <div class="w-14 h-14 rounded-xl bg-primary-dim/10 text-primary-dim flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-3xl">folder_managed</span>
+                            </div>
+                            <div>
+                                <div class="font-manrope font-bold text-on-surface text-sm">New Series</div>
+                                <div class="text-[9px] text-on-surface-variant font-bold mt-1 uppercase tracking-widest">Curriculum</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TopAppBar (Floating Glass) -->
+        <header class="fixed top-0 right-0 left-64 z-50 bg-surface-container/80 backdrop-blur-xl flex items-center justify-between px-12 h-20 shadow-[0_20px_40px_rgba(0,0,0,0.4)] border-b border-outline-variant/10">
+            <div class="flex items-center gap-4">
+                <div>
+                    <h1 class="font-manrope text-xl font-extrabold text-primary tracking-tight">
+                        {% if admin_view.name %}
+                            {{ admin_view.name }}
+                        {% else %}
+                            Dashboard
+                        {% endif %}
+                    </h1>
+                    <p class="text-on-surface-variant text-[9px] uppercase tracking-[0.2em] font-bold">
+                        {% if 'create' in request.path %}New Entry Workflow{% elif 'edit' in request.path %}Editing Record{% else %}Management Overview{% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface hover:text-primary transition-colors group">
+                        <span class="material-symbols-outlined text-xl">notifications</span>
+                    </button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined text-xl">settings</span>
+                    </button>
+                </div>
+                <div class="h-10 w-px bg-outline-variant/30"></div>
+                <div class="flex items-center gap-4">
+                    <a href="{{ return_url or '/admin/dashboard' }}" class="px-6 py-2.5 rounded-xl border border-outline-variant/50 text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-all">Cancel</a>
+                    <button type="submit" form="admin-form" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-dim text-background text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all">Save & Deploy</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Form Content Container -->
+        <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-32">
+            {% block messages %}
+                {{ layout.messages() }}
+            {% endblock %}
+            
+            {{ super() }}
+        </div>
+        
+        <!-- Sticky Footer for Primary Actions (Only visible on create/edit pages) -->
+        {% if 'create' in request.path or 'edit' in request.path %}
+        <div class="fixed bottom-0 right-0 left-64 h-24 bg-background/90 backdrop-blur-md flex items-center justify-end px-12 gap-6 z-40 border-t border-outline-variant/10">
+            <p class="mr-auto text-[10px] font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                System Online — CPC Portal
+            </p>
+            <a href="{{ return_url or '/admin/dashboard/' }}" class="px-8 py-4 rounded-xl text-on-surface-variant text-[10px] font-bold uppercase tracking-widest hover:text-on-surface transition-colors">Discard Changes</a>
+            <button type="submit" form="admin-form" class="px-10 py-4 rounded-xl bg-gradient-to-r from-secondary to-secondary-container text-background text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-secondary/10 hover:shadow-secondary/20 active:scale-95 transition-all">Publish Content</button>
+        </div>
+        {% endif %}
+    </main>
+</div>
 {% endblock %}
 
 {% block brand %}
@@ -702,6 +930,35 @@
         font-size: 0.8rem !important;
     }
 </style>
+<script>
+    function toggleNewEntryOverlay() {
+        const overlay = document.getElementById('newEntryOverlay');
+        if (overlay.classList.contains('hidden')) {
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const createBtn = document.getElementById('sidebarCreateBtn');
+        if (createBtn) {
+            createBtn.addEventListener('click', toggleNewEntryOverlay);
+        }
+        
+        // Close on ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('newEntryOverlay');
+                if (overlay && !overlay.classList.contains('hidden')) {
+                    toggleNewEntryOverlay();
+                }
+            }
+        });
+    });
+</script>
 <script>
     (function () {
         var btn = document.getElementById('adminCreateBtn');

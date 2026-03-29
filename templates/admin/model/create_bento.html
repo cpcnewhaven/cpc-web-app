@@ -1,0 +1,186 @@
+{% extends 'admin/master.html' %}
+{% import 'admin/lib.html' as lib with context %}
+
+{% block body %}
+    <div class="grid grid-cols-12 gap-8" id="bento-grid-form">
+        <!-- Main Form Canvas (Sections 1 & 2) -->
+        <div class="col-span-12 lg:col-span-8 space-y-8">
+            <form action="{{ action }}" method="POST" enctype="multipart/form-data" id="admin-form" class="space-y-8">
+                {{ form.hidden_tag() if form.hidden_tag }}
+                
+                {% set main_fieldsets = [] %}
+                {% set sidebar_fieldsets = [] %}
+                
+                {# Pre-process fieldsets into Main and Side areas #}
+                {% if admin_view.form_fieldsets %}
+                    {% for name, opts in admin_view.form_fieldsets %}
+                        {# Group specific fieldsets into the sidebar #}
+                        {% if name|lower in ['thumbnail', 'status & lifecycle', 'visibility & expiration', 'meta', 'status', 'metadata', 'lifecycle'] %}
+                            {% do sidebar_fieldsets.append((name, opts)) %}
+                        {% else %}
+                            {% do main_fieldsets.append((name, opts)) %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% do main_fieldsets.append(('Details', {'fields': admin_view.form_columns or form._fields.keys()})) %}
+                {% endif %}
+
+                {% for name, opts in main_fieldsets %}
+                    <section class="bg-surface-container rounded-2xl p-8 shadow-xl border border-outline-variant/10">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="w-1.5 h-8 bg-{{ loop.cycle('primary', 'tertiary', 'secondary') }} rounded-full"></div>
+                            <h2 class="font-manrope text-xl font-bold tracking-tight text-on-surface">{{ name }}</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            {% for field_name in opts['fields'] %}
+                                {% set field = form[field_name] %}
+                                {% if field and field.type != 'HiddenField' %}
+                                    <div class="form-group space-y-2 {% if field.type in ['TextAreaField', 'RichTextField', 'CodeField'] or 'description' in field.name|lower or 'content' in field.name|lower %}md:col-span-2{% endif %}" id="group-{{ field.id }}">
+                                        <label class="block font-label text-[11px] font-bold text-on-surface-variant uppercase tracking-wider ml-1" for="{{ field.id }}">{{ field.label.text }}</label>
+                                        {{ render_field(field) }}
+                                        {% if field.errors %}
+                                            {% for error in field.errors %}
+                                                <p class="text-error text-[10px] mt-1">{{ error }}</p>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% if field.description %}
+                                            <p class="text-[10px] text-on-surface-variant/60">{{ field.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+
+                {# Fallback for any fields not in fieldsets (if fieldsets exist) #}
+                {% if admin_view.form_fieldsets %}
+                    {% set all_fieldset_fields = [] %}
+                    {% for n, o in admin_view.form_fieldsets %}{% for f in o['fields'] %}{% do all_fieldset_fields.append(f) %}{% endfor %}{% endfor %}
+                    {% set extra_fields = [] %}
+                    {% for f in form if f.name not in all_fieldset_fields and f.type != 'HiddenField' and f.name != 'csrf_token' %}
+                        {% do extra_fields.append(f) %}
+                    {% endfor %}
+                    
+                    {% if extra_fields %}
+                        <section class="bg-surface-container rounded-2xl p-8 shadow-xl border border-outline-variant/10">
+                            <div class="flex items-center gap-4 mb-8">
+                                <div class="w-1.5 h-8 bg-outline rounded-full"></div>
+                                <h2 class="font-manrope text-xl font-bold tracking-tight text-on-surface">Additional Information</h2>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {% for field in extra_fields %}
+                                    <div class="space-y-2">
+                                        <label class="block font-label text-[11px] font-bold text-on-surface-variant uppercase tracking-wider ml-1" for="{{ field.id }}">{{ field.label.text }}</label>
+                                        {{ render_field(field) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endif %}
+                {% endif %}
+
+                {# Inline Models #}
+                {% if admin_view.inline_models %}
+                    {% for inline in admin_view.inline_models %}
+                        <section class="bg-surface-container rounded-2xl p-8 shadow-xl border border-outline-variant/10">
+                            <div class="flex items-center gap-4 mb-8">
+                                <div class="w-1.5 h-8 bg-secondary-container rounded-full"></div>
+                                <h2 class="font-manrope text-xl font-bold tracking-tight text-on-surface">{{ inline.name or "Related Records" }}</h2>
+                            </div>
+                            <div class="inline-field-container">
+                                {{ lib.render_inline_form(form, inline) }}
+                            </div>
+                        </section>
+                    {% endfor %}
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Sidebar Actions (Sections 3 & 4) -->
+        <aside class="col-span-12 lg:col-span-4 space-y-8">
+            {% for name, opts in sidebar_fieldsets %}
+                <div class="bg-surface-container rounded-2xl p-8 shadow-xl border border-outline-variant/10">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-1.5 h-6 bg-{{ loop.cycle('secondary', 'primary-dim') }} rounded-full"></div>
+                        <h2 class="font-manrope text-lg font-bold tracking-tight text-on-surface">{{ name }}</h2>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        {% for field_name in opts['fields'] %}
+                            {% set field = form[field_name] %}
+                            {% if field %}
+                                <div class="form-group space-y-2" id="group-{{ field.id }}">
+                                    <label class="block font-label text-[11px] font-bold text-on-surface-variant uppercase tracking-wider ml-1" for="{{ field.id }}">{{ field.label.text }}</label>
+                                    {{ render_field(field) }}
+                                    {% if field.errors %}
+                                        {% for error in field.errors %}
+                                            <p class="text-error text-[10px] mt-1">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            
+            {# Workflow Actions #}
+            <div class="space-y-4">
+                <button type="submit" form="admin-form" name="_continue_editing" class="w-full py-5 bg-surface-container-high hover:bg-surface-bright text-on-surface font-bold rounded-2xl text-[10px] uppercase tracking-widest transition-all shadow-xl active:scale-95 border border-outline-variant/10">
+                    Save and Continue Editing
+                </button>
+                <button type="submit" form="admin-form" name="_add_another" class="w-full py-5 bg-surface-container-high hover:bg-surface-bright text-on-surface font-bold rounded-2xl text-[10px] uppercase tracking-widest transition-all shadow-xl active:scale-95 border border-outline-variant/10">
+                    Save and Add Another
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    {# Macro for rendering fields with dark premium styling #}
+    {% macro render_field(field) %}
+        {% if field.type == 'BooleanField' %}
+            <div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10 group hover:border-secondary/30 transition-colors shadow-inner">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-on-surface/60 group-hover:text-on-surface transition-colors">{{ field.label.text }}</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    {{ field(class="sr-only peer") }}
+                    <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                </label>
+            </div>
+        {% elif field.type in ['SelectField', 'DatalistField', 'Select2Field'] %}
+            <div class="relative group">
+                {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-on-surface appearance-none focus:bg-surface-container-low transition-all shadow-inner relative z-10 text-sm") }}
+                <span class="material-symbols-outlined absolute right-4 top-4 text-primary-dim/40 pointer-events-none z-20 group-hover:text-primary transition-colors">expand_more</span>
+            </div>
+        {% elif field.type == 'TextAreaField' %}
+            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface placeholder:text-outline/40 focus:bg-surface-container-low transition-all shadow-inner", rows="5") }}
+        {% elif field.type == 'URLField' or 'url' in field.name|lower or 'link' in field.name|lower %}
+             {# Mockup style for media assets #}
+            <div class="flex items-center bg-surface-container-lowest rounded-xl overflow-hidden focus-within:bg-surface-container-low transition-all border border-outline-variant/10 shadow-inner group">
+                <span class="material-symbols-outlined pl-4 text-outline-variant/60 group-focus-within:text-primary transition-colors">
+                    {% if 'audio' in field.name|lower %}audio_file
+                    {% elif 'video' in field.name|lower or 'youtube' in field.name|lower %}movie
+                    {% elif 'spotify' in field.name|lower or 'podcast' in field.name|lower %}podcasts
+                    {% elif 'image' in field.name|lower or 'thumb' in field.name|lower %}image
+                    {% else %}link{% endif %}
+                </span>
+                {{ field(class="w-full bg-transparent border-none p-4 text-sm text-on-surface placeholder:text-outline/40 focus:ring-0", placeholder=field.render_kw.placeholder or "Enter URL...") }}
+            </div>
+        {% elif field.type in ['DatePickerField', 'DateField'] %}
+            <div class="relative group">
+                {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner relative z-10", type="date") }}
+                <span class="material-symbols-outlined absolute right-4 top-4 text-primary/40 pointer-events-none z-20 group-hover:text-primary transition-colors">calendar_today</span>
+            </div>
+        {% elif field.type in ['DateTimePickerField', 'DateTimeField'] %}
+             <div class="relative group">
+                {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner relative z-10", type="datetime-local") }}
+                <span class="material-symbols-outlined absolute right-4 top-4 text-primary/40 pointer-events-none z-20 group-hover:text-primary transition-colors">schedule</span>
+            </div>
+        {% elif field.type == 'IntegerField' or 'number' in field.name|lower %}
+            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner", type="number") }}
+        {% else %}
+            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface placeholder:text-outline/40 focus:bg-surface-container-low transition-all shadow-inner", placeholder=field.render_kw.placeholder or "") }}
+        {% endif %}
+    {% endmacro %}
+{% endblock %}

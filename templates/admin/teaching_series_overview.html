@@ -1,240 +1,94 @@
 {% extends 'admin/master.html' %}
 
-{% block head_css %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-    .ts-overview-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .ts-overview-header {
-        color: var(--text-white);
-        margin-bottom: 1.5rem;
-    }
-
-    .ts-overview-header h1 {
-        font-size: 1.75rem;
-        margin-bottom: 0.35rem;
-    }
-
-    .ts-overview-header p {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1rem;
-        margin: 0;
-    }
-
-    .ts-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
-        align-items: center;
-    }
-
-    .ts-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.6rem 1.25rem;
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        text-decoration: none;
-        font-size: 0.95rem;
-        transition: all 0.2s;
-    }
-
-    .ts-btn-primary {
-        background: var(--cpc-blue);
-        color: white;
-        border: none;
-    }
-
-    .ts-btn-primary:hover {
-        background: var(--cpc-blue-dark);
-        color: white;
-    }
-
-    .ts-btn-secondary {
-        background: rgba(255, 255, 255, 0.12);
-        color: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-    }
-
-    .ts-btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.18);
-        color: white;
-    }
-
-    .ts-series-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1rem;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .ts-series-card {
-        background: rgba(0, 50, 120, 0.26);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(0, 80, 160, 0.45);
-        border-radius: var(--radius-lg);
-        padding: 1.25rem;
-        transition: var(--transition-base);
-    }
-
-    .ts-series-card:hover {
-        background: rgba(0, 50, 120, 0.36);
-        border-color: rgba(0, 80, 160, 0.55);
-        box-shadow: 0 8px 24px rgba(0, 50, 120, 0.25);
-    }
-
-    .ts-series-card h3 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.15rem;
-        color: var(--text-white);
-        font-weight: 600;
-        line-height: 1.3;
-    }
-
-    .ts-series-meta {
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 0.75rem;
-    }
-
-    .ts-series-meta span {
-        margin-right: 0.75rem;
-    }
-
-    .ts-series-desc {
-        color: rgba(255, 255, 255, 0.75);
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin-bottom: 1rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .ts-series-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .ts-series-actions a,
-    .ts-series-actions span {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.75rem;
-        border-radius: 6px;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-    }
-
-    .ts-series-actions .edit-link {
-        background: rgba(255, 255, 255, 0.15);
-        color: #7dd8ff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .ts-series-actions .edit-link:hover {
-        background: rgba(255, 255, 255, 0.25);
-        color: white;
-    }
-
-    .ts-series-actions .sessions-link {
-        background: rgba(0, 82, 163, 0.4);
-        color: rgba(255, 255, 255, 0.95);
-    }
-
-    .ts-series-actions .sessions-link:hover {
-        background: rgba(0, 82, 163, 0.6);
-        color: white;
-    }
-
-    .ts-empty {
-        text-align: center;
-        padding: 3rem 2rem;
-        color: rgba(255, 255, 255, 0.7);
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: var(--radius-lg);
-        border: 1px dashed rgba(255, 255, 255, 0.2);
-    }
-
-    .ts-empty i {
-        font-size: 2.5rem;
-        margin-bottom: 0.75rem;
-        opacity: 0.6;
-    }
-
-    .ts-empty a {
-        color: var(--cpc-blue-light);
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .ts-empty a:hover {
-        text-decoration: underline;
-    }
-</style>
-{% endblock %}
-
 {% block body %}
-<div class="ts-overview-container">
-    <div class="ts-overview-header">
-        <h1><i class="fas fa-graduation-cap"></i> Teaching Series</h1>
-        <p>All of your teaching series in one place. Add a new series or edit one below.</p>
-    </div>
+    <div class="space-y-12">
+        <!-- Page Header -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-10 bg-surface-container rounded-3xl p-10 border border-outline-variant/10 shadow-xl relative overflow-hidden">
+             <div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-3xl -mr-10 -mt-10"></div>
+             <div>
+                <h1 class="font-manrope text-4xl font-black text-primary tracking-tight">Teaching Series</h1>
+                <p class="text-on-surface-variant text-sm font-bold uppercase tracking-[0.2em] mt-3 flex items-center gap-3">
+                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    curriculum management & service planning
+                </p>
+             </div>
+             
+             <div class="flex items-center gap-4">
+                <a href="/admin/teachingseriessession/" class="px-8 py-4 bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded-2xl text-[10px] font-black uppercase tracking-widest border border-outline-variant/10 transition-all flex items-center gap-2 active:scale-95 shadow-xl shadow-black/20">
+                    <span class="material-symbols-outlined text-lg text-primary">collections_bookmark</span> All Sessions
+                </a>
+                <a href="/admin/teachingseries/new" class="px-8 py-4 bg-gradient-to-r from-primary to-primary-dim text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">add_box</span> New Series
+                </a>
+             </div>
+        </div>
 
-    <div class="ts-actions">
-        <a href="/admin/teachingseriessession/" class="ts-btn ts-btn-secondary">
-            <i class="fas fa-file-pdf"></i> Manage sessions
-        </a>
-    </div>
+        {% if series_list %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for series in series_list %}
+                <div class="group relative bg-surface-container rounded-3xl border border-outline-variant/10 overflow-hidden shadow-xl hover:shadow-2xl transition-all hover:border-primary/20 hover:-translate-y-1 flex flex-col">
+                    <!-- Progress Bar (Inactive indicator) -->
+                    {% if not series.active %}
+                        <div class="absolute top-0 left-0 w-full h-1.5 bg-error/40"></div>
+                    {% else %}
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-{{ loop.cycle('primary', 'secondary', 'tertiary') }}"></div>
+                    {% endif %}
 
-    {% if series_list %}
-    <ul class="ts-series-grid">
-        {% for series in series_list %}
-        <li class="ts-series-card">
-            <h3>{{ series.title }}</h3>
-            <div class="ts-series-meta">
-                <span><i class="fas fa-list"></i> {{ series.sessions|length }} session{{ 's' if series.sessions|length
-                    != 1 else '' }}</span>
-                {% if series.start_date or series.end_date %}
-                <span><i class="fas fa-calendar-alt"></i> {% if series.start_date %}{{ series.start_date.strftime('%b
-                    %Y') }}{% endif %}{% if series.end_date %} – {{ series.end_date.strftime('%b %Y') }}{% endif
-                    %}</span>
-                {% endif %}
-                {% if not series.active %}<span style="color: rgba(255,200,100,0.9);">Inactive</span>{% endif %}
+                    <div class="p-8 space-y-6 flex-1">
+                        <div class="flex items-start justify-between">
+                            <div class="p-3 bg-surface-container-highest rounded-2xl text-primary-dim group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-3xl">school</span>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="px-2.5 py-1 rounded-lg bg-surface-container-low text-[9px] font-black text-on-surface-variant uppercase tracking-widest border border-outline-variant/10">{{ series.sessions|length }} Sessions</span>
+                                {% if not series.active %}
+                                    <span class="text-[9px] font-black text-error/60 uppercase tracking-widest">Inactive</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h3 class="font-manrope text-xl font-extrabold text-on-surface tracking-tight group-hover:text-primary transition-colors leading-tight">{{ series.title }}</h3>
+                            <div class="flex items-center gap-4 text-on-surface-variant/60 text-[10px] uppercase font-bold tracking-widest">
+                                {% if series.start_date or series.end_date %}
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-base">calendar_month</span>
+                                        {% if series.start_date %}{{ series.start_date.strftime('%b %Y') }}{% endif %}{% if series.end_date %} – {{ series.end_date.strftime('%b %Y') }}{% endif %}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if series.description %}
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed line-clamp-3 font-medium">{{ series.description }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-4 grid grid-cols-2 gap-2 bg-background/30 border-t border-outline-variant/10">
+                        <a href="/admin/teachingseries/edit/?id={{ series.id }}" class="flex items-center justify-center gap-2 py-4 rounded-xl bg-surface-container-highest hover:bg-surface-bright text-on-surface text-[9px] font-black uppercase tracking-widest transition-all">
+                            <span class="material-symbols-outlined text-lg opacity-40">edit_note</span> Edit Series
+                        </a>
+                        <a href="{{ url_for('teachingseriessession.index_view') }}?flt0_0={{ series.id }}" class="flex items-center justify-center gap-2 py-4 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[9px] font-black uppercase tracking-widest transition-all">
+                            <span class="material-symbols-outlined text-lg">description</span> Sessions
+                        </a>
+                        <a href="{{ url_for('reorder_sessions.index', series_id=series.id) }}" class="col-span-2 flex items-center justify-center gap-2 py-4 rounded-xl bg-secondary/10 hover:bg-secondary/20 text-secondary text-[9px] font-black uppercase tracking-widest transition-all mt-1 border border-secondary/10">
+                            <span class="material-symbols-outlined text-lg">low_priority</span> Arrange Content Flow
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            {% if series.description %}
-            <div class="ts-series-desc">{{ series.description }}</div>
-            {% endif %}
-            <div class="ts-series-actions">
-                <a href="/admin/teachingseries/edit/?id={{ series.id }}" class="edit-link"><i class="fas fa-pen"></i>
-                    Edit</a>
-                <a href="{{ url_for('teachingseriessession.index_view') }}?flt0_0={{ series.id }}"
-                    class="sessions-link"><i class="fas fa-file-pdf"></i> Sessions</a>
-                <a href="{{ url_for('reorder_sessions.index', series_id=series.id) }}" class="sessions-link"
-                    style="background: rgba(0, 163, 136, 0.4);"><i class="fas fa-sort-numeric-down"></i> Reorder</a>
+        {% else %}
+            <div class="bg-surface-container rounded-3xl p-32 text-center space-y-6 border border-outline-variant/10 shadow-2xl">
+                 <div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center mx-auto group">
+                    <span class="material-symbols-outlined text-6xl text-on-surface-variant/20 group-hover:scale-110 transition-transform">auto_stories</span>
+                 </div>
+                 <div class="space-y-2">
+                    <h3 class="font-manrope text-2xl font-black text-on-surface tracking-tight">Empty Library</h3>
+                    <p class="text-on-surface-variant text-sm max-w-sm mx-auto">You haven't initialized any teaching series yet. Begin by creating your first curriculum series.</p>
+                 </div>
+                 <a href="/admin/teachingseries/new" class="inline-flex px-10 py-5 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/10 hover:shadow-primary/20 active:scale-95">Create Study Series</a>
             </div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <div class="ts-empty">
-        <i class="fas fa-book-open"></i>
-        <p style="margin: 0;">No teaching series yet.</p>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
 {% endblock %}

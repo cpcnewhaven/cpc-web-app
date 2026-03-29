@@ -109,6 +109,104 @@
     border-color: rgba(0, 122, 255, 0.6);
     color: #fff;
 }
+
+/* Yearbook Specific Styling */
+.gallery-grid.yearbook {
+    display: block;
+    padding: 1rem 0;
+}
+
+.yearbook-year {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+}
+
+.yearbook-year-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.5rem;
+    color: var(--primary-light, #60a5fa);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.yearbook-month {
+    margin-bottom: 2rem;
+    margin-left: 1rem;
+}
+
+.yearbook-month-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.yearbook-month-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.yearbook-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Polaroid/Yearbook Card styling for items in yearbook view */
+.gallery-item.yearbook {
+    background: #fff;
+    padding: 0.75rem 0.75rem 2rem 0.75rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.2);
+    transform: rotate(var(--rotation, -1deg));
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.gallery-item.yearbook:nth-child(2n) { --rotation: 1deg; }
+.gallery-item.yearbook:nth-child(3n) { --rotation: -1.5deg; }
+.gallery-item.yearbook:nth-child(4n) { --rotation: 0.5deg; }
+
+.gallery-item.yearbook:hover {
+    transform: rotate(0) translateY(-10px) scale(1.05);
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.gallery-item.yearbook .photo-container {
+    height: 200px;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.gallery-item.yearbook .photo-info h3 {
+    color: #1a202c;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 0.5rem 0 0.25rem 0;
+}
+
+.gallery-item.yearbook .photo-tags {
+    color: #4a5568;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* Hide specific elements in yearbook mode for that clean look */
+.gallery-item.yearbook .photo-overlay {
+    opacity: 0 !important;
+    display: none;
+}
+
 </style>
 {% endblock %}
 
@@ -293,13 +391,23 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentFilter = 'all';
     let currentView = 'grid';
     let currentPhotoIndex = 0;
-    let currentTab = 'gallery';
-    let currentYear = null;
+    // Check URL parameters for view/tab
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewParam = urlParams.get('view') || urlParams.get('tab');
+    if (viewParam === 'yearbook' || viewParam === 'gallery') {
+        currentTab = viewParam;
+        currentView = viewParam === 'yearbook' ? 'yearbook' : 'grid';
+    } else {
+        // Default to yearbook for the "digital yearbook" feel if no param
+        currentTab = 'yearbook';
+        currentView = 'yearbook';
+    }
 
     // Load gallery images
     loadGallery();
 
     function loadGallery() {
+
         fetch('/api/gallery')
             .then(response => response.json())
             .then(data => {
@@ -307,8 +415,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 filteredPhotos = [...allPhotos];
                 updateStats();
                 buildYearTabs();
+                
+                // Set initial tab state
+                switchTab(currentTab);
+                
                 renderGallery();
                 setupEventListeners();
+
             })
             .catch(error => {
                 console.error('Error loading gallery:', error);

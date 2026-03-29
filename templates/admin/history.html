@@ -1,433 +1,168 @@
 {% extends 'admin/master.html' %}
 
-{% block head_css %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-    body {
-        background: var(--bg-gradient) !important;
-        font-family: var(--font-primary) !important;
-        color: var(--text-primary) !important;
-    }
-    .navbar, .navbar-default {
-        background: var(--glass-bg) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: none !important;
-        box-shadow: var(--glass-shadow) !important;
-    }
-    .navbar-brand, .navbar-nav > li > a {
-        color: var(--text-white) !important;
-    }
-
-    /* Page header */
-    .history-header {
-        background: var(--glass-white);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: var(--radius-xl);
-        padding: 2rem 2.5rem;
-        margin-bottom: 2rem;
-        box-shadow: var(--glass-shadow);
-        position: relative;
-        overflow: hidden;
-    }
-    .history-header::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-    }
-    .history-header h1 {
-        color: var(--text-white);
-        font-size: 2rem;
-        margin: 0 0 0.25rem;
-        font-weight: 700;
-    }
-    .history-header p {
-        color: rgba(255,255,255,0.8);
-        margin: 0;
-        font-size: 1rem;
-    }
-
-    /* Filter bar */
-    .history-filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
-        align-items: center;
-    }
-    .history-filters select,
-    .history-filters button {
-        background: rgba(0,50,120,0.3);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(0,80,160,0.45);
-        color: var(--text-white);
-        padding: 0.55rem 1rem;
-        border-radius: var(--radius-md);
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: var(--transition-fast);
-    }
-    .history-filters select:focus {
-        outline: none;
-        border-color: var(--cpc-blue-light);
-        box-shadow: 0 0 0 2px rgba(56,189,248,0.25);
-    }
-    .history-filters select option {
-        background: #1a2744;
-        color: #fff;
-    }
-    .history-filters button {
-        background: var(--cpc-blue);
-        border-color: var(--cpc-blue);
-        font-weight: 600;
-    }
-    .history-filters button:hover {
-        background: var(--cpc-blue-dark);
-        transform: translateY(-1px);
-    }
-    .history-filters .filter-reset {
-        background: rgba(255,255,255,0.12);
-        border-color: rgba(255,255,255,0.25);
-        font-weight: 500;
-    }
-    .history-filters .filter-reset:hover {
-        background: rgba(255,255,255,0.2);
-    }
-
-    /* Table card */
-    .history-table-card {
-        background: rgba(0,50,120,0.26);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(0,80,160,0.45);
-        border-radius: var(--radius-lg);
-        box-shadow: 0 8px 32px rgba(0,50,120,0.25);
-        overflow: hidden;
-    }
-
-    /* Table */
-    .history-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .history-table th {
-        background: rgba(0,40,100,0.4);
-        color: rgba(255,255,255,0.75);
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 0.85rem 1.25rem;
-        text-align: left;
-        font-weight: 600;
-        border-bottom: 1px solid rgba(0,80,160,0.3);
-    }
-    .history-table td {
-        padding: 0.85rem 1.25rem;
-        color: var(--text-white);
-        font-size: 0.92rem;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-        vertical-align: middle;
-    }
-    .history-table tbody tr {
-        transition: background 0.15s;
-    }
-    .history-table tbody tr:hover {
-        background: rgba(255,255,255,0.04);
-    }
-    .history-table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    /* Action badges */
-    .action-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0.25rem 0.7rem;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        text-transform: capitalize;
-    }
-    .action-created {
-        background: rgba(34,197,94,0.22);
-        color: #4ade80;
-        border: 1px solid rgba(34,197,94,0.35);
-    }
-    .action-edited {
-        background: rgba(56,189,248,0.22);
-        color: #38bdf8;
-        border: 1px solid rgba(56,189,248,0.35);
-    }
-    .action-deleted {
-        background: rgba(239,68,68,0.22);
-        color: #f87171;
-        border: 1px solid rgba(239,68,68,0.35);
-    }
-
-    /* Entity type chip */
-    .entity-chip {
-        background: rgba(255,255,255,0.1);
-        padding: 0.2rem 0.6rem;
-        border-radius: var(--radius-sm);
-        font-size: 0.82rem;
-        color: rgba(255,255,255,0.85);
-    }
-
-    .history-entity-link {
-        color: var(--cpc-blue-light, #38bdf8);
-        text-decoration: none;
-    }
-    .history-entity-link:hover {
-        text-decoration: underline;
-    }
-
-    /* Timestamp */
-    .ts-main {
-        display: block;
-        color: var(--text-white);
-    }
-    .ts-ago {
-        display: block;
-        color: rgba(255,255,255,0.5);
-        font-size: 0.8rem;
-        margin-top: 2px;
-    }
-
-    /* Pagination */
-    .history-pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 1.25rem;
-        flex-wrap: wrap;
-    }
-    .history-pagination a,
-    .history-pagination span {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 36px;
-        height: 36px;
-        padding: 0 0.6rem;
-        border-radius: var(--radius-md);
-        font-size: 0.88rem;
-        font-weight: 500;
-        color: var(--text-white);
-        text-decoration: none;
-        transition: var(--transition-fast);
-    }
-    .history-pagination a {
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.15);
-    }
-    .history-pagination a:hover {
-        background: var(--cpc-blue);
-        border-color: var(--cpc-blue);
-    }
-    .history-pagination .pg-current {
-        background: var(--cpc-blue);
-        border: 1px solid var(--cpc-blue);
-        font-weight: 700;
-    }
-    .history-pagination .pg-disabled {
-        opacity: 0.35;
-        pointer-events: none;
-    }
-
-    /* Empty state */
-    .history-empty {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: rgba(255,255,255,0.5);
-    }
-    .history-empty i {
-        font-size: 3rem;
-        display: block;
-        margin-bottom: 1rem;
-        opacity: 0.4;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .history-table-card { overflow-x: auto; }
-        .history-table th, .history-table td { white-space: nowrap; }
-        .history-header { padding: 1.5rem; }
-        .history-header h1 { font-size: 1.5rem; }
-    }
-</style>
-{% endblock %}
-
 {% block body %}
-<div style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+    <div class="space-y-8">
+        <!-- Dashboard Header Style for the Page Title -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-surface-container rounded-3xl p-8 border border-outline-variant/10 shadow-xl overflow-hidden relative">
+             <div class="absolute top-0 left-0 w-2 h-full bg-primary"></div>
+             <div>
+                <h1 class="font-manrope text-3xl font-black text-primary tracking-tight">Activity Monitor</h1>
+                <p class="text-on-surface-variant text-xs font-bold uppercase tracking-[0.2em] mt-2 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                    Audit Log — Live Tracking
+                </p>
+             </div>
+             
+             <!-- Quick Filters Grid -->
+             <form method="get" class="flex flex-wrap items-center gap-3">
+                <div class="relative group">
+                    <select name="action" class="bg-surface-container-highest border-none rounded-xl pl-4 pr-10 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface appearance-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer min-w-[140px]">
+                        <option value="">Actions</option>
+                        {% for a in all_actions %}
+                        <option value="{{ a }}" {% if action_filter == a %}selected{% endif %}>{{ a|title }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 top-2.5 text-primary-dim/30 pointer-events-none text-lg">expand_more</span>
+                </div>
+                
+                <div class="relative group">
+                    <select name="type" class="bg-surface-container-highest border-none rounded-xl pl-4 pr-10 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface appearance-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer min-w-[140px]">
+                        <option value="">Entity Type</option>
+                        {% for t in all_types %}
+                        <option value="{{ t }}" {% if type_filter == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 top-2.5 text-primary-dim/30 pointer-events-none text-lg">expand_more</span>
+                </div>
+                
+                <div class="relative group">
+                    <select name="user" class="bg-surface-container-highest border-none rounded-xl pl-4 pr-10 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface appearance-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer min-w-[140px]">
+                        <option value="">User</option>
+                        {% for u in all_users %}
+                        <option value="{{ u }}" {% if user_filter == u %}selected{% endif %}>{{ u }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 top-2.5 text-primary-dim/30 pointer-events-none text-lg">expand_more</span>
+                </div>
+                
+                <button type="submit" class="p-3 bg-primary text-background rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined">filter_list</span>
+                </button>
+                <a href="{{ url_for('history.index') }}" class="p-3 bg-surface-container-highest text-on-surface/50 hover:text-error rounded-xl hover:scale-105 active:scale-95 transition-all">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                </a>
+             </form>
+        </div>
 
-    <!-- Header -->
-    <div class="history-header">
-        <h1><i class="fas fa-clock-rotate-left"></i> Activity History</h1>
-        <p>See who added, edited, or deleted content &mdash; and when.</p>
-    </div>
-
-    <!-- Filters -->
-    <form method="get" class="history-filters">
-        <select name="action">
-            <option value="">All actions</option>
-            {% for a in all_actions %}
-            <option value="{{ a }}" {% if action_filter == a %}selected{% endif %}>{{ a|title }}</option>
-            {% endfor %}
-        </select>
-
-        <select name="type">
-            <option value="">All types</option>
-            {% for t in all_types %}
-            <option value="{{ t }}" {% if type_filter == t %}selected{% endif %}>{{ t }}</option>
-            {% endfor %}
-        </select>
-
-        <select name="user">
-            <option value="">All users</option>
-            {% for u in all_users %}
-            <option value="{{ u }}" {% if user_filter == u %}selected{% endif %}>{{ u }}</option>
-            {% endfor %}
-        </select>
-
-        <button type="submit"><i class="fas fa-filter"></i> Filter</button>
-        <a href="{{ url_for('history.index') }}" class="filter-reset" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.35rem;padding:0.55rem 1rem;border-radius:var(--radius-md);font-size:0.9rem;color:var(--text-white);background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);font-weight:500;transition:var(--transition-fast);">
-            <i class="fas fa-times"></i> Reset
-        </a>
-    </form>
-
-    <!-- Table -->
-    <div class="history-table-card">
         {% if history_error %}
-        <div class="history-empty">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p style="font-size:1.1rem;margin-bottom:0.5rem;color:rgba(255,255,255,0.65);">Activity history unavailable</p>
-            <p style="font-size:0.9rem;">The audit log could not be loaded. Make sure the database has been initialized (run the app once so tables are created).</p>
-        </div>
+            <div class="bg-error/10 border border-error/20 rounded-3xl p-12 text-center space-y-4">
+                <span class="material-symbols-outlined text-5xl text-error">warning</span>
+                <h3 class="font-manrope text-xl font-bold text-on-surface">Audit Engine Offline</h3>
+                <p class="text-on-surface-variant text-sm max-w-md mx-auto">The activity history logs are currently unavailable. Ensure the database systems are online and recent changes have been staged.</p>
+            </div>
         {% elif logs %}
-        <table class="history-table">
-            <thead>
-                <tr>
-                    <th>When</th>
-                    <th>User</th>
-                    <th>Action</th>
-                    <th>Type</th>
-                    <th>Item</th>
-                    <th>ID</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in logs %}
-                <tr>
-                    <td>
-                        <span class="ts-main">{{ entry.timestamp.strftime('%b %d, %Y') }}</span>
-                        <span class="ts-ago">{{ entry.timestamp.strftime('%I:%M %p') }}</span>
-                    </td>
-                    <td>
-                        <i class="fas fa-user-circle" style="opacity:0.6;margin-right:4px;"></i>
-                        {{ entry.user|title }}
-                    </td>
-                    <td>
-                        {% if entry.action == 'created' %}
-                        <span class="action-badge action-created"><i class="fas fa-plus"></i> Created</span>
-                        {% elif entry.action == 'edited' %}
-                        <span class="action-badge action-edited"><i class="fas fa-pen"></i> Edited</span>
-                        {% elif entry.action == 'deleted' %}
-                        <span class="action-badge action-deleted"><i class="fas fa-trash"></i> Deleted</span>
-                        {% else %}
-                        <span class="action-badge" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">{{ entry.action|title }}</span>
+            <div class="bg-surface-container rounded-3xl border border-outline-variant/10 shadow-2xl overflow-hidden">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-surface-container-highest/50 border-b border-outline-variant/10">
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Deployment Time</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Authorized User</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Operation</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Entity Type</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 text-right">Target Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/5">
+                        {% for entry in logs %}
+                        <tr class="hover:bg-surface-bright/50 transition-colors group">
+                            <td class="px-8 py-6">
+                                <div class="font-manrope font-bold text-on-surface text-sm">{{ entry.timestamp.strftime('%b %d, %Y') }}</div>
+                                <div class="text-[10px] text-on-surface-variant/50 font-medium uppercase tracking-widest mt-0.5">{{ entry.timestamp.strftime('%I:%M %p') }}</div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background transition-all">
+                                        <span class="material-symbols-outlined text-lg">person</span>
+                                    </div>
+                                    <span class="text-sm font-bold text-on-surface uppercase tracking-wider">{{ entry.user|title }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                {% if entry.action == 'created' %}
+                                    <span class="px-3 py-1 rounded-full bg-secondary/10 text-secondary text-[9px] font-black uppercase tracking-widest border border-secondary/20">Created</span>
+                                {% elif entry.action == 'edited' %}
+                                    <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest border border-primary/20">Updated</span>
+                                {% elif entry.action == 'deleted' %}
+                                    <span class="px-3 py-1 rounded-full bg-error/10 text-error text-[9px] font-black uppercase tracking-widest border border-error/20">Expunged</span>
+                                {% else %}
+                                    <span class="px-3 py-1 rounded-full bg-surface-container-highest text-on-surface/50 text-[9px] font-black uppercase tracking-widest border border-outline-variant/10">{{ entry.action|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="px-3 py-1 rounded-lg bg-surface-container-highest text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">{{ entry.entity_type }}</span>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                {% set target_url = none %}
+                                {% if entry.entity_type == 'Announcement' and entry.entity_id %}{% set target_url = url_for('announcement.edit_view', id=entry.entity_id) %}
+                                {% elif entry.entity_type == 'Sermon' and entry.entity_id %}{% set target_url = url_for('sermon.edit_view', id=entry.entity_id) %}
+                                {% elif entry.entity_type == 'PodcastEpisode' and entry.entity_id %}{% set target_url = url_for('podcastepisode.edit_view', id=entry.entity_id) %}
+                                {% elif entry.entity_type == 'TeachingSeries' and entry.entity_id %}{% set target_url = url_for('teachingseries.edit_view', id=entry.entity_id) %}
+                                {% elif entry.entity_type == 'TeachingSeriesSession' and entry.entity_id %}{% set target_url = url_for('teachingseriessession.edit_view', id=entry.entity_id) %}
+                                {% elif entry.entity_type == 'GalleryImage' and entry.entity_id %}{% set target_url = url_for('galleryimage.edit_view', id=entry.entity_id) %}
+                                {% endif %}
+                                
+                                {% if target_url %}
+                                    <a href="{{ target_url }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-container-highest hover:bg-surface-bright rounded-xl text-[10px] font-black uppercase tracking-widest text-primary transition-all group-hover:scale-105 active:scale-95">
+                                        Open Record <span class="material-symbols-outlined text-lg">arrow_outward</span>
+                                    </a>
+                                {% else %}
+                                    <span class="text-[10px] font-black text-on-surface-variant opacity-30 uppercase tracking-[0.2em]">{{ entry.entity_title or 'Archived Cache' }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Pagination Footer -->
+                {% if pagination and pagination.pages > 1 %}
+                <div class="px-8 py-6 bg-surface-container-highest/20 border-t border-outline-variant/10 flex items-center justify-between">
+                    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Page {{ pagination.page }} of {{ pagination.pages }}</p>
+                    
+                    <div class="flex items-center gap-2">
+                        {% if pagination.has_prev %}
+                            <a href="{{ url_for('history.index', page=pagination.prev_num, action=action_filter, type=type_filter, user=user_filter) }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-bright text-on-surface transition-all">
+                                <span class="material-symbols-outlined">chevron_left</span>
+                            </a>
                         {% endif %}
-                    </td>
-                    <td><span class="entity-chip">{{ entry.entity_type }}</span></td>
-                    <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ entry.entity_title }}">
-                        {% if entry.entity_type == 'Announcement' and entry.entity_id %}
-                        <a href="{{ url_for('announcement.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
-                        {% elif entry.entity_type == 'OngoingEvent' and entry.entity_id %}
-                        <a href="{{ url_for('event.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
-                        {% elif entry.entity_type == 'Sermon' and entry.entity_id %}
-                        <a href="{{ url_for('sermon.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
-                        {% elif entry.entity_type == 'PodcastEpisode' and entry.entity_id %}
-                        <a href="{{ url_for('podcastepisode.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
-                        {% elif entry.entity_type == 'TeachingSeries' and entry.entity_id %}
-                        <a href="{{ url_for('teachingseries.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
-                        {% elif entry.entity_type == 'TeachingSeriesSession' and entry.entity_id %}
-                        <a href="{{ url_for('teachingseriessession.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
-                        {% elif entry.entity_type == 'GalleryImage' and entry.entity_id %}
-                        <a href="{{ url_for('galleryimage.edit_view', id=entry.entity_id) }}" class="history-entity-link">{{ entry.entity_title or '—' }}</a>
-                        {% else %}
-                        {{ entry.entity_title or '—' }}
+                        
+                        <div class="flex items-center gap-1">
+                            {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                                {% if p %}
+                                    <a href="{{ url_for('history.index', page=p, action=action_filter, type=type_filter, user=user_filter) }}" class="w-10 h-10 flex items-center justify-center rounded-xl {% if p == pagination.page %}bg-primary text-background font-black{% else %}bg-surface-container-highest text-on-surface-variant hover:text-on-surface{% endif %} text-xs transition-all">{{ p }}</a>
+                                {% elif not loop.last %}
+                                    <span class="w-10 h-10 flex items-center justify-center text-on-surface-variant/30">&hellip;</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        {% if pagination.has_next %}
+                            <a href="{{ url_for('history.index', page=pagination.next_num, action=action_filter, type=type_filter, user=user_filter) }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-bright text-on-surface transition-all">
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            </a>
                         {% endif %}
-                    </td>
-                    <td style="color:rgba(255,255,255,0.5);">{{ entry.entity_id or '—' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Pagination -->
-        {% if pagination and pagination.pages > 1 %}
-        <div class="history-pagination">
-            {% if pagination.has_prev %}
-            <a href="{{ url_for('history.index', page=pagination.prev_num, action=action_filter, type=type_filter, user=user_filter) }}">
-                <i class="fas fa-chevron-left"></i>
-            </a>
-            {% else %}
-            <span class="pg-disabled"><i class="fas fa-chevron-left"></i></span>
-            {% endif %}
-
-            {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                {% if p %}
-                    {% if p == pagination.page %}
-                    <span class="pg-current">{{ p }}</span>
-                    {% else %}
-                    <a href="{{ url_for('history.index', page=p, action=action_filter, type=type_filter, user=user_filter) }}">{{ p }}</a>
-                    {% endif %}
-                {% else %}
-                <span style="color:rgba(255,255,255,0.3);">&hellip;</span>
+                    </div>
+                </div>
                 {% endif %}
-            {% endfor %}
-
-            {% if pagination.has_next %}
-            <a href="{{ url_for('history.index', page=pagination.next_num, action=action_filter, type=type_filter, user=user_filter) }}">
-                <i class="fas fa-chevron-right"></i>
-            </a>
-            {% else %}
-            <span class="pg-disabled"><i class="fas fa-chevron-right"></i></span>
-            {% endif %}
-        </div>
-        {% endif %}
-
+            </div>
         {% else %}
-        <div class="history-empty">
-            <i class="fas fa-inbox"></i>
-            <p style="font-size:1.1rem;margin-bottom:0.5rem;color:rgba(255,255,255,0.65);">No activity recorded yet</p>
-            <p style="font-size:0.9rem;">Changes you make in the admin (adding, editing, or deleting content) will show up here automatically.</p>
-        </div>
+            <div class="bg-surface-container rounded-3xl p-24 text-center space-y-4 border border-outline-variant/10 shadow-xl">
+                 <div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center mx-auto mb-8">
+                    <span class="material-symbols-outlined text-5xl text-on-surface-variant/20">inventory_2</span>
+                 </div>
+                 <h3 class="font-manrope text-2xl font-black text-on-surface tracking-tight">System Silence</h3>
+                 <p class="text-on-surface-variant text-sm max-w-sm mx-auto">No activity has been logged for this period. All systems are operating normally.</p>
+            </div>
         {% endif %}
     </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var rows = document.querySelectorAll('.history-table tbody tr');
-    rows.forEach(function(row, i) {
-        row.style.opacity = '0';
-        row.style.transform = 'translateY(8px)';
-        setTimeout(function() {
-            row.style.transition = 'all 0.3s ease';
-            row.style.opacity = '1';
-            row.style.transform = 'translateY(0)';
-        }, i * 30);
-    });
-});
-</script>
 {% endblock %}

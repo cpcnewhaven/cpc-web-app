@@ -98,6 +98,8 @@ logging.basicConfig(
 log = logging.getLogger("cpc")
 
 app = Flask(__name__)
+app.jinja_env.add_extension('jinja2.ext.do')
+
 
 # Configuration
 app.config.from_object('config')
@@ -603,11 +605,12 @@ def media():
 
 @app.route('/gallery')
 def gallery():
-    return redirect(url_for('media'))
+    return redirect(url_for('media', view='gallery'))
 
 @app.route('/yearbook')
 def yearbook():
-    return redirect(url_for('media'))
+    return redirect(url_for('media', view='yearbook'))
+
 
 @app.route('/newsletter')
 def newsletter():
@@ -2690,6 +2693,8 @@ def _format_announcement_status(view, context, model, name):
 from flask_admin.form import rules
 
 class AnnouncementView(AuthenticatedModelView):
+    create_template = 'admin/model/create_bento.html'
+    edit_template = 'admin/model/edit_bento.html'
     column_list = ('id', 'title', 'speaker', 'type', 'category', 'active', 'show_in_banner', 'superfeatured', 'revision', 'date_entered', 'updated_at', 'updated_by', 'event_date', 'event_start_time', 'event_end_time', 'expires_at')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category', 'speaker')
@@ -3165,6 +3170,8 @@ class PaperView(AuthenticatedModelView):
             return False
     
 class SermonView(AuthenticatedModelView):
+    create_template = 'admin/model/create_bento.html'
+    edit_template = 'admin/model/edit_bento.html'
     column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'active', 'expires_at')
     column_searchable_list = ('title', 'scripture')
     column_filters = ('series', 'speaker_user', 'date', 'active')
@@ -3432,6 +3439,8 @@ class PodcastSeriesView(AuthenticatedModelView):
     episode_count.column_type = 'integer'
 
 class PodcastEpisodeView(AuthenticatedModelView):
+    create_template = 'admin/model/create_bento.html'
+    edit_template = 'admin/model/edit_bento.html'
     column_list = ('number', 'title', 'series', 'guest', 'date_added', 'source', 'expires_at', 'scripture')
     column_searchable_list = ('title', 'guest', 'scripture')
     column_filters = ('series', 'guest', 'season', 'source')
@@ -3511,6 +3520,8 @@ class PodcastEpisodeView(AuthenticatedModelView):
             return False
 
 class GalleryImageView(AuthenticatedModelView):
+    create_template = 'admin/model/create_bento.html'
+    edit_template = 'admin/model/edit_bento.html'
     list_template = 'admin/gallery_list.html'
     column_list = ('id', 'name', 'event', 'photographer', 'created', 'expires_at', 'tags_display')
     column_searchable_list = ('name', 'description', 'location', 'photographer')
@@ -3689,6 +3700,8 @@ def _format_event_status(view, context, model, name):
 
 
 class OngoingEventView(AuthenticatedModelView):
+    create_template = 'admin/model/create_bento.html'
+    edit_template = 'admin/model/edit_bento.html'
     column_list = ('id', 'title', 'type', 'category', 'active', 'sort_order', 'date_entered', 'expires_at')
     column_searchable_list = ('title', 'description')
     column_filters = ('type', 'active', 'category')
