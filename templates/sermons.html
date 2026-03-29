@@ -186,7 +186,7 @@
 
 .sermon-thumbnail {
     width: 100%;
-    height: 140px;
+    aspect-ratio: 1 / 1;
     border-radius: 8px;
     overflow: hidden;
     margin-bottom: 1rem;
@@ -760,7 +760,7 @@ window.sermonData = function() {
         searchQuery: '',
         selectedYear: '',
         availableYears: [],
-        viewMode: 'table', // Default to table view
+        viewMode: 'card', // Default to card view
         sermons: [],
         filteredSermons: [],
         loadingComplete: false,
