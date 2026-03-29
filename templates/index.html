@@ -253,58 +253,6 @@
         margin-bottom: 0.5rem;
     }
 
-    .events-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .events-list li {
-        padding: 0.6rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .events-list li:last-child {
-        border-bottom: none;
-    }
-
-    .events-list .event-date {
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.7);
-        flex-shrink: 0;
-    }
-
-    .events-list .event-title {
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.95);
-    }
-
-    .contact-strip {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1.5rem 2rem;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .contact-strip a,
-    .contact-strip span {
-        color: rgba(255, 255, 255, 0.9);
-        text-decoration: none;
-        font-size: 0.95rem;
-    }
-
-    .contact-strip a:hover {
-        color: #5AC8FA;
-    }
-
     /* Latest card styles consistent with dark theme */
 
     @media (max-width: 768px) {
@@ -393,30 +341,11 @@
                 <div class="latest-meta">Books, articles, and recommended reading.</div>
                 <a href="{{ url_for('resources') }}" class="cta">Resources →</a>
             </div>
-            <div class="latest-card" id="card-about">
-                <h3>About CPC</h3>
-                <div class="latest-title">Our Mission & Community</div>
-                <div class="latest-meta">Learn about Christ Presbyterian Church.</div>
-                <a href="{{ url_for('about') }}" class="cta">About →</a>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8 mt-10">
-            <div>
-                <div class="section-label" id="eventsMonthLabel">Upcoming events this month</div>
-                <ul class="events-list" id="eventsThisMonth">
-                    <li><span class="event-title">Loading…</span></li>
-                </ul>
-                <a href="{{ url_for('events') }}" class="cta mt-2 inline-block">All events →</a>
-            </div>
-            <div>
-                <div class="section-label">Contact</div>
-                <div class="contact-strip">
-                    <span>135 Whitney Ave, New Haven, CT 06510</span>
-                    <a href="mailto:admin@cpcnewhaven.org">admin@cpcnewhaven.org</a>
-                    <a href="{{ url_for('contact') }}">Contact form</a>
-                    <span>Sunday Worship: 10:30am</span>
-                </div>
+            <div class="latest-card" id="card-prayer">
+                <h3>Prayer Request</h3>
+                <div class="latest-title">Share your prayers with CPC</div>
+                <div class="latest-meta">Submit a prayer request and let our community pray with you.</div>
+                <a href="{{ url_for('contact') }}" class="cta">Prayer Request →</a>
             </div>
         </div>
     </div>
@@ -532,26 +461,12 @@
         var timer = setInterval(next, interval);
 
         // ----- Latest & Greatest data -----
-        var eventsMonthLabel = document.getElementById('eventsMonthLabel');
-        var eventsThisMonth = document.getElementById('eventsThisMonth');
-
         function formatEventDate(iso) {
             if (!iso) return '';
             // Handle ISO date strings (YYYY-MM-DD) by treating them as local time
             // to avoid the "one day off" glitch caused by timezone shifts.
             var d = new Date(iso + 'T12:00:00');
             return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        }
-
-        function setEventsThisMonth(events, monthName) {
-            eventsMonthLabel.textContent = 'Upcoming events — ' + (monthName || 'this month');
-            if (!events || events.length === 0) {
-                eventsThisMonth.innerHTML = '<li><span class="event-title">No events this month. <a href="{{ url_for("events") }}">View all events</a></span></li>';
-                return;
-            }
-            eventsThisMonth.innerHTML = events.slice(0, 8).map(function (ev) {
-                return '<li><span class="event-date">' + formatEventDate(ev.start) + '</span><span class="event-title">' + (ev.title || 'Event') + '</span></li>';
-            }).join('');
         }
 
         // Upcoming Sunday: this or next Sunday's date
@@ -584,26 +499,6 @@
                 }
             }
         }).catch(function () { });
-
-        // Fetch events -> filter by current month
-        fetch('/api/events').then(function (r) { return r.json(); }).then(function (data) {
-            var events = (data && data.events) || [];
-            var now = new Date();
-            var thisMonth = now.getMonth();
-            var thisYear = now.getFullYear();
-            var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            var inMonth = events.filter(function (ev) {
-                if (!ev.start) return false;
-                var d = new Date(ev.start);
-                return d.getMonth() === thisMonth && d.getFullYear() === thisYear && d >= now;
-            });
-            inMonth.sort(function (a, b) {
-                return (a.start || '').localeCompare(b.start || '');
-            });
-            setEventsThisMonth(inMonth, monthNames[thisMonth]);
-        }).catch(function () {
-            eventsThisMonth.innerHTML = '<li><span class="event-title">Unable to load events. <a href="{{ url_for("events") }}">View events</a></span></li>';
-        });
     })();
 </script>
 <script>
