@@ -10,8 +10,11 @@
     {% endblock %}
     {% block head_css %}
       {# No Bootstrap – custom admin only #}
+      <script src="https://cdn.tailwindcss.com"></script>
       <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
       {% if admin_view.extra_css %}
         {% for css_url in admin_view.extra_css %}
           <link href="{{ css_url }}" rel="stylesheet">
@@ -21,6 +24,34 @@
     {% block head %}
     {% endblock %}
     {% block head_tail %}
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: 'var(--background)',
+              'on-background': 'var(--on-background)',
+              'surface-container': 'var(--surface-container)',
+              'surface-container-high': 'var(--surface-container-high)',
+              'surface-container-highest': 'var(--surface-container-highest)',
+              'surface-container-low': 'var(--surface-container-low)',
+              'surface-bright': 'var(--surface-bright)',
+              'on-surface': 'var(--on-surface)',
+              'on-surface-variant': 'var(--on-surface-variant)',
+              'outline-variant': 'var(--outline-variant)',
+              primary: 'var(--primary)',
+              secondary: 'var(--secondary)',
+              tertiary: 'var(--tertiary)',
+              'primary-dim': 'var(--primary-dim)',
+            },
+            fontFamily: {
+              manrope: ['Manrope', 'sans-serif'],
+              barlow: ['Barlow', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
     {% endblock %}
   </head>
   <body class="admin-body">

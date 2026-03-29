@@ -23,6 +23,22 @@ body.admin-body {
   --liquid-blue-bright: #74c0fc;
   --radius: 8px;
   --radius-sm: 6px;
+
+  /* Material Design 3 colors for dashboard */
+  --background: #0d2137;
+  --on-background: rgba(255, 255, 255, 0.96);
+  --surface-container: #1a3a5c;
+  --surface-container-high: #1e4976;
+  --surface-container-highest: #2a5a96;
+  --surface-container-low: #132f4c;
+  --surface-bright: #224d7a;
+  --on-surface: rgba(255, 255, 255, 0.96);
+  --on-surface-variant: rgba(255, 255, 255, 0.72);
+  --outline-variant: rgba(255, 255, 255, 0.15);
+  --primary: #4dabf7;
+  --secondary: #74c0fc;
+  --tertiary: #8dd9f7;
+  --primary-dim: #3b7ab8;
 }
 
 /* ---------------------------------------------------------------------------
