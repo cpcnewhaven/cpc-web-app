@@ -2621,7 +2621,7 @@ class UserView(AuthenticatedModelView):
     column_searchable_list = ('username',)
     form_excluded_columns = ('password_hash',)
     form_extra_fields = {
-        'password': PasswordField('Password (required for new user; leave blank to keep current)'),
+        'password': PasswordField('Password (required for new user; leave blank to keep current)', validators=[Optional()]),
     }
     form_columns = ('username', 'password')
 
@@ -3107,18 +3107,6 @@ def _format_sermon_status(view, context, model, name):
     return Markup('<span class="admin-status-wrap">' + status_tag + ' ' + dropdown + '</span>')
 
 
-class SermonSeriesView(AuthenticatedModelView):
-    column_list = ('title', 'start_date', 'end_date', 'active')
-    column_searchable_list = ('title', 'description', 'slug')
-    column_filters = ('active', 'start_date')
-    column_sortable_list = ('start_date', 'title')
-    column_default_sort = ('start_date', True)
-    form_columns = ('title', 'description', 'slug', 'external_url', 'sort_order', 'image_url', 'start_date', 'end_date', 'active')
-    column_labels = {
-        'external_url': 'External URL',
-        'sort_order': 'Sort Order',
-    }
-
 class PaperView(AuthenticatedModelView):
     column_list = ('title', 'speaker', 'category', 'date_published', 'active')
     column_searchable_list = ('title', 'speaker', 'description')
@@ -3413,30 +3401,6 @@ class SermonView(AuthenticatedModelView):
         except Exception as e:
             flash(f'Error deleting sermons: {str(e)}', 'error')
             return False
-
-class PodcastSeriesView(AuthenticatedModelView):
-    column_list = ('title', 'description', 'episode_count')
-    column_searchable_list = ('title', 'description')
-    column_sortable_list = ('title',)
-    form_excluded_columns = ['id']
-
-    form_columns = ('title', 'description')
-    form_extra_fields = {
-        'description': TextAreaField('Description', widget=TextArea(), validators=[Length(max=1000)])
-    }
-    
-    form_widget_args = {
-        'description': {'rows': 5, 'style': 'width: 100%'}
-    }
-    
-    def on_model_change(self, form, model, is_created):
-        if is_created:
-            model.id = next_global_id()
-    
-    def episode_count(self, context, model, name):
-        return len(model.episodes) if model.episodes else 0
-    
-    episode_count.column_type = 'integer'
 
 class PodcastEpisodeView(AuthenticatedModelView):
     create_template = 'admin/model/create_bento.html'
@@ -4025,11 +3989,6 @@ class TeachingSeriesView(AuthenticatedModelView):
             flash(f'Error deleting teaching series: {str(e)}', 'error')
             return False
 
-    def is_visible(self):
-        """Hide from admin menu; access only via Teaching Series overview page."""
-        return False
-
-
 class TeachingSeriesSessionView(AuthenticatedModelView):
     """Admin for sessions (1, 2, 3...) within a teaching series; PDF upload per session."""
     column_list = ('number', 'title', 'series', 'session_date', 'pdf_url', 'date_entered')
@@ -4584,6 +4543,8 @@ with app.app_context():
     admin.add_view(BackupGalleryView(name='Backup all media', endpoint='backup_gallery', category='More'))
     admin.add_view(PodcastThumbnailsView(name='Podcast Thumbnails', endpoint='podcast_thumbnails', category='More'))
     admin.add_view(UserView(User, db.session, name='Users', endpoint='user', category='More'))
+    admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', endpoint='teachingseries', category='More'))
+    admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Teaching Sessions', endpoint='teachingsession', category='More'))
 
 if __name__ == '__main__':
     # Use one port for both main and reloader (so URL doesn't change after restart)
