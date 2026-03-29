@@ -3,106 +3,116 @@
 {% block title %}Sundays - CPC New Haven{% endblock %}
 
 {% block content %}
-<div class="sundays-page compact-page">
-    <div class="compact-content">
-        <div class="sundays-hero compact-hero">
-            <h1>Sundays at CPC</h1>
-            <p>Join us for worship, fellowship, and community every Sunday</p>
-        </div>
-
-        <section class="service-schedule-section">
-            <div class="container">
-        <h2>Sunday Service Schedule</h2>
-        <div class="schedule-timeline">
-            <div class="schedule-item">
-                <div class="schedule-time">{{ site_content.get('service_prayer_time', '8:30am') }}</div>
-                <div class="schedule-content">
-                    <h3>Prayer in the Parlor</h3>
-                    <p>Join us for prayer and fellowship in the church parlor</p>
-                </div>
-            </div>
-            <div class="schedule-item">
-                <div class="schedule-time">{{ site_content.get('service_school_time', '9:30am') }}</div>
-                <div class="schedule-content">
-                    <h3>Sunday School & Adult Studies</h3>
-                    <p>Children's Sunday School and Adult Bible Studies</p>
-                </div>
-            </div>
-            <div class="schedule-item featured">
-                <div class="schedule-time">{{ site_content.get('service_worship_time', '10:30am') }}</div>
-                <div class="schedule-content">
-                    <h3>Sunday Worship Service</h3>
-                    <p>Our main worship service with preaching, prayer, and communion</p>
-                </div>
-            </div>
-            <div class="schedule-item">
-                <div class="schedule-time">{{ site_content.get('service_fellowship_time', '12:00pm') }}</div>
-                <div class="schedule-content">
-                    <h3>Fellowship Lunch</h3>
-                    <p>Stay for fellowship and community after worship</p>
-                </div>
-            </div>
+<div class="sundays-page">
+    <!-- Hero Section -->
+    <div style="background: linear-gradient(135deg, rgba(0, 60, 130, 0.4), rgba(0, 50, 120, 0.3)); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 3rem 1.25rem; margin-bottom: 2rem; text-align: center;">
+        <div class="container mx-auto">
+            <h1 style="font-size: 2.5rem; font-weight: 700; color: rgba(255,255,255,0.95); margin-bottom: 0.5rem;">Join Us This Sunday</h1>
+            <p style="font-size: 1.1rem; color: rgba(255,255,255,0.75);">Experience worship, community, and spiritual growth at 10:30am</p>
         </div>
     </div>
-</section>
 
-{% if site_content.get('bulletin_text') %}
-<section class="service-schedule-section" id="bulletin">
-    <div class="container">
-        <h2>{{ site_content.get('bulletin_title', 'This Week at CPC') }}</h2>
-        {% if site_content.get('bulletin_date') %}
-        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1.25rem;">{{ site_content.get('bulletin_date') }}</p>
-        {% endif %}
-        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; color: rgba(255,255,255,0.85); line-height: 1.75; white-space: pre-wrap;">{{ site_content.get('bulletin_text') }}</div>
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Sunday Schedule -->
+        <section style="margin-bottom: 3rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Sunday Schedule</h2>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">8:30am</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Prayer in the Parlor</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">9:30am</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Sunday School & Adult Studies</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 2px solid #74c0fc; border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">10:30am</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Worship Service</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">12:00pm</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Fellowship Lunch</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What We Offer -->
+        <section style="margin-bottom: 3rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">What We Offer</h2>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
+                    <p style="color: rgba(255,255,255,0.9);"><strong>Children Welcome</strong> — Age-appropriate care and Sunday School classes for all ages</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
+                    <p style="color: rgba(255,255,255,0.9);"><strong>Fellowship Lunch</strong> — Complimentary catered meal after worship</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Children's Sunday School -->
+        <section style="margin-bottom: 3rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Children's Sunday School</h2>
+            <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                    <div>
+                        <p style="color: #74c0fc; font-weight: 600; margin-bottom: 0.25rem;">2yrs - Pre-K</p>
+                        <p style="color: rgba(255,255,255,0.75);">Lower Level Classroom</p>
+                    </div>
+                    <div>
+                        <p style="color: #74c0fc; font-weight: 600; margin-bottom: 0.25rem;">K - 1st Grade</p>
+                        <p style="color: rgba(255,255,255,0.75);">Upper Floor Classroom</p>
+                    </div>
+                    <div>
+                        <p style="color: #74c0fc; font-weight: 600; margin-bottom: 0.25rem;">2nd - 5th Grade</p>
+                        <p style="color: rgba(255,255,255,0.75);">Main Floor Lecture Room</p>
+                    </div>
+                    <div>
+                        <p style="color: #74c0fc; font-weight: 600; margin-bottom: 0.25rem;">6th - 12th Grade</p>
+                        <p style="color: rgba(255,255,255,0.75);">Upper Floor Youth Room</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Adult Studies -->
+        <section style="margin-bottom: 3rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Adult Sunday Studies</h2>
+            <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;"><strong>Fellowship Hall at 9:30am</strong></p>
+                <p style="color: rgba(255,255,255,0.75);">Led by Rev. Craig Luekens</p>
+            </div>
+        </section>
+
+        <!-- Location & Parking -->
+        <section style="margin-bottom: 3rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Location & Parking</h2>
+            <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">
+                <p style="color: rgba(255,255,255,0.9); font-weight: 600; margin-bottom: 1rem;">135 Whitney Avenue<br>New Haven, CT 06510</p>
+                <p style="color: rgba(255,255,255,0.75); margin-bottom: 1rem;">Next to Yale School of Management<br>Corner of Whitney Ave. and Bradley St.</p>
+                <ul style="color: rgba(255,255,255,0.75); margin-left: 1.25rem;">
+                    <li>Limited on-site parking</li>
+                    <li>Additional parking on Bradley Street</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Fellowship Lunch -->
+        <section style="margin-bottom: 3rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Fellowship Lunch</h2>
+            <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
+                <p style="color: rgba(255,255,255,0.85); line-height: 1.6;">On most Sundays throughout the year, our worship service is followed by a shared fellowship meal at about 12pm. The meal is free to visitors and an enjoyable way to get to know some people while eating a catered meal.</p>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, rgba(0, 100, 200, 0.2), rgba(0, 80, 180, 0.15)); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 1rem;">We'd love to see you this Sunday!</h2>
+            <p style="color: rgba(255,255,255,0.75); margin-bottom: 1.5rem;">Have questions? Contact us anytime.</p>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center; color: rgba(255,255,255,0.85);">
+                <p><strong>203.777.6960</strong></p>
+                <p><strong>admin@cpcnewhaven.org</strong></p>
+            </div>
+        </section>
     </div>
-</section>
-{% endif %}
-
-<!-- What to Expect Section -->
-<section class="what-to-expect-section">
-    <div class="container">
-        <h2>What to Expect</h2>
-        <div class="expectation-grid">
-            <div class="expectation-card">
-                <div class="expectation-icon">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <h3>Biblical Preaching</h3>
-                <p>Expository preaching that brings the Word of God to life and applies it to our daily lives.</p>
-            </div>
-            <div class="expectation-card">
-                <div class="expectation-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3>Welcoming Community</h3>
-                <p>Come as you are - we welcome everyone with open arms and hearts.</p>
-            </div>
-            <div class="expectation-card">
-                <div class="expectation-icon">
-                    <i class="fas fa-music"></i>
-                </div>
-                <h3>Blended Worship</h3>
-                <p>Traditional and contemporary music that glorifies God and engages the congregation.</p>
-            </div>
-            <div class="expectation-card">
-                <div class="expectation-icon">
-                    <i class="fas fa-child"></i>
-                </div>
-                <h3>Children's Ministry</h3>
-                <p>Age-appropriate Sunday School classes for children of all ages.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add any Sunday-specific JavaScript here
-    console.log('Sundays page loaded');
-});
-</script>
+</div>
 {% endblock %}

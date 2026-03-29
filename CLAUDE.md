@@ -70,6 +70,7 @@ Hover state: nudge background opacity up + `transform: translateY(-4px)` + stron
 - Desktop: `.hidden lg:flex` (Tailwind utility)
 - Mobile: separate `#mobileMenu` element
 - Icons: Font Awesome 6 (`fa-solid`, `fa-brands`)
+- **Preferred structure**: Flat top-level nav items (Home, Sundays, Sermons, Podcasts, Community, Events, Live, Resources) as direct links, with only a "More" dropdown for less common items (Give, Search, Archive, Admin)
 
 ### Tailwind Usage
 
