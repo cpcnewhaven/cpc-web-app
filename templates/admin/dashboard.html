@@ -111,31 +111,59 @@
                          <h3 class="font-manrope text-sm font-black text-primary uppercase tracking-[0.2em]">Latest Content Deployed</h3>
                          <a href="{{ url_for('history.index') }}" class="text-[10px] font-black text-on-surface-variant/40 hover:text-primary transition-colors uppercase tracking-widest">View Master Logs</a>
                     </div>
-                    {% if recent_announcements or recent_sermons %}
+                    {% if recent_announcements %}
+                        <div class="px-8 py-3 bg-surface-container-low border-b border-outline-variant/10">
+                             <div class="text-[9px] font-black text-on-surface-variant/40 uppercase tracking-widest">Recent Announcements</div>
+                        </div>
                         <div class="divide-y divide-outline-variant/5">
-                            {% for item in (recent_announcements + recent_sermons)|sort(attribute='date_entered' if 'date_entered' in item else 'date', reverse=True) %}
-                            {% if loop.index <= 5 %}
+                            {% for item in recent_announcements[:3] %}
                             <div class="p-6 flex items-center justify-between group">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 group-hover:text-primary transition-all">
-                                        <span class="material-symbols-outlined text-xl">{% if item.speaker %}menu_book{% else %}campaign{% endif %}</span>
+                                        <span class="material-symbols-outlined text-xl">campaign</span>
                                     </div>
                                     <div>
                                         <div class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">{{ item.title }}</div>
                                         <div class="text-[9px] text-on-surface-variant/50 font-bold uppercase tracking-widest mt-0.5">
-                                            {{ item.date_entered.strftime('%b %d') if item.date_entered else item.date.strftime('%b %d') }} — 
-                                            {% if item.speaker %}Sermon by {{ item.speaker }}{% else %}{{ item.type|title }}{% endif %}
+                                            {{ item.date_entered.strftime('%b %d') }} — {{ item.type|title }}
                                         </div>
                                     </div>
                                 </div>
-                                <a href="{% if item.speaker %}{{ url_for('sermon.edit_view', id=item.id) }}{% else %}{{ url_for('announcement.edit_view', id=item.id) }}{% endif %}" class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-primary/10 hover:text-primary transition-all active:scale-95">
-                                    <span class="material-symbols-outlined">edit</span>
+                                <a href="{{ url_for('announcement.edit_view', id=item.id) }}" class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-primary/10 hover:text-primary transition-all">
+                                    <span class="material-symbols-outlined text-sm">edit</span>
                                 </a>
                             </div>
-                            {% endif %}
                             {% endfor %}
                         </div>
-                    {% else %}
+                    {% endif %}
+
+                    {% if recent_sermons %}
+                        <div class="px-8 py-3 bg-surface-container-low border-b border-t border-outline-variant/10">
+                             <div class="text-[9px] font-black text-on-surface-variant/40 uppercase tracking-widest">Recent Sermons</div>
+                        </div>
+                        <div class="divide-y divide-outline-variant/5">
+                            {% for item in recent_sermons[:3] %}
+                            <div class="p-6 flex items-center justify-between group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 group-hover:text-tertiary transition-all">
+                                        <span class="material-symbols-outlined text-xl">menu_book</span>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-on-surface group-hover:text-tertiary transition-colors">{{ item.title }}</div>
+                                        <div class="text-[9px] text-on-surface-variant/50 font-bold uppercase tracking-widest mt-0.5">
+                                            {{ item.date.strftime('%b %d') }} — Sermon by {{ item.speaker_name or item.speaker }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{{ url_for('sermon.edit_view', id=item.id) }}" class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-tertiary/10 hover:text-tertiary transition-all">
+                                    <span class="material-symbols-outlined text-sm">edit</span>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if not recent_announcements and not recent_sermons %}
                         <div class="p-12 text-center text-on-surface-variant/30 text-xs font-bold uppercase tracking-widest">No recent deployments recorded.</div>
                     {% endif %}
                 </div>

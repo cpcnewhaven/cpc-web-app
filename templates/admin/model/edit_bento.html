@@ -1,6 +1,50 @@
 {% extends 'admin/master.html' %}
 {% import 'admin/lib.html' as lib with context %}
 
+{% macro render_field(field) %}
+    {% if field.type == 'BooleanField' %}
+        <div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10 group hover:border-secondary/30 transition-colors shadow-inner">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-on-surface/60 group-hover:text-on-surface transition-colors">{{ field.label.text }}</div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                {{ field(class="sr-only peer") }}
+                <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+            </label>
+        </div>
+    {% elif field.type in ['SelectField', 'DatalistField', 'Select2Field'] %}
+        <div class="relative group">
+            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-on-surface appearance-none focus:bg-surface-container-low transition-all shadow-inner relative z-10 text-sm") }}
+            <span class="material-symbols-outlined absolute right-4 top-4 text-primary-dim/40 pointer-events-none z-20 group-hover:text-primary transition-colors">expand_more</span>
+        </div>
+    {% elif field.type == 'TextAreaField' %}
+        {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface placeholder:text-outline/40 focus:bg-surface-container-low transition-all shadow-inner", rows="5") }}
+    {% elif field.type == 'URLField' or 'url' in field.name|lower or 'link' in field.name|lower %}
+        <div class="flex items-center bg-surface-container-lowest rounded-xl overflow-hidden focus-within:bg-surface-container-low transition-all border border-outline-variant/10 shadow-inner group">
+            <span class="material-symbols-outlined pl-4 text-outline-variant/60 group-focus-within:text-primary transition-colors">
+                {% if 'audio' in field.name|lower %}audio_file
+                {% elif 'video' in field.name|lower or 'youtube' in field.name|lower %}movie
+                {% elif 'spotify' in field.name|lower or 'podcast' in field.name|lower %}podcasts
+                {% elif 'image' in field.name|lower or 'thumb' in field.name|lower %}image
+                {% else %}link{% endif %}
+            </span>
+            {{ field(class="w-full bg-transparent border-none p-4 text-sm text-on-surface placeholder:text-outline/40 focus:ring-0", placeholder=(field.render_kw.placeholder if field.render_kw and field.render_kw.placeholder else "Enter URL...")) }}
+        </div>
+    {% elif field.type in ['DatePickerField', 'DateField'] %}
+        <div class="relative group">
+            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner relative z-10", type="date") }}
+            <span class="material-symbols-outlined absolute right-4 top-4 text-primary/40 pointer-events-none z-20 group-hover:text-primary transition-colors">calendar_today</span>
+        </div>
+    {% elif field.type in ['DateTimePickerField', 'DateTimeField'] %}
+         <div class="relative group">
+            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner relative z-10", type="datetime-local") }}
+            <span class="material-symbols-outlined absolute right-4 top-4 text-primary/40 pointer-events-none z-20 group-hover:text-primary transition-colors">schedule</span>
+        </div>
+    {% elif field.type == 'IntegerField' or 'number' in field.name|lower %}
+        {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner", type="number") }}
+    {% else %}
+        {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface placeholder:text-outline/40 focus:bg-surface-container-low transition-all shadow-inner", placeholder=(field.render_kw.placeholder if field.render_kw and field.render_kw.placeholder else "")) }}
+    {% endif %}
+{% endmacro %}
+
 {% block body %}
     <div class="grid grid-cols-12 gap-8" id="bento-grid-form">
         <!-- Main Form Canvas (Sections 1 & 2) -->
@@ -140,49 +184,4 @@
             </div>
         </aside>
     </div>
-
-    {# Macro for rendering fields with dark premium styling #}
-    {% macro render_field(field) %}
-        {% if field.type == 'BooleanField' %}
-            <div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10 group hover:border-secondary/30 transition-colors shadow-inner">
-                <div class="text-[10px] font-bold uppercase tracking-widest text-on-surface/60 group-hover:text-on-surface transition-colors">{{ field.label.text }}</div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    {{ field(class="sr-only peer") }}
-                    <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
-                </label>
-            </div>
-        {% elif field.type in ['SelectField', 'DatalistField', 'Select2Field'] %}
-            <div class="relative group">
-                {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-on-surface appearance-none focus:bg-surface-container-low transition-all shadow-inner relative z-10 text-sm") }}
-                <span class="material-symbols-outlined absolute right-4 top-4 text-primary-dim/40 pointer-events-none z-20 group-hover:text-primary transition-colors">expand_more</span>
-            </div>
-        {% elif field.type == 'TextAreaField' %}
-            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface placeholder:text-outline/40 focus:bg-surface-container-low transition-all shadow-inner", rows="5") }}
-        {% elif field.type == 'URLField' or 'url' in field.name|lower or 'link' in field.name|lower %}
-            <div class="flex items-center bg-surface-container-lowest rounded-xl overflow-hidden focus-within:bg-surface-container-low transition-all border border-outline-variant/10 shadow-inner group">
-                <span class="material-symbols-outlined pl-4 text-outline-variant/60 group-focus-within:text-primary transition-colors">
-                    {% if 'audio' in field.name|lower %}audio_file
-                    {% elif 'video' in field.name|lower or 'youtube' in field.name|lower %}movie
-                    {% elif 'spotify' in field.name|lower or 'podcast' in field.name|lower %}podcasts
-                    {% elif 'image' in field.name|lower or 'thumb' in field.name|lower %}image
-                    {% else %}link{% endif %}
-                </span>
-                {{ field(class="w-full bg-transparent border-none p-4 text-sm text-on-surface placeholder:text-outline/40 focus:ring-0", placeholder=field.render_kw.placeholder or "Enter URL...") }}
-            </div>
-        {% elif field.type in ['DatePickerField', 'DateField'] %}
-            <div class="relative group">
-                {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner relative z-10", type="date") }}
-                <span class="material-symbols-outlined absolute right-4 top-4 text-primary/40 pointer-events-none z-20 group-hover:text-primary transition-colors">calendar_today</span>
-            </div>
-        {% elif field.type in ['DateTimePickerField', 'DateTimeField'] %}
-             <div class="relative group">
-                {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner relative z-10", type="datetime-local") }}
-                <span class="material-symbols-outlined absolute right-4 top-4 text-primary/40 pointer-events-none z-20 group-hover:text-primary transition-colors">schedule</span>
-            </div>
-        {% elif field.type == 'IntegerField' or 'number' in field.name|lower %}
-            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface focus:bg-surface-container-low transition-all shadow-inner", type="number") }}
-        {% else %}
-            {{ field(class="w-full bg-surface-container-lowest border-none rounded-xl p-4 text-sm text-on-surface placeholder:text-outline/40 focus:bg-surface-container-low transition-all shadow-inner", placeholder=field.render_kw.placeholder or "") }}
-        {% endif %}
-    {% endmacro %}
 {% endblock %}
