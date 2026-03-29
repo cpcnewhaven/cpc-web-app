@@ -4560,17 +4560,17 @@ with app.app_context():
 
     # 7. Register admin views (inside app context so get_form() can use DB)
     admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
-    admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements'))
+    admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', endpoint='announcement'))
     admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', endpoint='event'))
-    admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons'))
-    admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcasts'))
-    admin.add_view(PaperView(Paper, db.session, name='Papers & Bulletins', category='More'))
-    admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', category='More'))
+    admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', endpoint='sermon'))
+    admin.add_view(PodcastEpisodeView(PodcastEpisode, db.session, name='Podcasts', endpoint='podcastepisode'))
+    admin.add_view(PaperView(Paper, db.session, name='Papers & Bulletins', endpoint='paper', category='More'))
+    admin.add_view(GalleryImageView(GalleryImage, db.session, name='Gallery', endpoint='galleryimage', category='More'))
     admin.add_view(BannerAlertView(name='Banner Alerts', endpoint='banner_alerts', category='More'))
     admin.add_view(HistoryView(name='Activity History', endpoint='history', category='More'))
     admin.add_view(BackupGalleryView(name='Backup all media', endpoint='backup_gallery', category='More'))
     admin.add_view(PodcastThumbnailsView(name='Podcast Thumbnails', endpoint='podcast_thumbnails', category='More'))
-    admin.add_view(UserView(User, db.session, name='Users', category='More'))
+    admin.add_view(UserView(User, db.session, name='Users', endpoint='user', category='More'))
 
 if __name__ == '__main__':
     # Use one port for both main and reloader (so URL doesn't change after restart)

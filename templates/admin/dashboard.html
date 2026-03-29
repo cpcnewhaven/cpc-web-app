@@ -537,7 +537,7 @@
                         style="text-decoration: none;">
                         <i class="fas fa-list"></i> Manage announcements
                     </a>
-                    <a href="/admin/announcement/create/?url=/admin/announcement/" class="wizard-btn wizard-btn-amber"
+                    <a href="{{ url_for('announcement.create_view', url='/admin/announcement/') }}" class="wizard-btn wizard-btn-amber"
                         style="text-decoration: none;">
                         <i class="fas fa-plus"></i> Add banner alert
                     </a>
@@ -557,7 +557,7 @@
 
     <div class="dashboard-grid wizard-cards">
         <!-- Announcement/Event/Banner Wizard – UNIFIED -->
-        <div class="wizard-card" onclick="window.location.href='/admin/announcement/create/?url=/admin/announcement/'">
+        <div class="wizard-card" onclick="window.location.href='{{ url_for('announcement.create_view', url='/admin/announcement/') }}'">
             <i class="fas fa-bullhorn wizard-icon"></i>
             <div class="wizard-title">New Announcement</div>
             <div class="wizard-desc">
@@ -569,7 +569,7 @@
         </div>
 
         <!-- Sunday Sermon Wizard (book → chapter → verse) -->
-        <div class="wizard-card" onclick="window.location.href='/admin/sermon/create/?url=/admin/sermon/'">
+        <div class="wizard-card" onclick="window.location.href='{{ url_for('sermon.create_view', url='/admin/sermon/') }}'">
             <i class="fas fa-microphone wizard-icon"></i>
             <div class="wizard-title">New Sunday Sermon</div>
             <div class="wizard-desc">
@@ -583,7 +583,7 @@
         </div>
 
         <!-- Podcast Wizard -->
-        <div class="wizard-card" onclick="window.location.href='/admin/podcastepisode/create/?url=/admin/podcastepisode/'">
+        <div class="wizard-card" onclick="window.location.href='{{ url_for('podcastepisode.create_view', url='/admin/podcastepisode/') }}'">
             <i class="fas fa-podcast wizard-icon"></i>
             <div class="wizard-title">New Podcast Episode</div>
             <div class="wizard-desc">
@@ -596,7 +596,7 @@
         </div>
 
         <!-- Gallery Wizard -->
-        <div class="wizard-card" onclick="window.location.href='/admin/galleryimage/create/?url=/admin/galleryimage/'">
+        <div class="wizard-card" onclick="window.location.href='{{ url_for('galleryimage.create_view', url='/admin/galleryimage/') }}'">
             <i class="fas fa-images wizard-icon"></i>
             <div class="wizard-title">Add Gallery Image</div>
             <div class="wizard-desc">
