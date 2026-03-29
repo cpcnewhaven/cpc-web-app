@@ -255,6 +255,23 @@ def auto_assign_session_number(mapper, connection, target):
             target.number = 1
 
 
+class LifeGroup(db.Model):
+    """A LifeGroup — small group for prayer, teaching, fellowship, and care."""
+    __tablename__ = 'life_groups'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(200), nullable=False)
+    leaders = db.Column(db.String(500))  # Free text (comma-separated names or full listing)
+    location = db.Column(db.String(300))
+    meeting_time = db.Column(db.String(200))  # e.g. "Wednesday evenings" or "Saturdays 8:00 AM"
+    description = db.Column(db.Text)  # Optional additional detail
+    active = db.Column(db.Boolean, default=True)
+    sort_order = db.Column(db.Integer, default=0)  # Lower = higher priority
+
+    def __repr__(self):
+        return f'<LifeGroup {self.name}>'
+
+
 class Paper(db.Model):
     __tablename__ = 'papers'
 

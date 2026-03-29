@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+
+{% block title %}LifeGroups - CPC New Haven{% endblock %}
+
+{% block head %}
+<style>
+    .lifegroups-page {
+        min-height: calc(100vh - 200px);
+        padding: 0;
+        margin: 0;
+    }
+
+    .lifegroups-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Hero Section */
+    .lifegroups-hero {
+        background: linear-gradient(135deg, rgba(0, 82, 163, 0.3), rgba(0, 60, 130, 0.25));
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 3rem 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .lifegroups-hero h1 {
+        font-size: 2.5rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 1rem 0;
+        font-weight: 700;
+        font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .lifegroups-hero .tagline {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+        font-style: italic;
+    }
+
+    /* Content Area */
+    .lifegroups-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem 3rem;
+    }
+
+    /* Vision Section */
+    .vision-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .vision-section h2 {
+        font-size: 1.75rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 1.5rem 0;
+        font-weight: 600;
+    }
+
+    .vision-section p {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.85);
+        margin: 0 0 1rem 0;
+    }
+
+    .vision-section p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Pillars Grid */
+    .pillars-section h2 {
+        font-size: 1.75rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 1.5rem 0;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .pillar-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .pillar-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-4px);
+    }
+
+    .pillar-icon {
+        font-size: 2.5rem;
+        color: rgba(0, 82, 163, 0.8);
+        margin-bottom: 1rem;
+    }
+
+    .pillar-card h3 {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.75rem 0;
+        font-weight: 600;
+    }
+
+    .pillar-card p {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Groups Section */
+    .groups-section {
+        margin-bottom: 3rem;
+    }
+
+    .groups-section h2 {
+        font-size: 1.75rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 1rem 0;
+        font-weight: 600;
+    }
+
+    .groups-section-intro {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0 0 2rem 0;
+        max-width: 800px;
+    }
+
+    .groups-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .group-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .group-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-4px);
+    }
+
+    .group-header {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .group-card h3 {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+    }
+
+    .group-leader {
+        font-size: 0.9rem;
+        color: rgba(0, 82, 163, 0.9);
+        font-weight: 500;
+    }
+
+    .group-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .detail-item {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .detail-icon {
+        color: rgba(0, 82, 163, 0.7);
+        flex-shrink: 0;
+        margin-top: 0.15rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, rgba(0, 82, 163, 0.25), rgba(0, 60, 130, 0.2));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2.5rem;
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .cta-section h2 {
+        font-size: 1.75rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0 0 1rem 0;
+        font-weight: 600;
+    }
+
+    .cta-section p {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.85);
+        margin: 0 0 1.75rem 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-primary {
+        background: rgba(0, 82, 163, 0.8);
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(0, 82, 163, 0.95);
+    }
+
+    .btn-primary:hover {
+        background: rgba(0, 82, 163, 0.95);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* White Theme Support */
+    body.theme-white .lifegroups-hero {
+        background: linear-gradient(135deg, rgba(232, 242, 255, 0.6), rgba(200, 230, 255, 0.4));
+        border-bottom-color: rgba(0, 82, 163, 0.15);
+    }
+
+    body.theme-white .lifegroups-hero h1 {
+        color: rgba(0, 52, 122, 0.95);
+    }
+
+    body.theme-white .lifegroups-hero .tagline {
+        color: rgba(0, 52, 122, 0.75);
+    }
+
+    body.theme-white .vision-section,
+    body.theme-white .pillar-card,
+    body.theme-white .group-card {
+        background: rgba(0, 82, 163, 0.08);
+        border-color: rgba(0, 82, 163, 0.2);
+    }
+
+    body.theme-white .vision-section h2,
+    body.theme-white .pillar-card h3,
+    body.theme-white .group-card h3 {
+        color: rgba(0, 52, 122, 0.95);
+    }
+
+    body.theme-white .vision-section p,
+    body.theme-white .pillar-card p,
+    body.theme-white .detail-item {
+        color: rgba(0, 52, 122, 0.85);
+    }
+
+    body.theme-white .groups-section h2 {
+        color: rgba(0, 52, 122, 0.95);
+    }
+
+    body.theme-white .groups-section-intro {
+        color: rgba(0, 52, 122, 0.75);
+    }
+
+    body.theme-white .pillar-icon {
+        color: rgba(0, 82, 163, 0.6);
+    }
+
+    body.theme-white .detail-icon {
+        color: rgba(0, 82, 163, 0.6);
+    }
+
+    body.theme-white .group-leader {
+        color: rgba(0, 82, 163, 0.85);
+    }
+
+    body.theme-white .cta-section {
+        background: linear-gradient(135deg, rgba(232, 242, 255, 0.5), rgba(200, 230, 255, 0.3));
+        border-color: rgba(0, 82, 163, 0.2);
+    }
+
+    body.theme-white .cta-section h2,
+    body.theme-white .cta-section p {
+        color: rgba(0, 52, 122, 0.95);
+    }
+
+    body.theme-white .btn-primary {
+        background: rgba(0, 82, 163, 0.75);
+        color: white;
+    }
+
+    body.theme-white .btn-secondary {
+        background: rgba(0, 82, 163, 0.1);
+        border-color: rgba(0, 82, 163, 0.3);
+        color: rgba(0, 52, 122, 0.95);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .lifegroups-hero {
+            padding: 2rem 1rem;
+        }
+
+        .lifegroups-hero h1 {
+            font-size: 2rem;
+        }
+
+        .lifegroups-content {
+            padding: 0 1rem 2rem;
+        }
+
+        .vision-section,
+        .cta-section {
+            padding: 1.5rem;
+        }
+
+        .pillars-grid,
+        .groups-list {
+            grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="lifegroups-page">
+    <div class="lifegroups-container">
+        <!-- Hero Section -->
+        <div class="lifegroups-hero">
+            <h1>LifeGroups</h1>
+            <p class="tagline">{{ lifegroup_content.get('lifegroups_tagline', 'Church in the Small — Prayer, Teaching, Fellowship & Care') }}</p>
+        </div>
+
+        <div class="lifegroups-content">
+            <!-- Vision Section -->
+            <div class="vision-section">
+                <h2>{{ lifegroup_content.get('lifegroups_vision_heading', 'Our Vision for LifeGroups') }}</h2>
+                <p>
+                    {{ lifegroup_content.get('lifegroups_vision_p1', '<strong>God\'s people are the hands and feet of Christ.</strong> We cannot experience God and grow spiritually in a truly gospel-centered and biblical way if we are living in isolation. Neither can we say we are flourishing if our brother or sister in Christ is suffering.') | safe }}
+                </p>
+                <p>
+                    {{ lifegroup_content.get('lifegroups_vision_p2', 'Bound together with covenant communion, God brings us into new relationships where sacrifice is freedom and giving to others is where we find life. <strong>LifeGroups are our way of doing church in the small</strong> with all sorts of people engaged in prayer, teaching, fellowship and care.') | safe }}
+                </p>
+                <p>
+                    {{ lifegroup_content.get('lifegroups_vision_p3', 'They are the vehicle that we use to help participants continue to experience Christ outside of our worship gatherings and to impart the pastoral care that Christ provides through the love of His people. Thus, the worship, teaching, fellowship, and care for one another supply a more intimate and hands-on encounter with the living Christ.') | safe }}
+                </p>
+            </div>
+
+            <!-- Pillars Section -->
+            <section class="pillars-section">
+                <h2>What LifeGroups Embody</h2>
+                <div class="pillars-grid">
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-hands-praying"></i></div>
+                        <h3>Prayer</h3>
+                        <p>Interceding for one another and lifting up the needs of our community and world</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-book-open"></i></div>
+                        <h3>Teaching</h3>
+                        <p>Studying Scripture and growing together in our understanding of God's Word</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-handshake"></i></div>
+                        <h3>Fellowship</h3>
+                        <p>Building meaningful relationships and genuine community with brothers and sisters in Christ</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-heart"></i></div>
+                        <h3>Care</h3>
+                        <p>Supporting one another through life's joys and sorrows with compassion and love</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Groups Section -->
+            <section class="groups-section">
+                <h2>{{ lifegroup_content.get('lifegroups_groups_heading', 'Current LifeGroups') }}</h2>
+                <p class="groups-section-intro">{{ lifegroup_content.get('lifegroups_groups_intro', 'Join a LifeGroup near you. All groups meet regularly for Bible study, prayer, and fellowship. Whether you\'re new to faith or have been walking with Jesus for years, there\'s a place for you.') }}</p>
+
+                <div class="groups-list">
+                    {% if groups %}
+                        {% for group in groups %}
+                        <div class="group-card">
+                            <div class="group-header">
+                                <h3>{{ group.name }}</h3>
+                                {% if group.leaders %}<div class="group-leader"><strong>Leaders:</strong> {{ group.leaders }}</div>{% endif %}
+                            </div>
+                            <div class="group-details">
+                                {% if group.location %}
+                                <div class="detail-item">
+                                    <span class="detail-icon"><i class="fas fa-map-marker-alt"></i></span>
+                                    <span>{{ group.location }}</span>
+                                </div>
+                                {% endif %}
+                                {% if group.meeting_time %}
+                                <div class="detail-item">
+                                    <span class="detail-icon"><i class="fas fa-clock"></i></span>
+                                    <span>{{ group.meeting_time }}</span>
+                                </div>
+                                {% endif %}
+                                {% if group.description %}
+                                <div class="detail-item">
+                                    <span class="detail-icon"><i class="fas fa-heart"></i></span>
+                                    <span>{{ group.description }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <p style="color: rgba(255,255,255,0.6); font-style: italic; text-align: center; padding: 2rem;">No active groups at this time. Check back soon!</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <h2>{{ lifegroup_content.get('lifegroups_cta_heading', 'Ready to Join?') }}</h2>
+                <p>{{ lifegroup_content.get('lifegroups_cta_text', 'Whether you\'re looking to deepen your faith, build genuine community, or experience Christ in a more intimate setting, there\'s a LifeGroup for you. Don\'t hesitate to reach out—our leaders are excited to welcome you.') }}</p>
+                <div class="cta-buttons">
+                    {% set cta_email = lifegroup_content.get('lifegroups_cta_email', 'admin@cpcnewhaven.org') %}
+                    {% set cta_phone = lifegroup_content.get('lifegroups_cta_phone', '203-777-6960') %}
+                    {% set cta_phone_tel = lifegroup_content.get('lifegroups_cta_phone_tel', '+12037776960') %}
+                    <a href="mailto:{{ cta_email }}?subject=LifeGroup Interest" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i> Email Us
+                    </a>
+                    <a href="tel:{{ cta_phone_tel }}" class="btn btn-secondary">
+                        <i class="fas fa-phone"></i> Call {{ cta_phone }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

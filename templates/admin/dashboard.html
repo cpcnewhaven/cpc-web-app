@@ -55,7 +55,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Left: Quick Wizards & Actions (8-col) -->
             <div class="lg:col-span-8 space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Sermon Wizard -->
                     <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('sermon.create_view', url='/admin/sermon/') }}'">
                         <div class="w-14 h-14 rounded-2xl bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -84,24 +84,18 @@
                         </div>
                     </div>
 
-                    <!-- Subpage Editors Grid -->
-                    <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <a href="/admin/subpage-edit/?page=bulletin" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
-                            <span class="material-symbols-outlined text-xl text-yellow-500">newspaper</span>
-                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">Weekly Bulletin</div>
-                        </a>
-                        <a href="/admin/subpage-edit/?page=service_times" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
-                            <span class="material-symbols-outlined text-xl text-blue-500">schedule</span>
-                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">Service Times</div>
-                        </a>
-                        <a href="/admin/subpage-edit/?page=about" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
-                            <span class="material-symbols-outlined text-xl text-purple-500">info</span>
-                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">About Page</div>
-                        </a>
-                        <a href="/admin/subpage-edit/?page=community" class="p-5 bg-surface-container rounded-2xl border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col gap-3">
-                            <span class="material-symbols-outlined text-xl text-teal-500">groups</span>
-                            <div class="text-[9px] font-black text-on-surface uppercase tracking-widest">Groups/Community</div>
-                        </a>
+                    <!-- Podcast Wizard -->
+                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('podcastepisode.create_view', url='/admin/podcastepisode/') }}'">
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">podcasts</span>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="font-manrope text-xl font-bold text-on-surface">Add Podcast Episode</h3>
+                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Publish a new podcast episode with link syndication to major platforms.</p>
+                        </div>
+                        <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] font-black text-secondary uppercase tracking-widest">
+                            Initialize Workflow <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </div>
                     </div>
                 </div>
 
@@ -198,6 +192,18 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Manage Site Content -->
+                <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6 cursor-pointer hover:bg-surface-bright transition-all group" onclick="window.location.href='{{ url_for('page_editors.index') }}'">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-2xl text-primary group-hover:scale-110 transition-transform">edit_document</span>
+                        <h3 class="font-manrope text-sm font-black text-primary uppercase tracking-[0.2em]">Manage Site Content</h3>
+                    </div>
+                    <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Edit messaging, copy, and descriptions across all public-facing pages.</p>
+                    <a href="{{ url_for('page_editors.index') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">
+                        Open Editor <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    </a>
                 </div>
 
                 <!-- Teaching Series Spotlight -->

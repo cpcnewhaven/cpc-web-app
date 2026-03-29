@@ -178,7 +178,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent, LifeGroup
 
 def ensure_db_columns():
     """Add any missing columns to existing tables (SQLite and PostgreSQL).
@@ -476,6 +476,26 @@ SUBPAGE_CONFIGS = {
             ('community_new_member_questions', 'New Member: Questions? (text)', 'If you have questions about getting involved or becoming a member, we\'d love to help!'),
             ('community_stories_json', 'Community Stories (JSON)', '[{"title":"Finding Family at CPC","text":"When I moved to New Haven for graduate school, I was looking for a church that would feel like home. CPC welcomed me with open arms and helped me find my place in the community.","author":"Sarah, Graduate Student"},{"title":"Growing in Faith Together","text":"Through our small group, I\'ve been able to grow deeper in my faith while building meaningful relationships with other believers. It\'s been a blessing to journey together.","author":"Michael, Small Group Member"},{"title":"Serving Our Community","text":"I love how CPC encourages us to serve not just within the church, but in our broader community. It\'s been amazing to see God at work through our outreach efforts.","author":"Jennifer, Community Outreach Volunteer"}]'),
         ]
+    },
+    'lifegroups': {
+        'title': 'LifeGroups Page',
+        'url': '/lifegroups',
+        'icon': 'fas fa-circle-nodes',
+        'color': '#2563eb',
+        'keys': [
+            ('lifegroups_tagline', 'Hero Tagline', 'Church in the Small — Prayer, Teaching, Fellowship & Care'),
+            ('lifegroups_vision_heading', 'Vision Section Heading', 'Our Vision for LifeGroups'),
+            ('lifegroups_vision_p1', 'Vision Paragraph 1', '<strong>God\'s people are the hands and feet of Christ.</strong> We cannot experience God and grow spiritually in a truly gospel-centered and biblical way if we are living in isolation. Neither can we say we are flourishing if our brother or sister in Christ is suffering.'),
+            ('lifegroups_vision_p2', 'Vision Paragraph 2', 'Bound together with covenant communion, God brings us into new relationships where sacrifice is freedom and giving to others is where we find life. <strong>LifeGroups are our way of doing church in the small</strong> with all sorts of people engaged in prayer, teaching, fellowship and care.'),
+            ('lifegroups_vision_p3', 'Vision Paragraph 3', 'They are the vehicle that we use to help participants continue to experience Christ outside of our worship gatherings and to impart the pastoral care that Christ provides through the love of His people. Thus, the worship, teaching, fellowship, and care for one another supply a more intimate and hands-on encounter with the living Christ.'),
+            ('lifegroups_groups_heading', 'Groups Section Heading', 'Current LifeGroups'),
+            ('lifegroups_groups_intro', 'Groups Section Intro', 'Join a LifeGroup near you. All groups meet regularly for Bible study, prayer, and fellowship. Whether you\'re new to faith or have been walking with Jesus for years, there\'s a place for you.'),
+            ('lifegroups_cta_heading', 'CTA Heading', 'Ready to Join?'),
+            ('lifegroups_cta_text', 'CTA Body Text', 'Whether you\'re looking to deepen your faith, build genuine community, or experience Christ in a more intimate setting, there\'s a LifeGroup for you. Don\'t hesitate to reach out—our leaders are excited to welcome you.'),
+            ('lifegroups_cta_email', 'CTA Email Address', 'admin@cpcnewhaven.org'),
+            ('lifegroups_cta_phone', 'CTA Phone Number', '203-777-6960'),
+            ('lifegroups_cta_phone_tel', 'CTA Phone (tel: link, digits only)', '+12037776960'),
+        ]
     }
 }
 
@@ -570,6 +590,13 @@ def community():
     rows = SiteContent.query.all()
     community_content = {r.key: r.value for r in rows}
     return render_template('community.html', community_content=community_content)
+
+@app.route('/lifegroups')
+def lifegroups():
+    groups = LifeGroup.query.filter_by(active=True).order_by(LifeGroup.sort_order).all()
+    rows = SiteContent.query.all()
+    lifegroup_content = {r.key: r.value for r in rows}
+    return render_template('lifegroups.html', groups=groups, lifegroup_content=lifegroup_content)
 
 @app.route('/sundays')
 def sundays():
@@ -4018,6 +4045,51 @@ class TeachingSeriesSessionView(AuthenticatedModelView):
         pass  # no special handling needed, model event listener handles auto-numbering
 
 
+class LifeGroupView(AuthenticatedModelView):
+    """Admin CRUD for LifeGroups — small groups for prayer, teaching, fellowship, care."""
+    column_list = ['name', 'leaders', 'location', 'meeting_time', 'active', 'sort_order']
+    column_sortable_list = ['name', 'sort_order', 'active']
+    column_default_sort = ('sort_order', False)
+    column_labels = {
+        'name': 'Group Name',
+        'leaders': 'Leader(s)',
+        'meeting_time': 'Meeting Time',
+        'sort_order': 'Order',
+    }
+    form_columns = ['name', 'leaders', 'location', 'meeting_time', 'description', 'active', 'sort_order']
+    form_widget_args = {
+        'description': {'rows': 3},
+        'leaders': {'placeholder': 'e.g. Craig Luekens, Allison Luekels'},
+        'meeting_time': {'placeholder': 'e.g. Thursday evenings'},
+        'location': {'placeholder': 'e.g. Downtown New Haven'},
+    }
+
+
+class PageEditorsView(BaseView):
+    """Central hub for managing all editable page content — lists all pages and links to their editors."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        # Build list of pages from SUBPAGE_CONFIGS with metadata
+        pages = []
+        for page_key, config in SUBPAGE_CONFIGS.items():
+            pages.append({
+                'key': page_key,
+                'title': config.get('title', ''),
+                'url': config.get('url', ''),
+                'icon': config.get('icon', 'edit_document'),
+                'color': config.get('color', '#0052a3'),
+                'num_fields': len(config.get('keys', [])),
+            })
+
+        return self.render('admin/page_editors.html', pages=pages)
+
+
 class QuickAddSessionsView(BaseView):
     """Admin view for quick adding bulk sessions to a teaching series."""
     def is_accessible(self):
@@ -4545,6 +4617,8 @@ with app.app_context():
     admin.add_view(UserView(User, db.session, name='Users', endpoint='user', category='More'))
     admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', endpoint='teachingseries', category='More'))
     admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Teaching Sessions', endpoint='teachingsession', category='More'))
+    admin.add_view(LifeGroupView(LifeGroup, db.session, name='Life Groups', endpoint='lifegroups_admin', category='More'))
+    admin.add_view(PageEditorsView(name='Page Editors', endpoint='page_editors'))
 
 if __name__ == '__main__':
     # Use one port for both main and reloader (so URL doesn't change after restart)
