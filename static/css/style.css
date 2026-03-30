@@ -311,10 +311,15 @@ body.theme-white .latest-card {
     background: rgba(255, 255, 255, 0.9) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
 }
 
 body.theme-white .latest-card:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(0, 82, 163, 0.15) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
 }
 
 body.theme-white .latest-card h3 {
@@ -338,11 +343,15 @@ body.theme-white .dark-card {
     background: rgba(255, 255, 255, 0.9) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
 }
 
 body.theme-white .dark-card:hover {
-    background: rgba(255, 255, 255, 0.95) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.97) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(0, 82, 163, 0.15) !important;
 }
 
 body.theme-white .dark-card h3 {
@@ -502,6 +511,43 @@ body.theme-white .hero-banner .btn-secondary:hover {
     border-width: 2px;
 }
 
+/* Latest and dark card hover effects */
+.latest-card,
+.dark-card {
+    background: rgba(0, 60, 130, 0.18);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.latest-card:hover,
+.dark-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 60, 130, 0.24);
+}
+
+/* CTA link hover effects */
+.cta {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.cta:hover {
+    color: white;
+    gap: 8px;
+}
+
 body.theme-white .highlights-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
 }
@@ -523,6 +569,11 @@ body.theme-white .highlight-card p {
 body.theme-white .cta,
 body.theme-white a.cta {
     color: var(--cpc-blue) !important;
+}
+
+body.theme-white .cta:hover,
+body.theme-white a.cta:hover {
+    gap: 8px !important;
 }
 
 /* Glass icon button */
@@ -1929,6 +1980,8 @@ body.has-top-alert .scroll-progress-bar {
 .btn-secondary:hover {
     background: white;
     color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
 }
 
 /* Cards */
@@ -2026,6 +2079,13 @@ body.has-top-alert .scroll-progress-bar {
     color: var(--text-white);
     font-size: 0.875rem;
     transition: var(--transition-fast);
+}
+
+.glass-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .glass-button {
