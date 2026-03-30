@@ -1570,6 +1570,12 @@ a:hover {
     color: var(--cpc-blue-dark);
 }
 
+a:focus-visible {
+    outline: 2px solid var(--cpc-blue);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 /* ========================================
    TOP ALERT BAR (weather, parking, etc.)
    ======================================== */
@@ -1734,6 +1740,10 @@ body.has-top-alert .scroll-progress-bar {
     transition: var(--transition-fast);
 }
 
+.nav-dropdown.active .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
 .dropdown-menu {
     position: absolute;
     top: 100%;
@@ -1877,6 +1887,12 @@ body.has-top-alert .scroll-progress-bar {
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    transition: var(--transition-fast);
+}
+
+.mobile-nav-links a:hover {
+    background: var(--glass-bg-hover);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* ========================================
@@ -1958,6 +1974,11 @@ body.has-top-alert .scroll-progress-bar {
     transition: var(--transition-fast);
     font-family: var(--font-primary);
     font-size: 0.875rem;
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--cpc-blue);
+    outline-offset: 2px;
 }
 
 .btn-primary {
@@ -2081,10 +2102,11 @@ body.has-top-alert .scroll-progress-bar {
     transition: var(--transition-fast);
 }
 
-.glass-input:focus {
+.glass-input:focus,
+.glass-input:focus-visible {
     outline: none;
     border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2), inset 0 0 0 2px rgba(0, 122, 255, 0.15);
     background: rgba(255, 255, 255, 0.08);
 }
 
