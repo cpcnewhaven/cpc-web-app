@@ -497,20 +497,38 @@
         </div>
 
         <!-- Image Gallery (Homepage Featured Images) -->
-        <div class="about-gallery" x-data="{ lightboxOpen: false, activeImage: '' }" style="position: relative;">
+        <div class="about-gallery" x-data="{
+            lightboxOpen: false,
+            activeIndex: 0,
+            images: [
+                'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg',
+                'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg',
+                'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'
+            ],
+            openLightbox(index) {
+                this.activeIndex = index;
+                this.lightboxOpen = true;
+            },
+            nextImage() {
+                this.activeIndex = (this.activeIndex + 1) % this.images.length;
+            },
+            prevImage() {
+                this.activeIndex = (this.activeIndex - 1 + this.images.length) % this.images.length;
+            }
+        }" style="position: relative;">
             <div
                 style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; border-radius: 8px; overflow: hidden; max-height: 250px;">
                 <div class="gallery-item"
-                    @click="activeImage = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg'; lightboxOpen = true"
-                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg'); background-size: cover; background-position: center; min-height: 150px;">
+                    @click="openLightbox(0)"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg'); background-size: cover; background-position: center; min-height: 150px; cursor: pointer;">
                 </div>
                 <div class="gallery-item"
-                    @click="activeImage = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'; lightboxOpen = true"
-                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'); background-size: cover; background-position: center; min-height: 150px;">
+                    @click="openLightbox(1)"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'); background-size: cover; background-position: center; min-height: 150px; cursor: pointer;">
                 </div>
                 <div class="gallery-item"
-                    @click="activeImage = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'; lightboxOpen = true"
-                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'); background-size: cover; background-position: center; min-height: 150px;">
+                    @click="openLightbox(2)"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'); background-size: cover; background-position: center; min-height: 150px; cursor: pointer;">
                 </div>
             </div>
 
@@ -518,22 +536,33 @@
             <template x-teleport="body">
                 <div x-show="lightboxOpen" style="display: none;"
                     class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+                    @click="lightboxOpen = false"
                     x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
 
                     <button @click="lightboxOpen = false"
-                        class="absolute top-6 right-6 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors">
+                        class="absolute top-6 right-6 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors z-10">
                         &times;
                     </button>
 
-                    <div class="max-w-7xl max-h-[90vh] w-full px-4" @click.away="lightboxOpen = false">
-                        <img :src="activeImage" alt="Expanded Gallery Image"
+                    <button @click.stop="prevImage()"
+                        class="absolute left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors z-10">
+                        &#8249;
+                    </button>
+
+                    <div class="max-w-7xl max-h-[90vh] w-full px-4" @click.stop>
+                        <img :src="images[activeIndex]" alt="Expanded Gallery Image"
                             class="w-full h-full object-contain mx-auto rounded shadow-2xl"
                             x-transition:enter="transition ease-out duration-300"
                             x-transition:enter-start="opacity-0 scale-95"
                             x-transition:enter-end="opacity-100 scale-100">
                     </div>
+
+                    <button @click.stop="nextImage()"
+                        class="absolute right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors z-10">
+                        &#8250;
+                    </button>
                 </div>
             </template>
         </div>

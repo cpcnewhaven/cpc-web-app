@@ -19,7 +19,10 @@
       "Bash(DATABASE_URL=\"postgresql://cpc_admin:Vi6LSZ2vOP3emQPV9HZLtkMnXxTMzvcj@dpg-d64bql24d50c73eaqle0-a.oregon-postgres.render.com/cpc_newhaven\" python migrate_add_podcast_source.py)",
       "Bash(find /Users/agworkywork/cpc-web-app -path */flask_admin/templates/bootstrap*/lib.html)",
       "Bash(find /Users/agworkywork/cpc-web-app/venv -name master.html -path */flask_admin/*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(git reset:*)",
+      "Bash(git checkout:*)",
+      "WebSearch"
     ]
   }
 }
