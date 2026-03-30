@@ -5,14 +5,15 @@ async function loadEvents() {
   if (!root) return;
   if (data.error) { root.innerHTML = `<p class="err">${data.error}</p>`; return; }
 
-  const events = data.events || [];
+  const events = (data.events || []).filter(e => e && e.start);
   if (!events.length) {
     root.innerHTML = `<p class="muted">No upcoming events at this time.</p>`;
     return;
   }
 
   // Build filter UI
-  const cats = Array.from(new Set(events.map(e => e.category || "General")));
+  const cats = Array.from(new Set(events.map(e => (e.category || "General").trim() || "General")))
+    .sort((a, b) => a.localeCompare(b));
   const controls = document.createElement('div');
   controls.className = 'evt-controls';
   controls.innerHTML = `
@@ -26,10 +27,12 @@ async function loadEvents() {
 
   const list = document.createElement('div'); list.id = 'evt-list'; root.appendChild(list);
 
-  function monthKey(iso){ const d=new Date(iso); return d.toLocaleString(undefined,{month:'long', year:'numeric'}); }
+  function monthLabel(d){ return d.toLocaleString(undefined,{month:'long', year:'numeric'}); }
+  function parseDate(iso){ const d = new Date(iso); return isNaN(d.getTime()) ? null : d; }
   function dateRange(ev){
-    const s = new Date(ev.start);
-    const e = ev.end ? new Date(ev.end) : null;
+    const s = parseDate(ev.start);
+    const e = ev.end ? parseDate(ev.end) : null;
+    if (!s) return '';
     const opts = {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'};
     const sTxt = s.toLocaleString(undefined, opts);
     if (ev.all_day) return s.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'}) + ' (All day)';
@@ -48,14 +51,24 @@ async function loadEvents() {
       const qOk = !q || `${ev.title} ${ev.description||''} ${ev.location||''}`.toLowerCase().includes(q);
       return catOk && qOk;
     });
-    // Group by month
-    const groups = {};
-    for (const ev of filtered){
-      const key = monthKey(ev.start);
-      (groups[key] ||= []).push(ev);
+    if (!filtered.length) {
+      list.innerHTML = `<p class="muted" style="margin-top:0.75rem;">No matches. Try a different category or search.</p>`;
+      return;
     }
-    for (const [mon, arr] of Object.entries(groups)){
-      const h = document.createElement('h3'); h.className='evt-month'; h.textContent = mon; list.appendChild(h);
+    // Group by month
+    const groups = new Map(); // key: "YYYY-MM" -> { label, items }
+    for (const ev of filtered) {
+      const s = parseDate(ev.start);
+      if (!s) continue;
+      const key = `${s.getFullYear()}-${String(s.getMonth()+1).padStart(2,'0')}`;
+      if (!groups.has(key)) groups.set(key, { label: monthLabel(s), items: [] });
+      groups.get(key).items.push(ev);
+    }
+    const orderedKeys = Array.from(groups.keys()).sort().reverse();
+    for (const key of orderedKeys) {
+      const group = groups.get(key);
+      const arr = group.items.slice().sort((a,b)=> (a.start||'').localeCompare(b.start||'')); // within-month chronological
+      const h = document.createElement('h3'); h.className='evt-month'; h.textContent = group.label; list.appendChild(h);
       for (const ev of arr){
         const card = document.createElement('article'); card.className='evt-card';
         const mapUrl = gmap(ev.location);
