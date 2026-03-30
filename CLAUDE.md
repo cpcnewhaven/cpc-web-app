@@ -1,6 +1,81 @@
-# CPC New Haven – Claude Code Style Contract
+# CLAUDE.md
 
-This file is loaded automatically on every session. Read it before touching any UI, CSS, or template.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+---
+
+## Development Commands
+
+### Run the Application
+```bash
+# Recommended: Smart startup with port detection
+python start_app.py
+
+# Direct start (auto-detects available port)
+python app.py
+
+# Manual port specification
+flask run --port 5001
+```
+
+URLs when running locally:
+- Main site: `http://localhost:PORT`
+- Admin panel: `http://localhost:PORT/admin`
+- Enhanced search: `http://localhost:PORT/sermons_enhanced`
+- API endpoints: Various routes in `enhanced_api.py` and `json_api.py`
+
+### Environment Setup
+Create a `.env` file in the project root (gitignored):
+```env
+SECRET_KEY=your-secret-key-here
+DATABASE_URL=sqlite:///cpc_newhaven.db          # SQLite for dev (default)
+# DATABASE_URL=postgresql://user:pass@host/db  # Or PostgreSQL
+
+# Optional
+ANTHROPIC_API_KEY=sk-ant-...          # For Claude API features (scripture extraction)
+MAILCHIMP_API_KEY=...                 # For newsletter sync
+MAILCHIMP_SERVER_PREFIX=us21
+MAILCHIMP_LIST_ID=...
+LIVE_DATABASE_URL=postgresql://...    # For sync_db.py
+```
+
+### Database Setup
+```bash
+# Create tables from models
+python -c "from app import app, db; app.app_context().push(); db.create_all()"
+
+# Load sample data
+python migrate_data.py
+
+# Sync local DB with production (when DATABASE_URL is set to prod)
+LIVE_DATABASE_URL='postgresql://...' python sync_db.py
+```
+
+### No Test Suite
+This project has **no automated tests**. Changes should be verified manually in the browser.
+
+### Development vs Production
+
+**Local Development** (`FLASK_ENV=development`)
+- Database: SQLite (`cpc_newhaven.db`)
+- Debug mode: Enabled (auto-reload, better error pages)
+- Logging: Shows request/response info
+- Admin password: Not enforced (Chris's account always works)
+
+**Production** (Render/Railway, `DATABASE_URL` set)
+- Database: PostgreSQL (Render)
+- Debug mode: Disabled
+- Caching: Critical for performance (15-min TTL)
+- Admin: Password required via Flask-Admin
+- HTTPS: Enforced by Render
+
+To test production behavior locally, set `FLASK_ENV=production` and use a PostgreSQL URL in `DATABASE_URL`.
+
+---
+
+## CPC New Haven – Claude Code Style Contract
+
+Read before touching any UI, CSS, or template.
 
 ---
 
@@ -155,6 +230,113 @@ The custom scrollbar (`#admin-scroll-rail`) is injected dynamically by admin.js 
 
 ---
 
+## Codebase Architecture
+
+### Core Stack
+- **Framework**: Flask 2.3.3 with SQLAlchemy ORM, Flask-Admin for CRUD
+- **Database**: PostgreSQL (prod via Render/Railway), SQLite (local dev)
+- **Frontend**: Jinja2 templates, Tailwind CDN (layout/spacing only, NOT colors), Alpine.js, vanilla JS
+- **Admin**: Custom dark-themed CSS system (no Bootstrap, no Tailwind), Quill WYSIWYG for rich text
+- **AI Integration**: Anthropic Claude API for content enhancement (scripture extraction, series classification)
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `app.py` | Flask app initialization, Flask-Admin setup, all page routes |
+| `models.py` | 30+ SQLAlchemy models (Sermon, Podcast, Announcement, Event, Gallery, etc.) |
+| `database.py` | SQLAlchemy instance (imported by both models and app) |
+| `config.py` | Flask config, podcast feeds, event rules, timezones |
+| `enhanced_api.py` | RESTful API endpoints (`/api/*`) for content retrieval |
+| `json_api.py` | Secondary JSON endpoints |
+| `static/css/` | `style.css` (frontend), `admin.css` (admin), `admin-wysiwyg.css` (Quill editor) |
+| `static/js/admin.js` | All admin interactivity (navbar, dropdowns, modals, scrollbar) |
+| `templates/base.html` | Frontend base template with nav, theme switching |
+| `templates/admin/base.html` | Admin base template |
+| `ingest/` | Modules for syncing content from external sources (Google Drive, Mailchimp, YouTube, events) |
+
+### How the App Works
+
+**Content Types** (all have dedicated models in models.py):
+- **Sermon** + **SermonSeries**: Audio/video sermons with scripture references, pastors, dates
+- **PodcastSeries** + **PodcastEpisode**: Distinct from sermons; fetched from RSS feeds
+- **Announcement**: News/banners/events managed by Chris via admin
+- **OngoingEvent**: Recurring church events (classes, groups)
+- **Event**: One-off calendar events synced from Google Calendar ICS
+- **GalleryImage**: Tagged photos with date metadata
+- **LifeGroup**: Small group directory with metadata
+- **Subpage** (with `page_key`): Custom pages (About, Community, Resources, etc.) editable in admin
+- **BibleBook** + **BibleChapter**: For scripture lookups and validation
+
+**Content Flow**:
+1. Admin creates/edits content in `/admin` (Flask-Admin CRUD)
+2. Content is stored in the database
+3. Frontend pages call API endpoints in `enhanced_api.py` to fetch data
+4. Pages render Jinja2 templates with the data
+5. Alpine.js and vanilla JS handle client-side interactivity
+
+**Admin Pages** (beyond standard CRUD):
+- `/admin/quick_add_sessions` – Bulk add sermons with AI scripture extraction
+- `/admin/teaching_series_overview` – Manage sermon series with reordering
+- `/admin/google_drive_dashboard` – Sync media from Google Drive
+- `/admin/live_content` – Toggle live broadcast features
+- `/admin/banner_manage` – Feature/superfeatured announcements on homepage
+- `/admin/page_editors` – Edit custom pages (About, Resources, etc.)
+
+### Models Overview
+
+**Core content models** (all in `models.py`):
+- **Sermon** — Individual sermons with pastor, date, scripture, media links (Spotify, YouTube, Apple Podcasts)
+- **SermonSeries** — Groups of sermons by topic/date range
+- **PodcastSeries** + **PodcastEpisode** — Podcast episodes (different from sermons)
+- **Announcement** — News, event announcements, banners (has featured/superfeatured flags)
+- **Event** + **OngoingEvent** — One-off calendar events and recurring church events
+- **GalleryImage** — Photos with tags and date metadata
+- **LifeGroup** — Small group directory entries
+- **Subpage** — Editable pages (About, Community, Resources) with `page_key` identifier
+- **BibleBook** + **BibleChapter** — Scripture reference data
+
+**Utility models:**
+- **GlobalIDCounter** — Single-row table tracking next global content ID
+- **TeachingSession** — Internal teaching session tracking
+- **BentoBox** — Featured content container for homepage
+
+**Design pattern**: All content models have:
+- `id` — Global unique ID (pulled from `GlobalIDCounter`)
+- `created_at` / `date_entered` / `date` — Timestamp
+- `active` — Boolean flag for published/visible
+- Various metadata (tags, categories, URLs, etc.)
+
+### Global ID Counter
+Every piece of content (across all types) gets a unique ID from `GlobalIDCounter.next_id`. This ensures IDs are globally unique and always increasing: 1, 2, 3, … 543, 544, …
+
+### Data Sources & Integrations
+- **Google Calendar**: Events synced via public ICS feed (configurable in `config.py`)
+- **Podcast Feeds**: Fetched via RSS (Anchor FM, etc. — see `PODCAST_FEEDS` in config)
+- **Google Drive**: Media synced via `google_drive_routes.py` and `google_drive_integration.py`
+- **Mailchimp**: Newsletter integration via API or RSS (optional)
+- **Claude API**: Used in `quick_add_sessions` to extract scripture and classify sermons
+
+### Helper Scripts
+- `start_app.py` – Smart Flask starter with port conflict detection
+- `sync_db.py` – Sync local DB from production
+- `migrate_data.py` – Load sample/bootstrap data
+- `ingest/*.py` – Background modules for syncing external content (Google Drive, Mailchimp, YouTube, events)
+- `populate_*.py` – Bulk-load specific content (announcements, highlights, podcasts, gallery, etc.)
+- `check_*.py` – Validation/debugging utilities (check_podcasts.py, check database state, etc.)
+- `setup_*.py` – One-time setup scripts (Google Drive, podcast fetcher, etc.)
+- `agents/*.py` – Background sync agents for automated tasks (conflict detection, DB health checks)
+- Migration scripts in `migrations/versions/` – Auto-generated by Flask-Migrate
+
+**⚠️ DEPRECATED**: The `possiblyDELETE/` folder contains old code (old app.py, migrations, etc.). Do NOT use code from this folder — it's outdated and left for reference only.
+
+### Caching
+- Flask-Caching with SimpleCache, 15-minute default TTL
+- Critical for sermon lists, podcast feeds, gallery images
+- Invalidated manually when content is updated via admin
+
+---
+
 ## File Structure Rules
 
 | What | Where |
@@ -170,6 +352,155 @@ The custom scrollbar (`#admin-scroll-rail`) is injected dynamically by admin.js 
 | API routes | `enhanced_api.py`, `json_api.py` |
 
 **Do not create new CSS files** unless adding a genuinely isolated feature (like `admin-wysiwyg.css`). Append to the existing files instead.
+
+---
+
+## Adding New Features
+
+### Add a New Content Type
+1. **Model**: Define the SQLAlchemy model in `models.py` (inherit from `db.Model`)
+2. **Database**: Run `db.create_all()` to create the table, or write a migration in `migrations/versions/`
+3. **Admin**: Add a `ModelView` subclass in `app.py` and register it with Flask-Admin
+4. **API**: Add GET/POST/PUT/DELETE endpoints in `enhanced_api.py`
+5. **Frontend**: Create templates in `templates/` and link from navigation or other pages
+
+### Add a New Page
+1. **Route**: Add a route to `app.py` that renders a template
+2. **Template**: Create `templates/page_name.html` extending `base.html`
+3. **Data**: Fetch data via API calls or pass from the route
+4. **Style**: Add page-specific styles in `{% block head %}<style>…</style>{% endblock %}`
+5. **Navigation**: Add link to `templates/base.html` navigation
+
+### Add Admin-Only Features
+- Always use admin templates from `templates/admin/`
+- Use CSS classes from `admin.css` (no Tailwind or Bootstrap)
+- Add JS logic to `static/js/admin.js` (not page-specific `<script>` blocks)
+- All form styling should use `.admin-form-compact` for consistency
+
+### Adding API Endpoints
+- **Endpoints**: Define in `enhanced_api.py` (main API) or `json_api.py` (secondary)
+- **Return Format**: Always JSON with consistent structure (test in browser)
+- **Database Queries**: Use SQLAlchemy query APIs, leverage `flask_sqlalchemy.get_or_404()` for safety
+- **Pagination**: Use `offset` and `limit` query parameters for large lists
+
+---
+
+## Common Gotchas & Patterns
+
+### Cache Invalidation
+When content is updated via admin routes or API, explicitly invalidate the cache:
+```python
+from flask_caching import Cache
+cache.delete('sermons_all')  # key must match what's cached
+```
+Otherwise, users will see stale data until the 15-minute TTL expires.
+
+### WTForms Markup Patching
+At the top of `app.py`, there's a monkeypatch to prevent double-escaping of HTML in forms. **Do not remove it** — it's required for Flask-Admin 1.6.x compatibility with Quill WYSIWYG editors.
+
+### Global ID Counter
+When creating new content types, use the `GlobalIDCounter` to assign IDs:
+```python
+from models import GlobalIDCounter
+counter = db.session.query(GlobalIDCounter).filter_by(id=1).first()
+new_id = counter.next_id
+counter.next_id += 1
+db.session.commit()
+```
+This ensures all IDs are globally unique across types.
+
+### Flask-Admin Pagination
+CRUD list views are paginated (e.g., 50 rows per page). To show all records, you must iterate over pages or increase `page_size` in the ModelView.
+
+### Theme Switching
+The frontend supports two themes: `body.theme-blue` (dark glass, default) and `body.theme-white` (light). **All new CSS must have corresponding overrides in the `/* WHITE THEME */` section of `style.css`**, or the white theme will break.
+
+### Environment Variables
+- `DATABASE_URL` – must be set for PostgreSQL; SQLite is the fallback
+- `SECRET_KEY` – used for Flask sessions (set in `.env` or Render/Railway environment)
+- `MAILCHIMP_API_KEY`, `MAILCHIMP_SERVER_PREFIX`, `MAILCHIMP_LIST_ID` – optional for newsletter sync
+- `ANTHROPIC_API_KEY` – optional for Claude-powered features (scripture extraction)
+
+### Timestamps
+All datetime fields should use `datetime.utcnow` or similar UTC-aware values. Display in the correct timezone using `pytz` or JavaScript (client-side conversion).
+
+---
+
+## Quick Reference — Common Dev Tasks
+
+### Clear Cache
+```python
+# In a Flask shell or script context
+from app import app, cache
+with app.app_context():
+    cache.clear()
+```
+
+### Reload Frontend Without Restarting
+- Browser hard refresh: `Ctrl+Shift+R` (or `Cmd+Shift+R` on Mac)
+- Or just edit the template and reload (Flask reloads templates automatically)
+
+### Test an API Endpoint
+```bash
+curl "http://localhost:5000/api/sermons?limit=5"
+curl -X POST "http://localhost:5000/api/..." -H "Content-Type: application/json" -d '{"key": "value"}'
+```
+
+### Inspect Database
+```bash
+# Open a Flask shell
+python -c "from app import app, db; app.app_context().push(); from models import *; print(db.session.query(Sermon).count())"
+
+# Or SQLite directly
+sqlite3 cpc_newhaven.db "SELECT COUNT(*) FROM sermon;"
+```
+
+### Reset Local Database
+```bash
+# Delete and recreate
+rm cpc_newhaven.db
+python -c "from app import app, db; app.app_context().push(); db.create_all()"
+python migrate_data.py
+```
+
+### Check Admin Login
+Admin requires `FLASK_ENV=development` or a hardcoded admin user. Default is Chris's account. Check `app.py` for admin view restrictions if adding new admin pages.
+
+### Port Already in Use?
+```bash
+python start_app.py --kill-ports   # Kill processes on common ports
+python start_app.py --check-ports  # Check which ports are available
+```
+
+---
+
+## Shell Scripts
+
+Available in the repo root for common operational tasks:
+
+| Script | Purpose |
+|--------|---------|
+| `fix_ports.sh` | Kill processes on common ports (3000, 5000, 8000, etc.) |
+| `sync_from_live.sh` | Sync local DB from production (reads `LIVE_DATABASE_URL` from `.env`) |
+| `daily_update.sh` | Run daily syncs (podcasts, events, etc.) — use with cron |
+| `weekly_analytics.sh` | Generate weekly analytics reports |
+| `start_podcast_updates.sh` | Start the podcast scheduler daemon |
+| `install_google_drive.sh` | Set up Google Drive integration (one-time) |
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| **Port 5000 already in use** | Run `python start_app.py --kill-ports` or `lsof -ti :5000 \| xargs kill -9` |
+| **Database locked (SQLite)** | Another process is using the DB; restart Flask or check for zombie processes |
+| **Stale sermon data showing** | Cache is not invalidated; run `cache.clear()` or wait 15 minutes |
+| **White theme broken** | New CSS added without white-theme override; check `/* WHITE THEME */` section in `style.css` |
+| **Admin page styling broken** | Check for Bootstrap/Tailwind classes in admin template; should use `admin.css` only |
+| **Quill editor not showing** | Ensure `data-wysiwyg="on"` (or default) on textarea; check `admin-wysiwyg.js` is loaded |
+| **Flask-Admin form looks wrong** | Check for WTForms markup double-escaping; verify monkeypatch at top of `app.py` is present |
+| **API returns 404** | Check endpoint is registered in `enhanced_api.py` and blueprint is added to `app` |
 
 ---
 
