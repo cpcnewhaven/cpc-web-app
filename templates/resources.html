@@ -255,6 +255,26 @@
         <!-- Content Area -->
         <div class="resources-content-area">
             <section class="resources-section">
+                {% if site_content.get('pastors_book_active', 'True') == 'True' %}
+                <!-- Featured Pastor's Book Pick -->
+                <div class="featured-book-pick" style="margin-bottom: 2rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; overflow: hidden; display: flex; align-items: stretch;">
+                    <div style="width: 180px; flex-shrink: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; padding: 1rem;">
+                        <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}" 
+                             alt="Book Cover" 
+                             style="width: 100%; height: auto; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+                    </div>
+                    <div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <span style="font-size: 0.7rem; font-weight: 700; color: #5AC8FA; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">{{ site_content.get('pastors_book_label', "Pastor's Book Pick") }}</span>
+                        <h3 style="font-size: 1.5rem; margin: 0 0 0.25rem 0; color: #fff;">{{ site_content.get('pastors_book_title', 'Life Together') }}</h3>
+                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.7); margin: 0 0 1rem 0;">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</p>
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8); line-height: 1.5; margin-bottom: 1.25rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ site_content.get('pastors_book_description', '') | striptags }}
+                        </p>
+                        <a href="{{ url_for('pastors_book') }}" class="btn btn-primary" style="align-self: flex-start; padding: 0.5rem 1.25rem; font-size: 0.85rem;">Read Recommendation →</a>
+                    </div>
+                </div>
+                {% endif %}
+
                 <div class="section-header">
                     <h2>Spiritual Resources</h2>
                     <p>Find helpful resources to support your spiritual growth and understanding of the Christian faith.</p>

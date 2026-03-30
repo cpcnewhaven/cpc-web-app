@@ -402,7 +402,8 @@ def index():
         .order_by(Announcement.date_entered.desc()).limit(7).all()
     
     highlights = superfeatured + regular
-    return render_template('index.html', highlights=highlights)
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('index.html', highlights=highlights, site_content=site_content)
 
 @app.route('/about')
 def about():
@@ -495,6 +496,22 @@ SUBPAGE_CONFIGS = {
             ('lifegroups_cta_email', 'CTA Email Address', 'admin@cpcnewhaven.org'),
             ('lifegroups_cta_phone', 'CTA Phone Number', '203-777-6960'),
             ('lifegroups_cta_phone_tel', 'CTA Phone (tel: link, digits only)', '+12037776960'),
+        ]
+    },
+    'pastors_book': {
+        'title': "Pastor's Book Pick",
+        'url': '/pastors-book',
+        'icon': 'fas fa-book-open',
+        'color': '#007aff',
+        'keys': [
+            ('pastors_book_active', 'Show Book Pick (True/False)', 'True'),
+            ('pastors_book_label', 'Label', "Pastor's Book Pick"),
+            ('pastors_book_title', 'Book Title', 'Life Together'),
+            ('pastors_book_author', 'Author', 'Dietrich Bonhoeffer'),
+            ('pastors_book_description', 'Recommendation Text', "A modern classic, we're treading into deep waters with this one! Written by pastor-theologian and martyr, Life Together is Bonhoeffer's vision for the Christian life, both individually and communally. Copies in the foyer — suggested donation of $15."),
+            ('pastors_book_image_url', 'Book Cover URL', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg'),
+            ('pastors_book_cta_text', 'CTA Text', 'Suggested donation of $15'),
+            ('pastors_book_cta_link', 'External Purchase Link (optional)', ''),
         ]
     }
 }
@@ -624,7 +641,13 @@ def live():
 
 @app.route('/resources')
 def resources():
-    return render_template('resources.html')
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('resources.html', site_content=site_content)
+
+@app.route('/pastors-book')
+def pastors_book():
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('pastors_book.html', site_content=site_content)
 
 @app.route('/media')
 def media():
@@ -1557,7 +1580,25 @@ def _normalize_events(ics_text, site_tz, rules):
 def _fetch_events_json():
     ics_url = app.config.get("EVENTS_ICS_URL")
     if not ics_url:
-        return {"error": "EVENTS_ICS_URL not configured"}
+        # Fallback: if a public Google Calendar is configured (or implied), build its public ICS URL.
+        # This keeps the site working even if EVENTS_ICS_URL isn't explicitly set.
+        try:
+            site_content = {r.key: r.value for r in SiteContent.query.all()}
+        except Exception:
+            site_content = {}
+
+        gcal_id = (site_content.get("google_calendar_id") or "").strip() or "baf2h147ghi7nu8ifijjrt994k@group.calendar.google.com"
+        gcal_tz = (site_content.get("google_calendar_tz") or "").strip() or app.config.get("SITE_TIMEZONE", "America/New_York")
+
+        # Public/basic ICS endpoint
+        ics_url = (
+            "https://calendar.google.com/calendar/ical/"
+            + requests.utils.quote(gcal_id, safe="")
+            + "/public/basic.ics"
+        )
+        # Ensure the rest of the pipeline uses the requested tz (if provided via SiteContent)
+        app.config["SITE_TIMEZONE"] = gcal_tz
+
     r = requests.get(ics_url, timeout=10, headers={"User-Agent":"CPC-Web-App"})
     r.raise_for_status()
     items = _normalize_events(

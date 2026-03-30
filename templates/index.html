@@ -335,11 +335,14 @@
                 <div class="latest-meta" id="upcomingSundayMeta">10:30am Worship · 135 Whitney Ave</div>
                 <a href="{{ url_for('index') }}#service-info" class="cta">Service info →</a>
             </div>
-            <div class="latest-card" id="card-book">
-                <h3>Pastor’s Book</h3>
-                <div class="latest-title">Resources from our pastors</div>
-                <div class="latest-meta">Books, articles, and recommended reading.</div>
-                <a href="{{ url_for('resources') }}" class="cta">Resources →</a>
+            <div class="latest-card" id="card-book" {% if site_content.get('pastors_book_active', 'True') != 'True' %}style="display:none;"{% endif %}>
+                <h3>{{ site_content.get('pastors_book_label', "Pastor’s Book Pick") }}</h3>
+                <div class="latest-title">{{ site_content.get('pastors_book_title', 'Life Together') }}</div>
+                <div class="latest-meta">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</div>
+                <div style="font-size:0.85rem; color:rgba(255,255,255,0.6); display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:0.75rem;">
+                    {{ site_content.get('pastors_book_description', '') | striptags }}
+                </div>
+                <a href="{{ url_for('pastors_book') }}" class="cta">Read Recommendation →</a>
             </div>
             <div class="latest-card" id="card-prayer">
                 <h3>Prayer Request</h3>
