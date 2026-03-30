@@ -694,14 +694,14 @@ def contact():
     """Contact page"""
     return render_template('contact.html')
 
-@app.route('/submit-announcement', methods=['GET', 'POST'])
-def submit_announcement():
-    """Public form for submitting announcements to drafts."""
+@app.route('/suggest-event', methods=['GET', 'POST'])
+def suggest_event():
+    """Public form for suggesting community events."""
     # Public-facing type options (subset of admin choices — no internal alert types)
     public_type_choices = [
-        ('announcement', 'Announcement'),
-        ('event', 'Event'),
+        ('event', 'One-Time Event'),
         ('ongoing', 'Ongoing / Recurring'),
+        ('announcement', 'Announcement'),
         ('highlight', 'Highlight'),
     ]
     public_category_choices = [
@@ -717,7 +717,7 @@ def submit_announcement():
     if request.method == 'POST':
         title = request.form.get('title', '').strip()
         description = request.form.get('description', '').strip()
-        
+
         event_date_str = request.form.get('event_date', '').strip()
         event_date = None
         if event_date_str:
@@ -725,12 +725,12 @@ def submit_announcement():
                 event_date = datetime.strptime(event_date_str, '%Y-%m-%d').date()
             except ValueError:
                 pass
-                
+
         event_start = request.form.get('event_start_time', '').strip() or None
         event_end = request.form.get('event_end_time', '').strip() or None
         name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip()
-        ann_type = request.form.get('type', 'announcement')
+        ann_type = request.form.get('type', 'event')
         category = request.form.get('category', 'general')
         tag = request.form.get('tag', '').strip() or None
 
@@ -738,13 +738,13 @@ def submit_announcement():
         allowed_types = [v for v, _ in public_type_choices]
         allowed_cats = [v for v, _ in public_category_choices]
         if ann_type not in allowed_types:
-            ann_type = 'announcement'
+            ann_type = 'event'
         if category not in allowed_cats:
             category = 'general'
 
         if not title or not description:
-            flash('Title and description are required.', 'error')
-            return render_template('submit_announcement.html',
+            flash('Event name and description are required.', 'error')
+            return render_template('suggest_event.html',
                                    type_choices=public_type_choices,
                                    category_choices=public_category_choices,
                                    form_data=request.form)
@@ -754,7 +754,7 @@ def submit_announcement():
             return redirect(url_for('index'))
 
         # Embed submitter info in description so admins can see who sent it
-        submitter_line = f"\n\n— Submitted by: {name} ({email})" if name else ""
+        submitter_line = f"\n\n— Suggested by: {name} ({email})" if name else ""
         full_desc = description + submitter_line
 
         ann = Announcement(
@@ -776,10 +776,10 @@ def submit_announcement():
         db.session.add(ann)
         db.session.commit()
 
-        flash('Thank you! Your announcement has been submitted for review.', 'success')
-        return redirect(url_for('submit_announcement'))
+        flash('Thank you! Your event suggestion has been submitted for review.', 'success')
+        return redirect(url_for('suggest_event'))
 
-    return render_template('submit_announcement.html',
+    return render_template('suggest_event.html',
                            type_choices=public_type_choices,
                            category_choices=public_category_choices,
                            form_data={})
