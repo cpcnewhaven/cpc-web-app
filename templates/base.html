@@ -74,8 +74,8 @@
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10 text-blue-200"><i class="fas fa-plus-circle text-xs mr-1 opacity-70"></i>Submit Announcement</a></li>
                     <li><a href="{{ url_for('events') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Events</a></li>
-                    <li><a href="{{ url_for('community') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Community</a></li>
+                    <li><a href="{{ url_for('church_directory') }}"
+                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Church Directory</a></li>
                     <li><a href="{{ url_for('lifegroups') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">LifeGroups</a></li>
                 </ul>
@@ -217,8 +217,8 @@
                         class="block text-blue-200 hover:text-blue-100 font-medium py-1 text-sm"><i class="fas fa-plus-circle text-xs mr-1 opacity-70"></i>Submit Idea</a>
                     <a href="{{ url_for('events') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 text-sm">Events</a>
-                    <a href="{{ url_for('community') }}"
-                        class="block text-white hover:text-blue-200 font-medium py-1 text-sm">Community</a>
+                    <a href="{{ url_for('church_directory') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 text-sm">Church Directory</a>
                     <a href="{{ url_for('lifegroups') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 text-sm">LifeGroups</a>
                 </div>
@@ -334,7 +334,7 @@
             <div class="quick-links-grid">
                 <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
                 <a href="{{ url_for('highlights') }}"><i class="fa-solid fa-star"></i><span>New Content</span></a>
-                <a href="{{ url_for('community') }}"><i class="fa-solid fa-users"></i><span>Community</span></a>
+                <a href="{{ url_for('church_directory') }}"><i class="fa-solid fa-users"></i><span>Church Directory</span></a>
                 <a href="{{ url_for('lifegroups') }}"><i class="fa-solid fa-circle-nodes"></i><span>LifeGroups</span></a>
             </div>
         </div>
@@ -465,8 +465,8 @@
                         class="fa-solid fa-location-dot"></i><span>Plan a Visit</span></a>
                 <a href="{{ url_for('highlights') }}" class="mobile-more-link"><i
                         class="fa-solid fa-sparkles"></i><span>New Content</span></a>
-                <a href="{{ url_for('community') }}" class="mobile-more-link"><i
-                        class="fa-solid fa-people-group"></i><span>Community</span></a>
+                <a href="{{ url_for('church_directory') }}" class="mobile-more-link"><i
+                        class="fa-solid fa-people-group"></i><span>Church Directory</span></a>
                 <a href="{{ url_for('lifegroups') }}" class="mobile-more-link"><i
                         class="fa-solid fa-circle-nodes"></i><span>LifeGroups</span></a>
                 <a href="{{ url_for('media') }}" class="mobile-more-link"><i

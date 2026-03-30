@@ -461,9 +461,9 @@ SUBPAGE_CONFIGS = {
             ('contact_email', 'General Email', 'admin@cpcnewhaven.org'),
         ]
     },
-    'community': {
-        'title': 'Community Page',
-        'url': '/community',
+    'church-directory': {
+        'title': 'Church Directory Page',
+        'url': '/church-directory',
         'icon': 'fas fa-users',
         'color': '#00a0a0',
         'keys': [
@@ -601,8 +601,8 @@ def announcement_detail(announcement_id):
     
     return render_template('announcement_detail.html', announcement=announcement)
 
-@app.route('/community')
-def community():
+@app.route('/church-directory')
+def church_directory():
     # Load editable content from the DB; fall back gracefully if row doesn't exist
     rows = SiteContent.query.all()
     community_content = {r.key: r.value for r in rows}
@@ -1819,8 +1819,8 @@ def api_search():
             papers = Paper.query.filter(
                 db.or_(
                     Paper.title.ilike(f'%{query}%'),
-                    Paper.speaker.ilike(f'%{query}%') if Paper.speaker else False,
-                    Paper.description.ilike(f'%{query}%') if Paper.description else False
+                    Paper.speaker.ilike(f'%{query}%'),
+                    Paper.description.ilike(f'%{query}%')
                 )
             ).all()
             for p in papers:
