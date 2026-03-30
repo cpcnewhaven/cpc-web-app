@@ -136,6 +136,11 @@
         <div class="search-hero compact-hero">
             <h1>Search</h1>
             <p>Find sermons, podcasts, announcements, and more</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+                <a href="/archive" style="color: rgba(135, 206, 250, 0.9); text-decoration: none; font-weight: 500; transition: color 0.2s;">
+                    Browse our archive →
+                </a>
+            </p>
         </div>
 
         <!-- Search Bar -->
@@ -225,20 +230,20 @@
     }
 
     function showLoading() {
-        searchResults.innerHTML = '<div class="p-10 bg-white/5 border border-white/10 rounded-lg text-center text-gray-400">Searching...</div>';
+        searchResults.innerHTML = '<div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">Searching...</div>';
     }
 
     function showEmptyState() {
         searchResults.innerHTML = `
-            <div class="p-10 bg-white/5 border border-white/10 rounded-lg text-center text-gray-400">
-                <h2 class="text-2xl font-semibold mb-4 text-white">Start Your Search</h2>
-                <p class="text-base mb-6">Enter a search query to find content across the site</p>
-                <div class="flex flex-wrap justify-center gap-2">
-                    <span class="text-xs text-gray-500 uppercase tracking-widest w-full mb-2">Popular Searches</span>
-                    <button onclick="quickSearch('Total')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Total Christ</button>
-                    <button onclick="quickSearch('Luke')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Luke</button>
-                    <button onclick="quickSearch('Community')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Community</button>
-                    <button onclick="quickSearch('Service')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs transition">Service</button>
+            <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">
+                <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">Start Your Search</h2>
+                <p style="font-size: 1rem; margin-bottom: 1.5rem;">Enter a search query to find content across the site</p>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;">
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-bottom: 0.5rem;">Popular Searches</span>
+                    <button onclick="quickSearch('Total')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Total Christ</button>
+                    <button onclick="quickSearch('Luke')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Luke</button>
+                    <button onclick="quickSearch('Community')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Community</button>
+                    <button onclick="quickSearch('Service')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Service</button>
                 </div>
             </div>
         `;
@@ -264,9 +269,9 @@
 
     function showError() {
         searchResults.innerHTML = `
-            <div class="p-10 bg-red-500/10 border border-red-500/20 rounded-lg text-center text-red-200">
-                <h2 class="text-2xl font-semibold mb-2">Search Error</h2>
-                <p class="text-base">Something went wrong. Please try again.</p>
+            <div style="padding: 2.5rem; background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.2); border-radius: 8px; text-align: center; color: rgba(255,100,100,0.9);">
+                <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Search Error</h2>
+                <p style="font-size: 1rem;">Something went wrong. Please try again.</p>
             </div>
         `;
     }
@@ -274,9 +279,9 @@
     function displayResults(data) {
         if (data.total === 0) {
             searchResults.innerHTML = `
-                <div class="p-10 bg-gray-50/5 border border-white/10 rounded-lg text-center text-gray-400">
-                    <h2 class="text-2xl font-semibold mb-2 text-white">No Results Found</h2>
-                    <p class="text-base">Try a different search term or check the spelling</p>
+                <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">
+                    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: rgba(255,255,255,0.95);">No Results Found</h2>
+                    <p style="font-size: 1rem;">Try a different search term or check the spelling</p>
                 </div>
             `;
             return;
@@ -294,10 +299,10 @@
         };
 
         let html = `
-            <div class="mb-6">
-                <div class="text-base text-gray-400">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
+            <div style="margin-bottom: 1.5rem;">
+                <div style="font-size: 1rem; color: rgba(255,255,255,0.6);">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
             </div>
-            <div class="space-y-6">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
         `;
 
         data.results.forEach(item => {
@@ -308,18 +313,18 @@
             const highlightedDescription = highlightText(item.description || '', data.query);
 
             html += `
-                <div class="result-card p-6 border border-white/10 rounded-lg shadow-sm hover:shadow-md transition bg-white/5 backdrop-blur-md">
-                    <div class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold inline-block mb-3 uppercase tracking-wider">${label}</div>
-                    <h3 class="text-xl font-bold mb-2 text-white">${highlightedTitle}</h3>
-                    <div class="text-sm text-gray-400 mb-4 flex flex-wrap gap-2 items-center">
-                        ${item.speaker || item.author ? `<span>${item.speaker || item.author}</span><span class="opacity-30">•</span>` : ''}
+                <div class="result-card" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1.5rem;">
+                    <div style="padding: 0.25rem 0.75rem; background: rgba(0,102,204,0.2); color: rgba(135,206,250,0.9); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">${label}</div>
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem; color: rgba(255,255,255,0.95);">${highlightedTitle}</h3>
+                    <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                        ${item.speaker || item.author ? `<span>${item.speaker || item.author}</span><span style="opacity: 0.3;">•</span>` : ''}
                         ${dateStr ? `<span>${dateStr}</span>` : ''}
-                        ${item.category ? `<span class="opacity-30">•</span><span>${item.category}</span>` : ''}
-                        ${item.series ? `<span class="opacity-30">•</span><span class="text-blue-400">${item.series}</span>` : ''}
+                        ${item.category ? `<span style="opacity: 0.3;">•</span><span>${item.category}</span>` : ''}
+                        ${item.series ? `<span style="opacity: 0.3;">•</span><span style="color: rgba(135,206,250,0.9);">${item.series}</span>` : ''}
                     </div>
-                    ${item.description ? `<p class="text-base leading-relaxed text-gray-300 mb-4">${highlightedDescription}</p>` : ''}
-                    ${item.url ? `<a href="${item.url}" class="inline-flex items-center text-blue-400 font-medium hover:text-blue-300 transition-colors" ${item.url.startsWith('http') ? 'target="_blank"' : ''}>
-                        View Details <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    ${item.description ? `<p style="font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.8); margin-bottom: 1rem;">${highlightedDescription}</p>` : ''}
+                    ${item.url ? `<a href="${item.url}" style="display: inline-flex; align-items: center; color: rgba(135,206,250,0.9); font-weight: 500; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='rgba(135,206,250,1)'" onmouseout="this.style.color='rgba(135,206,250,0.9)'" ${item.url.startsWith('http') ? 'target="_blank"' : ''}>
+                        View Details <i class="fas fa-arrow-right" style="margin-left: 0.5rem; font-size: 0.75rem;"></i>
                     </a>` : ''}
                 </div>
             `;
@@ -328,10 +333,12 @@
         html += '</div>';
 
         if (data.pages > 1) {
-            html += `<div class="flex justify-center items-center gap-4 mt-8">`;
-            html += `<button class="px-4 py-2 border rounded-lg ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">← Previous</button>`;
-            html += `<span class="text-gray-700">Page ${data.page} of ${data.pages}</span>`;
-            html += `<button class="px-4 py-2 border rounded-lg ${currentPage >= data.pages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}" ${currentPage >= data.pages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next →</button>`;
+            const prevStyle = `padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === 1 ? '0.5' : '1'}; transition: background 0.2s;`;
+            const nextStyle = `padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: ${currentPage >= data.pages ? 'not-allowed' : 'pointer'}; opacity: ${currentPage >= data.pages ? '0.5' : '1'}; transition: background 0.2s;`;
+            html += `<div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">`;
+            html += `<button style="${prevStyle}" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})" onmouseover="if(${currentPage !== 1}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='rgba(0,82,163,0.3)'">← Previous</button>`;
+            html += `<span style="color: rgba(255,255,255,0.7);">Page ${data.page} of ${data.pages}</span>`;
+            html += `<button style="${nextStyle}" ${currentPage >= data.pages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})" onmouseover="if(${currentPage < data.pages}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='rgba(0,82,163,0.3)'">Next →</button>`;
             html += `</div>`;
         }
 
