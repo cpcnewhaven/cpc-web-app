@@ -85,8 +85,6 @@
             <button class="nav-tab" data-filter="fellowship">Fellowship</button>
             <button class="nav-tab" data-filter="youth">Youth</button>
             <button class="nav-tab" data-filter="missions">Missions</button>
-            <button class="nav-tab yearbook-tab" data-filter="yearbook">Digital
-                Yearbook</button>
         </div>
     </div>
 </section>
@@ -94,6 +92,11 @@
 <!-- Gallery Section -->
 <section class="gallery-section">
     <div class="container">
+        <!-- Year Navigation (Yearbook feel) -->
+        <div class="gallery-year-nav" style="margin: 0.25rem 0 0.75rem 0;">
+            <div class="year-tabs" id="gallery-year-tabs"></div>
+        </div>
+
         <!-- Filter Controls -->
         <div class="gallery-controls">
             <div class="search-box">
@@ -118,6 +121,9 @@
                 </button>
                 <button class="view-btn" data-view="timeline">
                     <i class="fas fa-list"></i>
+                </button>
+                <button class="view-btn" data-view="yearbook" title="Yearbook by year">
+                    <i class="fas fa-book"></i>
                 </button>
             </div>
         </div>
@@ -216,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentFilter = 'all';
     let currentView = 'grid';
     let currentPhotoIndex = 0;
+    let currentYear = null;
 
     // Load gallery images
     loadGallery();
@@ -227,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 allPhotos = data.images || [];
                 filteredPhotos = [...allPhotos];
                 updateStats();
+                renderYearTabs();
                 renderGallery();
                 setupEventListeners();
             })
@@ -291,7 +299,11 @@ document.addEventListener('DOMContentLoaded', function() {
         container.innerHTML = '';
 
         // Group photos by year and month
-        const groupedPhotos = groupPhotosByYearMonth(filteredPhotos);
+        const yearScopedPhotos = currentYear
+            ? filteredPhotos.filter(photo => getPhotoYear(photo) === currentYear)
+            : filteredPhotos;
+
+        const groupedPhotos = groupPhotosByYearMonth(yearScopedPhotos);
 
         Object.keys(groupedPhotos).sort().reverse().forEach(year => {
             const yearSection = document.createElement('div');
@@ -311,7 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const photosContainer = monthSection.querySelector('.yearbook-photos');
                 groupedPhotos[year][month].forEach((photo, index) => {
-                    const photoElement = createPhotoElement(photo, index, 'yearbook');
+                    const photoIndex = filteredPhotos.findIndex(p => p.id === photo.id);
+                    const photoElement = createPhotoElement(photo, photoIndex, 'yearbook');
                     photosContainer.appendChild(photoElement);
                 });
 
@@ -342,6 +355,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         return grouped;
+    }
+
+    function getPhotoYear(photo) {
+        const date = new Date(photo.created);
+        const year = date.getFullYear();
+        return Number.isFinite(year) ? year : null;
+    }
+
+    function renderYearTabs() {
+        const tabsContainer = document.getElementById('gallery-year-tabs');
+        if (!tabsContainer) return;
+
+        const years = Array.from(new Set(allPhotos
+            .map(getPhotoYear)
+            .filter(Boolean)))
+            .sort((a, b) => b - a);
+
+        if (years.length === 0) {
+            tabsContainer.innerHTML = '';
+            currentYear = null;
+            return;
+        }
+
+        if (!currentYear || !years.includes(currentYear)) {
+            currentYear = years[0];
+        }
+
+        tabsContainer.innerHTML = [
+            `<button class="year-tab${currentYear === null ? ' active' : ''}" data-year="">All</button>`,
+            ...years.map(y => `<button class="year-tab${y === currentYear ? ' active' : ''}" data-year="${y}">${y}</button>`)
+        ].join('');
+
+        tabsContainer.querySelectorAll('.year-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabsContainer.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const val = tab.dataset.year;
+                currentYear = val ? parseInt(val, 10) : null;
+
+                if (currentView === 'yearbook') {
+                    renderGallery();
+                }
+            });
+        });
     }
 
     function createPhotoElement(photo, index, type = 'gallery') {
@@ -516,13 +574,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 photo.name.toLowerCase().includes(searchTerm) ||
                 (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
             
-            const matchesFilter = currentFilter === 'all' || 
+            const matchesFilter = currentFilter === 'all' ||
                 (currentFilter === 'events' && photo.event) ||
                 (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(currentFilter)));
             
             return matchesSearch && matchesFilter;
         });
 
+        renderYearTabs();
         renderGallery();
     }
 

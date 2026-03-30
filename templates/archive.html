@@ -352,12 +352,19 @@
             return;
         }
 
-        const groupedItems = {};
+        // Yearbook-style: years are the primary "chapters"
+        const groupedByYear = {};
         data.items.forEach(item => {
-            if (!groupedItems[item.type]) {
-                groupedItems[item.type] = [];
+            const year = item.date ? new Date(item.date).getFullYear() : null;
+            const key = Number.isFinite(year) ? String(year) : 'Undated';
+            if (!groupedByYear[key]) {
+                groupedByYear[key] = {};
             }
-            groupedItems[item.type].push(item);
+            const type = item.type || 'other';
+            if (!groupedByYear[key][type]) {
+                groupedByYear[key][type] = [];
+            }
+            groupedByYear[key][type].push(item);
         });
 
         let html = '';
@@ -365,9 +372,9 @@
         const years = getAvailableYears(data.items);
         if (years.length > 0) {
             html += '<div class="year-filter">';
-            html += '<div class="year-button" onclick="filterByYear(null)">All Years</div>';
+            html += '<div class="year-button" onclick="filterByYear(null, this)">All Years</div>';
             years.forEach(year => {
-                html += `<div class="year-button ${selectedYear === year ? 'active' : ''}" onclick="filterByYear(${year})">${year}</div>`;
+                html += `<div class="year-button ${selectedYear === year ? 'active' : ''}" onclick="filterByYear(${year}, this)">${year}</div>`;
             });
             html += '</div>';
         }
@@ -375,39 +382,64 @@
         // Show total results count
         html += `<div class="results-header"><div class="results-count">Showing ${data.page} of ${data.pages} pages (${data.total} total items)</div></div>`;
 
-        for (const [type, items] of Object.entries(groupedItems)) {
+        const yearKeys = Object.keys(groupedByYear).sort((a, b) => {
+            if (a === 'Undated') return 1;
+            if (b === 'Undated') return -1;
+            return parseInt(b, 10) - parseInt(a, 10);
+        });
+
+        yearKeys.forEach(yearKey => {
+            const typeMap = groupedByYear[yearKey];
+            const yearCount = Object.values(typeMap).reduce((sum, arr) => sum + arr.length, 0);
+
             html += `
-                <div class="archive-section">
-                    <div class="section-header">
-                        <h2 class="section-title">${capitalizeFirst(type)}</h2>
-                        <div class="section-count">${items.length} item${items.length !== 1 ? 's' : ''}</div>
+                <div class="archive-section" style="position: relative;">
+                    <div class="section-header" style="align-items: baseline;">
+                        <h2 class="section-title" style="font-family: 'Libre Baskerville', serif; font-weight: 700; letter-spacing: 0.02em;">
+                            ${yearKey}
+                        </h2>
+                        <div class="section-count">${yearCount} item${yearCount !== 1 ? 's' : ''}</div>
                     </div>
             `;
 
-            items.forEach(item => {
+            Object.entries(typeMap).forEach(([type, items]) => {
                 html += `
-                    <div class="archive-item">
-                        <div class="archive-item-content">
-                            ${item.thumbnail ? `<img src="${item.thumbnail}" class="archive-item-thumb" alt="${item.title}">` : ''}
-                            <div class="archive-item-info">
-                                <div class="archive-item-title">${item.title}</div>
-                                <div class="archive-item-meta">
-                                    ${item.author || item.guest ? `${item.author || item.guest} • ` : ''}
-                                    ${item.date ? new Date(item.date).toLocaleDateString() : ''}
-                                    ${item.category ? ` • ${item.category}` : ''}
+                    <div style="margin: 0 0 1.25rem 0;">
+                        <div style="display:flex; align-items:center; gap: 0.75rem; margin: 0.25rem 0 0.75rem 0;">
+                            <div style="font-size: 0.95rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.8);">
+                                ${capitalizeFirst(type)}
+                            </div>
+                            <div style="flex:1; height:1px; background: linear-gradient(to right, rgba(255,255,255,0.18), transparent);"></div>
+                        </div>
+                `;
+
+                items.forEach(item => {
+                    html += `
+                        <div class="archive-item">
+                            <div class="archive-item-content">
+                                ${item.thumbnail ? `<img src="${item.thumbnail}" class="archive-item-thumb" alt="${item.title}">` : ''}
+                                <div class="archive-item-info">
+                                    <div class="archive-item-title">${item.title}</div>
+                                    <div class="archive-item-meta">
+                                        ${item.author || item.guest ? `${item.author || item.guest} • ` : ''}
+                                        ${item.date ? new Date(item.date).toLocaleDateString() : ''}
+                                        ${item.category ? ` • ${item.category}` : ''}
+                                    </div>
+                                    <div class="archive-item-description">
+                                        ${item.description || ''}
+                                    </div>
+                                    ${item.url ? `<a href="${item.url}" class="archive-item-link" target="_blank">View →</a>` : ''}
                                 </div>
-                                <div class="archive-item-description">
-                                    ${item.description || ''}
-                                </div>
-                                ${item.url ? `<a href="${item.url}" class="archive-item-link" target="_blank">View →</a>` : ''}
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                });
+
+                html += `</div>`;
             });
 
-            html += '</div>';
-        }
+            html += `</div>`;
+        });
 
         // Add pagination
         if (data.pages > 1) {
@@ -444,13 +476,15 @@
         return Array.from(years).sort((a, b) => b - a);
     }
 
-    function filterByYear(year) {
+    function filterByYear(year, el) {
         selectedYear = year;
         currentPage = 1; // Reset to first page when filtering
         document.querySelectorAll('.year-button').forEach(btn => {
             btn.classList.remove('active');
         });
-        event.target.classList.add('active');
+        if (el) {
+            el.classList.add('active');
+        }
         loadArchive();
     }
 

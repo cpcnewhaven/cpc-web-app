@@ -316,71 +316,6 @@
         </div>
     </div>
 </section>
-
-<!-- Photo Modal -->
-<div id="photo-modal" class="photo-modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <div class="modal-image-container">
-            <img id="modal-image" src alt>
-            <div class="image-nav">
-                <button id="prev-image" class="nav-btn">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button id="next-image" class="nav-btn">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-        <div class="modal-info">
-            <h3 id="modal-title"></h3>
-            <p id="modal-description"></p>
-            <div class="modal-tags" id="modal-tags"></div>
-            <div class="modal-actions">
-                <button id="share-btn" class="action-btn">
-                    <i class="fas fa-share"></i> Share
-                </button>
-                <button id="download-btn" class="action-btn">
-                    <i class="fas fa-download"></i> Download
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Share Modal -->
-<div id="share-modal" class="share-modal">
-    <div class="share-content">
-        <span class="close-share">&times;</span>
-        <h3>Share Photo</h3>
-        <div class="share-options">
-            <button class="share-option" data-platform="facebook">
-                <i class="fab fa-facebook"></i>
-                <span>Facebook</span>
-            </button>
-            <button class="share-option" data-platform="twitter">
-                <i class="fab fa-twitter"></i>
-                <span>Twitter</span>
-            </button>
-            <button class="share-option" data-platform="linkedin">
-                <i class="fab fa-linkedin"></i>
-                <span>LinkedIn</span>
-            </button>
-            <button class="share-option" data-platform="email">
-                <i class="fas fa-envelope"></i>
-                <span>Email</span>
-            </button>
-            <button class="share-option" data-platform="copy">
-                <i class="fas fa-link"></i>
-                <span>Copy Link</span>
-            </button>
-        </div>
-        <div class="share-url">
-            <input type="text" id="share-url-input" readonly>
-            <button id="copy-url-btn">Copy</button>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
@@ -390,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let filteredPhotos = [];
     let currentFilter = 'all';
     let currentView = 'grid';
-    let currentPhotoIndex = 0;
     // Check URL parameters for view/tab
     const urlParams = new URLSearchParams(window.location.search);
     const viewParam = urlParams.get('view') || urlParams.get('tab');
@@ -598,26 +532,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const tags = photo.tags || [];
         const tagString = tags.join(', ');
+        const safeTitle = photo.name || 'Photo';
 
         photoDiv.innerHTML = `
-            <div class="photo-container">
-                <img src="${photo.url}" alt="${photo.name || 'Gallery Image'}" loading="lazy">
+            <a class="photo-container" href="${photo.url}" target="_blank" rel="noopener noreferrer" aria-label="${safeTitle}">
+                <img src="${photo.url}" alt="${safeTitle}" loading="lazy">
                 <div class="photo-overlay">
                     <div class="photo-info">
                         <h3>${photo.name || 'Untitled'}</h3>
                         ${tagString ? `<p class="photo-tags">${tagString}</p>` : ''}
                         ${photo.event ? '<span class="event-badge">Event</span>' : ''}
                     </div>
-                    <div class="photo-actions">
-                        <button class="action-btn view-btn" title="View">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn share-btn" title="Share">
-                            <i class="fas fa-share"></i>
-                        </button>
-                    </div>
                 </div>
-            </div>
+            </a>
         `;
 
         return photoDiv;
@@ -653,18 +580,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-
-        // Photo clicks
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.gallery-item')) {
-                const item = e.target.closest('.gallery-item');
-                const index = parseInt(item.dataset.index);
-                openPhotoModal(index);
-            }
-        });
-
-        // Modal controls
-        setupModalControls();
     }
 
     function switchTab(tabName) {
@@ -730,103 +645,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         renderGallery();
-    }
-
-    function openPhotoModal(index) {
-        currentPhotoIndex = index;
-        const photo = filteredPhotos[index];
-        
-        document.getElementById('modal-image').src = photo.url;
-        document.getElementById('modal-title').textContent = photo.name || 'Untitled';
-        document.getElementById('modal-description').textContent = photo.description || '';
-        
-        const tagsContainer = document.getElementById('modal-tags');
-        if (photo.tags && photo.tags.length > 0) {
-            tagsContainer.innerHTML = photo.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-        } else {
-            tagsContainer.innerHTML = '';
-        }
-        
-        document.getElementById('photo-modal').style.display = 'block';
-    }
-
-    function setupModalControls() {
-        const modal = document.getElementById('photo-modal');
-        const shareModal = document.getElementById('share-modal');
-        
-        // Close modal
-        document.querySelector('.close-modal').addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-        
-        document.querySelector('.close-share').addEventListener('click', () => {
-            shareModal.style.display = 'none';
-        });
-
-        // Navigation
-        document.getElementById('prev-image').addEventListener('click', () => {
-            currentPhotoIndex = (currentPhotoIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
-            openPhotoModal(currentPhotoIndex);
-        });
-
-        document.getElementById('next-image').addEventListener('click', () => {
-            currentPhotoIndex = (currentPhotoIndex + 1) % filteredPhotos.length;
-            openPhotoModal(currentPhotoIndex);
-        });
-
-        // Share functionality
-        document.getElementById('share-btn').addEventListener('click', () => {
-            shareModal.style.display = 'block';
-            const photo = filteredPhotos[currentPhotoIndex];
-            const shareUrl = `${window.location.origin}/media?photo=${photo.id}`;
-            document.getElementById('share-url-input').value = shareUrl;
-        });
-
-        // Share options
-        document.querySelectorAll('.share-option').forEach(option => {
-            option.addEventListener('click', function() {
-                const platform = this.dataset.platform;
-                const photo = filteredPhotos[currentPhotoIndex];
-                const shareUrl = `${window.location.origin}/media?photo=${photo.id}`;
-                
-                switch (platform) {
-                    case 'facebook':
-                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
-                        break;
-                    case 'twitter':
-                        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(photo.name || 'Check out this photo from CPC New Haven')}`);
-                        break;
-                    case 'linkedin':
-                        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`);
-                        break;
-                    case 'email':
-                        window.location.href = `mailto:?subject=${encodeURIComponent(photo.name || 'Photo from CPC New Haven')}&body=${encodeURIComponent(`Check out this photo: ${shareUrl}`)}`;
-                        break;
-                    case 'copy':
-                        navigator.clipboard.writeText(shareUrl).then(() => {
-                            alert('Link copied to clipboard!');
-                        });
-                        break;
-                }
-            });
-        });
-
-        // Copy URL button
-        document.getElementById('copy-url-btn').addEventListener('click', () => {
-            const urlInput = document.getElementById('share-url-input');
-            urlInput.select();
-            document.execCommand('copy');
-            alert('Link copied to clipboard!');
-        });
-
-        // Download
-        document.getElementById('download-btn').addEventListener('click', () => {
-            const photo = filteredPhotos[currentPhotoIndex];
-            const link = document.createElement('a');
-            link.href = photo.url;
-            link.download = photo.name || 'cpc-photo.jpg';
-            link.click();
-        });
     }
 
     function initializeMasonry() {
