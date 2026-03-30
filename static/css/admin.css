@@ -1397,3 +1397,64 @@ body.admin-body {
   border-top: 1px solid rgba(46, 160, 67, 0.4);
   border-bottom: 1px solid rgba(46, 160, 67, 0.4);
 }
+
+/* Announcement list – make title column the biggest, reduce others */
+.admin-body .admin-index table th:nth-child(2),
+.admin-body .admin-index table td:nth-child(2) {
+  width: 35%;
+  min-width: 200px;
+}
+
+/* ID column – very compact */
+.admin-body .admin-index table th:nth-child(1),
+.admin-body .admin-index table td:nth-child(1) {
+  width: 40px;
+  text-align: center;
+}
+
+/* Speaker, Type, Category, Revision – compact */
+.admin-body .admin-index table th:nth-child(3),
+.admin-body .admin-index table th:nth-child(4),
+.admin-body .admin-index table th:nth-child(5),
+.admin-body .admin-index table th:nth-child(9),
+.admin-body .admin-index table td:nth-child(3),
+.admin-body .admin-index table td:nth-child(4),
+.admin-body .admin-index table td:nth-child(5),
+.admin-body .admin-index table td:nth-child(9) {
+  width: 60px;
+}
+
+/* Boolean/checkbox columns (active, show_in_banner, superfeatured) – tiny */
+.admin-body .admin-index table th:nth-child(6),
+.admin-body .admin-index table th:nth-child(7),
+.admin-body .admin-index table th:nth-child(8),
+.admin-body .admin-index table td:nth-child(6),
+.admin-body .admin-index table td:nth-child(7),
+.admin-body .admin-index table td:nth-child(8) {
+  width: 50px;
+  text-align: center;
+}
+
+/* Date columns (date_entered, updated_at, event_date, expires_at) – compact */
+.admin-body .admin-index table th:nth-child(10),
+.admin-body .admin-index table th:nth-child(11),
+.admin-body .admin-index table th:nth-child(13),
+.admin-body .admin-index table th:nth-child(16),
+.admin-body .admin-index table td:nth-child(10),
+.admin-body .admin-index table td:nth-child(11),
+.admin-body .admin-index table td:nth-child(13),
+.admin-body .admin-index table td:nth-child(16) {
+  width: 90px;
+  font-size: 12px;
+}
+
+/* updated_by, event_start_time, event_end_time – small */
+.admin-body .admin-index table th:nth-child(12),
+.admin-body .admin-index table th:nth-child(14),
+.admin-body .admin-index table th:nth-child(15),
+.admin-body .admin-index table td:nth-child(12),
+.admin-body .admin-index table td:nth-child(14),
+.admin-body .admin-index table td:nth-child(15) {
+  width: 60px;
+  font-size: 12px;
+}
