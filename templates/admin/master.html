@@ -55,6 +55,24 @@
     /* Overrides for Flask-Admin default styles that might bleed in */
     .container { width: 100% !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
     .navbar { display: none !important; } /* Hide old navbar */
+    /* Override Tailwind Forms plugin white-background reset on all inputs */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+    select,
+    textarea {
+        background-color: #000000 !important;
+        color: #dbe6ff !important;
+        border-color: #3b4861 !important;
+    }
+    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus,
+    select:focus,
+    textarea:focus {
+        background-color: #02132b !important;
+        border-color: #69daff !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    /* Ensure select option text is readable */
+    option { background-color: #061934; color: #dbe6ff; }
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
