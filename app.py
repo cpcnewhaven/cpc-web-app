@@ -871,8 +871,8 @@ def api_teaching_series():
     date_range = {'min': None, 'max': None}
     
     for sermon in sermons:
-        series_name = sermon.get('series', '')
-        title = sermon.get('title', '')
+        series_name = sermon.get('series') or ''
+        title = sermon.get('title') or ''
         speaker = sermon.get('speaker', '') or sermon.get('author', '')
         scripture = sermon.get('scripture', '')
         date_str = sermon.get('date', '')
@@ -3228,7 +3228,7 @@ class PaperView(AuthenticatedModelView):
 class SermonView(AuthenticatedModelView):
     create_template = 'admin/model/create_bento.html'
     edit_template = 'admin/model/edit_bento.html'
-    column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'active', 'expires_at')
+    column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'featured', 'active', 'expires_at')
     column_searchable_list = ('title', 'scripture')
     column_filters = ('series', 'speaker_user', 'date', 'active')
     column_sortable_list = ('date', 'title', 'episode_number')
@@ -3240,7 +3240,7 @@ class SermonView(AuthenticatedModelView):
         ('Scripture Reference', {'fields': ('book_name', 'chapter_start', 'verse_start', 'chapter_end', 'verse_end')}),
         ('Media Links & Files', {'fields': ('audio_file_url', 'video_file_url', 'youtube_url', 'spotify_url', 'apple_podcasts_url', 'podcast_thumbnail_url')}),
         ('Related Content', {'fields': ('beyond_episode_name',)}),
-        ('Visibility & Expiration', {'fields': ('archived', 'expiration_preset', 'expiration_date')}),
+        ('Visibility & Expiration', {'fields': ('featured', 'archived', 'expiration_preset', 'expiration_date')}),
     )
     
     form_columns = (
@@ -3250,7 +3250,7 @@ class SermonView(AuthenticatedModelView):
         'audio_file_url', 'video_file_url',
         'beyond_episode_name',
         'spotify_url', 'youtube_url', 'apple_podcasts_url', 'podcast_thumbnail_url',
-        'expiration_preset', 'expiration_date', 'active', 'archived'
+        'expiration_preset', 'expiration_date', 'featured', 'active', 'archived'
     )
     
     column_labels = {
@@ -3267,6 +3267,7 @@ class SermonView(AuthenticatedModelView):
         'youtube_url': 'YouTube',
         'apple_podcasts_url': 'Apple Podcasts',
         'podcast_thumbnail_url': 'Thumbnail',
+        'featured': 'Featured',
         'active': 'Status',
         'expires_at': 'Expires',
         'speaker_user': 'Speaker',

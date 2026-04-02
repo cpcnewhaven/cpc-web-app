@@ -111,6 +111,7 @@ class Sermon(db.Model):
     date = db.Column(db.Date, nullable=False)
     active = db.Column(db.Boolean, default=True)
     archived = db.Column(db.Boolean, default=False)
+    featured = db.Column(db.Boolean, default=False)
     spotify_url = db.Column(db.String(500))
     youtube_url = db.Column(db.String(500))
     apple_podcasts_url = db.Column(db.String(500))
