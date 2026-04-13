@@ -335,6 +335,27 @@ Every piece of content (across all types) gets a unique ID from `GlobalIDCounter
 - Critical for sermon lists, podcast feeds, gallery images
 - Invalidated manually when content is updated via admin
 
+### Search System (In Progress — Phase 1 Complete)
+
+**Architecture**: Hybrid master + subpage searches, all DB-backed via `/api/search` endpoint.
+
+**Phase 1 Complete** ✅
+- Upgraded `/api/search` in `app.py` with rich filter parameters
+- Added `/api/search/meta?type=...` endpoint for filter option dropdowns
+- All queries use SQLAlchemy (Render PostgreSQL), never JSON files
+- **Filter params**:
+  - **Sermons**: `speaker` (ID), `series_id`, `year`, `scripture_book`
+  - **Podcasts**: `series_id`, `guest`, `season`
+  - **Events**: `category`
+  - **Gallery**: `tags` (comma-separated), `year`
+- Tested: `curl "http://localhost:8000/api/search?q=grace&type=sermons"` returns paginated results
+
+**Phases 2-3 (Planned)**
+- Phase 2: Upgrade master `/search` page with advanced filter UI
+- Phase 3: Update subpages (podcasts, events, gallery, sermons, teaching-series) to use `/api/search`
+
+**Important Note**: Do NOT use `enhanced_api.py` search endpoints or `advanced_search.py` — they read from JSON files. Only use `/api/search` in `app.py`.
+
 ---
 
 ## File Structure Rules

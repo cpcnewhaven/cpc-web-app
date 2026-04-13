@@ -146,9 +146,10 @@
         <!-- Search Bar -->
         <div class="search-section">
             <label>Search</label>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem; position: relative;">
                 <input type="text" id="searchInput"
                     placeholder="Search for anything... (e.g., 'Luke', 'grace', 'worship')" autocomplete="off">
+                <button id="clearSearchBtn" style="position: absolute; right: 3.5rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.2rem; padding: 0; display: none;" aria-label="Clear search">✕</button>
                 <button id="searchButton">Go</button>
             </div>
         </div>
@@ -166,6 +167,22 @@
             <button class="filter-tab" data-type="sermon_series">Sermon Series</button>
         </div>
 
+        <!-- Advanced Filters Panel (Phase 2) -->
+        <div id="advancedFiltersToggle" style="display: none; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; user-select: none;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.9rem; font-weight: 500;">
+                <span id="filterToggleIcon">▼</span>
+                <span>Advanced Filters</span>
+            </div>
+        </div>
+
+        <div id="advancedFiltersPanel" style="display: none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+            <!-- Filter groups will be dynamically populated here -->
+            <div id="filterGroupsContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;"></div>
+            <button id="clearFiltersBtn" style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                Clear Filters
+            </button>
+        </div>
+
         <!-- Search Results -->
         <div class="results-container" id="searchResults">
             <!-- Results will be populated here -->
@@ -180,10 +197,35 @@
 
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
     const searchResults = document.getElementById('searchResults');
     const filterTabs = document.querySelectorAll('.filter-tab');
 
     searchButton.addEventListener('click', performSearch);
+
+    // Easy Win #1b: Show/hide clear button based on input
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchDebounceTimer);
+        const query = e.target.value.trim();
+
+        // Show/hide clear button
+        clearSearchBtn.style.display = query.length > 0 ? 'block' : 'none';
+
+        if (query.length >= 3) {
+            searchDebounceTimer = setTimeout(() => {
+                performSearch();
+            }, 250);
+        }
+    });
+
+    // Clear button handler
+    clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearchBtn.style.display = 'none';
+        showEmptyState();
+        // Update URL to remove query params
+        window.history.replaceState({}, '', '/search');
+    });
 
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -202,8 +244,14 @@
             tab.classList.remove('bg-gray-200', 'text-gray-700');
             currentType = tab.dataset.type;
             currentPage = 1;
+            activeFilters = {}; // Clear filters when switching types
+            loadAndRenderFilters(); // Load new filters for this type
             if (currentQuery) {
                 performSearch();
+                // Easy Win #1: Scroll to results container when switching tabs
+                setTimeout(() => {
+                    searchResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
             }
         });
     });
@@ -212,16 +260,30 @@
         const query = searchInput.value.trim();
         if (!query) {
             showEmptyState();
+            loadAndRenderFilters(); // Still load filters for empty state
             return;
         }
 
         currentQuery = query;
+        addToRecentSearches(query);
         showLoading();
 
-        fetch(`/api/search?q=${encodeURIComponent(query)}&type=${currentType}&page=${currentPage}&per_page=10`)
+        // Build search URL with filters
+        let searchUrl = `/api/search?q=${encodeURIComponent(query)}&type=${currentType}&page=${currentPage}&per_page=10`;
+        Object.keys(activeFilters).forEach(key => {
+            searchUrl += `&${key}=${encodeURIComponent(activeFilters[key])}`;
+        });
+
+        fetch(searchUrl)
             .then(response => response.json())
             .then(data => {
                 displayResults(data);
+                // Load result counts for tabs once we have a query
+                loadResultCounts();
+                // Load and render filters for this type
+                loadAndRenderFilters();
+                // Easy Win #2: Update URL to reflect current search + filters
+                updateSearchURL();
             })
             .catch(error => {
                 console.error('Search error:', error);
@@ -229,21 +291,212 @@
             });
     }
 
+    // Easy Win #2: Update browser URL with current search query and type
+    function updateSearchURL() {
+        const params = new URLSearchParams();
+        if (currentQuery) params.append('q', currentQuery);
+        if (currentType !== 'all') params.append('type', currentType);
+        if (currentPage > 1) params.append('page', currentPage);
+
+        // Add active filters to URL
+        Object.keys(activeFilters).forEach(key => {
+            if (activeFilters[key]) {
+                params.append(key, activeFilters[key]);
+            }
+        });
+
+        const url = params.toString() ? `/search?${params.toString()}` : '/search';
+        window.history.replaceState({}, '', url);
+    }
+
+    // Phase 2: Advanced Filters Panel
+    let activeFilters = {};
+    const advancedFiltersToggle = document.getElementById('advancedFiltersToggle');
+    const advancedFiltersPanel = document.getElementById('advancedFiltersPanel');
+    const filterToggleIcon = document.getElementById('filterToggleIcon');
+    const filterGroupsContainer = document.getElementById('filterGroupsContainer');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    let filtersVisible = false;
+
+    // Toggle filters panel visibility
+    advancedFiltersToggle.addEventListener('click', () => {
+        filtersVisible = !filtersVisible;
+        advancedFiltersPanel.style.display = filtersVisible ? 'block' : 'none';
+        filterToggleIcon.textContent = filtersVisible ? '▲' : '▼';
+    });
+
+    // Clear all filters
+    clearFiltersBtn.addEventListener('click', () => {
+        activeFilters = {};
+        // Reset all filter inputs/selects
+        document.querySelectorAll('.filter-input, .filter-select').forEach(el => {
+            if (el.type === 'checkbox') {
+                el.checked = false;
+            } else {
+                el.value = '';
+            }
+        });
+        performSearch();
+    });
+
+    // Filter metadata and config per type
+    const filterConfigs = {
+        sermons: [
+            { key: 'speaker', label: 'Speaker', type: 'select', meta: 'speakers' },
+            { key: 'series_id', label: 'Series', type: 'select', meta: 'series' },
+            { key: 'year', label: 'Year', type: 'select', meta: 'years' },
+            { key: 'scripture_book', label: 'Scripture Book', type: 'select', meta: 'scripture_books' }
+        ],
+        podcasts: [
+            { key: 'series_id', label: 'Series', type: 'select', meta: 'podcast_series' },
+            { key: 'guest', label: 'Guest', type: 'text', meta: null },
+            { key: 'season', label: 'Season', type: 'select', meta: 'seasons' }
+        ],
+        events: [
+            { key: 'category', label: 'Category', type: 'select', meta: 'categories' }
+        ],
+        gallery: [
+            { key: 'tags', label: 'Tags', type: 'select', meta: 'tags' },
+            { key: 'year', label: 'Year', type: 'select', meta: 'years' }
+        ]
+    };
+
+    // Load and render filter options from /api/search/meta
+    async function loadAndRenderFilters() {
+        const toggleVisible = currentQuery && filterConfigs[currentType];
+        advancedFiltersToggle.style.display = toggleVisible ? 'block' : 'none';
+
+        if (!toggleVisible) {
+            advancedFiltersPanel.style.display = 'none';
+            filtersVisible = false;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/search/meta?type=${currentType}`);
+            const data = await response.json();
+
+            if (!data.success) return;
+
+            const config = filterConfigs[currentType] || [];
+            filterGroupsContainer.innerHTML = '';
+
+            for (const filterConfig of config) {
+                const options = data.meta[filterConfig.meta];
+                if (!options || options.length === 0) continue;
+
+                const group = document.createElement('div');
+                group.style.cssText = 'display: flex; flex-direction: column; gap: 0.4rem;';
+
+                const label = document.createElement('label');
+                label.style.cssText = 'font-size: 0.8rem; color: rgba(255,255,255,0.7); font-weight: 500;';
+                label.textContent = filterConfig.label;
+
+                let filterEl;
+                if (filterConfig.type === 'select') {
+                    filterEl = document.createElement('select');
+                    filterEl.className = 'filter-select';
+                    filterEl.style.cssText = 'background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; padding: 0.4rem 0.75rem; font-size: 0.85rem;';
+
+                    const emptyOption = document.createElement('option');
+                    emptyOption.value = '';
+                    emptyOption.textContent = `All ${filterConfig.label}`;
+                    filterEl.appendChild(emptyOption);
+
+                    options.forEach(opt => {
+                        const option = document.createElement('option');
+                        // Handle both string options and objects with id/title
+                        if (typeof opt === 'object') {
+                            option.value = opt.id;
+                            option.textContent = opt.title;
+                        } else {
+                            option.value = opt;
+                            option.textContent = opt;
+                        }
+                        filterEl.appendChild(option);
+                    });
+                } else if (filterConfig.type === 'text') {
+                    filterEl = document.createElement('input');
+                    filterEl.className = 'filter-input';
+                    filterEl.type = 'text';
+                    filterEl.placeholder = `Search ${filterConfig.label}...`;
+                    filterEl.style.cssText = 'background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; padding: 0.4rem 0.75rem; font-size: 0.85rem;';
+                }
+
+                // Set current filter value if any
+                if (activeFilters[filterConfig.key]) {
+                    filterEl.value = activeFilters[filterConfig.key];
+                }
+
+                // Add change handler
+                filterEl.addEventListener('change', () => {
+                    if (filterEl.value) {
+                        activeFilters[filterConfig.key] = filterEl.value;
+                    } else {
+                        delete activeFilters[filterConfig.key];
+                    }
+                    currentPage = 1;
+                    performSearch();
+                });
+
+                // Also debounce input on text fields
+                if (filterConfig.type === 'text') {
+                    let inputTimer;
+                    filterEl.addEventListener('input', () => {
+                        clearTimeout(inputTimer);
+                        inputTimer = setTimeout(() => {
+                            if (filterEl.value) {
+                                activeFilters[filterConfig.key] = filterEl.value;
+                            } else {
+                                delete activeFilters[filterConfig.key];
+                            }
+                            currentPage = 1;
+                            performSearch();
+                        }, 300);
+                    });
+                }
+
+                group.appendChild(label);
+                group.appendChild(filterEl);
+                filterGroupsContainer.appendChild(group);
+            }
+        } catch (error) {
+            console.error('Failed to load filters:', error);
+        }
+    }
+
     function showLoading() {
         searchResults.innerHTML = '<div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">Searching...</div>';
     }
 
     function showEmptyState() {
+        const recent = getRecentSearches();
+        const popularTerms = window.popularSearchTerms || ['Grace', 'Sermon', 'Worship', 'Community'];
+
+        let contentHTML = `
+            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-bottom: 0.5rem; display: block;">Popular Searches</span>
+        `;
+
+        popularTerms.forEach(term => {
+            contentHTML += `<button onclick="quickSearch('${term.replace(/'/g, "\\'")}')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">${term}</button>`;
+        });
+
+        // Add recent searches if any
+        if (recent.length > 0) {
+            contentHTML += `
+                <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-top: 1.5rem; margin-bottom: 0.5rem; display: block;">Recent Searches</span>
+            `;
+            recent.forEach(term => {
+                contentHTML += `<button onclick="quickSearch('${term.replace(/'/g, "\\'")}')" style="padding: 0.25rem 0.75rem; background: rgba(135,206,250,0.1); border: none; border-radius: 9999px; color: rgba(135,206,250,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(135,206,250,0.2)'" onmouseout="this.style.background='rgba(135,206,250,0.1)'">${term}</button>`;
+            });
+        }
+
         searchResults.innerHTML = `
             <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">
                 <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">Start Your Search</h2>
                 <p style="font-size: 1rem; margin-bottom: 1.5rem;">Enter a search query to find content across the site</p>
                 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;">
-                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-bottom: 0.5rem;">Popular Searches</span>
-                    <button onclick="quickSearch('Total')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Total Christ</button>
-                    <button onclick="quickSearch('Luke')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Luke</button>
-                    <button onclick="quickSearch('Community')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Community</button>
-                    <button onclick="quickSearch('Service')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Service</button>
+                    ${contentHTML}
                 </div>
             </div>
         `;
@@ -251,8 +504,96 @@
 
     window.quickSearch = function (term) {
         searchInput.value = term;
+        addToRecentSearches(term);
         performSearch();
     };
+
+    let searchDebounceTimer = null;
+
+    // Easy Win #1: Auto-focus search input on page load
+    window.addEventListener('load', () => {
+        searchInput.focus();
+    });
+
+    // Easy Win #2: Fetch and populate "Popular Searches" dynamically from /api/search/meta
+    async function loadPopularSearches() {
+        try {
+            const response = await fetch('/api/search/meta?type=all');
+            const data = await response.json();
+
+            if (data.success && data.meta) {
+                // Collect top items from various categories
+                const popularTerms = [];
+
+                // Get first 2 speakers
+                if (data.meta.speakers) {
+                    popularTerms.push(...data.meta.speakers.slice(0, 2));
+                }
+                // Get first 2 scripture books
+                if (data.meta.scripture_books) {
+                    popularTerms.push(...data.meta.scripture_books.slice(0, 2));
+                }
+                // Fallback to hardcoded if not enough
+                if (popularTerms.length < 4) {
+                    popularTerms.push('Grace', 'Sermon', 'Worship');
+                }
+
+                // Store for use in empty state
+                window.popularSearchTerms = popularTerms.slice(0, 4);
+            }
+        } catch (error) {
+            console.error('Failed to load popular searches:', error);
+            // Use fallback
+            window.popularSearchTerms = ['Grace', 'Sermon', 'Worship', 'Community'];
+        }
+    }
+
+    // Load popular searches on page load
+    loadPopularSearches();
+
+    // Easy Win #3: Track recent searches in localStorage and show them
+    function addToRecentSearches(query) {
+        let recent = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+        recent = recent.filter(q => q !== query); // Remove if duplicate
+        recent.unshift(query); // Add to front
+        recent = recent.slice(0, 5); // Keep last 5
+        localStorage.setItem('recentSearches', JSON.stringify(recent));
+    }
+
+    function getRecentSearches() {
+        return JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    }
+
+    // Easy Win #4: Fetch result counts for all type tabs (display as badges)
+    async function loadResultCounts() {
+        const types = ['sermons', 'podcasts', 'announcements', 'events', 'gallery', 'papers', 'teaching_series', 'sermon_series'];
+        const counts = {};
+
+        try {
+            for (const type of types) {
+                const response = await fetch(`/api/search?q=${encodeURIComponent(currentQuery)}&type=${type}&per_page=1`);
+                const data = await response.json();
+                counts[type] = data.total;
+            }
+
+            // Update tab badges
+            filterTabs.forEach(tab => {
+                const type = tab.dataset.type;
+                if (type !== 'all' && counts[type] !== undefined) {
+                    let badge = tab.querySelector('.count-badge');
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'count-badge';
+                        badge.style.cssText = 'margin-left: 0.4rem; font-size: 0.75rem; opacity: 0.7;';
+                        tab.appendChild(badge);
+                    }
+                    badge.textContent = `(${counts[type]})`;
+                }
+            });
+        } catch (error) {
+            console.error('Failed to load result counts:', error);
+        }
+    }
 
     function highlightText(text, query) {
         if (!query) return text;
@@ -278,12 +619,18 @@
 
     function displayResults(data) {
         if (data.total === 0) {
+            // Easy Win #4: Contextual empty state message
+            const typeLabel = currentType !== 'all' ? ` in ${currentType.charAt(0).toUpperCase() + currentType.slice(1).replace('_', ' ')}` : '';
             searchResults.innerHTML = `
                 <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">
                     <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: rgba(255,255,255,0.95);">No Results Found</h2>
-                    <p style="font-size: 1rem;">Try a different search term or check the spelling</p>
+                    <p style="font-size: 1rem;">No results for "<strong style="color: rgba(255,255,255,0.8);">${data.query}</strong>"${typeLabel}</p>
+                    <p style="font-size: 0.9rem; margin-top: 1rem; color: rgba(255,255,255,0.5);">Try a different search term or check the spelling</p>
                 </div>
             `;
+            // Easy Win #6: Focus on results after display
+            searchResults.setAttribute('tabindex', '-1');
+            searchResults.focus();
             return;
         }
 
@@ -312,6 +659,22 @@
             const highlightedTitle = highlightText(item.title, data.query);
             const highlightedDescription = highlightText(item.description || '', data.query);
 
+            // Easy Win #3: Construct fallback URL if item doesn't have one
+            let resultUrl = item.url;
+            if (!resultUrl) {
+                const urlMap = {
+                    'sermon': '/sermons',
+                    'podcast': '/podcasts',
+                    'event': '/events',
+                    'gallery': '/gallery',
+                    'paper': '/papers',
+                    'teaching_series': '/teaching-series',
+                    'sermon_series': '/sermons',
+                    'announcement': '/announcements'
+                };
+                resultUrl = urlMap[item.type] || '/';
+            }
+
             html += `
                 <div class="result-card" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1.5rem;">
                     <div style="padding: 0.25rem 0.75rem; background: rgba(0,102,204,0.2); color: rgba(135,206,250,0.9); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">${label}</div>
@@ -323,22 +686,31 @@
                         ${item.series ? `<span style="opacity: 0.3;">•</span><span style="color: rgba(135,206,250,0.9);">${item.series}</span>` : ''}
                     </div>
                     ${item.description ? `<p style="font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.8); margin-bottom: 1rem;">${highlightedDescription}</p>` : ''}
-                    ${item.url ? `<a href="${item.url}" style="display: inline-flex; align-items: center; color: rgba(135,206,250,0.9); font-weight: 500; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='rgba(135,206,250,1)'" onmouseout="this.style.color='rgba(135,206,250,0.9)'" ${item.url.startsWith('http') ? 'target="_blank"' : ''}>
+                    <a href="${resultUrl}" style="display: inline-flex; align-items: center; color: rgba(135,206,250,0.9); font-weight: 500; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='rgba(135,206,250,1)'" onmouseout="this.style.color='rgba(135,206,250,0.9)'" ${resultUrl.startsWith('http') ? 'target="_blank"' : ''}>
                         View Details <i class="fas fa-arrow-right" style="margin-left: 0.5rem; font-size: 0.75rem;"></i>
-                    </a>` : ''}
+                    </a>
                 </div>
             `;
         });
 
+        // Easy Win #6: Focus on results container after display
+        setTimeout(() => {
+            searchResults.setAttribute('tabindex', '-1');
+            searchResults.focus();
+        }, 0);
+
         html += '</div>';
 
         if (data.pages > 1) {
-            const prevStyle = `padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === 1 ? '0.5' : '1'}; transition: background 0.2s;`;
-            const nextStyle = `padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: ${currentPage >= data.pages ? 'not-allowed' : 'pointer'}; opacity: ${currentPage >= data.pages ? '0.5' : '1'}; transition: background 0.2s;`;
+            // Easy Win #2: Improved disabled button styling
+            const prevDisabled = currentPage === 1;
+            const nextDisabled = currentPage >= data.pages;
+            const prevStyle = `padding: 0.5rem 1rem; background: ${prevDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}; border: 1px solid ${prevDisabled ? 'rgba(0,82,163,0.2)' : 'rgba(0,82,163,0.5)'}; border-radius: 6px; color: ${prevDisabled ? 'rgba(255,255,255,0.4)' : 'white'}; cursor: ${prevDisabled ? 'not-allowed' : 'pointer'}; opacity: ${prevDisabled ? '0.5' : '1'}; transition: all 0.2s;`;
+            const nextStyle = `padding: 0.5rem 1rem; background: ${nextDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}; border: 1px solid ${nextDisabled ? 'rgba(0,82,163,0.2)' : 'rgba(0,82,163,0.5)'}; border-radius: 6px; color: ${nextDisabled ? 'rgba(255,255,255,0.4)' : 'white'}; cursor: ${nextDisabled ? 'not-allowed' : 'pointer'}; opacity: ${nextDisabled ? '0.5' : '1'}; transition: all 0.2s;`;
             html += `<div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">`;
-            html += `<button style="${prevStyle}" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})" onmouseover="if(${currentPage !== 1}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='rgba(0,82,163,0.3)'">← Previous</button>`;
+            html += `<button style="${prevStyle}" ${prevDisabled ? 'disabled' : ''} onclick="${prevDisabled ? '' : `changePage(${currentPage - 1})`}" onmouseover="if(${!prevDisabled}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='${prevDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}'">← Previous</button>`;
             html += `<span style="color: rgba(255,255,255,0.7);">Page ${data.page} of ${data.pages}</span>`;
-            html += `<button style="${nextStyle}" ${currentPage >= data.pages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})" onmouseover="if(${currentPage < data.pages}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='rgba(0,82,163,0.3)'">Next →</button>`;
+            html += `<button style="${nextStyle}" ${nextDisabled ? 'disabled' : ''} onclick="${nextDisabled ? '' : `changePage(${currentPage + 1})`}" onmouseover="if(${!nextDisabled}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='${nextDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}'">Next →</button>`;
             html += `</div>`;
         }
 
@@ -352,11 +724,31 @@
     }
 
     window.changePage = changePage;
-    // Auto-run if ?q= is present
-    const params = new URLSearchParams(window.location.search);
-    const initialQ = params.get('q');
+
+    // Auto-run if ?q= is present, restore type and page from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQ = urlParams.get('q');
+    const initialType = urlParams.get('type');
+    const initialPage = urlParams.get('page');
+
+    if (initialType && initialType !== 'all') {
+        currentType = initialType;
+        // Set active tab
+        filterTabs.forEach(tab => {
+            tab.classList.remove('active');
+            if (tab.dataset.type === currentType) {
+                tab.classList.add('active');
+            }
+        });
+    }
+
+    if (initialPage) {
+        currentPage = parseInt(initialPage, 10);
+    }
+
     if (initialQ) {
         searchInput.value = initialQ;
+        clearSearchBtn.style.display = 'block';
         performSearch();
     } else {
         showEmptyState();

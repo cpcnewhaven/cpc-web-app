@@ -55,6 +55,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        flex-wrap: wrap;
     }
 
     .series-card-pastor .event-info {
@@ -68,6 +69,8 @@
         color: rgba(255, 255, 255, 0.8);
         line-height: 1.5;
         margin-bottom: 1rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
     }
 
     .sessions-list {
@@ -191,8 +194,14 @@
                         return;
                     }
                     container.innerHTML = series.map(function (s) {
+                        var sessionBadge = s.session_count > 0
+                            ? '<span style="background: rgba(0, 82, 163, 0.5); padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.8rem; color: white;">' + s.session_count + ' session' + (s.session_count !== 1 ? 's' : '') + '</span>'
+                            : '';
                         return '<div class="series-card-pastor" data-id="' + s.id + '">' +
-                            '<h2><i class="fas fa-graduation-cap"></i> ' + escapeHtml(s.title) + '</h2>' +
+                            '<h2 style="justify-content: space-between;">' +
+                            '<span><i class="fas fa-graduation-cap"></i> ' + escapeHtml(s.title) + '</span>' +
+                            sessionBadge +
+                            '</h2>' +
                             (s.event_info ? '<div class="event-info"><i class="fas fa-calendar-alt"></i> ' + escapeHtml(s.event_info) + '</div>' : '') +
                             (s.description ? '<div class="series-desc">' + escapeHtml(s.description) + '</div>' : '') +
                             '<div class="sessions-list" data-series-id="' + s.id + '">' +

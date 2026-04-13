@@ -135,6 +135,12 @@
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Admin</a></li>
                 </ul>
             </li>
+            <!-- Search Icon (Phase 2) -->
+            <li>
+                <button id="navSearchBtn" class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm" aria-label="Search" style="background: none; border: none; cursor: pointer;">
+                    <i class="fas fa-magnifying-glass"></i>
+                </button>
+            </li>
             <!-- Settings Gear -->
             <li class="relative nav-dropdown" x-data>
                 <a href="#"
@@ -900,6 +906,114 @@
                 }
             });
         })();
+    </script>
+
+    <!-- Search Modal (Phase 2) -->
+    <div id="searchModal" style="display: none; position: fixed; inset: 0; z-index: 10000;">
+        <div id="searchModalBackdrop" style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);"></div>
+        <div id="searchModalBox" style="position: relative; z-index: 1; background: rgba(0, 40, 100, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; max-width: 600px; margin: 10vh auto; padding: 1.5rem; max-height: 70vh; overflow-y: auto;">
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; position: relative;">
+                <input id="modalSearchInput" type="text" placeholder="Search sermons, podcasts, events…" autofocus style="flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; padding: 0.75rem 1rem; font-size: 1.1rem;">
+                <button id="modalSearchClose" style="background: none; border: none; color: rgba(255, 255, 255, 0.7); font-size: 1.5rem; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">✕</button>
+            </div>
+            <div id="modalResults" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+            <a href="/search" id="modalViewAll" style="display: none; text-align: center; color: rgba(135, 206, 250, 0.9); margin-top: 1.5rem; padding: 0.75rem; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='rgba(135, 206, 250, 1)'" onmouseout="this.style.color='rgba(135, 206, 250, 0.9)'">View all results →</a>
+        </div>
+    </div>
+
+    <!-- Modal JS (Phase 2) -->
+    <script>
+        const searchModal = document.getElementById('searchModal');
+        const searchModalBackdrop = document.getElementById('searchModalBackdrop');
+        const modalSearchInput = document.getElementById('modalSearchInput');
+        const modalSearchClose = document.getElementById('modalSearchClose');
+        const modalResults = document.getElementById('modalResults');
+        const modalViewAll = document.getElementById('modalViewAll');
+        const navSearchBtn = document.getElementById('navSearchBtn');
+        let modalSearchTimer;
+
+        // Open modal
+        navSearchBtn.addEventListener('click', () => {
+            searchModal.style.display = 'block';
+            modalSearchInput.focus();
+        });
+
+        // Close modal
+        const closeModal = () => {
+            searchModal.style.display = 'none';
+            modalSearchInput.value = '';
+            modalResults.innerHTML = '';
+            modalViewAll.style.display = 'none';
+        };
+
+        modalSearchClose.addEventListener('click', closeModal);
+        searchModalBackdrop.addEventListener('click', closeModal);
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchModal.style.display === 'block') {
+                closeModal();
+            }
+        });
+
+        // Live search in modal
+        modalSearchInput.addEventListener('input', (e) => {
+            clearTimeout(modalSearchTimer);
+            const query = e.target.value.trim();
+
+            if (query.length < 2) {
+                modalResults.innerHTML = '';
+                modalViewAll.style.display = 'none';
+                return;
+            }
+
+            modalSearchTimer = setTimeout(async () => {
+                try {
+                    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=all&per_page=5`);
+                    const data = await response.json();
+
+                    if (data.results && data.results.length > 0) {
+                        const typeLabels = {
+                            'sermon': 'Sermon',
+                            'announcement': 'Announcement',
+                            'podcast': 'Podcast',
+                            'event': 'Event',
+                            'gallery': 'Gallery',
+                            'paper': 'Paper',
+                            'teaching_series': 'Teaching Series',
+                            'sermon_series': 'Sermon Series'
+                        };
+
+                        modalResults.innerHTML = data.results.map(item => {
+                            const label = typeLabels[item.type] || item.type;
+                            const dateStr = item.date ? new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+                            const resultUrl = item.url || `/search?q=${encodeURIComponent(query)}`;
+                            return `
+                                <a href="${resultUrl}" style="display: flex; gap: 0.75rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; text-decoration: none; color: rgba(255, 255, 255, 0.9); transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                            <span style="font-size: 0.7rem; background: rgba(0, 102, 204, 0.2); color: rgba(135, 206, 250, 0.9); padding: 0.15rem 0.5rem; border-radius: 4px; text-transform: uppercase; font-weight: 600;">${label}</span>
+                                            ${dateStr ? `<span style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">${dateStr}</span>` : ''}
+                                        </div>
+                                        <div style="font-size: 0.95rem; font-weight: 500;">${item.title}</div>
+                                        ${item.speaker ? `<div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">${item.speaker}</div>` : ''}
+                                    </div>
+                                    <div style="color: rgba(135, 206, 250, 0.7); font-size: 1.2rem;">→</div>
+                                </a>
+                            `;
+                        }).join('');
+                        modalViewAll.href = `/search?q=${encodeURIComponent(query)}`;
+                        modalViewAll.style.display = 'block';
+                    } else {
+                        modalResults.innerHTML = `<div style="padding: 1rem; text-align: center; color: rgba(255, 255, 255, 0.6);">No results found</div>`;
+                        modalViewAll.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Modal search error:', error);
+                    modalResults.innerHTML = `<div style="padding: 1rem; text-align: center; color: rgba(255, 100, 100, 0.9);">Search error</div>`;
+                }
+            }, 300);
+        });
     </script>
 
 </body>
