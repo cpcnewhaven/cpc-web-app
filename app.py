@@ -1915,9 +1915,16 @@ def api_search():
             for img in images:
                 results['results'].append({
                     'type': 'gallery',
-                    'title': img.name,
-                    'description': ', '.join(img.tags) if img.tags else '',
+                    'id': img.id,
+                    'name': img.name or 'Untitled',
+                    'title': img.name or 'Untitled',
+                    'description': img.description or '',
+                    'tags': img.tags if isinstance(img.tags, list) else [],
+                    'event': img.event,
+                    'location': img.location or '',
+                    'photographer': img.photographer or '',
                     'date': img.created.strftime('%Y-%m-%d') if img.created else None,
+                    'created': img.created.isoformat() if img.created else None,
                     'url': img.url,
                     'thumbnail': img.url
                 })

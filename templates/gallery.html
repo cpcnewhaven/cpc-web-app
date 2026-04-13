@@ -76,61 +76,64 @@
             </div>
         </div>
 
-        <section class="gallery-nav">
-            <div class="container">
-        <div class="nav-tabs">
-            <button class="nav-tab active" data-filter="all">All Photos</button>
-            <button class="nav-tab" data-filter="events">Events</button>
-            <button class="nav-tab" data-filter="worship">Worship</button>
-            <button class="nav-tab" data-filter="fellowship">Fellowship</button>
-            <button class="nav-tab" data-filter="youth">Youth</button>
-            <button class="nav-tab" data-filter="missions">Missions</button>
-        </div>
-    </div>
-</section>
-
 <!-- Gallery Section -->
 <section class="gallery-section">
     <div class="container">
-        <!-- Year Navigation (Yearbook feel) -->
-        <div class="gallery-year-nav" style="margin: 0.25rem 0 0.75rem 0;">
-            <div class="year-tabs" id="gallery-year-tabs"></div>
-        </div>
-
-        <!-- Filter Controls -->
-        <div class="gallery-controls">
-            <div class="search-box">
-                <input type="text" id="gallery-search"
-                    placeholder="Search photos...">
-                <i class="fas fa-search"></i>
+        <!-- Phase 3: Filter Controls Bar -->
+        <div class="sermon-controls" style="display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); align-items: center; margin-bottom: 1rem;">
+            <div class="search-container" style="flex: 1; min-width: 200px;">
+                <input type="text" id="gallery-search" placeholder="Search photos..." style="width: 100%; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; font-size: 0.9rem;">
             </div>
-            <div class="sort-controls">
-                <select id="sort-select">
+
+            <button class="filter-toggle-mobile" id="galleryFilterToggle" style="display: none;">Filters ▼</button>
+
+            <div class="filter-controls mobile-collapsible" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <select id="gallery-tags-filter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                    <option value="">All Tags</option>
+                </select>
+
+                <select id="gallery-year-filter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                    <option value="">All Years</option>
+                </select>
+
+                <select id="sort-select" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
                     <option value="alphabetical">Alphabetical</option>
-                    <option value="event">By Event</option>
                 </select>
             </div>
-            <div class="view-controls">
-                <button class="view-btn active" data-view="grid">
+
+            <div class="view-controls" style="display: flex; gap: 0.5rem;">
+                <button class="view-btn active" data-view="grid" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;" title="Grid View">
                     <i class="fas fa-th"></i>
                 </button>
-                <button class="view-btn" data-view="masonry">
+                <button class="view-btn" data-view="masonry" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;" title="Masonry View">
                     <i class="fas fa-th-large"></i>
                 </button>
-                <button class="view-btn" data-view="timeline">
+                <button class="view-btn" data-view="timeline" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;" title="Timeline View">
                     <i class="fas fa-list"></i>
                 </button>
-                <button class="view-btn" data-view="yearbook" title="Yearbook by year">
+                <button class="view-btn" data-view="yearbook" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;" title="Yearbook View">
                     <i class="fas fa-book"></i>
                 </button>
             </div>
         </div>
 
+        <!-- Year Navigation (Yearbook feel) -->
+        <div class="gallery-year-nav" id="gallery-year-nav" style="margin: 0.25rem 0 0.75rem 0; display: none;">
+            <div class="year-tabs" id="gallery-year-tabs"></div>
+        </div>
+
         <!-- Gallery Grid -->
         <div id="gallery-container" class="gallery-grid">
             <!-- Gallery images will be populated by JavaScript -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="gallery-pagination" style="display: none; display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">
+            <button id="prevGalleryBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">← Previous</button>
+            <span id="galleryPageInfo" style="color: rgba(255,255,255,0.7);">Page 1</span>
+            <button id="nextGalleryBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">Next →</button>
         </div>
 
         <!-- Loading Indicator -->
@@ -216,61 +219,183 @@
 
 {% block scripts %}
 <script>
+// Phase 3: Gallery with /api/search backend
 document.addEventListener('DOMContentLoaded', function() {
-    let allPhotos = [];
-    let filteredPhotos = [];
-    let currentFilter = 'all';
+    let currentQuery = '';
+    let currentTags = '';
+    let currentYear = '';
+    let currentSort = 'newest';
     let currentView = 'grid';
+    let currentPage = 1;
     let currentPhotoIndex = 0;
-    let currentYear = null;
+    let filteredPhotos = [];
+    let allPhotosForModal = [];
+    let gallerySearchTimer;
 
-    // Load gallery images
-    loadGallery();
+    // Initialize gallery
+    loadGalleryMeta();
+    setupGalleryFilters();
+    searchGallery();
 
-    function loadGallery() {
-    fetch('/api/gallery')
-        .then(response => response.json())
-        .then(data => {
-                allPhotos = data.images || [];
-                filteredPhotos = [...allPhotos];
-                updateStats();
-                renderYearTabs();
-                renderGallery();
-                setupEventListeners();
-            })
-            .catch(error => {
-                console.error('Error loading gallery:', error);
-                showError('Failed to load gallery images');
-            });
+    async function loadGalleryMeta() {
+        try {
+            const response = await fetch('/api/search/meta?type=gallery');
+            const data = await response.json();
+            if (data.success && data.meta) {
+                // Populate tags dropdown
+                if (data.meta.tags) {
+                    const tagsSelect = document.getElementById('gallery-tags-filter');
+                    data.meta.tags.forEach(tag => {
+                        const option = document.createElement('option');
+                        option.value = tag;
+                        option.textContent = tag;
+                        tagsSelect.appendChild(option);
+                    });
+                }
+                // Populate year dropdown
+                if (data.meta.years) {
+                    const yearsSelect = document.getElementById('gallery-year-filter');
+                    data.meta.years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        yearsSelect.appendChild(option);
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load gallery metadata:', error);
+        }
     }
 
-    function updateStats() {
-        const totalPhotos = allPhotos.length;
-        const eventPhotos = allPhotos.filter(photo => photo.event).length;
-        const years = new Set(allPhotos.map(photo => {
-            const date = new Date(photo.created);
-            return date.getFullYear();
-        })).size;
+    function setupGalleryFilters() {
+        const searchInput = document.getElementById('gallery-search');
+        const filterToggle = document.getElementById('galleryFilterToggle');
+        const filterControls = document.querySelector('.gallery-section .mobile-collapsible');
+        const tagsFilter = document.getElementById('gallery-tags-filter');
+        const yearFilter = document.getElementById('gallery-year-filter');
+        const sortSelect = document.getElementById('sort-select');
 
-        document.getElementById('total-photos').textContent = totalPhotos;
-        document.getElementById('total-events').textContent = eventPhotos;
-        document.getElementById('total-years').textContent = years;
+        // Mobile filter toggle
+        if (filterToggle) {
+            filterToggle.addEventListener('click', () => {
+                filterControls.classList.toggle('open');
+                filterToggle.textContent = filterControls.classList.contains('open') ? 'Filters ▲' : 'Filters ▼';
+            });
+        }
+
+        // Search input (debounced 250ms)
+        searchInput.addEventListener('input', () => {
+            clearTimeout(gallerySearchTimer);
+            gallerySearchTimer = setTimeout(() => {
+                currentQuery = searchInput.value;
+                currentPage = 1;
+                searchGallery();
+            }, 250);
+        });
+
+        // Tags filter (immediate)
+        tagsFilter.addEventListener('change', () => {
+            currentTags = tagsFilter.value;
+            currentPage = 1;
+            searchGallery();
+        });
+
+        // Year filter (immediate)
+        yearFilter.addEventListener('change', () => {
+            currentYear = yearFilter.value;
+            currentPage = 1;
+            searchGallery();
+        });
+
+        // Sort (immediate)
+        sortSelect.addEventListener('change', () => {
+            currentSort = sortSelect.value;
+            currentPage = 1;
+            searchGallery();
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentView = this.dataset.view;
+                renderGallery();
+            });
+        });
+
+        // Pagination
+        document.getElementById('prevGalleryBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                searchGallery();
+                window.scrollTo(0, 0);
+            }
+        });
+
+        document.getElementById('nextGalleryBtn').addEventListener('click', () => {
+            currentPage++;
+            searchGallery();
+            window.scrollTo(0, 0);
+        });
+    }
+
+    async function searchGallery() {
+        const container = document.getElementById('gallery-container');
+        container.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">Loading photos...</div>';
+
+        try {
+            let url = `/api/search?type=gallery&page=${currentPage}&per_page=24`;
+            if (currentQuery) url += `&q=${encodeURIComponent(currentQuery)}`;
+            if (currentTags) url += `&tags=${encodeURIComponent(currentTags)}`;
+            if (currentYear) url += `&year=${encodeURIComponent(currentYear)}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.results && data.results.length > 0) {
+                filteredPhotos = data.results;
+                allPhotosForModal = data.results;
+                renderGallery();
+
+                // Update pagination
+                const paginationContainer = document.getElementById('gallery-pagination');
+                if (data.pages > 1) {
+                    paginationContainer.style.display = 'flex';
+                    document.getElementById('galleryPageInfo').textContent = `Page ${data.page} of ${data.pages}`;
+                    document.getElementById('prevGalleryBtn').disabled = data.page === 1;
+                    document.getElementById('nextGalleryBtn').disabled = data.page >= data.pages;
+                } else {
+                    paginationContainer.style.display = 'none';
+                }
+
+                // Update stats
+                updateStats(data.total);
+            } else {
+                container.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">No photos found. Try a different search.</div>';
+                const paginationContainer = document.getElementById('gallery-pagination');
+                if (paginationContainer) paginationContainer.style.display = 'none';
+                updateStats(0);
+            }
+        } catch (error) {
+            console.error('Gallery search error:', error);
+            container.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,100,100,0.9);">Search error. Please try again.</div>';
+        }
+    }
+
+    function updateStats(total) {
+        document.getElementById('total-photos').textContent = total || 0;
+        // Note: event count and years count are calculated server-side via meta endpoint
     }
 
     function renderGallery() {
-            const container = document.getElementById('gallery-container');
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const emptyState = document.getElementById('empty-state');
-
-        loadingIndicator.style.display = 'none';
+        const container = document.getElementById('gallery-container');
 
         if (filteredPhotos.length === 0) {
-            emptyState.style.display = 'block';
-            container.innerHTML = '';
+            container.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">No photos to display.</div>';
             return;
         }
-
-        emptyState.style.display = 'none';
 
         if (currentView === 'yearbook') {
             renderYearbookView(container);
@@ -298,12 +423,8 @@ document.addEventListener('DOMContentLoaded', function() {
         container.className = 'gallery-grid yearbook';
         container.innerHTML = '';
 
-        // Group photos by year and month
-        const yearScopedPhotos = currentYear
-            ? filteredPhotos.filter(photo => getPhotoYear(photo) === currentYear)
-            : filteredPhotos;
-
-        const groupedPhotos = groupPhotosByYearMonth(yearScopedPhotos);
+        // Group photos by year and month from API results
+        const groupedPhotos = groupPhotosByYearMonth(filteredPhotos);
 
         Object.keys(groupedPhotos).sort().reverse().forEach(year => {
             const yearSection = document.createElement('div');
@@ -338,69 +459,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function groupPhotosByYearMonth(photos) {
         const grouped = {};
-        
+
         photos.forEach(photo => {
-            const date = new Date(photo.created);
+            // Handle both 'created' (ISO format) and 'date' (YYYY-MM-DD format)
+            const dateStr = photo.created || photo.date;
+            if (!dateStr) return;
+
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return;
+
             const year = date.getFullYear();
             const month = date.toLocaleString('default', { month: 'long' });
-            
+
             if (!grouped[year]) {
                 grouped[year] = {};
             }
             if (!grouped[year][month]) {
                 grouped[year][month] = [];
             }
-            
+
             grouped[year][month].push(photo);
         });
 
         return grouped;
     }
 
-    function getPhotoYear(photo) {
-        const date = new Date(photo.created);
-        const year = date.getFullYear();
-        return Number.isFinite(year) ? year : null;
-    }
-
-    function renderYearTabs() {
-        const tabsContainer = document.getElementById('gallery-year-tabs');
-        if (!tabsContainer) return;
-
-        const years = Array.from(new Set(allPhotos
-            .map(getPhotoYear)
-            .filter(Boolean)))
-            .sort((a, b) => b - a);
-
-        if (years.length === 0) {
-            tabsContainer.innerHTML = '';
-            currentYear = null;
-            return;
-        }
-
-        if (!currentYear || !years.includes(currentYear)) {
-            currentYear = years[0];
-        }
-
-        tabsContainer.innerHTML = [
-            `<button class="year-tab${currentYear === null ? ' active' : ''}" data-year="">All</button>`,
-            ...years.map(y => `<button class="year-tab${y === currentYear ? ' active' : ''}" data-year="${y}">${y}</button>`)
-        ].join('');
-
-        tabsContainer.querySelectorAll('.year-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabsContainer.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                const val = tab.dataset.year;
-                currentYear = val ? parseInt(val, 10) : null;
-
-                if (currentView === 'yearbook') {
-                    renderGallery();
-                }
-            });
-        });
-    }
 
     function createPhotoElement(photo, index, type = 'gallery') {
         const photoDiv = document.createElement('div');
@@ -435,55 +518,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return photoDiv;
     }
 
-    function setupEventListeners() {
-        // Filter tabs
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                currentFilter = this.dataset.filter;
-                filterPhotos();
-            });
-        });
+    // Photo clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.gallery-item')) {
+            const item = e.target.closest('.gallery-item');
+            const index = parseInt(item.dataset.index);
+            openPhotoModal(index);
+        }
+    });
 
-        // Search
-        document.getElementById('gallery-search').addEventListener('input', function() {
-            filterPhotos();
-        });
+    // Mobile-specific enhancements
+    setupMobileEnhancements();
 
-        // Sort
-        document.getElementById('sort-select').addEventListener('change', function() {
-            sortPhotos();
-        });
-
-        // View controls
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (this.dataset.view) {
-                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentView = this.dataset.view;
-                    renderGallery();
-                }
-            });
-        });
-
-        // Photo clicks
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.gallery-item')) {
-                const item = e.target.closest('.gallery-item');
-                const index = parseInt(item.dataset.index);
-                openPhotoModal(index);
-            }
-        });
-
-        // Mobile-specific enhancements
-        setupMobileEnhancements();
-
-        // Modal controls
-        setupModalControls();
-    }
+    // Modal controls
+    setupModalControls();
 
     function setupMobileEnhancements() {
         // Touch gestures for modal navigation
@@ -566,45 +614,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.nav-tab, .view-btn, .action-btn').forEach(addHapticFeedback);
     }
 
-    function filterPhotos() {
-        const searchTerm = document.getElementById('gallery-search').value.toLowerCase();
-        
-        filteredPhotos = allPhotos.filter(photo => {
-            const matchesSearch = !searchTerm || 
-                photo.name.toLowerCase().includes(searchTerm) ||
-                (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
-            
-            const matchesFilter = currentFilter === 'all' ||
-                (currentFilter === 'events' && photo.event) ||
-                (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(currentFilter)));
-            
-            return matchesSearch && matchesFilter;
-        });
-
-        renderYearTabs();
-        renderGallery();
-    }
-
-    function sortPhotos() {
-        const sortBy = document.getElementById('sort-select').value;
-        
-        filteredPhotos.sort((a, b) => {
-            switch (sortBy) {
-                case 'newest':
-                    return new Date(b.created) - new Date(a.created);
-                case 'oldest':
-                    return new Date(a.created) - new Date(b.created);
-                case 'alphabetical':
-                    return (a.name || '').localeCompare(b.name || '');
-                case 'event':
-                    return (b.event ? 1 : 0) - (a.event ? 1 : 0);
-                default:
-                    return 0;
-            }
-        });
-
-        renderGallery();
-    }
 
     function openPhotoModal(index) {
         currentPhotoIndex = index;

@@ -39,7 +39,11 @@
       "Bash(curl -s http://localhost:5000/search)",
       "Bash(pkill -f \"flask run\")",
       "Bash(pkill -f \"python start_app\")",
-      "Bash(pkill -f \"flask run\\\\|python start_app\")"
+      "Bash(pkill -f \"flask run\\\\|python start_app\")",
+      "Bash(curl -s http://localhost:5000/api/search/meta?type=gallery)",
+      "Bash(curl -s \"http://localhost:5000/api/search/meta?type=gallery\")",
+      "Bash(pkill -f \"gunicorn\")",
+      "Bash(curl -s \"http://localhost:5000/\")"
     ]
   }
 }
