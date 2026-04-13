@@ -665,183 +665,381 @@
 <!-- Sermons Section -->
 <section class="sermons-section sermons-page compact-page">
     <div class="compact-content" style="max-width: 100%; padding: 0 0.75rem;">
-        <!-- Alpine.js Component -->
-        <div x-data="sermonData()" x-init="init()">
-            <!-- Search and Filter Controls -->
-            <div class="sermon-controls">
-                <div class="search-container">
-                    <input type="text" id="searchInput"
-                        placeholder="Search sermons..." x-model="searchQuery"
-                        @input="filterSermons()">
-                </div>
-                <div class="filter-controls">
-                    <select x-model="selectedYear" @change="filterSermons()"
-                        class="year-filter">
-                        <option value>All Years</option>
-                        <template x-for="year in availableYears" :key="year">
-                            <option :value="year" x-text="year"></option>
-                        </template>
-                    </select>
-                </div>
-                <div class="view-controls">
-                    <button @click="viewMode = 'card'"
-                        :class="{'active': viewMode === 'card'}">Card
-                        View</button>
-                    <button @click="viewMode = 'table'"
-                        :class="{'active': viewMode === 'table'}">Table
-                        View</button>
-                </div>
-                <div class="sort-controls">
-                    <select
-                        @change="sortKey = $event.target.value; sortSermons()">
-                        <option value="date">Sort by Date</option>
-                        <option value="title">Sort by Title</option>
-                        <option value="author">Sort by Speaker</option>
-                    </select>
-                    <button @click="sortAsc = !sortAsc; sortSermons()"
-                        :class="{'asc': sortAsc, 'desc': !sortAsc}">
-                        <span x-text="sortAsc ? '↑' : '↓'"></span>
-                    </button>
-                </div>
+        <!-- Phase 3: Filter Controls -->
+        <div class="sermon-controls">
+            <div class="search-container">
+                <input type="text" id="sermonSearchInput"
+                    placeholder="Search sermons...">
             </div>
-            <!-- Loading State -->
-            <div x-show="!loadingComplete" class="loading"
-                style="display: none;">
-                <p>Loading sermons...</p>
+            <button class="filter-toggle-mobile" id="sermonFilterToggle" style="display: none;">Filters ▼</button>
+            <div class="filter-controls mobile-collapsible" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <select id="speakerFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                    <option value="">All Speakers</option>
+                </select>
+                <select id="seriesFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                    <option value="">All Series</option>
+                </select>
+                <select id="yearFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                    <option value="">All Years</option>
+                </select>
             </div>
+            <div class="view-controls">
+                <button class="view-btn active" data-view="card" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;">Card View</button>
+                <button class="view-btn" data-view="table" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;">Table View</button>
+            </div>
+        </div>
 
-            <!-- Card View -->
-            <div
-                x-show="loadingComplete && viewMode === 'card' && filteredSermons.length > 0"
-                class="sermons-grid"
-                x-cloak>
-                <template x-for="(sermon, index) in filteredSermons"
-                    :key="sermon?.id || index">
-                    <div class="sermon-card">
-                        <div class="sermon-thumbnail"
-                            x-show="sermon['podcast-thumbnail_url']">
-                            <img :src="sermon['podcast-thumbnail_url']"
-                                :alt="sermon.title" loading="lazy">
-                        </div>
-                        <div class="sermon-content">
-                            <h3 class="sermon-title" x-text="sermon.title"></h3>
-                            <p class="sermon-meta">
-                                <span class="sermon-author"
-                                    x-text="sermon.author"></span> •
-                                <span class="sermon-date"
-                                    x-text="sermon.displayDate"></span>
-                            </p>
-                            <p class="sermon-scripture"
-                                x-text="sermon.scripture"
-                                x-show="sermon.scripture"></p>
-                            <div class="sermon-links">
-                                <div class="sermon-play-dropdown"
-                                    x-show="sermon.spotify_url || sermon.youtube_url">
-                                    <button class="btn btn-play play-btn"
-                                        @click="$el.querySelector('.sermon-play-menu').classList.toggle('show')"
-                                        type="button"
-                                        title="Play sermon">
-                                        <i class="fas fa-play"></i> Play
-                                    </button>
-                                    <div class="sermon-play-menu">
-                                        <a :href="sermon.spotify_url"
-                                            x-show="sermon.spotify_url"
-                                            target="_blank"
-                                            rel="noopener">
-                                            <i class="fab fa-spotify"></i> Spotify
-                                        </a>
-                                        <a :href="sermon.youtube_url"
-                                            x-show="sermon.youtube_url"
-                                            target="_blank"
-                                            rel="noopener">
-                                            <i class="fab fa-youtube"></i> YouTube
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </div>
+        <!-- Loading State -->
+        <div id="loadingState" class="loading" style="display: none;">
+            <p>Loading sermons...</p>
+        </div>
 
-            <!-- Table View -->
-            <div
-                x-show="loadingComplete && viewMode === 'table' && filteredSermons.length > 0"
-                class="table-responsive">
-                <table class="sermons-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Title</th>
-                            <th>Speaker</th>
-                            <th>Scripture</th>
-                            <th>Links</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sermons-tbody">
-                        <template x-for="(sermon, index) in filteredSermons"
-                            :key="sermon?.id || index">
-                            <tr>
-                                <td
-                                    x-text="sermon.displayDate || sermon.date || 'N/A'"></td>
-                                <td x-text="sermon.title || 'Untitled'"></td>
-                                <td x-text="sermon.author || 'Unknown'"></td>
-                                <td x-text="sermon.scripture || '-'"></td>
-                                <td class="sermon-links">
-                                    <div class="sermon-play-dropdown"
-                                        x-show="sermon.spotify_url || sermon.youtube_url">
-                                        <button class="btn-play play-btn"
-                                            @click="$el.querySelector('.sermon-play-menu').classList.toggle('show')"
-                                            type="button"
-                                            title="Play sermon">
-                                            <i class="fas fa-play"></i> Play
-                                        </button>
-                                        <div class="sermon-play-menu">
-                                            <a :href="sermon.spotify_url"
-                                                x-show="sermon.spotify_url"
-                                                target="_blank"
-                                                rel="noopener">
-                                                <i class="fab fa-spotify"></i> Spotify
-                                            </a>
-                                            <a :href="sermon.youtube_url"
-                                                x-show="sermon.youtube_url"
-                                                target="_blank"
-                                                rel="noopener">
-                                                <i class="fab fa-youtube"></i> YouTube
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <span
-                                        x-show="!sermon.spotify_url && !sermon.youtube_url"
-                                        style="color: rgba(255,255,255,0.5);">-</span>
-                                </td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
+        <!-- Card View -->
+        <div id="sermonResults" class="sermons-grid" style="display: none;">
+        </div>
 
-            <!-- No Results -->
-            <div x-show="loadingComplete && filteredSermons.length === 0"
-                class="no-results">
-                <p>No sermons found matching your search criteria.</p>
-            </div>
+        <!-- Table View -->
+        <div id="sermonTable" class="table-responsive" style="display: none;">
+            <table class="sermons-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Speaker</th>
+                        <th>Scripture</th>
+                        <th>Links</th>
+                    </tr>
+                </thead>
+                <tbody id="sermonTableBody">
+                </tbody>
+            </table>
+        </div>
 
-            <!-- Results Count -->
-            <div x-show="loadingComplete" class="results-count">
-                <p>Showing <span x-text="filteredSermons.length"></span> of
-                    <span x-text="sermons.length"></span> sermons</p>
-            </div>
+        <!-- Pagination Controls -->
+        <div id="sermonPagination" style="display: none; display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">
+            <button id="prevSermonBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">← Previous</button>
+            <span id="sermonPageInfo" style="color: rgba(255,255,255,0.7);">Page 1</span>
+            <button id="nextSermonBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">Next →</button>
+        </div>
 
+        <!-- No Results -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <p>No sermons found matching your search criteria.</p>
+        </div>
+
+        <!-- Results Count -->
+        <div id="resultsCount" class="results-count" style="display: none;">
+            <p>Showing <span id="resultCountSpan">0</span> results</p>
         </div>
     </div>
 </section>
 {% endblock %}
 
 {% block scripts %}
-<!-- Modified Sunday Sermons JavaScript -->
+<!-- Phase 3: Sermons with /api/search backend -->
 <script>
-// Updated sunday-sermons.js to use API endpoint
+document.addEventListener('DOMContentLoaded', function() {
+    let currentQuery = '';
+    let currentSpeaker = '';
+    let currentSeries = '';
+    let currentYear = '';
+    let currentView = 'card';
+    let currentPage = 1;
+    let sermonSearchTimer;
+    let filteredSermons = [];
+
+    // Initialize sermons
+    loadSermonMeta();
+    setupSermonFilters();
+    searchSermons();
+
+    async function loadSermonMeta() {
+        try {
+            const response = await fetch('/api/search/meta?type=sermons');
+            const data = await response.json();
+            if (data.success && data.meta) {
+                // Populate speaker dropdown
+                if (data.meta.speakers) {
+                    const speakerSelect = document.getElementById('speakerFilter');
+                    data.meta.speakers.forEach(speaker => {
+                        const option = document.createElement('option');
+                        option.value = speaker;
+                        option.textContent = speaker;
+                        speakerSelect.appendChild(option);
+                    });
+                }
+                // Populate series dropdown
+                if (data.meta.series) {
+                    const seriesSelect = document.getElementById('seriesFilter');
+                    data.meta.series.forEach(series => {
+                        const option = document.createElement('option');
+                        option.value = series.id;
+                        option.textContent = series.title;
+                        seriesSelect.appendChild(option);
+                    });
+                }
+                // Populate year dropdown
+                if (data.meta.years) {
+                    const yearSelect = document.getElementById('yearFilter');
+                    data.meta.years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        yearSelect.appendChild(option);
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load sermon metadata:', error);
+        }
+    }
+
+    function setupSermonFilters() {
+        const searchInput = document.getElementById('sermonSearchInput');
+        const filterToggle = document.getElementById('sermonFilterToggle');
+        const filterControls = document.querySelector('.sermons-section .mobile-collapsible');
+        const speakerFilter = document.getElementById('speakerFilter');
+        const seriesFilter = document.getElementById('seriesFilter');
+        const yearFilter = document.getElementById('yearFilter');
+
+        // Mobile filter toggle
+        if (filterToggle) {
+            filterToggle.addEventListener('click', () => {
+                filterControls.classList.toggle('open');
+                filterToggle.textContent = filterControls.classList.contains('open') ? 'Filters ▲' : 'Filters ▼';
+            });
+        }
+
+        // Search input (debounced 250ms)
+        searchInput.addEventListener('input', () => {
+            clearTimeout(sermonSearchTimer);
+            sermonSearchTimer = setTimeout(() => {
+                currentQuery = searchInput.value;
+                currentPage = 1;
+                searchSermons();
+            }, 250);
+        });
+
+        // Speaker filter (immediate)
+        speakerFilter.addEventListener('change', () => {
+            currentSpeaker = speakerFilter.value;
+            currentPage = 1;
+            searchSermons();
+        });
+
+        // Series filter (immediate)
+        seriesFilter.addEventListener('change', () => {
+            currentSeries = seriesFilter.value;
+            currentPage = 1;
+            searchSermons();
+        });
+
+        // Year filter (immediate)
+        yearFilter.addEventListener('change', () => {
+            currentYear = yearFilter.value;
+            currentPage = 1;
+            searchSermons();
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-btn[data-view]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentView = this.dataset.view;
+                renderSermons();
+            });
+        });
+
+        // Pagination
+        document.getElementById('prevSermonBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                searchSermons();
+                window.scrollTo(0, 0);
+            }
+        });
+
+        document.getElementById('nextSermonBtn').addEventListener('click', () => {
+            currentPage++;
+            searchSermons();
+            window.scrollTo(0, 0);
+        });
+    }
+
+    async function searchSermons() {
+        const loadingState = document.getElementById('loadingState');
+        loadingState.style.display = 'block';
+
+        try {
+            let url = `/api/search?type=sermons&page=${currentPage}&per_page=20`;
+            if (currentQuery) url += `&q=${encodeURIComponent(currentQuery)}`;
+            if (currentSpeaker) url += `&speaker=${encodeURIComponent(currentSpeaker)}`;
+            if (currentSeries) url += `&series_id=${encodeURIComponent(currentSeries)}`;
+            if (currentYear) url += `&year=${encodeURIComponent(currentYear)}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.results && data.results.length > 0) {
+                filteredSermons = data.results;
+                renderSermons();
+
+                // Update pagination
+                const paginationContainer = document.getElementById('sermonPagination');
+                if (data.pages > 1) {
+                    paginationContainer.style.display = 'flex';
+                    document.getElementById('sermonPageInfo').textContent = `Page ${data.page} of ${data.pages}`;
+                    document.getElementById('prevSermonBtn').disabled = data.page === 1;
+                    document.getElementById('nextSermonBtn').disabled = data.page >= data.pages;
+                } else {
+                    paginationContainer.style.display = 'none';
+                }
+
+                // Hide no results
+                document.getElementById('noResults').style.display = 'none';
+                document.getElementById('resultsCount').style.display = 'block';
+                document.getElementById('resultCountSpan').textContent = data.total || 0;
+            } else {
+                document.getElementById('noResults').style.display = 'block';
+                document.getElementById('resultsCount').style.display = 'none';
+                document.getElementById('sermonResults').style.display = 'none';
+                document.getElementById('sermonTable').style.display = 'none';
+                const paginationContainer = document.getElementById('sermonPagination');
+                if (paginationContainer) paginationContainer.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Sermon search error:', error);
+            document.getElementById('noResults').style.display = 'block';
+            document.getElementById('noResults').innerHTML = '<p>Search error. Please try again.</p>';
+        } finally {
+            loadingState.style.display = 'none';
+        }
+    }
+
+    function renderSermons() {
+        document.getElementById('noResults').style.display = 'none';
+
+        if (currentView === 'table') {
+            renderTableView();
+        } else {
+            renderCardView();
+        }
+    }
+
+    function renderCardView() {
+        const container = document.getElementById('sermonResults');
+        document.getElementById('sermonTable').style.display = 'none';
+        container.style.display = 'grid';
+        container.innerHTML = '';
+
+        if (filteredSermons.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+
+        filteredSermons.forEach(sermon => {
+            const card = document.createElement('div');
+            card.className = 'sermon-card';
+            card.innerHTML = `
+                ${sermon.thumbnail ? `
+                    <div class="sermon-thumbnail">
+                        <img src="${sermon.thumbnail}" alt="${sermon.title}" loading="lazy">
+                    </div>
+                ` : ''}
+                <div class="sermon-content">
+                    <h3 class="sermon-title">${sermon.title}</h3>
+                    <p class="sermon-meta">
+                        <span class="sermon-author">${sermon.speaker || 'Unknown'}</span> •
+                        <span class="sermon-date">${formatDate(sermon.date)}</span>
+                    </p>
+                    ${sermon.scripture ? `<p class="sermon-scripture">${sermon.scripture}</p>` : ''}
+                    <div class="sermon-links">
+                        ${sermon.url ? `
+                            <div class="sermon-play-dropdown">
+                                <button class="btn btn-play play-btn" type="button" title="Play sermon">
+                                    <i class="fas fa-play"></i> Play
+                                </button>
+                                <div class="sermon-play-menu">
+                                    ${sermon.url.includes('spotify') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
+                                    ${sermon.url.includes('youtube') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
+                                </div>
+                            </div>
+                        ` : '<span style="color: rgba(255,255,255,0.5);">-</span>'}
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderTableView() {
+        const tbody = document.getElementById('sermonTableBody');
+        document.getElementById('sermonResults').style.display = 'none';
+        document.getElementById('sermonTable').style.display = 'block';
+        tbody.innerHTML = '';
+
+        if (filteredSermons.length === 0) {
+            document.getElementById('sermonTable').style.display = 'none';
+            return;
+        }
+
+        filteredSermons.forEach(sermon => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${formatDate(sermon.date)}</td>
+                <td>${sermon.title}</td>
+                <td>${sermon.speaker || 'Unknown'}</td>
+                <td>${sermon.scripture || '-'}</td>
+                <td class="sermon-links">
+                    ${sermon.url ? `
+                        <div class="sermon-play-dropdown">
+                            <button class="btn-play play-btn" type="button" title="Play sermon">
+                                <i class="fas fa-play"></i> Play
+                            </button>
+                            <div class="sermon-play-menu">
+                                ${sermon.url.includes('spotify') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
+                                ${sermon.url.includes('youtube') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
+                            </div>
+                        </div>
+                    ` : '<span style="color: rgba(255,255,255,0.5);">-</span>'}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return 'N/A';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return dateStr;
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(-2);
+        return `${month}/${day}/${year}`;
+    }
+});
+
+// Handle play button dropdowns
+document.addEventListener('click', function(e) {
+    const playBtn = e.target.closest('.play-btn');
+    const dropdown = e.target.closest('.sermon-play-dropdown');
+
+    // Toggle dropdown when play button is clicked
+    if (playBtn) {
+        const menu = playBtn.nextElementSibling;
+        if (menu && menu.classList.contains('sermon-play-menu')) {
+            menu.classList.toggle('show');
+        }
+    } else if (!dropdown) {
+        // Close all menus when clicking outside
+        document.querySelectorAll('.sermon-play-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+        });
+    }
+});
+/*
+// Old Alpine code below - keeping for reference, remove later
 window.sermonData = function() {
     return {
         sortKey: 'date',
@@ -1182,14 +1380,6 @@ window.sermonData = function() {
         }
     };
 };
-
-// Close dropdowns when clicking elsewhere on the page
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('.sermon-play-dropdown')) {
-        document.querySelectorAll('.sermon-play-menu.show').forEach(menu => {
-            menu.classList.remove('show');
-        });
-    }
-});
+*/
 </script>
 {% endblock %}
