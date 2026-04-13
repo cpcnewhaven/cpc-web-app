@@ -570,6 +570,68 @@ body.theme-white .hero-banner .btn-secondary:hover {
     gap: 1rem;
 }
 
+/* ========================================
+   PHASE 3: MOBILE COLLAPSIBLE FILTERS
+   Shared pattern across all 5 subpages
+   ======================================== */
+
+.filter-toggle-mobile {
+    display: none;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    transition: color 0.2s;
+}
+
+.filter-toggle-mobile:hover {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.mobile-collapsible {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .filter-toggle-mobile {
+        display: inline-block;
+    }
+
+    .mobile-collapsible {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .mobile-collapsible.open {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .mobile-collapsible select,
+    .mobile-collapsible input[type="text"] {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
+@media (min-width: 769px) {
+    .filter-toggle-mobile {
+        display: none !important;
+    }
+
+    .mobile-collapsible {
+        display: flex !important;
+    }
+}
+
 @media (max-width: 640px) {
     .highlights-grid {
         grid-template-columns: 1fr;
@@ -5158,4 +5220,14 @@ body.theme-white #clearFiltersBtn {
 
 body.theme-white #clearFiltersBtn:hover {
     background: rgba(0, 82, 163, 0.15) !important;
+}
+
+/* White theme - Mobile filter toggle (Phase 3) */
+body.theme-white .filter-toggle-mobile {
+    color: var(--cpc-blue);
+}
+
+body.theme-white .filter-toggle-mobile:hover {
+    color: var(--cpc-blue);
+    opacity: 0.8;
 }

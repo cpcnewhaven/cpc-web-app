@@ -417,26 +417,70 @@
             <p>Discover our collection of discussions and teaching series</p>
         </div>
 
-        <!-- Podcast Series Grid -->
-        <div id="podcast-series-container" class="podcast-series-grid">
-            <div class="loading-message">Loading podcast series...</div>
+        <!-- Phase 3: Two-tab UI -->
+        <div class="podcast-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <button class="podcast-tab active" data-tab="series" style="padding: 0.75rem 1rem; background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.color='rgba(255,255,255,0.95)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Browse by Series</button>
+            <button class="podcast-tab" data-tab="episodes" style="padding: 0.75rem 1rem; background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.color='rgba(255,255,255,0.95)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Search Episodes</button>
         </div>
 
-        <!-- Full Episodes View (hidden by default) -->
-        <div id="full-episodes-view" class="full-episodes-view" style="display: none;">
-            <div class="episodes-header">
-                <button onclick="hideFullEpisodes()" class="back-btn">← Back to Series</button>
-                <h2 id="episodes-title">Episodes</h2>
+        <!-- Tab 1: Podcast Series Grid (existing) -->
+        <div id="tab-series" class="podcast-tab-content">
+            <div id="podcast-series-container" class="podcast-series-grid">
+                <div class="loading-message">Loading podcast series...</div>
             </div>
-            <div id="full-episodes-container" class="episodes-container">
-                <!-- Episodes will be loaded here -->
+
+            <!-- Full Episodes View (hidden by default) -->
+            <div id="full-episodes-view" class="full-episodes-view" style="display: none;">
+                <div class="episodes-header">
+                    <button onclick="hideFullEpisodes()" class="back-btn">← Back to Series</button>
+                    <h2 id="episodes-title">Episodes</h2>
+                </div>
+                <div id="full-episodes-container" class="episodes-container">
+                    <!-- Episodes will be loaded here -->
+                </div>
+            </div>
+
+            <!-- RSS Feed Episodes List -->
+            <div class="rss-episodes-section">
+                <h2>Latest Episodes from RSS Feed</h2>
+                <ul id="episodes" class="divide-y"></ul>
             </div>
         </div>
 
-        <!-- RSS Feed Episodes List -->
-        <div class="rss-episodes-section">
-            <h2>Latest Episodes from RSS Feed</h2>
-            <ul id="episodes" class="divide-y"></ul>
+        <!-- Tab 2: Search Episodes (Phase 3) -->
+        <div id="tab-episodes" class="podcast-tab-content" style="display: none;">
+            <!-- Filter Controls -->
+            <div class="sermon-controls" style="display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); align-items: center; margin-bottom: 1rem;">
+                <div class="search-container" style="flex: 1; min-width: 200px;">
+                    <input type="text" id="episodeSearchInput" placeholder="Search episodes..." style="width: 100%; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; font-size: 0.9rem;">
+                </div>
+
+                <button class="filter-toggle-mobile" id="episodeFilterToggle" style="display: none;">Filters ▼</button>
+
+                <div class="filter-controls mobile-collapsible" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <select id="episodeSeriesFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                        <option value="">All Series</option>
+                    </select>
+
+                    <input type="text" id="episodeGuestFilter" placeholder="Guest..." style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem; min-width: 100px;">
+
+                    <select id="episodeSeasonFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                        <option value="">All Seasons</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="episodeResults" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">Type to search episodes...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="episode-pagination" id="episodePagination" style="display: none; display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">
+                <button id="prevEpisodeBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">← Previous</button>
+                <span id="episodePageInfo" style="color: rgba(255,255,255,0.7);">Page 1</span>
+                <button id="nextEpisodeBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">Next →</button>
+            </div>
         </div>
     </div>
 </div>
@@ -637,6 +681,166 @@ async function loadPodcast() {
         if (list) {
             list.innerHTML = '<li style="color: rgba(255, 100, 100, 0.8); padding: 1rem;">Error loading podcast feed.</li>';
         }
+    }
+}
+
+// ===== PHASE 3: EPISODE SEARCH TAB =====
+
+// Tab switching
+document.querySelectorAll('.podcast-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+
+        // Update active tab styling
+        document.querySelectorAll('.podcast-tab').forEach(t => {
+            t.classList.remove('active');
+            t.style.color = 'rgba(255,255,255,0.7)';
+            t.style.borderBottomColor = 'transparent';
+        });
+        tab.classList.add('active');
+        tab.style.color = 'rgba(255,255,255,0.95)';
+        tab.style.borderBottomColor = 'rgba(0,82,163,0.8)';
+
+        // Show/hide tab content
+        document.querySelectorAll('.podcast-tab-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        document.getElementById(`tab-${tabName}`).style.display = 'block';
+
+        // Lazy-load episode search on first click
+        if (tabName === 'episodes' && !window.episodeSearchLoaded) {
+            window.episodeSearchLoaded = true;
+            loadEpisodeMeta();
+            setupEpisodeSearchListeners();
+        }
+    });
+});
+
+// Load filter metadata
+let episodeSearchTimer;
+async function loadEpisodeMeta() {
+    try {
+        const response = await fetch('/api/search/meta?type=podcasts');
+        const data = await response.json();
+
+        if (data.success && data.meta) {
+            // Populate series dropdown
+            const seriesSelect = document.getElementById('episodeSeriesFilter');
+            data.meta.podcast_series?.forEach(series => {
+                const option = document.createElement('option');
+                option.value = series.id;
+                option.textContent = series.title;
+                seriesSelect.appendChild(option);
+            });
+
+            // Populate season dropdown
+            const seasonSelect = document.getElementById('episodeSeasonFilter');
+            data.meta.seasons?.forEach(season => {
+                const option = document.createElement('option');
+                option.value = season;
+                option.textContent = `Season ${season}`;
+                seasonSelect.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to load episode meta:', error);
+    }
+}
+
+// Setup event listeners for search
+function setupEpisodeSearchListeners() {
+    const searchInput = document.getElementById('episodeSearchInput');
+    const filterToggle = document.getElementById('episodeFilterToggle');
+    const filterControls = document.querySelector('#tab-episodes .mobile-collapsible');
+    const filters = {
+        series: document.getElementById('episodeSeriesFilter'),
+        guest: document.getElementById('episodeGuestFilter'),
+        season: document.getElementById('episodeSeasonFilter')
+    };
+
+    // Mobile filter toggle
+    filterToggle.addEventListener('click', () => {
+        filterControls.classList.toggle('open');
+        filterToggle.textContent = filterControls.classList.contains('open') ? 'Filters ▲' : 'Filters ▼';
+    });
+
+    // Search input (debounced)
+    searchInput.addEventListener('input', () => {
+        clearTimeout(episodeSearchTimer);
+        episodeSearchTimer = setTimeout(() => {
+            searchEpisodes(1);
+        }, 250);
+    });
+
+    // Filter changes (immediate)
+    Object.values(filters).forEach(el => {
+        el.addEventListener('change', () => searchEpisodes(1));
+    });
+}
+
+// Current page state
+let currentEpisodePage = 1;
+
+// Search episodes
+async function searchEpisodes(page = 1) {
+    currentEpisodePage = page;
+    const query = document.getElementById('episodeSearchInput')?.value || '';
+    const seriesId = document.getElementById('episodeSeriesFilter')?.value || '';
+    const guest = document.getElementById('episodeGuestFilter')?.value || '';
+    const season = document.getElementById('episodeSeasonFilter')?.value || '';
+
+    const resultsContainer = document.getElementById('episodeResults');
+    const paginationContainer = document.getElementById('episodePagination');
+
+    resultsContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">Searching...</div>';
+
+    try {
+        let url = `/api/search?type=podcasts&page=${page}&per_page=12`;
+        if (query) url += `&q=${encodeURIComponent(query)}`;
+        if (seriesId) url += `&series_id=${encodeURIComponent(seriesId)}`;
+        if (guest) url += `&guest=${encodeURIComponent(guest)}`;
+        if (season) url += `&season=${encodeURIComponent(season)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+            resultsContainer.innerHTML = data.results.map(episode => `
+                <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1.5rem;">
+                    <div style="display: flex; gap: 1rem; margin-bottom: 0.75rem;">
+                        <div style="flex: 1;">
+                            <h3 style="font-size: 1.125rem; font-weight: 600; color: rgba(255,255,255,0.95); margin: 0 0 0.5rem 0;">${episode.title}</h3>
+                            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                                ${episode.series ? `<span style="color: rgba(135,206,250,0.9); font-weight: 500;">${episode.series}</span>` : ''}
+                                ${episode.guest ? `<span style="opacity: 0.3;">•</span><span>${episode.guest}</span>` : ''}
+                                ${episode.date ? `<span style="opacity: 0.3;">•</span><span>${new Date(episode.date).toLocaleDateString()}</span>` : ''}
+                            </div>
+                        </div>
+                        ${episode.url ? `<a href="${episode.url}" style="align-self: center; color: rgba(135,206,250,0.9); text-decoration: none; font-weight: 500;">View →</a>` : ''}
+                    </div>
+                    ${episode.description ? `<p style="font-size: 0.95rem; color: rgba(255,255,255,0.8); margin: 0; line-height: 1.6;">${episode.description}</p>` : ''}
+                </div>
+            `).join('');
+
+            // Show/update pagination
+            if (data.pages > 1) {
+                paginationContainer.style.display = 'flex';
+                document.getElementById('episodePageInfo').textContent = `Page ${data.page} of ${data.pages}`;
+                document.getElementById('prevEpisodeBtn').disabled = data.page === 1;
+                document.getElementById('nextEpisodeBtn').disabled = data.page >= data.pages;
+                document.getElementById('prevEpisodeBtn').onclick = () => searchEpisodes(data.page - 1);
+                document.getElementById('nextEpisodeBtn').onclick = () => searchEpisodes(data.page + 1);
+            } else {
+                paginationContainer.style.display = 'none';
+            }
+        } else {
+            resultsContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">No episodes found. Try a different search.</div>';
+            paginationContainer.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Episode search error:', error);
+        resultsContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,100,100,0.9);">Search error. Please try again.</div>';
+        paginationContainer.style.display = 'none';
     }
 }
 
