@@ -83,8 +83,6 @@ def start_app_with_port_management():
         # Start the app
         print(f"🌐 Main site: http://localhost:{port}")
         print(f"⚙️  Admin panel: http://localhost:{port}/admin")
-        print(f"🔍 Enhanced search: http://localhost:{port}/sermons_enhanced")
-        print(f"📊 Analytics: http://localhost:{port}/api/analytics/overview")
         print("\nPress Ctrl+C to stop the server")
         print("-" * 50)
         

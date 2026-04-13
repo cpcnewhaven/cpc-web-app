@@ -15,7 +15,6 @@ from podcast_fetcher import PodcastFetcher
 from sermon_enhancer import SermonEnhancer
 from podcast_analytics import PodcastAnalytics
 from database_sync import DatabaseSync
-from advanced_search import AdvancedSearch
 
 # Configure logging
 logging.basicConfig(
@@ -36,7 +35,6 @@ class PodcastMaster:
         self.enhancer = SermonEnhancer()
         self.analytics = PodcastAnalytics()
         self.database_sync = DatabaseSync()
-        self.search = AdvancedSearch()
         
     def fetch_and_update(self):
         """Fetch new episodes and update data."""
@@ -91,25 +89,10 @@ class PodcastMaster:
             logger.error(f"Analytics failed: {e}")
             return False
     
-    def search_sermons(self, query: str, **kwargs):
-        """Search sermons with advanced features."""
-        logger.info(f"Searching sermons for: {query}")
-        
-        try:
-            results = self.search.advanced_search(query=query, **kwargs)
-            logger.info(f"Found {len(results)} sermons")
-            return results
-            
-        except Exception as e:
-            logger.error(f"Search failed: {e}")
-            return []
     
     def get_system_status(self):
         """Get overall system status."""
         try:
-            # Check data files
-            sermon_count = len(self.search.sermons)
-            
             # Check last update
             last_update = "Unknown"
             try:
@@ -121,19 +104,13 @@ class PodcastMaster:
                             break
             except:
                 pass
-            
-            # Check system health
-            health_status = "healthy"
-            if sermon_count == 0:
-                health_status = "warning - no sermons found"
-            
+
             return {
-                'status': health_status,
-                'sermon_count': sermon_count,
+                'status': 'healthy',
                 'last_update': last_update,
                 'timestamp': datetime.now().isoformat()
             }
-            
+
         except Exception as e:
             logger.error(f"Status check failed: {e}")
             return {
@@ -247,14 +224,10 @@ def main():
     """Main function with CLI interface."""
     parser = argparse.ArgumentParser(description='Podcast Master Control System')
     parser.add_argument('command', choices=[
-        'fetch', 'enhance', 'analytics', 'sync', 'search', 'status', 
+        'fetch', 'enhance', 'analytics', 'sync', 'status',
         'backup', 'restore', 'list-backups', 'full-update'
     ], help='Command to execute')
-    
-    parser.add_argument('--query', help='Search query')
-    parser.add_argument('--author', help='Filter by author')
-    parser.add_argument('--series', help='Filter by series')
-    parser.add_argument('--limit', type=int, help='Limit results')
+
     parser.add_argument('--backup-dir', help='Backup directory for restore')
     parser.add_argument('--config', default='podcast_config.json', help='Config file')
     
@@ -275,26 +248,7 @@ def main():
             
         elif args.command == 'sync':
             master.database_sync.full_sync()
-            
-        elif args.command == 'search':
-            if not args.query:
-                print("Error: --query is required for search")
-                sys.exit(1)
-            
-            search_kwargs = {}
-            if args.author:
-                search_kwargs['author'] = args.author
-            if args.series:
-                search_kwargs['series'] = args.series
-            if args.limit:
-                search_kwargs['limit'] = args.limit
-            
-            results = master.search_sermons(args.query, **search_kwargs)
-            
-            print(f"Found {len(results)} sermons:")
-            for sermon in results:
-                print(f"- {sermon.get('title', 'Unknown')} ({sermon.get('date', 'No date')})")
-                
+
         elif args.command == 'status':
             status = master.get_system_status()
             print(json.dumps(status, indent=2))

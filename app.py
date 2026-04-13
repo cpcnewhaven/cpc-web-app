@@ -81,7 +81,6 @@ except Exception as e:
     import logging
     logging.getLogger("cpc").warning("Failed to apply robust WTForms 3.0 monkeypatch: %s", e)
 
-from enhanced_api import enhanced_api
 from json_api import json_api
 from port_finder import find_available_port
 from google_drive_routes import google_drive_bp
@@ -105,7 +104,6 @@ app.jinja_env.add_extension('jinja2.ext.do')
 app.config.from_object('config')
 cache = Cache(app)
 
-app.register_blueprint(enhanced_api, url_prefix='/api')
 app.register_blueprint(json_api)
 app.register_blueprint(google_drive_bp)
 
@@ -1690,12 +1688,38 @@ def api_external_data():
 
 @app.route("/api/search")
 def api_search():
-    """Unified search endpoint that searches across all content types"""
+    """Unified search endpoint that searches across all content types with optional filters"""
+    from sqlalchemy import or_, and_
+    from datetime import datetime
+
     query = request.args.get('q', '').strip().lower()
-    content_type = request.args.get('type', 'all')  # all, sermons, podcasts, announcements, events, gallery
+    content_type = request.args.get('type', 'all')
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    
+
+    # Optional filters per content type
+    sermon_filters = {
+        'speaker': request.args.get('speaker', '').strip(),
+        'series_id': request.args.get('series_id', '').strip(),
+        'year': request.args.get('year', '').strip(),
+        'scripture_book': request.args.get('scripture_book', '').strip(),
+    }
+
+    podcast_filters = {
+        'series_id': request.args.get('series_id', '').strip(),
+        'guest': request.args.get('guest', '').strip(),
+        'season': request.args.get('season', '').strip(),
+    }
+
+    event_filters = {
+        'category': request.args.get('category', '').strip(),
+    }
+
+    gallery_filters = {
+        'tags': request.args.get('tags', '').strip(),  # comma-separated
+        'year': request.args.get('year', '').strip(),
+    }
+
     results = {
         'query': query,
         'type': content_type,
@@ -1705,22 +1729,49 @@ def api_search():
         'per_page': per_page,
         'pages': 0
     }
-    
-    if not query:
-        return jsonify(results)
-    
+
     try:
         # Search sermons — DB only
         if content_type in ['all', 'sermons']:
-            from sqlalchemy import or_
-            sermon_hits = Sermon.query.filter(
-                Sermon.active == True,
-                or_(
+            q = Sermon.query.filter(Sermon.active == True).filter(_not_expired(Sermon))
+
+            # Text search (only on text fields, not integer speaker)
+            if query:
+                q = q.filter(or_(
                     Sermon.title.ilike(f'%{query}%'),
-                    Sermon.speaker.ilike(f'%{query}%'),
                     Sermon.scripture.ilike(f'%{query}%'),
-                )
-            ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).limit(50).all()
+                ))
+
+            # Filter by speaker (match by speaker_id if numeric, otherwise skip)
+            if sermon_filters['speaker']:
+                try:
+                    speaker_id = int(sermon_filters['speaker'])
+                    q = q.filter(Sermon.speaker_id == speaker_id)
+                except ValueError:
+                    pass  # Skip if not a numeric ID
+
+            # Filter by series
+            if sermon_filters['series_id']:
+                try:
+                    series_id = int(sermon_filters['series_id'])
+                    q = q.filter(Sermon.series_id == series_id)
+                except ValueError:
+                    pass
+
+            # Filter by year
+            if sermon_filters['year']:
+                try:
+                    year = int(sermon_filters['year'])
+                    q = q.filter(Sermon.date >= datetime(year, 1, 1), Sermon.date < datetime(year + 1, 1, 1))
+                except (ValueError, TypeError):
+                    pass
+
+            # Filter by scripture book
+            if sermon_filters['scripture_book']:
+                q = q.filter(Sermon.scripture.ilike(f'%{sermon_filters["scripture_book"]}%'))
+
+            sermon_hits = q.order_by(Sermon.date.desc()).limit(100).all()
+
             for s in sermon_hits:
                 series_title = s.series.title if s.series else ''
                 results['results'].append({
@@ -1733,17 +1784,20 @@ def api_search():
                     'url': s.spotify_url or s.youtube_url or s.apple_podcasts_url or '',
                     'thumbnail': s.podcast_thumbnail_url or ''
                 })
-        
+
         # Search announcements
         if content_type in ['all', 'announcements']:
-            announcements = Announcement.query.filter(
-                db.or_(
+            q = Announcement.query.filter(_not_expired(Announcement))
+
+            if query:
+                q = q.filter(db.or_(
                     Announcement.title.ilike(f'%{query}%'),
                     Announcement.description.ilike(f'%{query}%'),
                     Announcement.category.ilike(f'%{query}%'),
                     Announcement.tag.ilike(f'%{query}%')
-                )
-            ).filter(_not_expired(Announcement)).all()
+                ))
+
+            announcements = q.all()
             for a in announcements:
                 results['results'].append({
                     'type': 'announcement',
@@ -1756,21 +1810,47 @@ def api_search():
                     'eventStartTime': getattr(a, 'event_start_time', None),
                     'eventEndTime': getattr(a, 'event_end_time', None),
                 })
-        
+
         # Search podcasts
         if content_type in ['all', 'podcasts']:
-            from sqlalchemy import or_
-            conditions = [PodcastEpisode.title.ilike(f'%{query}%')]
-            # Only add guest/scripture conditions if those fields exist
-            try:
-                conditions.append(or_(
-                    PodcastEpisode.guest.ilike(f'%{query}%'),
-                    PodcastEpisode.scripture.ilike(f'%{query}%')
-                ))
-            except:
-                pass  # Fields might not exist
-            
-            episodes = PodcastEpisode.query.filter(or_(*conditions)).filter(_not_expired(PodcastEpisode)).all()
+            q = PodcastEpisode.query.filter(_not_expired(PodcastEpisode))
+
+            # Text search
+            if query:
+                conditions = [PodcastEpisode.title.ilike(f'%{query}%')]
+                try:
+                    conditions.append(or_(
+                        PodcastEpisode.guest.ilike(f'%{query}%'),
+                        PodcastEpisode.scripture.ilike(f'%{query}%')
+                    ))
+                except:
+                    pass
+                q = q.filter(or_(*conditions))
+
+            # Filter by series
+            if podcast_filters['series_id']:
+                try:
+                    series_id = int(podcast_filters['series_id'])
+                    q = q.filter(PodcastEpisode.series_id == series_id)
+                except ValueError:
+                    pass
+
+            # Filter by guest
+            if podcast_filters['guest']:
+                try:
+                    q = q.filter(PodcastEpisode.guest.ilike(f'%{podcast_filters["guest"]}%'))
+                except:
+                    pass
+
+            # Filter by season
+            if podcast_filters['season']:
+                try:
+                    season = int(podcast_filters['season'])
+                    q = q.filter(PodcastEpisode.season == season)
+                except (ValueError, AttributeError):
+                    pass
+
+            episodes = q.all()
             for ep in episodes:
                 results['results'].append({
                     'type': 'podcast',
@@ -1780,15 +1860,23 @@ def api_search():
                     'date': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
                     'url': ep.link or getattr(ep, 'listen_url', None)
                 })
-        
+
         # Search events
         if content_type in ['all', 'events']:
-            events = OngoingEvent.query.filter(
-                db.or_(
+            q = OngoingEvent.query.filter(_not_expired(OngoingEvent))
+
+            # Text search
+            if query:
+                q = q.filter(db.or_(
                     OngoingEvent.title.ilike(f'%{query}%'),
                     OngoingEvent.description.ilike(f'%{query}%')
-                )
-            ).filter(_not_expired(OngoingEvent)).all()
+                ))
+
+            # Filter by category
+            if event_filters['category']:
+                q = q.filter(OngoingEvent.category.ilike(f'%{event_filters["category"]}%'))
+
+            events = q.all()
             for e in events:
                 results['results'].append({
                     'type': 'event',
@@ -1798,12 +1886,32 @@ def api_search():
                     'category': e.category,
                     'url': url_for('events')
                 })
-        
+
         # Search gallery
         if content_type in ['all', 'gallery']:
-            images = GalleryImage.query.filter(
-                GalleryImage.name.ilike(f'%{query}%')
-            ).filter(_not_expired(GalleryImage)).all()
+            q = GalleryImage.query.filter(_not_expired(GalleryImage))
+
+            # Text search by name
+            if query:
+                q = q.filter(GalleryImage.name.ilike(f'%{query}%'))
+
+            # Filter by tags
+            if gallery_filters['tags']:
+                tag_list = [t.strip() for t in gallery_filters['tags'].split(',')]
+                # Match images that have any of these tags
+                for tag in tag_list:
+                    q = q.filter(GalleryImage.tags.contains([tag]))
+
+            # Filter by year
+            if gallery_filters['year']:
+                try:
+                    year = int(gallery_filters['year'])
+                    q = q.filter(GalleryImage.created >= datetime(year, 1, 1),
+                                GalleryImage.created < datetime(year + 1, 1, 1))
+                except (ValueError, TypeError):
+                    pass
+
+            images = q.all()
             for img in images:
                 results['results'].append({
                     'type': 'gallery',
@@ -1813,16 +1921,19 @@ def api_search():
                     'url': img.url,
                     'thumbnail': img.url
                 })
-        
+
         # Search papers
         if content_type in ['all', 'papers']:
-            papers = Paper.query.filter(
-                db.or_(
+            q = Paper.query
+
+            if query:
+                q = q.filter(db.or_(
                     Paper.title.ilike(f'%{query}%'),
                     Paper.speaker.ilike(f'%{query}%'),
                     Paper.description.ilike(f'%{query}%')
-                )
-            ).all()
+                ))
+
+            papers = q.all()
             for p in papers:
                 results['results'].append({
                     'type': 'paper',
@@ -1833,18 +1944,20 @@ def api_search():
                     'category': p.category,
                     'url': p.file_url
                 })
-        
+
         # Search series (SermonSeries & TeachingSeries)
         if content_type in ['all', 'teaching_series', 'sermon_series']:
             # Sermon Series
-            series_hits = SermonSeries.query.filter(
-                SermonSeries.active == True,
-                db.or_(
+            q = SermonSeries.query.filter(SermonSeries.active == True)
+
+            if query:
+                q = q.filter(db.or_(
                     SermonSeries.title.ilike(f'%{query}%'),
                     SermonSeries.description.ilike(f'%{query}%'),
                     SermonSeries.slug.ilike(f'%{query}%')
-                )
-            ).all()
+                ))
+
+            series_hits = q.all()
             for ss in series_hits:
                 results['results'].append({
                     'type': 'sermon_series',
@@ -1853,28 +1966,31 @@ def api_search():
                     'date': ss.start_date.strftime('%Y-%m-%d') if ss.start_date else None,
                     'url': url_for('sermons') + f"?series={ss.id}"
                 })
-            
+
             # Teaching Series (including sessions)
-            teaching_hits = TeachingSeries.query.filter(
-                TeachingSeries.active == True,
-                db.or_(
+            q = TeachingSeries.query.filter(TeachingSeries.active == True)
+
+            if query:
+                q = q.filter(db.or_(
                     TeachingSeries.title.ilike(f'%{query}%'),
                     TeachingSeries.description.ilike(f'%{query}%')
-                )
-            ).all()
-            
+                ))
+
+            teaching_hits = q.all()
+
             # Find teaching series by matching sessions too
-            session_matches = TeachingSeriesSession.query.filter(
-                TeachingSeriesSession.title.ilike(f'%{query}%')
-            ).all()
-            
-            seen_ts_ids = {ts.id for ts in teaching_hits}
-            for sess in session_matches:
-                ts = sess.series
-                if ts and ts.active and ts.id not in seen_ts_ids:
-                    teaching_hits.append(ts)
-                    seen_ts_ids.add(ts.id)
-            
+            if query:
+                session_matches = TeachingSeriesSession.query.filter(
+                    TeachingSeriesSession.title.ilike(f'%{query}%')
+                ).all()
+
+                seen_ts_ids = {ts.id for ts in teaching_hits}
+                for sess in session_matches:
+                    ts = sess.series
+                    if ts and ts.active and ts.id not in seen_ts_ids:
+                        teaching_hits.append(ts)
+                        seen_ts_ids.add(ts.id)
+
             for ts in teaching_hits:
                 results['results'].append({
                     'type': 'teaching_series',
@@ -1883,11 +1999,11 @@ def api_search():
                     'date': ts.date_entered.strftime('%Y-%m-%d') if ts.date_entered else None,
                     'url': url_for('teaching_series') + f"?q={ts.title}"
                 })
-        
+
         # Sort by date descending
-        results['results'].sort(key=lambda x: x.get('date', ''), reverse=True)
+        results['results'].sort(key=lambda x: x.get('date', '') or '', reverse=True)
         results['total'] = len(results['results'])
-        
+
         # Pagination
         start = (page - 1) * per_page
         end = start + per_page
@@ -1895,11 +2011,133 @@ def api_search():
         results['page'] = page
         results['per_page'] = per_page
         results['pages'] = (results['total'] + per_page - 1) // per_page
-        
+
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
-    
+
     return jsonify(results)
+
+@app.route("/api/search/meta")
+def api_search_meta():
+    """Get available filter options for a given content type (for dropdown population)"""
+    from datetime import datetime
+    from sqlalchemy import func
+
+    content_type = request.args.get('type', 'sermons')
+    meta = {}
+
+    try:
+        if content_type in ['all', 'sermons']:
+            # Get available speakers
+            speakers = db.session.query(Sermon.speaker).filter(
+                Sermon.active == True,
+                Sermon.speaker.isnot(None)
+            ).filter(_not_expired(Sermon)).distinct().order_by(Sermon.speaker).all()
+            meta['speakers'] = []
+            for s in speakers:
+                if s[0]:
+                    speaker_str = str(s[0]).strip() if not isinstance(s[0], str) else s[0].strip()
+                    if speaker_str:
+                        meta['speakers'].append(speaker_str)
+
+            # Get available series
+            series_list = db.session.query(SermonSeries.id, SermonSeries.title).filter(
+                SermonSeries.active == True
+            ).order_by(SermonSeries.title).all()
+            meta['series'] = [{'id': s[0], 'title': s[1]} for s in series_list]
+
+            # Get available years
+            years = db.session.query(
+                func.extract('year', Sermon.date).label('year')
+            ).filter(
+                Sermon.active == True,
+                Sermon.date.isnot(None)
+            ).filter(_not_expired(Sermon)).distinct().order_by(func.extract('year', Sermon.date).desc()).all()
+            meta['years'] = [int(y[0]) for y in years if y[0]]
+
+            # Get scripture books (from titles of sermons that mention scripture)
+            scripture_refs = db.session.query(Sermon.scripture).filter(
+                Sermon.active == True,
+                Sermon.scripture.isnot(None)
+            ).filter(_not_expired(Sermon)).all()
+            books = set()
+            for (scripture,) in scripture_refs:
+                if not scripture or not scripture.strip():
+                    continue
+                # Extract book names (simple heuristic: first word or two before a number)
+                parts = scripture.split()
+                for i, part in enumerate(parts):
+                    if any(c.isdigit() for c in part):
+                        if i > 0:
+                            book = ' '.join(parts[:i]).strip()
+                            if book and len(book) > 0:
+                                books.add(book)
+                        break
+            meta['scripture_books'] = sorted(list(books))
+
+        if content_type in ['all', 'podcasts']:
+            # Get available series
+            series_list = db.session.query(PodcastSeries.id, PodcastSeries.title).order_by(PodcastSeries.title).all()
+            meta['podcast_series'] = [{'id': s[0], 'title': s[1]} for s in series_list]
+
+            # Get available guests
+            guests = db.session.query(PodcastEpisode.guest).filter(
+                PodcastEpisode.guest.isnot(None)
+            ).filter(_not_expired(PodcastEpisode)).distinct().order_by(PodcastEpisode.guest).all()
+            meta['guests'] = []
+            for g in guests:
+                if g[0]:
+                    guest_str = str(g[0]).strip() if not isinstance(g[0], str) else g[0].strip()
+                    if guest_str:
+                        meta['guests'].append(guest_str)
+
+            # Get available seasons
+            seasons = db.session.query(PodcastEpisode.season).filter(
+                PodcastEpisode.season.isnot(None)
+            ).filter(_not_expired(PodcastEpisode)).distinct().order_by(PodcastEpisode.season).all()
+            meta['seasons'] = sorted([s[0] for s in seasons if s[0]])
+
+        if content_type in ['all', 'events']:
+            # Get available categories
+            categories = db.session.query(OngoingEvent.category).filter(
+                OngoingEvent.category.isnot(None)
+            ).filter(_not_expired(OngoingEvent)).distinct().order_by(OngoingEvent.category).all()
+            meta['categories'] = []
+            for c in categories:
+                if c[0]:
+                    cat_str = str(c[0]).strip() if not isinstance(c[0], str) else c[0].strip()
+                    if cat_str:
+                        meta['categories'].append(cat_str)
+
+        if content_type in ['all', 'gallery']:
+            # Get available tags
+            images = GalleryImage.query.filter(_not_expired(GalleryImage)).all()
+            all_tags = set()
+            for img in images:
+                if img.tags:
+                    all_tags.update(img.tags if isinstance(img.tags, list) else [img.tags])
+            meta['tags'] = sorted(list(all_tags))
+
+            # Get available years
+            years = db.session.query(
+                func.extract('year', GalleryImage.created).label('year')
+            ).filter(
+                GalleryImage.created.isnot(None)
+            ).filter(_not_expired(GalleryImage)).distinct().order_by(func.extract('year', GalleryImage.created).desc()).all()
+            meta['years'] = [int(y[0]) for y in years if y[0]]
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+    return jsonify({
+        'success': True,
+        'type': content_type,
+        'meta': meta
+    })
 
 @app.route("/api/archive")
 def api_archive():
@@ -4674,7 +4912,6 @@ if __name__ == '__main__':
         print(f"Starting Flask app on port {port}")
         print(f"Main site: http://localhost:{port}")
         print(f"Admin panel: http://localhost:{port}/admin")
-        print(f"Enhanced search: http://localhost:{port}/sermons_enhanced")
         print("Press Ctrl+C to stop the server")
         app.run(debug=True, port=port, host='0.0.0.0')
     except RuntimeError as e:
