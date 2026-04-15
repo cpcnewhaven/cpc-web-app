@@ -226,6 +226,7 @@ def ensure_db_columns():
             ('beyond_episode_id', 'INTEGER', 'INTEGER'),
             ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
             ('speaker_id', 'INTEGER', 'INTEGER'),
+            ('featured', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
         ],
         'podcast_episodes': [
             ('expires_at', 'DATE', 'DATE'),
@@ -2055,13 +2056,15 @@ def api_search_meta():
             ).order_by(SermonSeries.title).all()
             meta['series'] = [{'id': s[0], 'title': s[1]} for s in series_list]
 
-            # Get available years
-            years = db.session.query(
-                func.extract('year', Sermon.date).label('year')
-            ).filter(
+            # Get available years - Cross-DB compatible (PostgreSQL uses func.extract, SQLite uses strftime)
+            year_field = func.extract('year', Sermon.date).label('year')
+            if database_url.startswith('sqlite:///'):
+                year_field = func.strftime('%Y', Sermon.date).label('year')
+
+            years = db.session.query(year_field).filter(
                 Sermon.active == True,
                 Sermon.date.isnot(None)
-            ).filter(_not_expired(Sermon)).distinct().order_by(func.extract('year', Sermon.date).desc()).all()
+            ).filter(_not_expired(Sermon)).distinct().order_by(year_field.desc()).all()
             meta['years'] = [int(y[0]) for y in years if y[0]]
 
             # Get scripture books (from titles of sermons that mention scripture)
@@ -2128,11 +2131,13 @@ def api_search_meta():
             meta['tags'] = sorted(list(all_tags))
 
             # Get available years
-            years = db.session.query(
-                func.extract('year', GalleryImage.created).label('year')
-            ).filter(
+            year_field = func.extract('year', GalleryImage.created).label('year')
+            if database_url.startswith('sqlite:///'):
+                year_field = func.strftime('%Y', GalleryImage.created).label('year')
+
+            years = db.session.query(year_field).filter(
                 GalleryImage.created.isnot(None)
-            ).filter(_not_expired(GalleryImage)).distinct().order_by(func.extract('year', GalleryImage.created).desc()).all()
+            ).filter(_not_expired(GalleryImage)).distinct().order_by(year_field.desc()).all()
             meta['years'] = [int(y[0]) for y in years if y[0]]
 
     except Exception as e:
