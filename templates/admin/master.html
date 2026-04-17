@@ -84,8 +84,10 @@
             return words.slice(0, maxWords).join(' ');
         }
         document.addEventListener('DOMContentLoaded', function () {
-            var form = document.querySelector('form');
-            if (!form) return;
+            // Only target creation/edit forms (avoid list view bulk action form)
+            if (!window.location.pathname.includes('/new') && 
+                !window.location.pathname.includes('/edit') && 
+                !window.location.pathname.includes('/create')) return;
 
             // Compact creation/edit form: grid layout, dropdowns and toggles (dials)
             (function compactForm() {

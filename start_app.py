@@ -20,10 +20,10 @@ def check_dependencies():
         import requests
         import feedparser
         import schedule
-        print("✅ All dependencies are installed")
+        print("[PASS] All dependencies are installed")
         return True
     except ImportError as e:
-        print(f"❌ Missing dependency: {e}")
+        print(f"[FAIL] Missing dependency: {e}")
         print("Please run: pip install -r requirements.txt")
         return False
 
@@ -38,18 +38,18 @@ def kill_process_on_port(port):
             pids = result.stdout.strip().split('\n')
             for pid in pids:
                 if pid:
-                    print(f"🔄 Killing process {pid} on port {port}")
+                    print(f"[KILL] Killing process {pid} on port {port}")
                     subprocess.run(['kill', '-9', pid], check=False)
             time.sleep(1)  # Give it a moment to release the port
             return True
     except Exception as e:
-        print(f"⚠️  Could not kill process on port {port}: {e}")
+        print(f"[WARN] Could not kill process on port {port}: {e}")
     
     return False
 
 def start_app_with_port_management():
     """Start the Flask app with smart port management."""
-    print("🎙️  CPC New Haven Podcast System")
+    print("CPC New Haven Podcast System")
     print("=" * 50)
     
     # Check dependencies
@@ -61,28 +61,28 @@ def start_app_with_port_management():
     # Browser-safe ports first (Chrome/Edge block 6000-6063 with ERR_UNSAFE_PORT)
     preferred_ports = [3000, 5000, 5001, 8000, 8080, 6000, 6001, 6002, 6003, 6004, 6005]
     
-    print("\n🔍 Checking port availability...")
+    print("\n[CHECK] Checking port availability...")
     
     # Check preferred ports
     for port in preferred_ports:
         info = finder.get_port_info(port)
         if info['available']:
-            print(f"✅ Port {port} is available")
+            print(f"[OK] Port {port} is available")
         else:
-            print(f"❌ Port {port} is in use")
+            print(f"[IN USE] Port {port} is in use")
     
     # Find available port
     try:
         port = find_available_port(preferred_ports)
-        print(f"\n🚀 Starting Flask app on port {port}")
+        print(f"\n[START] Starting Flask app on port {port}")
         
         # Set environment variables
         os.environ['FLASK_APP'] = 'app.py'
         os.environ['FLASK_ENV'] = 'development'
         
         # Start the app
-        print(f"🌐 Main site: http://localhost:{port}")
-        print(f"⚙️  Admin panel: http://localhost:{port}/admin")
+        print(f"URL: http://localhost:{port}")
+        print(f"Admin: http://localhost:{port}/admin")
         print("\nPress Ctrl+C to stop the server")
         print("-" * 50)
         
@@ -91,17 +91,17 @@ def start_app_with_port_management():
         app.run(debug=True, port=port, host='0.0.0.0', use_reloader=False)
         
     except RuntimeError as e:
-        print(f"\n❌ Error: {e}")
-        print("\n🔧 Troubleshooting options:")
+        print(f"\n[ERROR] {e}")
+        print("\n[INFO] Troubleshooting options:")
         print("1. Kill processes using ports: lsof -ti :5001 | xargs kill -9")
         print("2. Try a different port range")
         print("3. Restart your terminal")
         sys.exit(1)
     except KeyboardInterrupt:
-        print("\n\n👋 Shutting down Flask app...")
+        print("\n\n[STOP] Shutting down Flask app...")
         sys.exit(0)
     except Exception as e:
-        print(f"\n❌ Unexpected error: {e}")
+        print(f"\n[ERROR] Unexpected error: {e}")
         sys.exit(1)
 
 def main():
@@ -112,14 +112,14 @@ def main():
             ports_to_check = [3000, 5000, 5001, 8000, 8080, 6000, 6001, 6002, 6003, 6004, 6005]
             for port in ports_to_check:
                 kill_process_on_port(port)
-            print("✅ Attempted to kill processes on common ports")
+            print("[OK] Attempted to kill processes on common ports")
             return
         elif sys.argv[1] == '--check-ports':
             # Just check port availability
             finder = PortFinder()
             for port in [3000, 5000, 5001, 8000, 8080, 6000, 6001, 6002, 6003, 6004, 6005]:
                 info = finder.get_port_info(port)
-                status = "✅ Available" if info['available'] else "❌ In Use"
+                status = "[OK] Available" if info['available'] else "[IN USE] In Use"
                 print(f"Port {port}: {status}")
             return
         elif sys.argv[1] == '--help':

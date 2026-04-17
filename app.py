@@ -3330,6 +3330,7 @@ class AnnouncementView(AuthenticatedModelView):
     def bulk_publish(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 announcement = Announcement.query.get(id)
                 if announcement:
@@ -3337,16 +3338,21 @@ class AnnouncementView(AuthenticatedModelView):
                     announcement.archived = False
                     count += 1
             db.session.commit()
-            try:
-                for id in ids:
-                    ann = Announcement.query.get(id)
-                    if ann:
+            
+            for id in ids:
+                ann = Announcement.query.get(id)
+                if ann:
+                    try:
                         _log_audit('published', ann)
-            except:
-                pass
+                    except:
+                        pass
+            
             flash(f'Successfully published {count} announcements', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Announcement bulk_publish: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error publishing announcements: {str(e)}', 'error')
             return False
 
@@ -3354,6 +3360,7 @@ class AnnouncementView(AuthenticatedModelView):
     def bulk_archive(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 announcement = Announcement.query.get(id)
                 if announcement:
@@ -3361,16 +3368,21 @@ class AnnouncementView(AuthenticatedModelView):
                     announcement.archived = True
                     count += 1
             db.session.commit()
-            try:
-                for id in ids:
-                    ann = Announcement.query.get(id)
-                    if ann:
+            
+            for id in ids:
+                ann = Announcement.query.get(id)
+                if ann:
+                    try:
                         _log_audit('archived', ann)
-            except:
-                pass
+                    except:
+                        pass
+            
             flash(f'Successfully archived {count} announcements', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Announcement bulk_archive: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error archiving announcements: {str(e)}', 'error')
             return False
 
@@ -3378,6 +3390,7 @@ class AnnouncementView(AuthenticatedModelView):
     def bulk_delete(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 announcement = Announcement.query.get(id)
                 if announcement:
@@ -3391,6 +3404,9 @@ class AnnouncementView(AuthenticatedModelView):
             flash(f'Successfully deleted {count} announcements', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Announcement bulk_delete: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error deleting announcements: {str(e)}', 'error')
             return False
 
@@ -3447,6 +3463,7 @@ class PaperView(AuthenticatedModelView):
     def toggle_active(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 paper = Paper.query.get(id)
                 if paper:
@@ -3456,6 +3473,9 @@ class PaperView(AuthenticatedModelView):
             flash(f'Successfully toggled active status for {count} papers', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Paper toggle_active: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error toggling active status: {str(e)}', 'error')
             return False
 
@@ -3463,6 +3483,7 @@ class PaperView(AuthenticatedModelView):
     def bulk_delete(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 paper = Paper.query.get(id)
                 if paper:
@@ -3472,6 +3493,9 @@ class PaperView(AuthenticatedModelView):
             flash(f'Successfully deleted {count} papers', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Paper bulk_delete: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error deleting papers: {str(e)}', 'error')
             return False
     
@@ -3659,6 +3683,8 @@ class SermonView(AuthenticatedModelView):
     def bulk_publish(self, ids):
         try:
             count = 0
+            # Cast all IDs to int upfront to avoid surprises
+            ids = [int(i) for i in ids]
             for id in ids:
                 sermon = Sermon.query.get(id)
                 if sermon:
@@ -3666,16 +3692,22 @@ class SermonView(AuthenticatedModelView):
                     sermon.archived = False
                     count += 1
             db.session.commit()
-            try:
-                for id in ids:
-                    sermon = Sermon.query.get(id)
-                    if sermon:
-                        _log_audit('published', sermon)
-            except:
-                pass
+            
+            # Log audit after main commit
+            for id in ids:
+                s = Sermon.query.get(id)
+                if s:
+                    try:
+                        _log_audit('published', s)
+                    except Exception as e:
+                        log.warning(f"Failed to log audit for sermon {id}: {e}")
+            
             flash(f'Successfully published {count} sermons', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Sermon bulk_publish: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error publishing sermons: {str(e)}', 'error')
             return False
     
@@ -3683,6 +3715,7 @@ class SermonView(AuthenticatedModelView):
     def bulk_archive(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 sermon = Sermon.query.get(id)
                 if sermon:
@@ -3690,22 +3723,28 @@ class SermonView(AuthenticatedModelView):
                     sermon.archived = True
                     count += 1
             db.session.commit()
-            try:
-                for id in ids:
-                    sermon = Sermon.query.get(id)
-                    if sermon:
-                        _log_audit('archived', sermon)
-            except:
-                pass
+            
+            for id in ids:
+                s = Sermon.query.get(id)
+                if s:
+                    try:
+                        _log_audit('archived', s)
+                    except Exception as e:
+                        log.warning(f"Failed to log audit for sermon {id}: {e}")
+            
             flash(f'Successfully archived {count} sermons', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Sermon bulk_archive: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error archiving sermons: {str(e)}', 'error')
             return False
     
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected sermons?')
     def bulk_delete(self, ids):
         try:
+            ids = [int(i) for i in ids]
             for id in ids:
                 sermon = Sermon.query.get(id)
                 if sermon:
@@ -3718,6 +3757,9 @@ class SermonView(AuthenticatedModelView):
             flash(f'Successfully deleted {len(ids)} sermons', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in Sermon bulk_delete: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error deleting sermons: {str(e)}', 'error')
             return False
 
@@ -3787,6 +3829,7 @@ class PodcastEpisodeView(AuthenticatedModelView):
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected podcast episodes?')
     def bulk_delete(self, ids):
         try:
+            ids = [int(i) for i in ids]
             for id in ids:
                 episode = PodcastEpisode.query.get(id)
                 if episode:
@@ -3799,6 +3842,9 @@ class PodcastEpisodeView(AuthenticatedModelView):
             flash(f'Successfully deleted {len(ids)} podcast episodes', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in PodcastEpisode bulk_delete: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error deleting podcast episodes: {str(e)}', 'error')
             return False
 
@@ -3870,6 +3916,7 @@ class GalleryImageView(AuthenticatedModelView):
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected gallery images?')
     def bulk_delete(self, ids):
         try:
+            ids = [int(i) for i in ids]
             for id in ids:
                 image = GalleryImage.query.get(id)
                 if image:
@@ -3882,12 +3929,16 @@ class GalleryImageView(AuthenticatedModelView):
             flash(f'Successfully deleted {len(ids)} gallery images', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in GalleryImage bulk_delete: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error deleting gallery images: {str(e)}', 'error')
             return False
     
     @action('toggle_event', 'Toggle Event Status', 'Are you sure you want to toggle the event status of selected images?')
     def toggle_event(self, ids):
         try:
+            ids = [int(i) for i in ids]
             for id in ids:
                 image = GalleryImage.query.get(id)
                 if image:
@@ -3903,6 +3954,9 @@ class GalleryImageView(AuthenticatedModelView):
             flash(f'Successfully toggled event status for {len(ids)} images', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in GalleryImage toggle_event: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error toggling event status: {str(e)}', 'error')
             return False
 
@@ -4091,6 +4145,7 @@ class OngoingEventView(AuthenticatedModelView):
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):
         try:
+            ids = [int(i) for i in ids]
             for id in ids:
                 event = OngoingEvent.query.get(id)
                 if event:
@@ -4106,6 +4161,9 @@ class OngoingEventView(AuthenticatedModelView):
             flash(f'Successfully toggled active status for {len(ids)} events', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in OngoingEvent toggle_active: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error toggling active status: {str(e)}', 'error')
             return False
     
@@ -4113,6 +4171,7 @@ class OngoingEventView(AuthenticatedModelView):
     def bulk_publish(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 event = OngoingEvent.query.get(id)
                 if event:
@@ -4130,6 +4189,9 @@ class OngoingEventView(AuthenticatedModelView):
             flash(f'Successfully published {count} events', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in OngoingEvent bulk_publish: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error publishing events: {str(e)}', 'error')
             return False
 
@@ -4137,6 +4199,7 @@ class OngoingEventView(AuthenticatedModelView):
     def bulk_archive(self, ids):
         try:
             count = 0
+            ids = [int(i) for i in ids]
             for id in ids:
                 event = OngoingEvent.query.get(id)
                 if event:
@@ -4154,6 +4217,9 @@ class OngoingEventView(AuthenticatedModelView):
             flash(f'Successfully archived {count} events', 'success')
             return True
         except Exception as e:
+            import traceback
+            log.error(f"Error in OngoingEvent bulk_archive: {e}\n{traceback.format_exc()}")
+            db.session.rollback()
             flash(f'Error archiving events: {str(e)}', 'error')
             return False
 

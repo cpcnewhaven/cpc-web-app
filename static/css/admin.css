@@ -1458,3 +1458,41 @@ body.admin-body {
   width: 60px;
   font-size: 12px;
 }
+
+/* ---------------------------------------------------------------------------
+   Flask-Admin Bulk Actions Fixes
+   --------------------------------------------------------------------------- */
+.actions-box,
+.btn-group {
+    position: relative; /* Ensure absolute children (dropdowns) anchor here */
+}
+
+/* Bulk actions dropdown menu styling */
+.admin-body .dropdown-menu {
+    margin-top: 5px;
+    background: #1a3a5c; /* surface-container */
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    min-width: 200px;
+}
+
+.admin-body .dropdown-menu > li > a {
+    padding: 10px 16px;
+    font-weight: 500;
+}
+
+.admin-body .dropdown-menu > li > a:hover {
+    background: var(--cpc-blue);
+    color: #fff !important;
+}
+
+/* Ensure the bulk action button looks right in our modern theme */
+.admin-body .actions-box .btn-default.dropdown-toggle {
+    background: var(--surface-container-high);
+    border-color: var(--outline-variant);
+    color: var(--on-surface) !important;
+}
+
+.admin-body .actions-box .btn-default.dropdown-toggle:hover {
+    background: var(--surface-container-highest);
+}
