@@ -2050,10 +2050,8 @@ def api_search_meta():
                     if speaker_str:
                         meta['speakers'].append(speaker_str)
 
-            # Get available series
-            series_list = db.session.query(SermonSeries.id, SermonSeries.title).filter(
-                SermonSeries.active == True
-            ).order_by(SermonSeries.title).all()
+            # Get available series - Show all series for the archive
+            series_list = db.session.query(SermonSeries.id, SermonSeries.title).order_by(SermonSeries.title).all()
             meta['series'] = [{'id': s[0], 'title': s[1]} for s in series_list]
 
             # Get available years - Cross-DB compatible (PostgreSQL uses func.extract, SQLite uses strftime)
@@ -3504,7 +3502,7 @@ class SermonView(AuthenticatedModelView):
     edit_template = 'admin/model/edit_bento.html'
     column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'featured', 'active', 'expires_at')
     column_searchable_list = ('title', 'scripture')
-    column_filters = ('series', 'speaker_user', 'date', 'active')
+    column_filters = ('series', 'speaker_user.full_name', 'date', 'active')
     column_sortable_list = ('date', 'title', 'episode_number')
     column_default_sort = ('date', True)
     form_excluded_columns = ['id', 'speaker']  # Exclude legacy speaker field from form
@@ -3551,8 +3549,8 @@ class SermonView(AuthenticatedModelView):
     column_formatters = {
         'active': _format_sermon_status,
         'speaker_user': lambda view, context, model, name: (
-            model.speaker_user.username if model.speaker_user 
-            else (model.speaker if model.speaker else '—')
+            model.speaker_user.full_name if model.speaker_user and model.speaker_user.full_name
+            else (model.speaker_user.username if model.speaker_user else (model.speaker if model.speaker else '—'))
         )
     }
 
@@ -3564,7 +3562,7 @@ class SermonView(AuthenticatedModelView):
         'book_name': DatalistField('Bible Book',
             choices_func=lambda: [b.name for b in BibleBook.query.order_by(BibleBook.sort_order).all()]),
         'speaker_name': DatalistField('Speaker',
-            choices_func=lambda: [u.username for u in User.query.order_by(User.username).all()]),
+            choices_func=lambda: [u.full_name for u in User.query.filter(User.full_name != None).order_by(User.full_name).all()]),
         'beyond_episode_name': DatalistField('Beyond Link',
             choices_func=lambda: [e.title for e in PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all()]),
     }
@@ -3593,7 +3591,7 @@ class SermonView(AuthenticatedModelView):
         if hasattr(form, 'book_name'):
             form.book_name.data = sermon.book.name if sermon.book else ''
         if hasattr(form, 'speaker_name'):
-            form.speaker_name.data = sermon.speaker_user.username if sermon.speaker_user else ''
+            form.speaker_name.data = sermon.speaker_user.full_name if sermon.speaker_user else ''
         if hasattr(form, 'beyond_episode_name'):
             form.beyond_episode_name.data = sermon.beyond_episode.title if sermon.beyond_episode else ''
         if hasattr(form, 'expiration_preset'):
@@ -3614,7 +3612,7 @@ class SermonView(AuthenticatedModelView):
         model.book = book_obj
 
         speaker_name = (getattr(form, 'speaker_name', None) and form.speaker_name.data or '').strip()
-        model.speaker_user = User.query.filter_by(username=speaker_name).first() if speaker_name else None
+        model.speaker_user = User.query.filter_by(full_name=speaker_name).first() if speaker_name else None
 
         beyond_name = (getattr(form, 'beyond_episode_name', None) and form.beyond_episode_name.data or '').strip()
         model.beyond_episode = PodcastEpisode.query.filter_by(title=beyond_name).first() if beyond_name else None

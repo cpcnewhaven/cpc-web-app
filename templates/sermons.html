@@ -157,6 +157,8 @@
     max-width: 100%;
     min-height: 400px;
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 /* Override Alpine.js display: none when element should be visible */
@@ -175,6 +177,12 @@
     display: flex;
     flex-direction: column;
     min-height: 200px;
+    position: relative;
+    z-index: 1;
+}
+
+.sermon-card:hover {
+    z-index: 100;
 }
 
 .sermon-card:hover {
@@ -402,7 +410,7 @@
 .table-responsive {
     width: 100%;
     max-width: 100%; /* Ensure it doesn't overflow parent */
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: auto; /* Allow horizontal scroll if needed but don't clip dropdowns if possible */
     margin-top: 1rem;
     margin-bottom: 2rem;
     border-radius: 12px;
@@ -955,17 +963,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     </p>
                     ${sermon.scripture ? `<p class="sermon-scripture">${sermon.scripture}</p>` : ''}
                     <div class="sermon-links">
-                        ${sermon.url ? `
-                            <div class="sermon-play-dropdown">
-                                <button class="btn btn-play play-btn" type="button" title="Play sermon">
-                                    <i class="fas fa-play"></i> Play
-                                </button>
-                                <div class="sermon-play-menu">
-                                    ${sermon.url.includes('spotify') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
-                                    ${sermon.url.includes('youtube') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
-                                </div>
-                            </div>
-                        ` : '<span style="color: rgba(255,255,255,0.5);">-</span>'}
+                        ${sermon.url.includes('spotify') ? `
+                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-spotify" title="Listen on Spotify">
+                                <i class="fab fa-spotify"></i> Spotify
+                            </a>
+                        ` : ''}
+                        ${sermon.url.includes('youtube') ? `
+                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-youtube" title="Watch on YouTube">
+                                <i class="fab fa-youtube"></i> YouTube
+                            </a>
+                        ` : ''}
+                        ${!sermon.url.includes('spotify') && !sermon.url.includes('youtube') && sermon.url ? `
+                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play">
+                                <i class="fas fa-play"></i> Listen
+                            </a>
+                        ` : ''}
+                        ${!sermon.url ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
                     </div>
                 </div>
             `;
@@ -992,17 +1005,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${sermon.speaker || 'Unknown'}</td>
                 <td>${sermon.scripture || '-'}</td>
                 <td class="sermon-links">
-                    ${sermon.url ? `
-                        <div class="sermon-play-dropdown">
-                            <button class="btn-play play-btn" type="button" title="Play sermon">
-                                <i class="fas fa-play"></i> Play
-                            </button>
-                            <div class="sermon-play-menu">
-                                ${sermon.url.includes('spotify') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
-                                ${sermon.url.includes('youtube') ? `<a href="${sermon.url}" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
-                            </div>
-                        </div>
-                    ` : '<span style="color: rgba(255,255,255,0.5);">-</span>'}
+                    ${sermon.url.includes('spotify') ? `
+                        <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-spotify" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Spotify">
+                            <i class="fab fa-spotify"></i> Spotify
+                        </a>
+                    ` : ''}
+                    ${sermon.url.includes('youtube') ? `
+                        <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-youtube" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="YouTube">
+                            <i class="fab fa-youtube"></i> YouTube
+                        </a>
+                    ` : ''}
+                    ${!sermon.url.includes('spotify') && !sermon.url.includes('youtube') && sermon.url ? `
+                         <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Listen">
+                            <i class="fas fa-play"></i> Listen
+                        </a>
+                    ` : ''}
+                    ${!sermon.url ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
                 </td>
             `;
             tbody.appendChild(tr);
