@@ -3,6 +3,8 @@
 {% block title %}Sunday Sermons - CPC New Haven{% endblock %}
 
 {% block head %}
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+
 <style>
 /* Alpine.js x-cloak - hide elements until Alpine processes them */
 [x-cloak] {
@@ -952,7 +954,7 @@ document.addEventListener('DOMContentLoaded', function() {
             card.innerHTML = `
                 ${sermon.thumbnail ? `
                     <div class="sermon-thumbnail">
-                        <img src="${sermon.thumbnail}" alt="${sermon.title}" loading="lazy">
+                        <img src="${transformImage(sermon.thumbnail)}" alt="${sermon.title}" loading="lazy">
                     </div>
                 ` : ''}
                 <div class="sermon-content">
