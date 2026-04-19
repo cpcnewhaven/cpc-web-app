@@ -243,6 +243,7 @@ def ensure_db_columns():
         ],
         'users': [
             ('last_login_at', 'DATETIME', 'TIMESTAMP'),
+            ('full_name', 'VARCHAR(100)', 'VARCHAR(100)'),
         ],
         'papers': [
             ('speaker', 'VARCHAR(200)', 'VARCHAR(200)'),
