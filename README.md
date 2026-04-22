@@ -1,5 +1,7 @@
 # CPC New Haven - Flask Web Application
 
+Current release marker: `v1.0.1` (see [VERSION](/Users/agworkywork/cpc-web-app/VERSION:1), [AGENT_MEMORY.md](/Users/agworkywork/cpc-web-app/AGENT_MEMORY.md:1), and [RELEASE_v1.0.1.md](/Users/agworkywork/cpc-web-app/RELEASE_v1.0.1.md:1)).
+
 A modern Flask web application for Christ Presbyterian Church New Haven, featuring dynamic content management, sermon archives, podcast integration, and responsive design.
 
 ## Features
