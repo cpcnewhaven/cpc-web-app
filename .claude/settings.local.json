@@ -43,7 +43,10 @@
       "Bash(curl -s http://localhost:5000/api/search/meta?type=gallery)",
       "Bash(curl -s \"http://localhost:5000/api/search/meta?type=gallery\")",
       "Bash(pkill -f \"gunicorn\")",
-      "Bash(curl -s \"http://localhost:5000/\")"
+      "Bash(curl -s \"http://localhost:5000/\")",
+      "Bash(openclaw --help)",
+      "Bash(openclaw models *)",
+      "Bash(openclaw agents *)"
     ]
   }
 }

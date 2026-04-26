@@ -77,6 +77,17 @@ try:
     except Exception:
         pass
 
+    # Patch validators to use dicts instead of tuples for field_flags (WTForms 3 compatibility)
+    try:
+        from flask_admin.contrib.sqla.validators import Unique
+        if hasattr(Unique, 'field_flags') and isinstance(Unique.field_flags, tuple):
+            Unique.field_flags = {f: True for f in Unique.field_flags}
+        from flask_admin.form.validators import FieldListInputRequired
+        if hasattr(FieldListInputRequired, 'field_flags') and isinstance(FieldListInputRequired.field_flags, tuple):
+            FieldListInputRequired.field_flags = {f: True for f in FieldListInputRequired.field_flags}
+    except (ImportError, AttributeError):
+        pass
+
 except Exception as e:
     import logging
     logging.getLogger("cpc").warning("Failed to apply robust WTForms 3.0 monkeypatch: %s", e)
@@ -457,7 +468,7 @@ SUBPAGE_CONFIGS = {
         'color': '#059669',
         'keys': [
             ('contact_address', 'Address', '135 Whitney Ave, New Haven, CT 06510'),
-            ('contact_phone', 'Phone', '(203) 555-0123'),
+            ('contact_phone', 'Phone', '203-777-6960'),
             ('contact_email', 'General Email', 'admin@cpcnewhaven.org'),
         ]
     },

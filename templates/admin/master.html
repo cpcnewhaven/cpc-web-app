@@ -784,7 +784,7 @@
         </header>
 
         <!-- Form Content Container -->
-        <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-64">
+        <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96">
             {% block messages %}
                 {{ layout.messages() }}
             {% endblock %}
@@ -794,7 +794,7 @@
         
         <!-- Sticky Footer for Primary Actions (Only visible on create/edit pages) -->
         {% if 'create' in request.path or 'edit' in request.path %}
-        <div class="fixed bottom-0 right-0 left-64 h-24 bg-background/90 backdrop-blur-md flex items-center justify-end px-12 gap-6 z-40 border-t border-outline-variant/10">
+        <div class="fixed bottom-0 right-0 left-64 h-24 bg-background/90 backdrop-blur-md flex items-center justify-end px-12 gap-6 z-30 border-t border-outline-variant/10">
             <p class="mr-auto text-[10px] font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                 System Online — CPC Portal
