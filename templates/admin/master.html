@@ -794,13 +794,13 @@
         
         <!-- Sticky Footer for Primary Actions (Only visible on create/edit pages) -->
         {% if 'create' in request.path or 'edit' in request.path %}
-        <div class="fixed bottom-0 right-0 left-64 h-24 bg-background/90 backdrop-blur-md flex items-center justify-end px-12 gap-6 z-30 border-t border-outline-variant/10">
+        <div class="fixed bottom-0 right-0 left-64 h-24 bg-background/90 backdrop-blur-md flex items-center justify-end px-12 gap-6 z-[5001] border-t border-outline-variant/10">
             <p class="mr-auto text-[10px] font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                 System Online — CPC Portal
             </p>
             <a href="{{ return_url or '/admin/dashboard/' }}" class="px-8 py-4 rounded-xl text-on-surface-variant text-[10px] font-bold uppercase tracking-widest hover:text-on-surface transition-colors">Discard Changes</a>
-            <button type="submit" form="admin-form" class="px-10 py-4 rounded-xl bg-gradient-to-r from-secondary to-secondary-container text-background text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-secondary/10 hover:shadow-secondary/20 active:scale-95 transition-all">Publish Content</button>
+            <button type="submit" form="admin-form" class="px-10 py-4 rounded-xl bg-primary text-background text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-primary/30 hover:shadow-primary/40 active:scale-95 transition-all">Publish Content</button>
         </div>
         {% endif %}
     </main>
