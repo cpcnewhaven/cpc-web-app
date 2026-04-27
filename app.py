@@ -2339,10 +2339,17 @@ def get_authenticated_user():
 
 @app.context_processor
 def inject_current_user_metadata():
-    """Expose authenticated-user metadata to templates."""
+    """Expose authenticated-user metadata and app version to templates."""
     user = get_authenticated_user()
+    app_version = 'unknown'
+    try:
+        with open(os.path.join(os.path.dirname(__file__), 'VERSION'), 'r') as f:
+            app_version = f.read().strip()
+    except Exception:
+        pass
     return {
-        'current_user_last_login': user.last_login_at if user else None
+        'current_user_last_login': user.last_login_at if user else None,
+        'app_version': app_version
     }
 
 def require_auth(f):
