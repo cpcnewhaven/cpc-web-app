@@ -1,0 +1,140 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .release-container {
+        background: var(--admin-panel);
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .release-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--admin-border);
+    }
+
+    .release-version {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--liquid-blue-bright);
+        font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .release-badge {
+        background: var(--cpc-blue);
+        color: var(--admin-text);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .release-badge.current {
+        background: var(--liquid-blue-bright);
+        color: #000;
+    }
+
+    .release-content {
+        color: var(--admin-text);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .release-content h3 {
+        color: var(--liquid-blue-bright);
+        font-size: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .release-content ul, .release-content ol {
+        margin-left: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .release-content li {
+        margin-bottom: 0.25rem;
+    }
+
+    .release-content code {
+        background: var(--admin-input-bg);
+        color: var(--liquid-blue-bright);
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'Monaco', 'Menlo', monospace;
+        font-size: 0.9em;
+    }
+
+    .release-content pre {
+        background: var(--admin-input-bg);
+        color: var(--admin-text);
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 0.5rem 0;
+    }
+
+    .version-info {
+        background: var(--admin-panel-strong);
+        border-left: 4px solid var(--liquid-blue-bright);
+        padding: 1.5rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+    }
+
+    .version-info h2 {
+        color: var(--liquid-blue-bright);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.2rem;
+    }
+
+    .version-info p {
+        color: var(--admin-text-muted);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-section" style="padding: 2rem;">
+    <div class="page-header">
+        <h1 style="color: var(--admin-text);">Release Notes & Version History</h1>
+    </div>
+
+    <div class="version-info">
+        <h2>Current Version: {{ current_version }}</h2>
+        <p>See release notes below for recent changes and improvements.</p>
+    </div>
+
+    {% if releases %}
+        {% for release in releases %}
+        <div class="release-container">
+            <div class="release-header">
+                <div class="release-version">
+                    {{ release.version }}
+                    {% if release.version == 'v' + current_version %}
+                    <span class="release-badge current">CURRENT</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="release-content">
+                {{ release.content | replace('\n', '<br>') | safe }}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="release-container">
+            <p style="color: var(--admin-text-muted);">No release notes found.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -4606,6 +4606,48 @@ class DashboardView(BaseView):
                          progress_pct=progress_pct)
 
 
+class ReleasesView(BaseView):
+    """Display release notes and version history."""
+    def is_accessible(self):
+        return is_authenticated()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin_login', next=request.url))
+
+    @expose('/')
+    def index(self):
+        import os
+        import re
+        from pathlib import Path
+
+        # Read VERSION file
+        version_file = Path(os.getcwd()) / 'VERSION'
+        current_version = 'unknown'
+        if version_file.exists():
+            current_version = version_file.read_text().strip()
+
+        # Find all RELEASE_*.md files
+        releases = []
+        release_dir = Path(os.getcwd())
+        for release_file in sorted(release_dir.glob('RELEASE_*.md'), reverse=True):
+            try:
+                content = release_file.read_text()
+                # Extract version from filename (e.g., RELEASE_v2.0.1.md → v2.0.1)
+                version_match = re.search(r'RELEASE_(v[\d.]+)', release_file.name)
+                version = version_match.group(1) if version_match else release_file.name
+                releases.append({
+                    'version': version,
+                    'filename': release_file.name,
+                    'content': content
+                })
+            except Exception as e:
+                print(f"Error reading {release_file}: {e}")
+
+        return self.render('admin/releases.html',
+                         current_version=current_version,
+                         releases=releases)
+
+
 class ReorderSessionsView(BaseView):
     """Drag-and-drop reorder sessions for a specific series."""
     def is_accessible(self):
@@ -4972,6 +5014,7 @@ with app.app_context():
 
     # 7. Register admin views (inside app context so get_form() can use DB)
     admin.add_view(DashboardView(name='Dashboard', endpoint='dashboard'))
+    admin.add_view(ReleasesView(name='Releases', endpoint='releases'))
     admin.add_view(AnnouncementView(Announcement, db.session, name='Announcements', endpoint='announcement'))
     admin.add_view(OngoingEventView(OngoingEvent, db.session, name='Events', endpoint='event'))
     admin.add_view(SermonView(Sermon, db.session, name='Sunday Sermons', endpoint='sermon'))
