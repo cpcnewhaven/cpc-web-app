@@ -190,11 +190,25 @@ The admin uses a **completely custom dark navy theme** — no Bootstrap, no Tail
 
 ### Admin Forms
 
-- Inputs: `background: var(--admin-input-bg)`, `border: 1px solid var(--admin-input-border)`, `color: var(--admin-text)`
+**Legacy Admin Forms** (`.admin-body` + CSS variables)
+- Inputs: `background: var(--admin-input-bg)` (#132f4c), `border: 1px solid var(--admin-input-border)`, `color: var(--admin-text)`
 - Labels: `color: var(--admin-text)`, `font-weight: 600`
 - Use the `.admin-form-compact` grid pattern for create/edit forms
 - Checkboxes render as toggle dials (see `.form-group-toggle` pattern)
-- WYSIWYG rich text: uses Quill via `admin-wysiwyg.js` / `admin-wysiwyg.css` — dark toolbar, transparent editor bg
+
+**Material Design 3 Admin Forms** (newer templates using Tailwind + master.html theme)
+- Inputs: Use `bg-surface-container-low` (#02132b) for better contrast and visibility
+- Never use `bg-surface-container-lowest` (#000000) — too dark, poor contrast
+- Focus state: `focus:bg-surface-container` (#061934) for visual feedback
+- Text: `text-on-surface` (rgba(255, 255, 255, 0.95)) for legibility
+- Borders: Usually `border-none`, use `shadow-inner` for depth instead
+
+**Form Examples:**
+- Date/DateTime inputs: `bg-surface-container-low focus:bg-surface-container-low`
+- Text inputs: `bg-surface-container-low border-none focus:bg-surface-container-low`
+- Textareas: `bg-surface-container-low focus:bg-surface-container-low`
+
+**WYSIWYG Rich Text:** Uses Quill via `admin-wysiwyg.js` / `admin-wysiwyg.css` — dark toolbar, transparent editor bg
 
 ### Admin Buttons
 
