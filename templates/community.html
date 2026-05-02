@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Church Directory - CPC New Haven{% endblock %}
+{% block title %}Community - CPC New Haven{% endblock %}
 
 {% block head %}
 <style>
@@ -378,9 +378,8 @@
     <div class="community-main-container compact-content">
         <!-- Compact Hero -->
         <div class="community-hero">
-            <h1>Church Directory</h1>
-            <p>{{ community_content.get('community_hero_subtitle', 'Join our vibrant community of believers and
-                seekers') }}</p>
+            <h1>Community</h1>
+            <p>{{ community_content.get('community_hero_subtitle', 'Join our vibrant community of believers and seekers') }}</p>
         </div>
 
         <!-- Page Submenu -->
@@ -392,6 +391,8 @@
                 <li><a href="#service" class="submenu-link">Service Opportunities</a></li>
                 <li><a href="#new-member" class="submenu-link">New to CPC?</a></li>
                 <li><a href="#stories" class="submenu-link">Community Stories</a></li>
+                <li><a href="{{ url_for('media') }}" class="submenu-link">Media & Videos</a></li>
+                <li><a href="{{ url_for('lifegroups') }}" class="submenu-link">LifeGroups</a></li>
             </ul>
         </nav>
 

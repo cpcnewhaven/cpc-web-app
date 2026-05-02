@@ -74,8 +74,8 @@
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10 text-blue-200"><i class="fas fa-calendar-plus text-xs mr-1 opacity-70"></i>Suggest Event</a></li>
                     <li><a href="{{ url_for('events') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Events</a></li>
-                    <li><a href="{{ url_for('church_directory') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Church Directory</a></li>
+                    <li><a href="{{ url_for('community') }}"
+                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Community</a></li>
                     <li><a href="{{ url_for('lifegroups') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">LifeGroups</a></li>
                 </ul>
@@ -119,6 +119,10 @@
                 <a href="{{ url_for('sundays') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Sundays</a>
             </li>
+            <li>
+                <a href="{{ url_for('community') }}"
+                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Community</a>
+            </li>
             <li class="relative nav-dropdown">
                 <a href="#"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">More
@@ -129,6 +133,8 @@
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Give</a></li>
                     <li><a href="{{ url_for('search') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Search</a></li>
+                    <li><a href="{{ url_for('suggest_event') }}"
+                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Suggest an Event</a></li>
                     <li><a href="{{ url_for('archive') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Archive</a></li>
                     <li><a href="/admin/dashboard/"
@@ -223,8 +229,8 @@
                         class="block text-blue-200 hover:text-blue-100 font-medium py-1 text-sm"><i class="fas fa-calendar-plus text-xs mr-1 opacity-70"></i>Suggest Event</a>
                     <a href="{{ url_for('events') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 text-sm">Events</a>
-                    <a href="{{ url_for('church_directory') }}"
-                        class="block text-white hover:text-blue-200 font-medium py-1 text-sm">Church Directory</a>
+                    <a href="{{ url_for('community') }}"
+                        class="block text-white hover:text-blue-200 font-medium py-1 text-sm">Community</a>
                     <a href="{{ url_for('lifegroups') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 text-sm">LifeGroups</a>
                 </div>
@@ -340,7 +346,7 @@
             <div class="quick-links-grid">
                 <a href="{{ url_for('events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
                 <a href="{{ url_for('highlights') }}"><i class="fa-solid fa-star"></i><span>New Content</span></a>
-                <a href="{{ url_for('church_directory') }}"><i class="fa-solid fa-users"></i><span>Church Directory</span></a>
+                <a href="{{ url_for('community') }}"><i class="fa-solid fa-users"></i><span>Community</span></a>
                 <a href="{{ url_for('lifegroups') }}"><i class="fa-solid fa-circle-nodes"></i><span>LifeGroups</span></a>
             </div>
         </div>
@@ -465,14 +471,16 @@
                         class="fa-solid fa-podcast"></i><span>Podcasts</span></a>
                 <a href="{{ url_for('search') }}" class="mobile-more-link"><i
                         class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
+                <a href="{{ url_for('suggest_event') }}" class="mobile-more-link"><i
+                        class="fa-solid fa-lightbulb"></i><span>Suggest an Event</span></a>
                 <a href="{{ url_for('contact') }}" class="mobile-more-link"><i
                         class="fa-solid fa-envelope"></i><span>Contact</span></a>
                 <a href="{{ url_for('plan_a_visit') }}" class="mobile-more-link"><i
                         class="fa-solid fa-location-dot"></i><span>Plan a Visit</span></a>
                 <a href="{{ url_for('highlights') }}" class="mobile-more-link"><i
                         class="fa-solid fa-sparkles"></i><span>New Content</span></a>
-                <a href="{{ url_for('church_directory') }}" class="mobile-more-link"><i
-                        class="fa-solid fa-people-group"></i><span>Church Directory</span></a>
+                <a href="{{ url_for('community') }}" class="mobile-more-link"><i
+                        class="fa-solid fa-people-group"></i><span>Community</span></a>
                 <a href="{{ url_for('lifegroups') }}" class="mobile-more-link"><i
                         class="fa-solid fa-circle-nodes"></i><span>LifeGroups</span></a>
                 <a href="{{ url_for('media') }}" class="mobile-more-link"><i

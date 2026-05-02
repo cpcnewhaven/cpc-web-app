@@ -612,12 +612,16 @@ def announcement_detail(announcement_id):
     
     return render_template('announcement_detail.html', announcement=announcement)
 
-@app.route('/church-directory')
-def church_directory():
+@app.route('/community')
+@app.route('/church-directory')  # Legacy redirect
+def community():
     # Load editable content from the DB; fall back gracefully if row doesn't exist
     rows = SiteContent.query.all()
     community_content = {r.key: r.value for r in rows}
     return render_template('community.html', community_content=community_content)
+
+# Alias for backward compatibility
+church_directory = community
 
 @app.route('/lifegroups')
 def lifegroups():
