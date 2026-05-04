@@ -13,22 +13,27 @@
 }
 
 .media-hero {
-    padding: 0.5rem 0;
+    padding: 2.5rem 1rem;
     text-align: center;
     margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, rgba(0, 40, 100, 0.72), rgba(0, 30, 80, 0.80)),
+                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .media-hero h1 {
-    font-size: 1.75rem;
+    font-size: 2rem;
     color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.25rem 0;
-    font-weight: 600;
+    margin: 0 0 0.4rem 0;
+    font-weight: 700;
+    font-family: 'Manrope', sans-serif;
 }
 
 .media-hero p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    margin: 0 0 0.5rem 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
 }
 
 .hero-stats {
@@ -207,6 +212,136 @@
     display: none;
 }
 
+/* Tag filter pills */
+.tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+.tag-pill {
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.8);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+}
+.tag-pill:hover, .tag-pill.active {
+    background: rgba(0,122,255,0.35);
+    border-color: rgba(0,122,255,0.6);
+    color: #fff;
+}
+
+/* Skeleton loading cards */
+.skeleton-card {
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.skeleton-img {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+}
+.skeleton-text {
+    height: 12px;
+    margin: 10px 12px 6px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+}
+.skeleton-text.short { width: 60%; }
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Lightbox */
+#media-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+}
+#media-lightbox.open { display: flex; }
+#media-lightbox .lb-img-wrap {
+    max-width: min(90vw, 1100px);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+#media-lightbox img {
+    max-width: 100%;
+    max-height: 78vh;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 16px 60px rgba(0,0,0,0.6);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+#media-lightbox img.loaded { opacity: 1; }
+#lb-caption { color: rgba(255,255,255,0.85); font-size: 0.9rem; font-weight: 500; letter-spacing: 0.3px; text-align: center; }
+#lb-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center; }
+#lb-tags span { padding: 2px 8px; background: rgba(34,139,230,0.2); border: 1px solid rgba(34,139,230,0.4); border-radius: 4px; font-size: 0.72rem; color: #74c0fc; }
+#lb-dots { display: flex; gap: 6px; justify-content: center; margin-top: 2px; }
+#lb-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.2s; padding: 0; }
+#lb-dots button.active { background: rgba(255,255,255,0.95); transform: scale(1.3); }
+.lb-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: white;
+    font-size: 2.2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+.lb-arrow:hover { background: rgba(255,255,255,0.25); }
+#lb-prev { left: 16px; }
+#lb-next { right: 16px; }
+#lb-close {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 2.5rem;
+    cursor: pointer;
+    z-index: 10000;
+    line-height: 1;
+    transition: color 0.2s;
+}
+#lb-close:hover { color: white; }
+@media (max-width: 640px) {
+    .lb-arrow { width: 38px; height: 38px; font-size: 1.6rem; }
+    #lb-prev { left: 6px; }
+    #lb-next { right: 6px; }
+    #media-lightbox .lb-img-wrap { max-width: 96vw; }
+}
+
 </style>
 {% endblock %}
 
@@ -251,9 +386,25 @@
     </div>
 </section>
 
+<!-- Lightbox -->
+<div id="media-lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" onclick="if(event.target===this)lbClose()">
+    <button id="lb-close" onclick="lbClose()" aria-label="Close">&times;</button>
+    <button class="lb-arrow" id="lb-prev" onclick="lbNav(-1)" aria-label="Previous">&#8249;</button>
+    <div class="lb-img-wrap">
+        <img id="lb-img" alt="" onload="this.classList.add('loaded')">
+        <div id="lb-caption"></div>
+        <div id="lb-tags"></div>
+        <div id="lb-dots"></div>
+    </div>
+    <button class="lb-arrow" id="lb-next" onclick="lbNav(1)" aria-label="Next">&#8250;</button>
+</div>
+
 <!-- Gallery Section -->
 <section id="gallery-section" class="media-section active">
     <div class="container">
+        <!-- Tag filter pills (populated by JS) -->
+        <div class="tag-filters" id="tag-filters"></div>
+
         <!-- Filter Controls -->
         <div class="gallery-controls">
             <div class="search-box">
@@ -287,10 +438,14 @@
             <!-- Gallery images will be populated by JavaScript -->
         </div>
 
-        <!-- Loading Indicator -->
-        <div id="loading-indicator" class="loading-indicator">
-            <div class="spinner"></div>
-            <p>Loading photos...</p>
+        <!-- Skeleton loading (shown while API loads) -->
+        <div id="loading-indicator" class="gallery-grid">
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
         </div>
 
         <!-- Empty State -->
@@ -345,6 +500,71 @@ document.addEventListener('DOMContentLoaded', function() {
     let filteredPhotos = [];
     let currentFilter = 'all';
     let currentView = 'grid';
+    let activeTag = 'all';
+
+    // ── Lightbox state ──────────────────────────────────────────────────────
+    let lbPhotos = [];
+    let lbIdx = 0;
+
+    window.lbOpen = function(idx) {
+        lbPhotos = [...filteredPhotos];
+        lbIdx = idx;
+        lbRender();
+        document.getElementById('media-lightbox').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+    window.lbClose = function() {
+        document.getElementById('media-lightbox').classList.remove('open');
+        document.body.style.overflow = '';
+    };
+    window.lbNav = function(dir) {
+        lbIdx = (lbIdx + dir + lbPhotos.length) % lbPhotos.length;
+        lbRender();
+    };
+
+    function lbRender() {
+        const p = lbPhotos[lbIdx];
+        if (!p) return;
+        const img = document.getElementById('lb-img');
+        img.classList.remove('loaded');
+        img.src = p.url;
+        img.alt = p.name || '';
+        document.getElementById('lb-caption').textContent = p.name || '';
+        // tags
+        const tagsEl = document.getElementById('lb-tags');
+        tagsEl.innerHTML = (p.tags || []).map(t =>
+            `<span>${t}</span>`
+        ).join('');
+        // dots
+        const dotsEl = document.getElementById('lb-dots');
+        dotsEl.innerHTML = lbPhotos.map((_, i) =>
+            `<button class="${i === lbIdx ? 'active' : ''}" onclick="lbIdx=${i};lbRender()" aria-label="Photo ${i+1}"></button>`
+        ).join('');
+        // hide arrows if only 1
+        const show = lbPhotos.length > 1 ? '' : 'none';
+        document.getElementById('lb-prev').style.display = show;
+        document.getElementById('lb-next').style.display = show;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        const lb = document.getElementById('media-lightbox');
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') lbClose();
+        if (e.key === 'ArrowLeft') lbNav(-1);
+        if (e.key === 'ArrowRight') lbNav(1);
+    });
+
+    // ── Stat counter animation ──────────────────────────────────────────────
+    function animateCount(el, target) {
+        const dur = 800, start = performance.now();
+        function tick(now) {
+            const p = Math.min((now - start) / dur, 1);
+            el.textContent = Math.round(p * target);
+            if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    }
+
     // Check URL parameters for view/tab
     const urlParams = new URLSearchParams(window.location.search);
     const viewParam = urlParams.get('view') || urlParams.get('tab');
@@ -352,7 +572,6 @@ document.addEventListener('DOMContentLoaded', function() {
         currentTab = viewParam;
         currentView = viewParam === 'yearbook' ? 'yearbook' : 'grid';
     } else {
-        // Default to yearbook for the "digital yearbook" feel if no param
         currentTab = 'yearbook';
         currentView = 'yearbook';
     }
@@ -361,24 +580,29 @@ document.addEventListener('DOMContentLoaded', function() {
     loadGallery();
 
     function loadGallery() {
+        // Show skeleton, hide real container
+        document.getElementById('loading-indicator').style.display = '';
+        document.getElementById('gallery-container').style.display = 'none';
 
         fetch('/api/gallery')
             .then(response => response.json())
             .then(data => {
                 allPhotos = data.images || [];
                 filteredPhotos = [...allPhotos];
+                // Hide skeleton, show real container
+                document.getElementById('loading-indicator').style.display = 'none';
+                document.getElementById('gallery-container').style.display = '';
                 updateStats();
+                buildTagFilters();
                 buildYearTabs();
-                
-                // Set initial tab state
                 switchTab(currentTab);
-                
                 renderGallery();
                 setupEventListeners();
-
             })
             .catch(error => {
                 console.error('Error loading gallery:', error);
+                document.getElementById('loading-indicator').style.display = 'none';
+                document.getElementById('gallery-container').style.display = '';
                 showError('Failed to load gallery images');
             });
     }
@@ -386,14 +610,40 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateStats() {
         const totalPhotos = allPhotos.length;
         const eventPhotos = allPhotos.filter(photo => photo.event).length;
-        const years = new Set(allPhotos.map(photo => {
-            const date = new Date(photo.created);
-            return date.getFullYear();
-        })).size;
+        const years = new Set(allPhotos.map(photo => new Date(photo.created).getFullYear())).size;
+        animateCount(document.getElementById('total-photos'), totalPhotos);
+        animateCount(document.getElementById('total-events'), eventPhotos);
+        animateCount(document.getElementById('total-years'), years);
+    }
 
-        document.getElementById('total-photos').textContent = totalPhotos;
-        document.getElementById('total-events').textContent = eventPhotos;
-        document.getElementById('total-years').textContent = years;
+    function buildTagFilters() {
+        const container = document.getElementById('tag-filters');
+        if (!container) return;
+        // Collect all unique tags, sort by frequency
+        const freq = {};
+        allPhotos.forEach(p => (p.tags || []).forEach(t => { freq[t] = (freq[t] || 0) + 1; }));
+        const tags = Object.entries(freq).sort((a, b) => b[1] - a[1]).map(e => e[0]);
+
+        const all = document.createElement('button');
+        all.className = 'tag-pill active';
+        all.textContent = 'All';
+        all.onclick = () => setTag('all', all);
+        container.appendChild(all);
+
+        tags.forEach(tag => {
+            const btn = document.createElement('button');
+            btn.className = 'tag-pill';
+            btn.textContent = tag;
+            btn.onclick = () => setTag(tag, btn);
+            container.appendChild(btn);
+        });
+    }
+
+    function setTag(tag, btn) {
+        activeTag = tag;
+        document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        filterPhotos();
     }
 
     function renderGallery() {
@@ -554,8 +804,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const tagString = tags.join(', ');
         const safeTitle = photo.name || 'Photo';
 
+        const photoIndex = filteredPhotos.indexOf(photo);
         photoDiv.innerHTML = `
-            <a class="photo-container" href="${photo.url}" target="_blank" rel="noopener noreferrer" aria-label="${safeTitle}">
+            <div class="photo-container" onclick="lbOpen(${photoIndex})" role="button" aria-label="View ${safeTitle}" style="cursor:pointer;">
                 <img src="${photo.url}" alt="${safeTitle}" loading="lazy">
                 <div class="photo-overlay">
                     <div class="photo-info">
@@ -564,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${photo.event ? '<span class="event-badge">Event</span>' : ''}
                     </div>
                 </div>
-            </a>
+            </div>
         `;
 
         return photoDiv;
@@ -629,17 +880,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function filterPhotos() {
         const searchTerm = document.getElementById('gallery-search').value.toLowerCase();
-        
+
         filteredPhotos = allPhotos.filter(photo => {
-            const matchesSearch = !searchTerm || 
+            const matchesSearch = !searchTerm ||
                 (photo.name || '').toLowerCase().includes(searchTerm) ||
                 (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
-            
-            const matchesFilter = currentFilter === 'all' || 
+
+            const matchesFilter = currentFilter === 'all' ||
                 (currentFilter === 'events' && photo.event) ||
                 (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(currentFilter)));
-            
-            return matchesSearch && matchesFilter;
+
+            const matchesTag = activeTag === 'all' ||
+                (photo.tags && photo.tags.includes(activeTag));
+
+            return matchesSearch && matchesFilter && matchesTag;
         });
 
         buildYearTabs();
