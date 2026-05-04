@@ -3870,8 +3870,8 @@ class PodcastEpisodeView(AuthenticatedModelView):
             return False
 
 class GalleryImageView(AuthenticatedModelView):
-    create_template = 'admin/model/create_bento.html'
-    edit_template = 'admin/model/edit_bento.html'
+    create_template = 'admin/model/gallery_create.html'
+    edit_template = 'admin/model/gallery_edit.html'
     list_template = 'admin/gallery_list.html'
     column_list = ('id', 'name', 'event', 'photographer', 'created', 'expires_at', 'tags_display')
     column_searchable_list = ('name', 'description', 'location', 'photographer')
@@ -3901,15 +3901,37 @@ class GalleryImageView(AuthenticatedModelView):
     }
 
     column_labels = {
-        'event': 'Is Event Photo',
+        'event': 'Event?',
         'created': 'Date Added',
         'expires_at': 'Expires',
+        'thumbnail_preview': 'Preview',
+        'tags_display': 'Tags',
     }
 
+    def thumbnail_preview(self, context, model, name):
+        if model.url:
+            return Markup(
+                f'<a href="{model.url}" target="_blank" rel="noopener">'
+                f'<img src="{model.url}" style="height:56px;width:80px;object-fit:cover;border-radius:6px;'
+                f'border:1px solid var(--admin-border);display:block;" loading="lazy" '
+                f'onerror="this.style.display=\'none\'">'
+                f'</a>'
+            )
+        return Markup('<span style="color:var(--admin-text-muted);font-size:0.8rem;">no image</span>')
+
+    thumbnail_preview.column_type = 'string'
+
     def tags_display(self, context, model, name):
-        if model.tags:
-            return ', '.join(model.tags) if isinstance(model.tags, list) else str(model.tags)
-        return ''
+        if not model.tags:
+            return ''
+        tags = model.tags if isinstance(model.tags, list) else [str(model.tags)]
+        badges = ''.join(
+            f'<span style="display:inline-block;padding:0.15rem 0.5rem;margin:0.1rem;'
+            f'background:rgba(34,139,230,0.18);border:1px solid rgba(34,139,230,0.35);'
+            f'border-radius:4px;font-size:0.75rem;color:var(--liquid-blue-bright);">{t}</span>'
+            for t in tags
+        )
+        return Markup(badges)
 
     tags_display.column_type = 'string'
 
@@ -3921,6 +3943,10 @@ class GalleryImageView(AuthenticatedModelView):
             form.expiration_preset.data = 'specific' if getattr(image, 'expires_at', None) else 'never'
         if hasattr(form, 'expiration_date') and getattr(image, 'expires_at', None):
             form.expiration_date.data = image.expires_at
+        # Pre-fill tags textarea as comma-separated string
+        if hasattr(form, 'tags') and image.tags:
+            tags = image.tags if isinstance(image.tags, list) else [str(image.tags)]
+            form.tags.data = ', '.join(tags)
 
     def on_model_change(self, form, model, is_created):
         if is_created:

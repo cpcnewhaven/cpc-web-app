@@ -17,16 +17,30 @@
     </div>
 
     <div class="gallery-card-content">
-        <div class="gallery-card-title">{{ row.name or 'Untitled' }}</div>
-        {% if row.photographer %}
-        <div class="gallery-card-meta"><i class="fas fa-camera"></i> {{ row.photographer }}</div>
-        {% endif %}
-        <div class="gallery-card-meta" style="margin-top: 4px;">
-            <i class="fas fa-calendar-plus"></i> Added {{ row.created.strftime('%b %d, %Y') if row.created else
-            'Unknown' }}
+        <div class="gallery-card-title">
+            {{ row.name or 'Untitled' }}
+            {% if row.event %}
+            <span style="display:inline-block;margin-left:6px;padding:1px 7px;background:rgba(40,167,69,0.2);border:1px solid rgba(40,167,69,0.45);border-radius:4px;font-size:0.68rem;color:#5cb85c;vertical-align:middle;font-weight:600;">EVENT</span>
+            {% endif %}
         </div>
-        <div class="gallery-card-meta" style="margin-top: 2px;">
-            <i class="fas fa-info-circle"></i> Type: {{ row.type or 'Unknown' }}
+        {% if row.description %}
+        <div class="gallery-card-meta" style="margin-top:3px;font-style:italic;color:rgba(255,255,255,0.55);font-size:0.8rem;line-height:1.3;">{{ row.description[:80] }}{% if row.description|length > 80 %}…{% endif %}</div>
+        {% endif %}
+        {% if row.tags %}
+        <div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px;">
+            {% for tag in (row.tags if row.tags is iterable and row.tags is not string else [row.tags]) %}
+            <span style="padding:1px 6px;background:rgba(34,139,230,0.15);border:1px solid rgba(34,139,230,0.3);border-radius:3px;font-size:0.7rem;color:#74c0fc;">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if row.photographer %}
+        <div class="gallery-card-meta" style="margin-top:5px;"><i class="fas fa-camera"></i> {{ row.photographer }}</div>
+        {% endif %}
+        <div class="gallery-card-meta" style="margin-top:3px;">
+            <i class="fas fa-calendar-plus"></i> {{ row.created.strftime('%b %d, %Y') if row.created else 'Unknown' }}
+            {% if row.expires_at %}
+            &nbsp;·&nbsp;<i class="fas fa-clock" style="color:#f0ad4e;"></i> <span style="color:#f0ad4e;">Expires {{ row.expires_at.strftime('%b %d, %Y') }}</span>
+            {% endif %}
         </div>
     </div>
 
@@ -330,37 +344,83 @@
 </div>
 
 <!-- Lightbox Modal -->
-<div id="gallery-lightbox" class="lightbox">
-    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-    <img class="lightbox-content" id="lightbox-img">
-    <div class="lightbox-caption" id="lightbox-caption"></div>
+<div id="gallery-lightbox" class="lightbox" onclick="if(event.target===this)closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()" title="Close (Esc)">&times;</span>
+    <button id="lb-prev" onclick="lbNav(-1)" title="Previous (←)"
+        style="position:absolute;left:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.12);border:none;color:white;font-size:2.5rem;width:52px;height:52px;border-radius:50%;cursor:pointer;transition:background 0.2s;z-index:10001;display:flex;align-items:center;justify-content:center;line-height:1;"
+        onmouseover="this.style.background='rgba(255,255,255,0.25)'"
+        onmouseout="this.style.background='rgba(255,255,255,0.12)'">&#8249;</button>
+    <img class="lightbox-content" id="lightbox-img" alt="">
+    <div id="lightbox-caption" style="position:absolute;bottom:52px;left:0;width:100%;text-align:center;color:rgba(255,255,255,0.9);font-size:1rem;font-weight:500;text-shadow:0 2px 4px rgba(0,0,0,0.8);"></div>
+    <div id="lb-dots" style="position:absolute;bottom:22px;left:0;width:100%;text-align:center;display:flex;justify-content:center;gap:6px;"></div>
+    <button id="lb-next" onclick="lbNav(1)" title="Next (→)"
+        style="position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.12);border:none;color:white;font-size:2.5rem;width:52px;height:52px;border-radius:50%;cursor:pointer;transition:background 0.2s;z-index:10001;display:flex;align-items:center;justify-content:center;line-height:1;"
+        onmouseover="this.style.background='rgba(255,255,255,0.25)'"
+        onmouseout="this.style.background='rgba(255,255,255,0.12)'">&#8250;</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
+    // Build ordered image list from rendered cards for lightbox nav
+    let _lbImages = [];
+    let _lbIdx = 0;
+
+    function _buildImageList() {
+        _lbImages = [];
+        document.querySelectorAll('.gallery-card-image').forEach(function(el) {
+            const img = el.querySelector('img');
+            const card = el.closest('.gallery-card');
+            const title = card ? (card.querySelector('.gallery-card-title') || {}).innerText || '' : '';
+            if (img && img.src) _lbImages.push({ url: img.src, title: title.trim() });
+        });
+    }
+
     function openLightbox(url, title) {
-        document.getElementById('lightbox-img').src = url;
-        document.getElementById('lightbox-caption').innerText = title;
+        _buildImageList();
+        _lbIdx = _lbImages.findIndex(function(i) { return i.url === url; });
+        if (_lbIdx < 0) _lbIdx = 0;
+        _lbRender();
         document.getElementById('gallery-lightbox').style.display = 'block';
+    }
+
+    function _lbRender() {
+        const entry = _lbImages[_lbIdx] || {};
+        const img = document.getElementById('lightbox-img');
+        img.style.opacity = '0';
+        img.src = entry.url || '';
+        img.alt = entry.title || '';
+        img.onload = function() { img.style.transition = 'opacity 0.2s'; img.style.opacity = '1'; };
+        document.getElementById('lightbox-caption').innerText = entry.title || '';
+        // dots
+        const dots = document.getElementById('lb-dots');
+        dots.innerHTML = '';
+        _lbImages.forEach(function(_, i) {
+            const d = document.createElement('span');
+            d.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;cursor:pointer;transition:all 0.2s;background:' + (i === _lbIdx ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.35)');
+            d.onclick = function(e) { e.stopPropagation(); _lbIdx = i; _lbRender(); };
+            dots.appendChild(d);
+        });
+        // hide nav arrows if only 1 image
+        const show = _lbImages.length > 1 ? 'flex' : 'none';
+        document.getElementById('lb-prev').style.display = show;
+        document.getElementById('lb-next').style.display = show;
+    }
+
+    function lbNav(dir) {
+        _lbIdx = (_lbIdx + dir + _lbImages.length) % _lbImages.length;
+        _lbRender();
     }
 
     function closeLightbox() {
         document.getElementById('gallery-lightbox').style.display = 'none';
     }
 
-    // Close lightbox on click outside image
-    window.onclick = function (event) {
-        var modal = document.getElementById('gallery-lightbox');
-        if (event.target == modal) {
-            closeLightbox();
-        }
-    }
-
-    // Close on Escape key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeLightbox();
-        }
+    document.addEventListener('keydown', function(e) {
+        const lb = document.getElementById('gallery-lightbox');
+        if (lb.style.display !== 'block') return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') lbNav(-1);
+        if (e.key === 'ArrowRight') lbNav(1);
     });
 
     document.addEventListener('DOMContentLoaded', function () {

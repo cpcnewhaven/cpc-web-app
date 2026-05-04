@@ -19,10 +19,13 @@
     /* Compact Hero */
     .community-hero {
         grid-column: 1 / -1;
-        padding: 0.5rem 0;
+        padding: 2.5rem 1rem;
         text-align: center;
-        background: transparent;
-        margin: 0 0 0.75rem 0;
+        background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.80)),
+                    url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0 0 1rem 0;
     }
 
     .community-hero h1 {
@@ -36,6 +39,71 @@
         color: rgba(255, 255, 255, 0.7);
         font-size: 0.9rem;
         margin: 0;
+    }
+
+    /* Photo Strip */
+    .photo-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .photo-strip-item {
+        position: relative;
+        height: 160px;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .photo-strip-item:hover {
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 10px 32px rgba(0,0,0,0.5);
+    }
+    .photo-strip-item .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0.75rem;
+        transition: background 0.25s ease;
+    }
+    .photo-strip-item:hover .overlay {
+        background: rgba(0,0,0,0.35);
+    }
+    .photo-strip-item .overlay .zoom-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 1.75rem;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .photo-strip-item:hover .zoom-icon { opacity: 1; }
+    .photo-strip-item .caption {
+        color: rgba(255,255,255,0);
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-align: center;
+        letter-spacing: 0.3px;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        transition: color 0.25s ease;
+        line-height: 1.3;
+    }
+    .photo-strip-item:hover .caption { color: rgba(255,255,255,0.95); }
+    @media (max-width: 640px) {
+        .photo-strip { grid-template-columns: 1fr; }
+        .photo-strip-item { height: 200px; }
     }
 
     /* Page Submenu - Vertical List Format */
@@ -349,6 +417,14 @@
         margin-top: 0.5rem;
     }
 
+    body.theme-white .community-hero {
+        background: linear-gradient(135deg, rgba(200, 220, 255, 0.85), rgba(180, 210, 255, 0.80)),
+                    url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
+        border-color: rgba(0, 82, 163, 0.15);
+    }
+    body.theme-white .community-hero h1 { color: rgba(0, 52, 122, 0.95); }
+    body.theme-white .community-hero p { color: rgba(0, 52, 122, 0.75); }
+
     /* Responsive */
     @media (max-width: 1024px) {
 
@@ -380,6 +456,87 @@
         <div class="community-hero">
             <h1>Community</h1>
             <p>{{ community_content.get('community_hero_subtitle', 'Join our vibrant community of believers and seekers') }}</p>
+        </div>
+
+        <!-- Photo Strip with Lightbox -->
+        <div x-data="{
+            open: false,
+            idx: 0,
+            photos: [
+                { src: 'https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg', caption: 'CPC Retreat 2025' },
+                { src: 'https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg', caption: 'LifeGroups' },
+                { src: 'https://storage.googleapis.com/cpc-public-website/events/Mission%20Trip%202025/cpcMissionTrip_ATLANTIC%20CITY.jpg', caption: 'Mission Trip — Atlantic City 2025' }
+            ],
+            show(i) { this.idx = i; this.open = true; },
+            prev() { this.idx = (this.idx - 1 + this.photos.length) % this.photos.length; },
+            next() { this.idx = (this.idx + 1) % this.photos.length; }
+        }">
+            <div class="photo-strip">
+                <template x-for="(p, i) in photos" :key="i">
+                    <div class="photo-strip-item"
+                         :style="`background-image: url('${p.src}')`"
+                         @click="show(i)"
+                         role="button"
+                         :aria-label="`View photo: ${p.caption}`">
+                        <div class="overlay">
+                            <i class="fas fa-search-plus zoom-icon"></i>
+                            <span class="caption" x-text="p.caption"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Lightbox -->
+            <template x-teleport="body">
+                <div x-show="open" style="display:none;"
+                     class="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+                     @click="open = false"
+                     @keydown.escape.window="open = false"
+                     @keydown.arrow-left.window="prev()"
+                     @keydown.arrow-right.window="next()"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+
+                    <!-- Close -->
+                    <button @click="open = false"
+                            class="absolute top-5 right-6 text-white/70 hover:text-white text-4xl z-10 focus:outline-none transition-colors"
+                            aria-label="Close">&times;</button>
+
+                    <!-- Prev -->
+                    <button @click.stop="prev()"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-10 focus:outline-none transition-colors"
+                            aria-label="Previous">&#8249;</button>
+
+                    <!-- Image + caption -->
+                    <div class="max-w-5xl max-h-[90vh] w-full px-16 flex flex-col items-center gap-3" @click.stop>
+                        <img :src="photos[idx].src"
+                             :alt="photos[idx].caption"
+                             class="max-h-[80vh] max-w-full object-contain rounded-lg shadow-2xl"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100">
+                        <p class="text-white/80 text-sm font-medium tracking-wide" x-text="photos[idx].caption"></p>
+                        <!-- Dot indicators -->
+                        <div class="flex gap-2">
+                            <template x-for="(p, i) in photos" :key="i">
+                                <button @click.stop="idx = i"
+                                        class="w-2 h-2 rounded-full transition-all focus:outline-none"
+                                        :class="i === idx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'"
+                                        :aria-label="`Go to photo ${i+1}`"></button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Next -->
+                    <button @click.stop="next()"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-10 focus:outline-none transition-colors"
+                            aria-label="Next">&#8250;</button>
+                </div>
+            </template>
         </div>
 
         <!-- Page Submenu -->

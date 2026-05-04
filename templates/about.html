@@ -19,10 +19,13 @@
     /* Compact Hero */
     .about-hero {
         grid-column: 1 / -1;
-        padding: 0.5rem 0;
+        padding: 2.5rem 1rem;
         text-align: center;
-        background: transparent;
-        margin: 0 0 0.75rem 0;
+        background: linear-gradient(135deg, rgba(0, 40, 100, 0.72), rgba(0, 30, 80, 0.78)),
+                    url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/%5BFEATURED%20IMAGE%5D%5BABOUT%20PAGE%5D%5BDrone%20Shot%5D-1.jpg') center/cover no-repeat;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0 0 1rem 0;
     }
 
     .about-hero h1 {
@@ -88,6 +91,17 @@
 
     .gallery-item:hover::after {
         opacity: 0.8;
+    }
+
+    /* Gallery responsive */
+    .about-gallery > div {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+    @media (max-width: 640px) {
+        .about-gallery > div { grid-template-columns: 1fr !important; }
+        .gallery-item { height: 200px !important; }
     }
 
     /* Page Submenu - Vertical List Format */
@@ -516,19 +530,30 @@
                 this.activeIndex = (this.activeIndex - 1 + this.images.length) % this.images.length;
             }
         }" style="position: relative;">
-            <div
-                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; border-radius: 8px; overflow: hidden; max-height: 250px;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; border-radius: 10px; overflow: hidden;">
                 <div class="gallery-item"
                     @click="openLightbox(0)"
-                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg'); background-size: cover; background-position: center; min-height: 150px; cursor: pointer;">
+                    role="button"
+                    aria-label="View New Haven photo"
+                    tabindex="0"
+                    @keydown.enter="openLightbox(0)"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg'); background-size: cover; background-position: center; height: 180px; border-radius: 8px;">
                 </div>
                 <div class="gallery-item"
                     @click="openLightbox(1)"
-                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'); background-size: cover; background-position: center; min-height: 150px; cursor: pointer;">
+                    role="button"
+                    aria-label="View sermon photo"
+                    tabindex="0"
+                    @keydown.enter="openLightbox(1)"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'); background-size: cover; background-position: center; height: 180px; border-radius: 8px;">
                 </div>
                 <div class="gallery-item"
                     @click="openLightbox(2)"
-                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'); background-size: cover; background-position: center; min-height: 150px; cursor: pointer;">
+                    role="button"
+                    aria-label="View congregation photo"
+                    tabindex="0"
+                    @keydown.enter="openLightbox(2)"
+                    style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg'); background-size: cover; background-position: center; height: 180px; border-radius: 8px;">
                 </div>
             </div>
 
@@ -537,32 +562,41 @@
                 <div x-show="lightboxOpen" style="display: none;"
                     class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
                     @click="lightboxOpen = false"
+                    @keydown.escape.window="lightboxOpen = false"
+                    @keydown.arrow-left.window="prevImage()"
+                    @keydown.arrow-right.window="nextImage()"
                     x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
 
                     <button @click="lightboxOpen = false"
-                        class="absolute top-6 right-6 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors z-10">
-                        &times;
-                    </button>
+                        class="absolute top-6 right-6 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors z-10"
+                        aria-label="Close">&times;</button>
 
                     <button @click.stop="prevImage()"
-                        class="absolute left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors z-10">
-                        &#8249;
-                    </button>
+                        class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl focus:outline-none transition-colors z-10"
+                        aria-label="Previous">&#8249;</button>
 
-                    <div class="max-w-7xl max-h-[90vh] w-full px-4" @click.stop>
-                        <img :src="images[activeIndex]" alt="Expanded Gallery Image"
-                            class="w-full h-full object-contain mx-auto rounded shadow-2xl"
-                            x-transition:enter="transition ease-out duration-300"
+                    <div class="max-w-5xl max-h-[90vh] w-full px-16 flex flex-col items-center gap-3" @click.stop>
+                        <img :src="images[activeIndex]" alt="Church photo"
+                            class="max-h-[82vh] max-w-full object-contain mx-auto rounded-lg shadow-2xl"
+                            x-transition:enter="transition ease-out duration-200"
                             x-transition:enter-start="opacity-0 scale-95"
                             x-transition:enter-end="opacity-100 scale-100">
+                        <!-- Dot indicators -->
+                        <div class="flex gap-2">
+                            <template x-for="(img, i) in images" :key="i">
+                                <button @click.stop="activeIndex = i"
+                                        class="w-2 h-2 rounded-full transition-all focus:outline-none"
+                                        :class="i === activeIndex ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'"
+                                        :aria-label="`Go to photo ${i+1}`"></button>
+                            </template>
+                        </div>
                     </div>
 
                     <button @click.stop="nextImage()"
-                        class="absolute right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-4xl focus:outline-none transition-colors z-10">
-                        &#8250;
-                    </button>
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl focus:outline-none transition-colors z-10"
+                        aria-label="Next">&#8250;</button>
                 </div>
             </template>
         </div>

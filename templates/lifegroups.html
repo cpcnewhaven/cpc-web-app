@@ -18,8 +18,9 @@
 
     /* Hero Section */
     .lifegroups-hero {
-        background: linear-gradient(135deg, rgba(0, 82, 163, 0.3), rgba(0, 60, 130, 0.25));
-        backdrop-filter: blur(10px);
+        background: linear-gradient(135deg, rgba(0, 40, 100, 0.72), rgba(0, 30, 80, 0.78)),
+                    url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg') center/cover no-repeat;
+        backdrop-filter: blur(2px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding: 3rem 1.5rem;
         text-align: center;
@@ -60,6 +61,44 @@
         border-radius: 12px;
         padding: 2rem;
         margin-bottom: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 2rem;
+        align-items: start;
+    }
+    .vision-text { }
+    .vision-photo {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .vision-photo:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.5); }
+    .vision-photo img { width: 100%; height: 280px; object-fit: cover; display: block; }
+    .vision-photo .photo-hover-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.25s ease;
+    }
+    .vision-photo:hover .photo-hover-overlay { background: rgba(0,0,0,0.3); }
+    .vision-photo .photo-hover-overlay i {
+        color: white;
+        font-size: 2rem;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .vision-photo:hover .photo-hover-overlay i { opacity: 1; }
+    @media (max-width: 768px) {
+        .vision-section { grid-template-columns: 1fr; }
+        .vision-photo { order: -1; }
+        .vision-photo img { height: 220px; }
     }
 
     .vision-section h2 {
@@ -405,17 +444,56 @@
 
         <div class="lifegroups-content">
             <!-- Vision Section -->
-            <div class="vision-section">
-                <h2>{{ lifegroup_content.get('lifegroups_vision_heading', 'Our Vision for LifeGroups') }}</h2>
-                <p>
-                    {{ lifegroup_content.get('lifegroups_vision_p1', '<strong>God\'s people are the hands and feet of Christ.</strong> We cannot experience God and grow spiritually in a truly gospel-centered and biblical way if we are living in isolation. Neither can we say we are flourishing if our brother or sister in Christ is suffering.') | safe }}
-                </p>
-                <p>
-                    {{ lifegroup_content.get('lifegroups_vision_p2', 'Bound together with covenant communion, God brings us into new relationships where sacrifice is freedom and giving to others is where we find life. <strong>LifeGroups are our way of doing church in the small</strong> with all sorts of people engaged in prayer, teaching, fellowship and care.') | safe }}
-                </p>
-                <p>
-                    {{ lifegroup_content.get('lifegroups_vision_p3', 'They are the vehicle that we use to help participants continue to experience Christ outside of our worship gatherings and to impart the pastoral care that Christ provides through the love of His people. Thus, the worship, teaching, fellowship, and care for one another supply a more intimate and hands-on encounter with the living Christ.') | safe }}
-                </p>
+            <div class="vision-section" x-data="{ open: false }">
+                <!-- Text -->
+                <div class="vision-text">
+                    <h2>{{ lifegroup_content.get('lifegroups_vision_heading', 'Our Vision for LifeGroups') }}</h2>
+                    <p>
+                        {{ lifegroup_content.get('lifegroups_vision_p1', '<strong>God\'s people are the hands and feet of Christ.</strong> We cannot experience God and grow spiritually in a truly gospel-centered and biblical way if we are living in isolation. Neither can we say we are flourishing if our brother or sister in Christ is suffering.') | safe }}
+                    </p>
+                    <p>
+                        {{ lifegroup_content.get('lifegroups_vision_p2', 'Bound together with covenant communion, God brings us into new relationships where sacrifice is freedom and giving to others is where we find life. <strong>LifeGroups are our way of doing church in the small</strong> with all sorts of people engaged in prayer, teaching, fellowship and care.') | safe }}
+                    </p>
+                    <p>
+                        {{ lifegroup_content.get('lifegroups_vision_p3', 'They are the vehicle that we use to help participants continue to experience Christ outside of our worship gatherings and to impart the pastoral care that Christ provides through the love of His people. Thus, the worship, teaching, fellowship, and care for one another supply a more intimate and hands-on encounter with the living Christ.') | safe }}
+                    </p>
+                </div>
+                <!-- Photo -->
+                <div class="vision-photo" @click="open = true" role="button" aria-label="View LifeGroup photo">
+                    <img src="https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg"
+                         alt="CPC LifeGroup"
+                         loading="lazy">
+                    <div class="photo-hover-overlay">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                </div>
+
+                <!-- Lightbox -->
+                <template x-teleport="body">
+                    <div x-show="open" style="display:none;"
+                         class="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+                         @click="open = false"
+                         @keydown.escape.window="open = false"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0">
+                        <button @click="open = false"
+                                class="absolute top-5 right-6 text-white/70 hover:text-white text-4xl z-10 focus:outline-none transition-colors"
+                                aria-label="Close">&times;</button>
+                        <div class="max-w-4xl max-h-[90vh] w-full px-6 flex flex-col items-center gap-3" @click.stop>
+                            <img src="https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg"
+                                 alt="CPC LifeGroup"
+                                 class="max-h-[82vh] max-w-full object-contain rounded-lg shadow-2xl"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100">
+                            <p class="text-white/80 text-sm font-medium tracking-wide">CPC LifeGroups</p>
+                        </div>
+                    </div>
+                </template>
             </div>
 
             <!-- Pillars Section -->
