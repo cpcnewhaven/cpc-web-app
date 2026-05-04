@@ -9,6 +9,27 @@
     <meta name="theme-color" content="#0052a3">
     <title>{% block title %}CPC New Haven{% endblock %}</title>
 
+    <!-- SEO & Social sharing -->
+    <meta name="description" content="{% block meta_description %}Christ Presbyterian Church — New Haven, CT. A gospel-centered community of believers growing in faith, fellowship, and service.{% endblock %}">
+    <link rel="canonical" href="{% block canonical %}https://cpcnewhaven.org{% endblock %}">
+
+    <!-- Open Graph (Facebook, iMessage, Slack, etc.) -->
+    <meta property="og:site_name" content="CPC New Haven">
+    <meta property="og:title" content="{% block og_title %}CPC New Haven{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Christ Presbyterian Church — New Haven, CT. A gospel-centered community of believers growing in faith, fellowship, and service.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="{% block og_url %}https://cpcnewhaven.org{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}CPC New Haven{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Christ Presbyterian Church — New Haven, CT.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg{% endblock %}">
+
     <!-- Preconnect to CDN origins (saves ~100-200 ms per origin) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

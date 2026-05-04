@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Podcasts - CPC New Haven{% endblock %}
+{% block meta_description %}Listen to CPC New Haven podcasts — theology, discipleship, and gospel-centered teaching for everyday life.{% endblock %}
+{% block og_title %}Podcasts — CPC New Haven{% endblock %}
+{% block og_description %}Listen to CPC New Haven podcasts — theology, discipleship, and gospel-centered teaching for everyday life.{% endblock %}
+{% block og_image %}https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg{% endblock %}
 
 {% block head %}
 <style>
@@ -21,9 +25,13 @@
 
 /* Compact Hero */
 .podcasts-hero {
-    padding: 0.5rem 0;
+    padding: 2.5rem 1rem;
     text-align: center;
     margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
+                url('https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg') center/cover no-repeat;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .podcasts-hero h1 {

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Contact - CPC New Haven{% endblock %}
+{% block meta_description %}Get in touch with Christ Presbyterian Church in New Haven, CT — 135 Whitney Avenue, New Haven CT 06510.{% endblock %}
+{% block og_title %}Contact — CPC New Haven{% endblock %}
+{% block og_description %}Get in touch with Christ Presbyterian Church — 135 Whitney Avenue, New Haven CT 06510. We'd love to hear from you.{% endblock %}
+{% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -19,23 +23,12 @@
 
     .contact-hero {
         text-align: center;
-        padding: 0.5rem 0;
+        padding: 2.5rem 1rem;
         margin-bottom: 0.75rem;
-        position: relative;
-    }
-
-    .contact-hero::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(231, 76, 60, 0.15) 0%, transparent 70%);
-        border-radius: 50%;
-        filter: blur(60px);
-        z-index: -1;
+        background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
+                    url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg') center/cover no-repeat;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .contact-hero h1 {

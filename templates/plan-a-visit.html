@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 
 {% block title %}Plan a Visit - CPC New Haven{% endblock %}
+{% block meta_description %}Planning your first visit to CPC New Haven? Here's everything you need to know — what to expect, where we are, and how to connect.{% endblock %}
+{% block og_title %}Plan a Visit — CPC New Haven{% endblock %}
+{% block og_description %}Planning your first visit to CPC New Haven? Here's everything you need to know — what to expect, where we are, and how to connect.{% endblock %}
+{% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg{% endblock %}
+
+{% block head %}
+<style>
+.plan-visit-hero {
+    padding: 2.5rem 1rem !important;
+    background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
+                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat !important;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="plan-visit-page compact-page">

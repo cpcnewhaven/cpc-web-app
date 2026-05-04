@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Community - CPC New Haven{% endblock %}
+{% block meta_description %}Connect with the CPC New Haven community — LifeGroups, ministry teams, events, and ways to get involved.{% endblock %}
+{% block og_title %}Community — CPC New Haven{% endblock %}
+{% block og_description %}Connect with the CPC New Haven community — LifeGroups, ministry teams, events, and ways to get involved.{% endblock %}
+{% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg{% endblock %}
 
 {% block head %}
 <style>
@@ -723,6 +727,41 @@
                     </div>
                 </div>
             </section>
+
+            <!-- LifeGroups Feature Photo -->
+            <div style="margin: 0.5rem 0 1.25rem; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.35); position: relative; cursor: pointer;"
+                 x-data="{ open: false }" @click="open = true">
+                <img src="https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg"
+                     alt="CPC LifeGroups 2025"
+                     loading="lazy"
+                     style="width: 100%; height: 280px; object-fit: cover; display: block; transition: transform 0.4s ease;"
+                     onmouseover="this.style.transform='scale(1.02)'"
+                     onmouseout="this.style.transform='scale(1)'">
+                <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,20,60,0.65) 0%, transparent 60%); pointer-events: none;"></div>
+                <div style="position: absolute; bottom: 1rem; left: 1.25rem; pointer-events: none;">
+                    <p style="color: rgba(255,255,255,0.95); font-weight: 700; font-size: 1.1rem; margin: 0; font-family: 'Manrope', sans-serif; text-shadow: 0 2px 8px rgba(0,0,0,0.6);">LifeGroups 2025</p>
+                    <p style="color: rgba(255,255,255,0.75); font-size: 0.82rem; margin: 0.2rem 0 0;">Church in the small — prayer, teaching, fellowship & care</p>
+                </div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: white; font-size: 1.75rem; opacity: 0; transition: opacity 0.25s;" id="lg-zoom-icon">
+                    <i class="fas fa-search-plus" style="text-shadow: 0 2px 8px rgba(0,0,0,0.6);"></i>
+                </div>
+                <template x-teleport="body">
+                    <div x-show="open" style="display:none;"
+                         class="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+                         @click="open = false" @keydown.escape.window="open = false"
+                         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                        <button @click="open = false" class="absolute top-5 right-6 text-white/70 hover:text-white text-4xl z-10 focus:outline-none">&times;</button>
+                        <div class="max-w-5xl max-h-[90vh] w-full px-6 flex flex-col items-center gap-3" @click.stop>
+                            <img src="https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg"
+                                 alt="CPC LifeGroups 2025"
+                                 class="max-h-[82vh] max-w-full object-contain rounded-lg shadow-2xl"
+                                 x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+                            <p class="text-white/80 text-sm font-medium">CPC LifeGroups 2025</p>
+                        </div>
+                    </div>
+                </template>
+            </div>
 
             <!-- Community Groups Section -->
             <section id="groups" class="community-section">
