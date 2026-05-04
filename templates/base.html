@@ -30,6 +30,10 @@
     <meta name="twitter:description" content="{% block twitter_description %}Christ Presbyterian Church — New Haven, CT.{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg{% endblock %}">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://storage.googleapis.com/cpc-public-website/web-assets/CPC%20-%20FAVICON%20-%20FALL%2024.png">
+    <link rel="apple-touch-icon" href="https://storage.googleapis.com/cpc-public-website/web-assets/CPC%20-%20FAVICON%20-%20FALL%2024.png">
+
     <!-- Preconnect to CDN origins (saves ~100-200 ms per origin) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -517,10 +521,60 @@
             </div>
         </div>
     </div>
-    <!-- Start menu dock removed; footer ticker now carries meta -->
+    <style>
+    .site-footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; }
+    @media (max-width: 680px) { .site-footer-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+    </style>
+    <!-- Site Footer -->
+    <footer style="background: rgba(0,20,60,0.85); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); padding: 2.5rem 1.5rem 1.5rem; margin-top: 2rem; color: rgba(255,255,255,0.7); font-size: 0.85rem;">
+        <div class="site-footer-grid" style="max-width: 1100px; margin: 0 auto;">
 
-    <!-- Footer removed in favor of dashboard dock/meta -->
-    <footer class="hidden"></footer>
+            <!-- Brand + address -->
+            <div>
+                <p style="font-family:'Manrope',sans-serif; font-weight:700; font-size:1rem; color:rgba(255,255,255,0.95); margin:0 0 0.5rem;">Christ Presbyterian Church</p>
+                <p style="margin:0 0 0.25rem;">135 Whitney Avenue</p>
+                <p style="margin:0 0 0.25rem;">New Haven, CT 06510</p>
+                <p style="margin:0 0 0.25rem;"><a href="tel:+12037776960" style="color:rgba(255,255,255,0.6); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">(203) 777-6960</a></p>
+                <p style="margin:0.5rem 0 0;"><a href="mailto:admin@cpcnewhaven.org" style="color:rgba(255,255,255,0.6); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">admin@cpcnewhaven.org</a></p>
+                <!-- Social icons -->
+                <div style="display:flex; gap:0.9rem; margin-top:1rem;">
+                    <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" title="Instagram" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/cpcnewhaven" target="_blank" rel="noopener" title="Facebook" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.youtube.com/@cpcnewhaven" target="_blank" rel="noopener" title="YouTube" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-youtube"></i></a>
+                    <a href="https://open.spotify.com/show/cpcnewhaven" target="_blank" rel="noopener" title="Spotify" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-spotify"></i></a>
+                </div>
+            </div>
+
+            <!-- Worship -->
+            <div>
+                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:rgba(255,255,255,0.9); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">8:30am</span> &nbsp;Prayer in the Parlor</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">9:30am</span> &nbsp;Sunday School</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">10:30am</span> Worship Service</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">12:00pm</span> Fellowship Lunch</p>
+                <p style="margin-top:0.75rem;"><a href="{{ url_for('plan_a_visit') }}" style="color:#74c0fc; text-decoration:none; font-weight:500;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#74c0fc'">Plan a Visit →</a></p>
+            </div>
+
+            <!-- Quick links -->
+            <div>
+                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:rgba(255,255,255,0.9); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Links</p>
+                {% set footer_links = [
+                    ('Sermons', 'sermons'), ('Podcasts', 'podcasts'), ('Events', 'events'),
+                    ('LifeGroups', 'lifegroups'), ('Media Gallery', 'media'), ('Give', 'give'),
+                    ('About', 'about'), ('Contact', 'contact')
+                ] %}
+                {% for label, endpoint in footer_links %}
+                <p style="margin:0 0 0.3rem;"><a href="{{ url_for(endpoint) }}" style="color:rgba(255,255,255,0.6); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">{{ label }}</a></p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div style="max-width:1100px; margin:1.5rem auto 0; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.75rem; color:rgba(255,255,255,0.35);">
+            <span>&copy; {{ now.year if now else '2025' }} Christ Presbyterian Church, New Haven CT</span>
+            <span>135 Whitney Ave &bull; (203) 777-6960 &bull; cpcnewhaven.org</span>
+        </div>
+    </footer>
 
     <!-- Keep all your existing JavaScript files -->
     <script src="{{ url_for('static', filename='js/dynamic-banner.js') }}"></script>

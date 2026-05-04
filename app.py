@@ -339,6 +339,10 @@ def healthz():
 # ---------------------------------------------------------------------------
 # Log 500 errors with full traceback (so Render logs show the real cause)
 # ---------------------------------------------------------------------------
+@app.errorhandler(404)
+def not_found(exc):
+    return render_template('404.html'), 404
+
 @app.errorhandler(500)
 def internal_error(exc):
     import traceback
@@ -2353,7 +2357,8 @@ def inject_current_user_metadata():
         pass
     return {
         'current_user_last_login': user.last_login_at if user else None,
-        'app_version': app_version
+        'app_version': app_version,
+        'now': datetime.utcnow(),
     }
 
 def require_auth(f):

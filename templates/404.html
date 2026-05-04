@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found — CPC New Haven{% endblock %}
+{% block meta_description %}The page you're looking for doesn't exist. Head back to CPC New Haven.{% endblock %}
+
+{% block head %}
+<style>
+.not-found-page {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+.not-found-inner {
+    max-width: 480px;
+}
+.not-found-code {
+    font-size: 6rem;
+    font-weight: 800;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(255, 255, 255, 0.12);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    letter-spacing: -4px;
+}
+.not-found-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: rgba(116, 192, 252, 0.7);
+}
+.not-found-inner h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.92);
+    font-family: 'Manrope', sans-serif;
+    margin: 0 0 0.75rem;
+}
+.not-found-inner p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 2rem;
+}
+.not-found-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+}
+.not-found-links a {
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.07);
+}
+.not-found-links a:hover {
+    background: rgba(0, 122, 255, 0.35);
+    border-color: rgba(0, 122, 255, 0.6);
+    color: #fff;
+}
+.not-found-links a.primary {
+    background: rgba(0, 122, 255, 0.5);
+    border-color: rgba(0, 122, 255, 0.8);
+    color: #fff;
+}
+.not-found-links a.primary:hover {
+    background: rgba(0, 122, 255, 0.75);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="not-found-page">
+    <div class="not-found-inner">
+        <div class="not-found-code">404</div>
+        <div class="not-found-icon"><i class="fas fa-map-signs"></i></div>
+        <h1>Page not found</h1>
+        <p>We couldn't find what you were looking for. Maybe try one of these?</p>
+        <div class="not-found-links">
+            <a href="{{ url_for('index') }}" class="primary"><i class="fas fa-home"></i> Home</a>
+            <a href="{{ url_for('sermons') }}"><i class="fas fa-microphone"></i> Sermons</a>
+            <a href="{{ url_for('events') }}"><i class="fas fa-calendar"></i> Events</a>
+            <a href="{{ url_for('lifegroups') }}"><i class="fas fa-users"></i> LifeGroups</a>
+            <a href="{{ url_for('plan_a_visit') }}"><i class="fas fa-location-dot"></i> Plan a Visit</a>
+            <a href="{{ url_for('contact') }}"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
