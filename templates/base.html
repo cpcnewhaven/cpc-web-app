@@ -89,6 +89,12 @@
                 <a href="{{ url_for('sundays') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Sundays</a>
             </li>
+            <li>
+                <a href="{{ url_for('live') }}"
+                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm flex items-center gap-2">Live
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                        style="background: rgba(255,0,0,0.3); color:#fff; border:1px solid rgba(255,255,255,0.25);">LIVE</span></a>
+            </li>
             <li><a href="{{ url_for('about') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">About</a></li>
             <li class="relative nav-dropdown">
@@ -109,12 +115,6 @@
                             (PDFs)</a></li>
                     <li><a href="{{ url_for('media') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Photo Gallery</a></li>
-                    <li><a href="{{ url_for('live') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Live
-                            Stream <span
-                                class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
-                                style="background: rgba(255,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.25);">LIVE</span></a>
-                    </li>
                 </ul>
             </li>
             <li>
