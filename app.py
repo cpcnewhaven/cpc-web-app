@@ -2345,9 +2345,17 @@ def get_authenticated_user():
     return User.query.filter_by(username=username).first()
 
 
+def get_git_revision_short_hash():
+    """Returns the shorthand commit hash if git is available."""
+    try:
+        import subprocess
+        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+    except Exception:
+        return None
+
 @app.context_processor
 def inject_current_user_metadata():
-    """Expose authenticated-user metadata and app version to templates."""
+    """Expose authenticated-user metadata, app version, and git commit to templates."""
     user = get_authenticated_user()
     app_version = 'unknown'
     try:
@@ -2355,9 +2363,11 @@ def inject_current_user_metadata():
             app_version = f.read().strip()
     except Exception:
         pass
+        
     return {
         'current_user_last_login': user.last_login_at if user else None,
         'app_version': app_version,
+        'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
     }
 
