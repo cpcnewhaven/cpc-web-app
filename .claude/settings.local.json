@@ -47,7 +47,17 @@
       "Bash(openclaw --help)",
       "Bash(openclaw models *)",
       "Bash(openclaw agents *)",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(xargs -I{} basename {} .html)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(sed -n '19,24p' /Users/agworkywork/cpc-web-app/templates/give.html)",
+      "Bash(sed -n '23,28p' /Users/agworkywork/cpc-web-app/templates/podcasts.html)",
+      "Bash(sed -n '20,27p' /Users/agworkywork/cpc-web-app/templates/resources.html)",
+      "Bash(sed -n '20,35p' /Users/agworkywork/cpc-web-app/templates/contact.html)",
+      "Bash(sed -n '20,40p' /Users/agworkywork/cpc-web-app/templates/contact.html)",
+      "Bash(sed -n '665,680p' /Users/agworkywork/cpc-web-app/templates/sermons.html)",
+      "Bash(sed -n '5,20p' /Users/agworkywork/cpc-web-app/templates/plan-a-visit.html)"
     ]
   }
 }
