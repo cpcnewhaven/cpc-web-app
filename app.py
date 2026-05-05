@@ -476,9 +476,9 @@ SUBPAGE_CONFIGS = {
             ('contact_email', 'General Email', 'admin@cpcnewhaven.org'),
         ]
     },
-    'church-directory': {
-        'title': 'Church Directory Page',
-        'url': '/church-directory',
+    'community': {
+        'title': 'Community Page',
+        'url': '/community',
         'icon': 'fas fa-users',
         'color': '#00a0a0',
         'keys': [

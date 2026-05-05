@@ -85,6 +85,10 @@
         <ul class="flex items-center gap-2 mx-auto">
             <li><a href="{{ url_for('index') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Home</a></li>
+            <li>
+                <a href="{{ url_for('sundays') }}"
+                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Sundays</a>
+            </li>
             <li><a href="{{ url_for('about') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">About</a></li>
             <li class="relative nav-dropdown">
@@ -93,9 +97,6 @@
                     <i class="fas fa-chevron-down text-xs"></i></a>
                 <ul class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg py-2 min-w-[200px] hidden backdrop-blur-lg"
                     style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
-                    <li><a href="{{ url_for('media') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10 text-xs opacity-70">Photo Gallery</a></li>
-
                     <li><a href="{{ url_for('sermons') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Sermons</a></li>
                     <li><a href="{{ url_for('podcasts') }}"
@@ -106,6 +107,8 @@
                     <li><a href="{{ url_for('pastor_teaching') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Pastor Teaching
                             (PDFs)</a></li>
+                    <li><a href="{{ url_for('media') }}"
+                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Photo Gallery</a></li>
                     <li><a href="{{ url_for('live') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Live
                             Stream <span
@@ -115,20 +118,16 @@
                 </ul>
             </li>
             <li>
-                <a href="{{ url_for('resources') }}"
-                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Resources</a>
-            </li>
-            <li>
-                <a href="{{ url_for('live') }}"
-                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Live</a>
-            </li>
-            <li>
-                <a href="{{ url_for('sundays') }}"
-                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Sundays</a>
-            </li>
-            <li>
                 <a href="{{ url_for('community') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Community</a>
+            </li>
+            <li>
+                <a href="{{ url_for('give') }}"
+                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Give</a>
+            </li>
+            <li>
+                <a href="{{ url_for('resources') }}"
+                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Resources</a>
             </li>
             <li class="relative nav-dropdown">
                 <a href="#"
@@ -136,8 +135,6 @@
                     <i class="fas fa-chevron-down text-xs"></i></a>
                 <ul class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg py-2 min-w-[200px] hidden backdrop-blur-lg"
                     style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
-                    <li><a href="{{ url_for('give') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Give</a></li>
                     <li><a href="{{ url_for('search') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Search</a></li>
                     <li><a href="{{ url_for('suggest_event') }}"
