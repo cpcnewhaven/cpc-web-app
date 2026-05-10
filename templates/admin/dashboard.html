@@ -10,7 +10,6 @@
                     <h1 class="font-manrope text-4xl font-black text-primary tracking-tight">System Dashboard</h1>
                     <div class="flex items-center gap-4 mt-3">
                         <div class="flex items-center gap-2 text-on-surface-variant font-bold text-[10px] uppercase tracking-[0.2em] bg-surface-container-highest px-3 py-1.5 rounded-lg border border-outline-variant/10">
-                            <span class="material-symbols-outlined text-sm text-secondary">calendar_today</span>
                             {{ today.strftime('%A, %B %d, %Y') }}
                         </div>
                         {% if current_user_last_login %}
@@ -22,7 +21,7 @@
                 </div>
                 
                 <button onclick="toggleNewEntryOverlay()" class="px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg">add_circle</span> Initiate New Entry
+                    Initiate New Entry
                 </button>
              </div>
         </div>
@@ -46,7 +45,6 @@
                 <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Gallery Assets</div>
             </a>
             <a href="{{ url_for('history.index') }}" class="group bg-surface-container-highest/30 rounded-2xl p-6 border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col items-center text-center gap-3">
-                <span class="material-symbols-outlined text-3xl text-on-surface-variant/40">monitoring</span>
                 <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Audit Logs</div>
             </a>
         </div>
@@ -58,44 +56,29 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Sermon Wizard -->
                     <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('sermon.create_view', url='/admin/sermon/') }}'">
-                        <div class="w-14 h-14 rounded-2xl bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-3xl">mic_external_on</span>
-                        </div>
                         <div class="space-y-2">
                             <h3 class="font-manrope text-xl font-bold text-on-surface">Publish Sunday Sermon</h3>
                             <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Record a new teaching with automatic scripture mapping and platform link syndication.</p>
                         </div>
-                        <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] font-black text-tertiary uppercase tracking-widest">
-                            Initialize Workflow <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                        </div>
+                        <div class="mt-auto pt-4 text-[10px] font-black text-tertiary uppercase tracking-widest">Initialize Workflow</div>
                     </div>
 
                     <!-- Announcement Wizard -->
                     <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('announcement.create_view', url='/admin/announcement/') }}'">
-                        <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-3xl">campaign</span>
-                        </div>
                         <div class="space-y-2">
                             <h3 class="font-manrope text-xl font-bold text-on-surface">Broadcast News</h3>
                             <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Deploy a new site-wide banner or informational update to all active channels.</p>
                         </div>
-                        <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest">
-                            Initialize Workflow <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                        </div>
+                        <div class="mt-auto pt-4 text-[10px] font-black text-primary uppercase tracking-widest">Initialize Workflow</div>
                     </div>
 
                     <!-- Podcast Wizard -->
                     <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('podcastepisode.create_view', url='/admin/podcastepisode/') }}'">
-                        <div class="w-14 h-14 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-3xl">podcasts</span>
-                        </div>
                         <div class="space-y-2">
                             <h3 class="font-manrope text-xl font-bold text-on-surface">Add Podcast Episode</h3>
                             <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Publish a new podcast episode with link syndication to major platforms.</p>
                         </div>
-                        <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] font-black text-secondary uppercase tracking-widest">
-                            Initialize Workflow <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                        </div>
+                        <div class="mt-auto pt-4 text-[10px] font-black text-secondary uppercase tracking-widest">Initialize Workflow</div>
                     </div>
                 </div>
 
@@ -114,7 +97,6 @@
                             <div class="p-6 flex items-center justify-between group">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 group-hover:text-primary transition-all">
-                                        <span class="material-symbols-outlined text-xl">campaign</span>
                                     </div>
                                     <div>
                                         <div class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">{{ item.title }}</div>
@@ -124,7 +106,6 @@
                                     </div>
                                 </div>
                                 <a href="{{ url_for('announcement.edit_view', id=item.id) }}" class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-primary/10 hover:text-primary transition-all">
-                                    <span class="material-symbols-outlined text-sm">edit</span>
                                 </a>
                             </div>
                             {% endfor %}
@@ -140,7 +121,6 @@
                             <div class="p-6 flex items-center justify-between group">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 group-hover:text-tertiary transition-all">
-                                        <span class="material-symbols-outlined text-xl">menu_book</span>
                                     </div>
                                     <div>
                                         <div class="text-sm font-bold text-on-surface group-hover:text-tertiary transition-colors">{{ item.title }}</div>
@@ -150,7 +130,6 @@
                                     </div>
                                 </div>
                                 <a href="{{ url_for('sermon.edit_view', id=item.id) }}" class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-tertiary/10 hover:text-tertiary transition-all">
-                                    <span class="material-symbols-outlined text-sm">edit</span>
                                 </a>
                             </div>
                             {% endfor %}
@@ -197,25 +176,20 @@
                 <!-- Manage Site Content -->
                 <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6 cursor-pointer hover:bg-surface-bright transition-all group" onclick="window.location.href='{{ url_for('page_editors.index') }}'">
                     <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-2xl text-primary group-hover:scale-110 transition-transform">edit_document</span>
                         <h3 class="font-manrope text-sm font-black text-primary uppercase tracking-[0.2em]">Manage Site Content</h3>
                     </div>
                     <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Edit messaging, copy, and descriptions across all public-facing pages.</p>
-                    <a href="{{ url_for('page_editors.index') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">
-                        Open Editor <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                    </a>
+                    <a href="{{ url_for('page_editors.index') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">Open Editor</a>
                 </div>
 
                 <!-- Teaching Series Spotlight -->
                 <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6">
                     <h3 class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em]">Curriculum Active</h3>
                     {% if latest_luke %}
-                    <div class="space-y-4">
-                        <div class="text-3xl font-manrope font-black text-on-surface">Luke {{ latest_luke.latest_by_date.chapter }}</div>
-                        <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Most recently updated chapter in the Luke teaching series library.</p>
-                        <a href="{{ url_for('sermon.index_view') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">
-                            Browse Scripture <span class="material-symbols-outlined text-lg">menu_book</span>
-                        </a>
+                        <div class="space-y-4">
+                            <div class="text-3xl font-manrope font-black text-on-surface">Luke {{ latest_luke.latest_by_date.chapter }}</div>
+                            <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Most recently updated chapter in the Luke teaching series library.</p>
+                        <a href="{{ url_for('sermon.index_view') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">Browse Scripture</a>
                     </div>
                     {% else %}
                         <div class="text-xs font-bold text-on-surface-variant/30 text-center py-4 uppercase tracking-widest">No active series spotlight.</div>
