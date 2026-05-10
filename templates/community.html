@@ -221,19 +221,6 @@
         transform: translateY(-2px);
     }
 
-    .group-icon {
-        width: 40px;
-        height: 40px;
-        background: rgba(0, 82, 163, 0.3);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 0.5rem;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.25rem;
-    }
-
     .group-card h3 {
         font-size: 1rem;
         color: rgba(255, 255, 255, 0.95);
@@ -483,7 +470,6 @@
                          role="button"
                          :aria-label="`View photo: ${p.caption}`">
                         <div class="overlay">
-                            <i class="fas fa-search-plus zoom-icon"></i>
                             <span class="caption" x-text="p.caption"></span>
                         </div>
                     </div>
@@ -570,17 +556,15 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
                     <!-- Contact Info Card -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-church"></i></div>
                         <h3>Church Contact</h3>
                         <p><strong>Christ Presbyterian Church</strong></p>
                         <p>135 Whitney Avenue<br>New Haven, CT 06510<br>
-                        📞 203-777-6960<br>
-                        🌐 cpcnewhaven.org</p>
+                        203-777-6960<br>
+                        cpcnewhaven.org</p>
                     </div>
 
                     <!-- Leadership Boards -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-crown"></i></div>
                         <h3>Session (Elders)</h3>
                         <ul>
                             <li><strong>Craig Luekens</strong> - Moderator</li>
@@ -597,7 +581,6 @@
 
                     <!-- Women's Leadership Board -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-users"></i></div>
                         <h3>Women's Leadership Board</h3>
                         <ul>
                             <li><strong>Stacy Roney</strong> - Moderator</li>
@@ -613,7 +596,6 @@
 
                     <!-- Servant Leadership Board -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-hands-helping"></i></div>
                         <h3>Servant Leadership Board</h3>
                         <ul>
                             <li><strong>Craig Luekens</strong> - Moderator</li>
@@ -632,7 +614,6 @@
 
                     <!-- Staff -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-user-tie"></i></div>
                         <h3>Staff</h3>
                         <ul>
                             <li><strong>Craig Luekens</strong> - Senior Pastor</li>
@@ -649,7 +630,6 @@
 
                     <!-- Sunday School -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-book"></i></div>
                         <h3>Sunday School Teachers</h3>
                         <ul>
                             <li><strong>Ages 2.5 - Pre-K:</strong> Miranda Healy, Katie Levesque</li>
@@ -662,7 +642,6 @@
 
                     <!-- Ministry Team Leaders -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-project-diagram"></i></div>
                         <h3>Ministry Leaders</h3>
                         <ul>
                             <li><strong>Music/Worship:</strong> Jennifer Cheng</li>
@@ -679,7 +658,6 @@
 
                     <!-- Team Contacts -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-clipboard-list"></i></div>
                         <h3>Ministry Team Contacts</h3>
                         <ul>
                             <li><strong>Building:</strong> Barbara Battista</li>
@@ -701,7 +679,6 @@
 
                     <!-- Small Groups -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-circle-nodes"></i></div>
                         <h3>Small Group Leaders</h3>
                         <ul>
                             <li><strong>East Rock:</strong> Trey Billings, Kaitlyn Jessee, Bennie Finch</li>
@@ -716,7 +693,6 @@
 
                     <!-- Discipleship -->
                     <div class="group-card">
-                        <div class="group-icon"><i class="fas fa-seedling"></i></div>
                         <h3>Discipleship Groups</h3>
                         <ul>
                             <li><strong>Men's Discipleship:</strong> David Taylor</li>
@@ -741,9 +717,6 @@
                 <div style="position: absolute; bottom: 1rem; left: 1.25rem; pointer-events: none;">
                     <p style="color: rgba(255,255,255,0.95); font-weight: 700; font-size: 1.1rem; margin: 0; font-family: 'Manrope', sans-serif; text-shadow: 0 2px 8px rgba(0,0,0,0.6);">LifeGroups 2025</p>
                     <p style="color: rgba(255,255,255,0.75); font-size: 0.82rem; margin: 0.2rem 0 0;">Church in the small — prayer, teaching, fellowship & care</p>
-                </div>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: white; font-size: 1.75rem; opacity: 0; transition: opacity 0.25s;" id="lg-zoom-icon">
-                    <i class="fas fa-search-plus" style="text-shadow: 0 2px 8px rgba(0,0,0,0.6);"></i>
                 </div>
                 <template x-teleport="body">
                     <div x-show="open" style="display:none;"
@@ -774,7 +747,7 @@
                     <!-- Rendered by JS -->
                 </div>
                 <script id="groups-data"
-                    type="application/json">{{ community_content.get('community_groups_json', '[{"icon":"fas fa-users","title":"Small Groups","text":"Join a small group for Bible study, prayer, and fellowship in a more intimate setting.","bullets":["Westville Group - Thursdays at 7:00pm","Orange Group - Wednesdays at 7:00pm","Guilford Group - Fridays at 7:00pm"]},{"icon":"fas fa-child","title":"Children\'s Ministry","text":"Nurturing the faith of our youngest members through age-appropriate programs.","bullets":["Sunday School (ages 3-12)","Children\'s Church during worship","Vacation Bible School","Special events and activities"]},{"icon":"fas fa-graduation-cap","title":"Youth Ministry","text":"Engaging middle and high school students in their faith journey.","bullets":["Youth Group - Fridays at 7:00pm","Summer mission trips","Retreats and conferences","Service projects"]},{"icon":"fas fa-male","title":"Men\'s Ministry","text":"Building strong Christian men through fellowship and study.","bullets":["Men\'s Fellowship - Saturdays at 8:00am","Men\'s Bible Study","Service projects","Annual retreat"]},{"icon":"fas fa-female","title":"Women\'s Ministry","text":"Encouraging women in their walk with Christ and relationships with each other.","bullets":["Women\'s Bible Study","Women\'s Retreat","Mentoring program","Service opportunities"]},{"icon":"fas fa-music","title":"Music Ministry","text":"Using musical gifts to glorify God and lead in worship.","bullets":["Choir participation","Instrumental ensembles","Special music opportunities","Music education programs"]}]') | safe }}</script>
+                    type="application/json">{{ community_content.get('community_groups_json', '[{"title":"Small Groups","text":"Join a small group for Bible study, prayer, and fellowship in a more intimate setting.","bullets":["Westville Group - Thursdays at 7:00pm","Orange Group - Wednesdays at 7:00pm","Guilford Group - Fridays at 7:00pm"]},{"title":"Children\'s Ministry","text":"Nurturing the faith of our youngest members through age-appropriate programs.","bullets":["Sunday School (ages 3-12)","Children\'s Church during worship","Vacation Bible School","Special events and activities"]},{"title":"Youth Ministry","text":"Engaging middle and high school students in their faith journey.","bullets":["Youth Group - Fridays at 7:00pm","Summer mission trips","Retreats and conferences","Service projects"]},{"title":"Men\'s Ministry","text":"Building strong Christian men through fellowship and study.","bullets":["Men\'s Fellowship - Saturdays at 8:00am","Men\'s Bible Study","Service projects","Annual retreat"]},{"title":"Women\'s Ministry","text":"Encouraging women in their walk with Christ and relationships with each other.","bullets":["Women\'s Bible Study","Women\'s Retreat","Mentoring program","Service opportunities"]},{"title":"Music Ministry","text":"Using musical gifts to glorify God and lead in worship.","bullets":["Choir participation","Instrumental ensembles","Special music opportunities","Music education programs"]}]') | safe }}</script>
             </section>
 
             <!-- Service Opportunities Section -->
@@ -813,12 +786,8 @@
                         <p>{{ community_content.get('community_new_member_questions', 'If you have questions about
                             getting involved or becoming a member, we\'d love to help!') }}</p>
                         <div class="contact-methods">
-                            <a href="mailto:admin@cpcnewhaven.org" class="contact-link">
-                                <i class="fas fa-envelope"></i> Email Us
-                            </a>
-                            <a href="tel:+12035550123" class="contact-link">
-                                <i class="fas fa-phone"></i> Call Us
-                            </a>
+                            <a href="mailto:admin@cpcnewhaven.org" class="contact-link">Email Us</a>
+                            <a href="tel:+12035550123" class="contact-link">Call Us</a>
                         </div>
                     </div>
                 </div>
@@ -858,7 +827,6 @@
             const bullets = (item.bullets || []).map(b => `<li>${b}</li>`).join('');
             return `
             <div class="group-card">
-                <div class="group-icon"><i class="${item.icon || 'fas fa-users'}"></i></div>
                 <h3>${item.title || ''}</h3>
                 <p>${item.text || ''}</p>
                 <ul>${bullets}</ul>

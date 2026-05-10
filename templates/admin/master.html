@@ -638,10 +638,10 @@
         
         <nav class="flex-1 space-y-1 overflow-y-auto px-2">
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest" href="/" target="_blank">
-                <span class="material-symbols-outlined mr-3 text-lg">open_in_new</span> View Live Site
+                View Live Site
             </a>
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/dashboard' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/dashboard/">
-                <span class="material-symbols-outlined mr-3 text-lg">dashboard</span> Dashboard
+                Dashboard
             </a>
             
             <div class="pt-6 pb-2 px-4">
@@ -649,13 +649,13 @@
             </div>
 
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/announcement' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/announcement/">
-                <span class="material-symbols-outlined mr-3 text-lg">campaign</span> Announcements
+                Announcements
             </a>
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/sermon' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/sermon/">
-                <span class="material-symbols-outlined mr-3 text-lg">menu_book</span> Sermons
+                Sermons
             </a>
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/podcastepisode' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/podcastepisode/">
-                <span class="material-symbols-outlined mr-3 text-lg">podcasts</span> Podcasts
+                Podcasts
             </a>
             
             <div class="pt-6 pb-2 px-4">
@@ -663,29 +663,29 @@
             </div>
             
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/teachingseries' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/teachingseries/">
-                <span class="material-symbols-outlined mr-3 text-lg">folder_open</span> Teaching Series
+                Teaching Series
             </a>
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/history' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/history/">
-                <span class="material-symbols-outlined mr-3 text-lg">monitoring</span> Activity Monitor
+                Activity Monitor
             </a>
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/releases' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/releases/">
-                <span class="material-symbols-outlined mr-3 text-lg">update</span> Releases
+                Releases
             </a>
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/galleryimage' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/galleryimage/">
-                <span class="material-symbols-outlined mr-3 text-lg">imagesmode</span> Gallery
+                Gallery
             </a>
         </nav>
 
         <div class="mt-auto px-6 space-y-4">
             <button type="button" id="sidebarCreateBtn" class="w-full py-4 bg-surface-container-highest hover:bg-surface-bright text-primary font-bold rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-lg">add_circle</span> New Entry
+                New Entry
             </button>
             <div class="pt-6 border-t border-outline-variant/20 space-y-1">
                 <a class="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors font-manrope text-xs font-semibold uppercase tracking-widest" href="/admin/user/">
-                    <span class="material-symbols-outlined mr-3 text-lg">account_circle</span> Users
+                    Users
                 </a>
                 <a class="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors font-manrope text-xs font-semibold uppercase tracking-widest" href="{{ url_for('admin_logout') }}">
-                    <span class="material-symbols-outlined mr-3 text-lg">logout</span> Logout
+                    Logout
                 </a>
             </div>
         </div>
