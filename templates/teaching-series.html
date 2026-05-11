@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Teaching Series - CPC New Haven{% endblock %}
+{% block meta_description %}Explore sermon series and Sunday school teaching from Christ Presbyterian Church New Haven.{% endblock %}
+{% block og_title %}Teaching Series — CPC New Haven{% endblock %}
+{% block og_description %}Explore sermon series and Sunday school teaching from Christ Presbyterian Church New Haven.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/teaching-series{% endblock %}
 
 {% block head %}
 <style>
@@ -738,6 +742,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pagination -->
+        <div id="ts-pagination" style="display:none; justify-content: center; align-items: center; gap: 1rem; padding: 1.5rem 0; margin-top: 1rem;">
+            <button id="ts-prev-btn" onclick="tsChangePage(-1)" style="padding: 0.5rem 1.25rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: rgba(255,255,255,0.9); cursor: pointer; font-size: 0.9rem;" disabled>← Previous</button>
+            <span id="ts-page-info" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;"></span>
+            <button id="ts-next-btn" onclick="tsChangePage(1)" style="padding: 0.5rem 1.25rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: rgba(255,255,255,0.9); cursor: pointer; font-size: 0.9rem;">Next →</button>
+        </div>
     </div>
 </section>
 
@@ -745,6 +756,8 @@
     let allData = null;
     let filteredData = { sermon_series: [], sunday_school_series: [] };
     let currentView = 'grid';
+    const PAGE_SIZE = 12;
+    let currentPage = 1;
     let activeFilters = {
         search: '',
         seriesType: { sermon: true, sundaySchool: true },
@@ -840,6 +853,7 @@
     }
 
     function applyFilters() {
+        currentPage = 1;
         filteredData = {
             sermon_series: filterSeries(allData.sermon_series),
             sunday_school_series: filterSeries(allData.sunday_school_series)
@@ -897,6 +911,7 @@
         };
 
         if (sortFuncs[sortType]) {
+            currentPage = 1;
             filteredData.sermon_series.sort(sortFuncs[sortType]);
             filteredData.sunday_school_series.sort(sortFuncs[sortType]);
             renderSeries();
@@ -904,31 +919,57 @@
     }
 
     function renderSeries() {
-        const totalCount = filteredData.sermon_series.length + filteredData.sunday_school_series.length;
+        const allSeries = [...filteredData.sunday_school_series, ...filteredData.sermon_series];
+        const totalCount = allSeries.length;
+        const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const paginated = allSeries.slice(start, start + PAGE_SIZE);
+
         document.getElementById('results-count').textContent = `${totalCount} series found`;
+
+        // Split paginated results back into types for correct section rendering
+        const ssIds = new Set(filteredData.sunday_school_series.map(s => s.name));
+        const pageSSeries = paginated.filter(s => ssIds.has(s.name));
+        const pageSermons = paginated.filter(s => !ssIds.has(s.name));
 
         // Render Sunday School Series
         const sundaySchoolContainer = document.getElementById('sunday-school-container');
         sundaySchoolContainer.className = currentView === 'grid' ? 'series-grid' : 'series-list';
 
-        if (filteredData.sunday_school_series.length > 0) {
-            sundaySchoolContainer.innerHTML = filteredData.sunday_school_series.map(series =>
+        if (pageSSeries.length > 0) {
+            sundaySchoolContainer.innerHTML = pageSSeries.map(series =>
                 renderSeriesCard(series, true)
             ).join('');
         } else {
-            sundaySchoolContainer.innerHTML = '<div class="empty-state"><i class="fas fa-book-open"></i><p>No Sunday School series match your filters</p></div>';
+            sundaySchoolContainer.innerHTML = filteredData.sunday_school_series.length === 0
+                ? '<div class="empty-state"><i class="fas fa-book-open"></i><p>No Sunday School series match your filters</p></div>'
+                : '';
         }
 
         // Render Sermon Series
         const sermonSeriesContainer = document.getElementById('sermon-series-container');
         sermonSeriesContainer.className = currentView === 'grid' ? 'series-grid' : 'series-list';
 
-        if (filteredData.sermon_series.length > 0) {
-            sermonSeriesContainer.innerHTML = filteredData.sermon_series.map(series =>
+        if (pageSermons.length > 0) {
+            sermonSeriesContainer.innerHTML = pageSermons.map(series =>
                 renderSeriesCard(series, false)
             ).join('');
         } else {
-            sermonSeriesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-book"></i><p>No sermon series match your filters</p></div>';
+            sermonSeriesContainer.innerHTML = filteredData.sermon_series.length === 0
+                ? '<div class="empty-state"><i class="fas fa-book"></i><p>No sermon series match your filters</p></div>'
+                : '';
+        }
+
+        // Pagination controls
+        const prevBtn = document.getElementById('ts-prev-btn');
+        const nextBtn = document.getElementById('ts-next-btn');
+        const pageInfo = document.getElementById('ts-page-info');
+        if (prevBtn) {
+            prevBtn.disabled = currentPage <= 1;
+            nextBtn.disabled = currentPage >= totalPages;
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('ts-pagination').style.display = totalPages > 1 ? 'flex' : 'none';
         }
 
         // Attach expand/collapse handlers
@@ -1048,6 +1089,12 @@
         a.download = `${type}-series-${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
         window.URL.revokeObjectURL(url);
+    }
+
+    function tsChangePage(delta) {
+        currentPage += delta;
+        renderSeries();
+        document.querySelector('.teaching-series-content') && document.querySelector('.teaching-series-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
 // Handle dropdown menu for sermon play buttons

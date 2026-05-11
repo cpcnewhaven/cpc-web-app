@@ -703,6 +703,45 @@ def search():
     """Unified search page"""
     return render_template('search.html')
 
+@app.route('/sitemap.xml')
+def sitemap():
+    """XML sitemap for SEO"""
+    from flask import Response
+    base = 'https://cpcnewhaven.org'
+    static_pages = [
+        ('/', '1.0', 'weekly'),
+        ('/sundays', '0.9', 'weekly'),
+        ('/sermons', '0.9', 'weekly'),
+        ('/teaching-series', '0.8', 'weekly'),
+        ('/podcasts', '0.8', 'weekly'),
+        ('/community', '0.8', 'weekly'),
+        ('/events', '0.8', 'weekly'),
+        ('/gallery', '0.7', 'monthly'),
+        ('/lifegroups', '0.7', 'monthly'),
+        ('/resources', '0.7', 'monthly'),
+        ('/about', '0.7', 'monthly'),
+        ('/live', '0.6', 'weekly'),
+        ('/plan-a-visit', '0.6', 'monthly'),
+        ('/give', '0.6', 'monthly'),
+        ('/contact', '0.5', 'monthly'),
+        ('/search', '0.5', 'monthly'),
+        ('/announcements', '0.6', 'weekly'),
+    ]
+    urls = []
+    for path, priority, freq in static_pages:
+        urls.append(f'  <url><loc>{base}{path}</loc><changefreq>{freq}</changefreq><priority>{priority}</priority></url>')
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    xml += '\n'.join(urls)
+    xml += '\n</urlset>'
+    return Response(xml, mimetype='application/xml')
+
+@app.route('/robots.txt')
+def robots():
+    """Robots.txt for crawlers"""
+    from flask import Response
+    txt = 'User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin/\nSitemap: https://cpcnewhaven.org/sitemap.xml\n'
+    return Response(txt, mimetype='text/plain')
+
 @app.route('/archive')
 def archive():
     """Site archive page showing older content"""

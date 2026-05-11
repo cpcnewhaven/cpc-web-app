@@ -5,6 +5,7 @@
 {% block og_title %}Contact — CPC New Haven{% endblock %}
 {% block og_description %}Get in touch with Christ Presbyterian Church — 135 Whitney Avenue, New Haven CT 06510. We'd love to hear from you.{% endblock %}
 {% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/contact{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -279,12 +280,15 @@
 
     <!-- Contact Image -->
     <div style="margin-top: 1.5rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-        <img src="https://storage.googleapis.com/cpc-public-website/62.jpg" alt="CPC Contact" style="width: 100%; height: 250px; object-fit: cover; display: block;">
+        <img src="https://storage.googleapis.com/cpc-public-website/62.jpg" alt="CPC Contact" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block;">
     </div>
 
     <!-- Contact Form -->
     <div class="contact-form-section">
         <h2>Send Us a Message</h2>
+        <div id="contactSuccess" style="display:none; background: rgba(40,167,69,0.15); border: 1px solid rgba(40,167,69,0.4); border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; color: rgba(255,255,255,0.95);">
+            <strong>Message sent!</strong> Your email client should open with the message ready to send. We look forward to hearing from you.
+        </div>
         <form id="contactForm" onsubmit="handleSubmit(event)">
             <div class="form-group">
                 <label for="name">Name *</label>
@@ -367,12 +371,11 @@ function handleSubmit(event) {
     
     // Open email client
     window.location.href = mailtoLink;
-    
-    // Optional: Show success message
-    alert('Thank you for your message! Your email client should now open.');
-    
-    // Reset form
+
+    // Show inline success message
+    document.getElementById('contactSuccess').style.display = 'block';
     form.reset();
+    setTimeout(() => { document.getElementById('contactSuccess').style.display = 'none'; }, 8000);
 }
 </script>
 {% endblock %}

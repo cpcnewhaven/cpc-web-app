@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Resources - CPC New Haven{% endblock %}
+{% block meta_description %}Christian resources from CPC New Haven — books, studies, and tools for growing in faith.{% endblock %}
+{% block og_title %}Resources — CPC New Haven{% endblock %}
+{% block og_description %}Christian resources from CPC New Haven — books, studies, and tools for growing in faith.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/resources{% endblock %}
 
 {% block head %}
 <style>
@@ -258,7 +262,7 @@
         <!-- Content Area -->
         <div class="resources-content-area">
             <div style="margin-bottom: 1.5rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                <img src="https://storage.googleapis.com/cpc-public-website/67.jpg" alt="CPC Resources" style="width: 100%; height: 250px; object-fit: cover; display: block;">
+                <img src="https://storage.googleapis.com/cpc-public-website/67.jpg" alt="CPC Resources" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block;">
             </div>
             
             <section class="resources-section">
@@ -266,8 +270,8 @@
                 <!-- Featured Pastor's Book Pick -->
                 <div class="featured-book-pick" style="margin-bottom: 2rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; overflow: hidden; display: flex; align-items: stretch;">
                     <div style="width: 180px; flex-shrink: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; padding: 1rem;">
-                        <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}" 
-                             alt="Book Cover" 
+                        <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}"
+                             alt="Book Cover" loading="lazy"
                              style="width: 100%; height: auto; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
                     </div>
                     <div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">

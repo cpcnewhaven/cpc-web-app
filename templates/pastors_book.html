@@ -131,9 +131,9 @@
     <div class="container">
         <div class="book-container">
             <div class="book-cover-wrapper">
-                <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}" 
-                     alt="{{ site_content.get('pastors_book_title', 'Book Cover') }}" 
-                     class="book-cover">
+                <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}"
+                     alt="{{ site_content.get('pastors_book_title', 'Book Cover') }}"
+                     loading="lazy" class="book-cover">
             </div>
             <div class="book-content">
                 <span class="book-badge">{{ site_content.get('pastors_book_label', 'Pastor\'s Book Pick') }}</span>
