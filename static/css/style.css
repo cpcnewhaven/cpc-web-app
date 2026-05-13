@@ -2968,32 +2968,41 @@ tr:hover {
     margin-top: 100px;
 }
 
+/* ── Magazine grid: 4-col desktop, spans create visual variety ── */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 220px;
+    gap: 0.75rem;
+    margin-top: 1rem;
 }
 
+/* Every item is a positioned card */
 .gallery-item {
     position: relative;
     overflow: hidden;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-base);
+    border-radius: 10px;
     cursor: pointer;
-    background: white;
+    background: rgba(255,255,255,0.05);
+    will-change: transform;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .gallery-item:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-strong);
+    transform: scale(1.025);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+    z-index: 2;
 }
+
+/* Magazine span patterns — cycle every 7 items */
+.gallery-item:nth-child(7n+1) { grid-column: span 2; grid-row: span 2; }  /* hero */
+.gallery-item:nth-child(7n+4) { grid-column: span 2; }                     /* wide */
+.gallery-item:nth-child(7n+6) { grid-row: span 2; }                        /* tall */
 
 .photo-container {
     position: relative;
     width: 100%;
-    height: 250px;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -3001,14 +3010,118 @@ tr:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
+    will-change: transform;
 }
 
 .gallery-item:hover img {
-    transform: scale(1.05);
+    transform: scale(1.06);
 }
 
-/* --- YEARBOOK / BY-YEAR GALLERY VIEW (theme-safe) --- */
+/* Caption overlay — slides up on hover */
+.photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.85rem 1rem 0.75rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+    transform: translateY(6px);
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.gallery-item:hover .photo-overlay,
+.gallery-item.yearbook .photo-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.photo-info h3 {
+    color: #fff;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem;
+    line-height: 1.2;
+}
+
+.photo-tags {
+    color: rgba(255,255,255,0.72);
+    font-size: 0.72rem;
+    margin: 0;
+}
+
+.photo-actions {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: flex;
+    gap: 0.35rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.gallery-item:hover .photo-actions {
+    opacity: 1;
+}
+
+.photo-actions .action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Masonry view: CSS columns, no JS needed ── */
+.gallery-grid.masonry {
+    display: block;
+    columns: 3;
+    column-gap: 0.75rem;
+}
+
+.gallery-grid.masonry .gallery-item {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    break-inside: avoid;
+    grid-column: unset;
+    grid-row: unset;
+}
+
+.gallery-grid.masonry .gallery-item .photo-container {
+    height: auto;
+}
+
+.gallery-grid.masonry .gallery-item img {
+    height: auto;
+    display: block;
+}
+
+/* ── Timeline view ── */
+.gallery-grid.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    grid-template-columns: unset;
+    grid-auto-rows: unset;
+}
+
+.gallery-grid.timeline .gallery-item {
+    grid-column: unset;
+    grid-row: unset;
+    border-radius: 10px;
+    height: 180px;
+}
+
+/* ── Yearbook grouped view ── */
 .gallery-grid.yearbook {
     display: block;
     margin-top: 1.25rem;
@@ -3029,6 +3142,7 @@ tr:hover {
     color: rgba(255, 255, 255, 0.9);
     font-size: 0.85rem;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .year-tab:hover,
@@ -3058,8 +3172,6 @@ body.theme-white .year-tab.active {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-lg);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
 body.theme-white .yearbook-year {
@@ -3115,48 +3227,81 @@ body.theme-white .yearbook-month-title::after {
     background: linear-gradient(to right, rgba(0, 0, 0, 0.12), transparent);
 }
 
+/* Yearbook uses CSS columns for native masonry */
 .yearbook-photos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 1.1rem;
+    columns: 3;
+    column-gap: 0.9rem;
 }
 
-/* "Yearbook card" variant for gallery items */
 .gallery-item.yearbook {
-    border-radius: 14px;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 0.9rem;
+    break-inside: avoid;
+    border-radius: 10px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
-    transform: translateY(0);
+    will-change: transform;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .gallery-item.yearbook:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.28);
-    background: rgba(255, 255, 255, 0.085);
-    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-5px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
 }
 
 body.theme-white .gallery-item.yearbook {
     background: rgba(255, 255, 255, 0.92);
     border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.09);
 }
 
 body.theme-white .gallery-item.yearbook:hover {
-    background: rgba(255, 255, 255, 0.97);
-    border-color: rgba(0, 0, 0, 0.14);
-    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
 }
 
 .gallery-item.yearbook .photo-container {
-    height: 190px;
+    height: auto;
+}
+
+.gallery-item.yearbook img {
+    height: auto;
+    display: block;
 }
 
 .gallery-item.yearbook .photo-overlay {
     opacity: 1;
-    display: block;
+    transform: translateY(0);
+}
+
+/* ── Mobile: reduce blur, 2-col magazine ── */
+@media (max-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 160px;
+        gap: 0.5rem;
+    }
+
+    /* Keep hero span but cap at 2 col */
+    .gallery-item:nth-child(7n+1) { grid-column: span 2; grid-row: span 2; }
+    .gallery-item:nth-child(7n+4) { grid-column: span 2; }
+    .gallery-item:nth-child(7n+6) { grid-row: span 1; grid-column: span 1; }
+
+    .gallery-grid.masonry { columns: 2; }
+    .yearbook-photos { columns: 2; }
+
+    /* Kill expensive blur on mobile */
+    .yearbook-year { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 130px;
+        gap: 0.4rem;
+    }
+    .gallery-grid.masonry { columns: 2; }
+    .yearbook-photos { columns: 2; }
 }
 
 /* --- PODCASTS STYLES --- */
@@ -3701,11 +3846,7 @@ body.theme-white .gallery-item.yearbook:hover {
         gap: 24px;
     }
 
-    /* Page specific */
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 0.75rem;
-    }
+    /* Page specific — gallery overrides handled in gallery block */
 
     .podcast-controls {
         flex-direction: column;
@@ -4108,9 +4249,7 @@ body.theme-white .gallery-item.yearbook:hover {
         padding: 0 15px;
     }
 
-    .gallery-grid {
-        grid-template-columns: 1fr;
-    }
+    /* gallery-grid mobile handled in gallery block */
 }
 
 /* Accessibility */

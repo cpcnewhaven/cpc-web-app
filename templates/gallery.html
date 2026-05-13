@@ -7,8 +7,6 @@
 {% block canonical %}https://cpcnewhaven.org/gallery{% endblock %}
 
 {% block head %}
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 .gallery-page {
     min-height: calc(100vh - 200px);
@@ -416,11 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const photoElement = createPhotoElement(photo, index);
             container.appendChild(photoElement);
         });
-
-        // Initialize masonry if needed
-        if (currentView === 'masonry') {
-            initializeMasonry();
-        }
+        // Masonry is handled by CSS columns — no JS needed
     }
 
     function renderYearbookView(container) {
@@ -500,24 +494,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         photoDiv.innerHTML = `
             <div class="photo-container">
-                <img src="${photo.url}" alt="${photo.name || 'Gallery Image'}" loading="lazy">
+                <img src="${photo.url}" alt="${photo.name || 'Gallery Image'}" loading="lazy" decoding="async">
                 <div class="photo-overlay">
                     <div class="photo-info">
                         <h3>${photo.name || 'Untitled'}</h3>
                         ${tagString ? `<p class="photo-tags">${tagString}</p>` : ''}
-                        ${photo.event ? '<span class="event-badge">Event</span>' : ''}
-                    </div>
-                    <div class="photo-actions">
-                        <button class="action-btn view-btn" title="View">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn share-btn" title="Share">
-                            <i class="fas fa-share"></i>
-                        </button>
                     </div>
                 </div>
-                        </div>
-                    `;
+                <div class="photo-actions">
+                    <button class="action-btn" title="Share"><i class="fas fa-share-nodes"></i></button>
+                </div>
+            </div>
+        `;
 
         return photoDiv;
     }
@@ -580,15 +568,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.touches.length > 1) {
                 e.preventDefault();
             }
-        });
-
-        // Handle orientation change
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                if (currentView === 'masonry') {
-                    initializeMasonry();
-                }
-            }, 100);
         });
 
         // Improve scroll performance on mobile
@@ -714,33 +693,6 @@ document.addEventListener('DOMContentLoaded', function() {
             link.download = photo.name || 'cpc-photo.jpg';
             link.click();
         });
-    }
-
-    function initializeMasonry() {
-        // Simple masonry implementation
-        const container = document.getElementById('gallery-container');
-        const items = container.querySelectorAll('.gallery-item');
-        
-        // Reset positioning
-        items.forEach(item => {
-            item.style.position = 'static';
-            item.style.top = 'auto';
-            item.style.left = 'auto';
-        });
-
-        // Simple column layout
-        const columns = 3;
-        const columnHeights = new Array(columns).fill(0);
-        
-        items.forEach(item => {
-            const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
-            item.style.position = 'absolute';
-            item.style.left = `${(shortestColumn * 100) / columns}%`;
-            item.style.top = `${columnHeights[shortestColumn]}px`;
-            columnHeights[shortestColumn] += item.offsetHeight + 20;
-        });
-
-        container.style.height = `${Math.max(...columnHeights)}px`;
     }
 
     function showError(message) {
