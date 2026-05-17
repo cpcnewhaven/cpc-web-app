@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0052a3">
+    <meta name="theme-color" content="{{ site_content.get('appearance_primary_color', '#0052a3') }}">
     <title>{% block title %}CPC New Haven{% endblock %}</title>
 
     <!-- SEO & Social sharing -->
@@ -52,6 +52,47 @@
 
     <!-- Unified Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --cpc-blue: {{ site_content.get('appearance_primary_color', '#0052a3') }};
+            --cpc-blue-dark: {{ site_content.get('appearance_primary_dark', '#003d7a') }};
+            --cpc-blue-light: {{ site_content.get('appearance_primary_light', '#e8f2ff') }};
+            --cpc-blue-medium: {{ site_content.get('appearance_primary_medium', '#0066cc') }};
+            --bg-gradient: linear-gradient(135deg,
+                {{ site_content.get('appearance_bg_start', '#004080') }} 0%,
+                {{ site_content.get('appearance_bg_mid', '#003366') }} 50%,
+                {{ site_content.get('appearance_bg_end', '#00264d') }} 100%);
+            --surface-bg: {{ site_content.get('appearance_surface_bg', 'rgba(255, 255, 255, 0.05)') }};
+            --surface-bg-hover: {{ site_content.get('appearance_surface_bg_hover', 'rgba(255, 255, 255, 0.08)') }};
+            --surface-border: {{ site_content.get('appearance_surface_border', 'rgba(255, 255, 255, 0.1)') }};
+            --surface-text: {{ site_content.get('appearance_surface_text', 'rgba(255, 255, 255, 0.95)') }};
+            --surface-muted: {{ site_content.get('appearance_surface_muted', 'rgba(255, 255, 255, 0.7)') }};
+            --surface-accent: {{ site_content.get('appearance_surface_accent', '#9bc7ff') }};
+            --surface-accent-soft: {{ site_content.get('appearance_surface_accent_soft', 'rgba(155, 199, 255, 0.18)') }};
+            --surface-shadow: {{ site_content.get('appearance_surface_shadow', '0 10px 30px rgba(0, 0, 0, 0.12)') }};
+            --radius-md: {{ site_content.get('appearance_about_radius', '14px') }};
+            --radius-lg: {{ site_content.get('appearance_about_radius', '14px') }};
+        }
+
+        body.theme-white {
+            --cpc-blue: {{ site_content.get('appearance_primary_color', '#0052a3') }};
+            --cpc-blue-dark: {{ site_content.get('appearance_primary_dark', '#003d7a') }};
+            --cpc-blue-light: {{ site_content.get('appearance_primary_light', '#e8f2ff') }};
+            --cpc-blue-medium: {{ site_content.get('appearance_primary_medium', '#0066cc') }};
+            --bg-gradient: linear-gradient(135deg,
+                {{ site_content.get('appearance_white_bg_start', '#f5f7fa') }} 0%,
+                {{ site_content.get('appearance_white_bg_mid', '#e8ecf1') }} 50%,
+                {{ site_content.get('appearance_white_bg_end', '#dde2e8') }} 100%);
+            --surface-bg: rgba(255, 255, 255, 0.7);
+            --surface-bg-hover: rgba(255, 255, 255, 0.85);
+            --surface-border: rgba(0, 50, 120, 0.12);
+            --surface-text: rgba(28, 32, 40, 0.95);
+            --surface-muted: rgba(28, 32, 40, 0.68);
+            --surface-accent: {{ site_content.get('appearance_surface_accent', '#0052a3') }};
+            --surface-accent-soft: rgba(0, 82, 163, 0.14);
+            --surface-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+    </style>
 
     <!-- Alpine.js for reactive components -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -500,51 +541,51 @@
     @media (max-width: 680px) { .site-footer-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
     </style>
     <!-- Site Footer -->
-    <footer style="background: rgba(0,20,60,0.85); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); padding: 2.5rem 1.5rem 1.5rem; margin-top: 2rem; color: rgba(255,255,255,0.7); font-size: 0.85rem;">
+    <footer style="background: rgba(0,20,60,0.85); backdrop-filter: blur(12px); border-top: 1px solid var(--surface-border); padding: 2.5rem 1.5rem 1.5rem; margin-top: 2rem; color: var(--surface-muted); font-size: 0.85rem;">
         <div class="site-footer-grid" style="max-width: 1100px; margin: 0 auto;">
 
             <!-- Brand + address -->
             <div>
-                <p style="font-family:'Manrope',sans-serif; font-weight:700; font-size:1rem; color:rgba(255,255,255,0.95); margin:0 0 0.5rem;">Christ Presbyterian Church</p>
+                <p style="font-family:'Manrope',sans-serif; font-weight:700; font-size:1rem; color:var(--surface-text); margin:0 0 0.5rem;">Christ Presbyterian Church</p>
                 <p style="margin:0 0 0.25rem;">135 Whitney Avenue</p>
                 <p style="margin:0 0 0.25rem;">New Haven, CT 06510</p>
-                <p style="margin:0 0 0.25rem;"><a href="tel:+12037776960" style="color:rgba(255,255,255,0.6); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">(203) 777-6960</a></p>
-                <p style="margin:0.5rem 0 0;"><a href="mailto:admin@cpcnewhaven.org" style="color:rgba(255,255,255,0.6); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">admin@cpcnewhaven.org</a></p>
+                <p style="margin:0 0 0.25rem;"><a href="tel:+12037776960" style="color:var(--surface-muted); text-decoration:none;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'">(203) 777-6960</a></p>
+                <p style="margin:0.5rem 0 0;"><a href="mailto:admin@cpcnewhaven.org" style="color:var(--surface-muted); text-decoration:none;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'">admin@cpcnewhaven.org</a></p>
                 <!-- Social icons -->
                 <div style="display:flex; gap:0.9rem; margin-top:1rem;">
-                    <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" title="Instagram" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.facebook.com/cpcnewhaven" target="_blank" rel="noopener" title="Facebook" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-facebook"></i></a>
-                    <a href="https://www.youtube.com/@cpcnewhaven" target="_blank" rel="noopener" title="YouTube" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-youtube"></i></a>
-                    <a href="https://open.spotify.com/show/cpcnewhaven" target="_blank" rel="noopener" title="Spotify" style="color:rgba(255,255,255,0.5); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'"><i class="fab fa-spotify"></i></a>
+                    <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" title="Instagram" style="color:var(--surface-muted); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/cpcnewhaven" target="_blank" rel="noopener" title="Facebook" style="color:var(--surface-muted); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.youtube.com/@cpcnewhaven" target="_blank" rel="noopener" title="YouTube" style="color:var(--surface-muted); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'"><i class="fab fa-youtube"></i></a>
+                    <a href="https://open.spotify.com/show/cpcnewhaven" target="_blank" rel="noopener" title="Spotify" style="color:var(--surface-muted); font-size:1.15rem; transition:color 0.2s;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'"><i class="fab fa-spotify"></i></a>
                 </div>
             </div>
 
             <!-- Worship -->
             <div>
-                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:rgba(255,255,255,0.9); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
-                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">8:30am</span> &nbsp;Prayer in the Parlor</p>
-                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">9:30am</span> &nbsp;Sunday School</p>
-                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">10:30am</span> Worship Service</p>
-                <p style="margin:0 0 0.3rem;"><span style="color:#74c0fc; font-weight:600;">12:00pm</span> Fellowship Lunch</p>
-                <p style="margin-top:0.75rem;"><a href="{{ url_for('plan_a_visit') }}" style="color:#74c0fc; text-decoration:none; font-weight:500;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#74c0fc'">Plan a Visit →</a></p>
+                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">8:30am</span> &nbsp;Prayer in the Parlor</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">9:30am</span> &nbsp;Sunday School</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">10:30am</span> Worship Service</p>
+                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">12:00pm</span> Fellowship Lunch</p>
+                <p style="margin-top:0.75rem;"><a href="{{ url_for('plan_a_visit') }}" style="color:var(--surface-accent); text-decoration:none; font-weight:500;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-accent)'">Plan a Visit →</a></p>
             </div>
 
             <!-- Quick links -->
             <div>
-                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:rgba(255,255,255,0.9); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Links</p>
+                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Links</p>
                 {% set footer_links = [
                     ('Sermons', 'sermons'), ('Podcasts', 'podcasts'), ('Events', 'events'),
                     ('LifeGroups', 'lifegroups'), ('Media Gallery', 'media'), ('Give', 'give'),
                     ('About', 'about'), ('Contact', 'contact')
                 ] %}
                 {% for label, endpoint in footer_links %}
-                <p style="margin:0 0 0.3rem;"><a href="{{ url_for(endpoint) }}" style="color:rgba(255,255,255,0.6); text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">{{ label }}</a></p>
+                <p style="margin:0 0 0.3rem;"><a href="{{ url_for(endpoint) }}" style="color:var(--surface-muted); text-decoration:none;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'">{{ label }}</a></p>
                 {% endfor %}
             </div>
         </div>
 
         <!-- Bottom bar -->
-        <div style="max-width:1100px; margin:1.5rem auto 0; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.75rem; color:rgba(255,255,255,0.35);">
+        <div style="max-width:1100px; margin:1.5rem auto 0; padding-top:1rem; border-top:1px solid var(--surface-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.75rem; color:var(--surface-muted);">
             <span>&copy; {{ now.year if now else '2025' }} Christ Presbyterian Church, New Haven CT</span>
             <span>Build v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
             <span>135 Whitney Ave &bull; (203) 777-6960 &bull; cpcnewhaven.org</span>
@@ -951,13 +992,13 @@
     <!-- Search Modal (Phase 2) -->
     <div id="searchModal" style="display: none; position: fixed; inset: 0; z-index: 10000;">
         <div id="searchModalBackdrop" style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);"></div>
-        <div id="searchModalBox" style="position: relative; z-index: 1; background: rgba(0, 40, 100, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; max-width: 600px; margin: 10vh auto; padding: 1.5rem; max-height: 70vh; overflow-y: auto;">
+        <div id="searchModalBox" style="position: relative; z-index: 1; background: rgba(0, 40, 100, 0.9); backdrop-filter: blur(16px); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); max-width: 600px; margin: 10vh auto; padding: 1.5rem; max-height: 70vh; overflow-y: auto;">
             <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; position: relative;">
-                <input id="modalSearchInput" type="text" placeholder="Search sermons, podcasts, events…" autofocus style="flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; padding: 0.75rem 1rem; font-size: 1.1rem;">
-                <button id="modalSearchClose" style="background: none; border: none; color: rgba(255, 255, 255, 0.7); font-size: 1.5rem; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">✕</button>
+                <input id="modalSearchInput" type="text" placeholder="Search sermons, podcasts, events…" autofocus style="flex: 1; background: var(--surface-bg-hover); border: 1px solid var(--surface-border); color: var(--surface-text); border-radius: 8px; padding: 0.75rem 1rem; font-size: 1.1rem;">
+                <button id="modalSearchClose" style="background: none; border: none; color: var(--surface-muted); font-size: 1.5rem; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">✕</button>
             </div>
             <div id="modalResults" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
-            <a href="/search" id="modalViewAll" style="display: none; text-align: center; color: rgba(135, 206, 250, 0.9); margin-top: 1.5rem; padding: 0.75rem; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='rgba(135, 206, 250, 1)'" onmouseout="this.style.color='rgba(135, 206, 250, 0.9)'">View all results →</a>
+            <a href="/search" id="modalViewAll" style="display: none; text-align: center; color: var(--surface-accent); margin-top: 1.5rem; padding: 0.75rem; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='var(--surface-accent)'" onmouseout="this.style.color='var(--surface-accent)'">View all results →</a>
         </div>
     </div>
 
@@ -1029,28 +1070,28 @@
                             const dateStr = item.date ? new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
                             const resultUrl = item.url || `/search?q=${encodeURIComponent(query)}`;
                             return `
-                                <a href="${resultUrl}" style="display: flex; gap: 0.75rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; text-decoration: none; color: rgba(255, 255, 255, 0.9); transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'">
+                                <a href="${resultUrl}" style="display: flex; gap: 0.75rem; padding: 0.75rem; background: var(--surface-bg); border: 1px solid var(--surface-border); border-radius: 8px; text-decoration: none; color: var(--surface-text); transition: all 0.2s;" onmouseover="this.style.background='var(--surface-bg-hover)'" onmouseout="this.style.background='var(--surface-bg)'">
                                     <div style="flex: 1;">
                                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-                                            <span style="font-size: 0.7rem; background: rgba(0, 102, 204, 0.2); color: rgba(135, 206, 250, 0.9); padding: 0.15rem 0.5rem; border-radius: 4px; text-transform: uppercase; font-weight: 600;">${label}</span>
-                                            ${dateStr ? `<span style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">${dateStr}</span>` : ''}
+                                            <span style="font-size: 0.7rem; background: var(--surface-accent-soft); color: var(--surface-accent); padding: 0.15rem 0.5rem; border-radius: 4px; text-transform: uppercase; font-weight: 600;">${label}</span>
+                                            ${dateStr ? `<span style="font-size: 0.75rem; color: var(--surface-muted);">${dateStr}</span>` : ''}
                                         </div>
                                         <div style="font-size: 0.95rem; font-weight: 500;">${item.title}</div>
-                                        ${item.speaker ? `<div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">${item.speaker}</div>` : ''}
+                                        ${item.speaker ? `<div style="font-size: 0.8rem; color: var(--surface-muted);">${item.speaker}</div>` : ''}
                                     </div>
-                                    <div style="color: rgba(135, 206, 250, 0.7); font-size: 1.2rem;">→</div>
+                                    <div style="color: var(--surface-accent); font-size: 1.2rem;">→</div>
                                 </a>
                             `;
                         }).join('');
                         modalViewAll.href = `/search?q=${encodeURIComponent(query)}`;
                         modalViewAll.style.display = 'block';
                     } else {
-                        modalResults.innerHTML = `<div style="padding: 1rem; text-align: center; color: rgba(255, 255, 255, 0.6);">No results found</div>`;
+                        modalResults.innerHTML = `<div style="padding: 1rem; text-align: center; color: var(--surface-muted);">No results found</div>`;
                         modalViewAll.style.display = 'none';
                     }
                 } catch (error) {
                     console.error('Modal search error:', error);
-                    modalResults.innerHTML = `<div style="padding: 1rem; text-align: center; color: rgba(255, 100, 100, 0.9);">Search error</div>`;
+                    modalResults.innerHTML = `<div style="padding: 1rem; text-align: center; color: #ff6464;">Search error</div>`;
                 }
             }, 300);
         });

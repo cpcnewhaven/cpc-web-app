@@ -442,6 +442,38 @@ SUBPAGE_CONFIGS = {
             ('story_milestones_json', 'Story Milestones (JSON)', '[{"year":"1991","title":"The Beginning","text":"It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY."},{"year":"1991-1992","title":"The Vision Takes Shape","text":"Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale."},{"year":"1992","title":"First Worship Service","text":"On October 11, 1992 at 9:30 am, the mission stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT."},{"year":"2017","title":"Mission Anabaino","text":"As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting."}]'),
         ]
     },
+    'appearance': {
+        'title': 'Appearance',
+        'url': '/',
+        'icon': 'fas fa-palette',
+        'color': '#0ea5e9',
+        'keys': [
+            ('appearance_primary_color', 'Primary Color', '#0052a3', 'color'),
+            ('appearance_primary_dark', 'Primary Dark', '#003d7a', 'color'),
+            ('appearance_primary_light', 'Primary Light', '#e8f2ff', 'color'),
+            ('appearance_primary_medium', 'Primary Medium', '#0066cc', 'color'),
+            ('appearance_bg_start', 'Gradient Start', '#004080', 'color'),
+            ('appearance_bg_mid', 'Gradient Middle', '#003366', 'color'),
+            ('appearance_bg_end', 'Gradient End', '#00264d', 'color'),
+            ('appearance_about_accent', 'About Accent', '#9bc7ff', 'color'),
+            ('appearance_about_accent_soft', 'About Accent Soft', 'rgba(155, 199, 255, 0.18)', 'text'),
+            ('appearance_about_surface', 'About Surface', 'rgba(255, 255, 255, 0.06)', 'text'),
+            ('appearance_about_border', 'About Border', 'rgba(255, 255, 255, 0.12)', 'text'),
+            ('appearance_about_radius', 'About Radius', '14px', 'text'),
+            ('appearance_about_shadow', 'About Shadow', '0 10px 28px rgba(0, 0, 0, 0.1)', 'text'),
+            ('appearance_surface_bg', 'Surface BG', 'rgba(255, 255, 255, 0.05)', 'text'),
+            ('appearance_surface_bg_hover', 'Surface BG Hover', 'rgba(255, 255, 255, 0.08)', 'text'),
+            ('appearance_surface_border', 'Surface Border', 'rgba(255, 255, 255, 0.1)', 'text'),
+            ('appearance_surface_text', 'Surface Text', 'rgba(255, 255, 255, 0.95)', 'text'),
+            ('appearance_surface_muted', 'Surface Muted', 'rgba(255, 255, 255, 0.7)', 'text'),
+            ('appearance_surface_accent', 'Surface Accent', '#9bc7ff', 'color'),
+            ('appearance_surface_accent_soft', 'Surface Accent Soft', 'rgba(155, 199, 255, 0.18)', 'text'),
+            ('appearance_surface_shadow', 'Surface Shadow', '0 10px 30px rgba(0, 0, 0, 0.12)', 'text'),
+            ('appearance_white_bg_start', 'Light Theme Start', '#f5f7fa', 'color'),
+            ('appearance_white_bg_mid', 'Light Theme Middle', '#e8ecf1', 'color'),
+            ('appearance_white_bg_end', 'Light Theme End', '#dde2e8', 'color'),
+        ]
+    },
     'bulletin': {
         'title': 'Weekly Bulletin',
         'url': '/sundays',
@@ -546,7 +578,8 @@ def admin_subpage_edit():
     saved = False
 
     if request.method == 'POST':
-        for key, _label, _default in config['keys']:
+        for item in config['keys']:
+            key = item[0]
             val = request.form.get(key, '')
             row = SiteContent.query.filter_by(key=key).first()
             if row:
@@ -565,12 +598,16 @@ def admin_subpage_edit():
     # Load current values
     rows = {r.key: r.value for r in SiteContent.query.all()}
     fields = []
-    for key, label, default in config['keys']:
+    for item in config['keys']:
+        key, label, default = item[:3]
+        input_type = item[3] if len(item) > 3 else 'textarea'
         fields.append({
             'key': key,
             'label': label,
             'value': rows.get(key, default) or default,
+            'default': default,
             'is_json': key.endswith('_json'),
+            'input_type': input_type,
         })
 
     return render_template('admin/subpage_edit.html',
@@ -2409,6 +2446,15 @@ def inject_current_user_metadata():
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
     }
+
+
+@app.context_processor
+def inject_site_content():
+    """Expose editable site content globally so templates can read shared settings."""
+    try:
+        return {'site_content': {r.key: r.value for r in SiteContent.query.all()}}
+    except Exception:
+        return {'site_content': {}}
 
 def require_auth(f):
     """Decorator to require authentication"""

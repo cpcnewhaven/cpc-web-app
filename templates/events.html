@@ -13,6 +13,13 @@
     min-height: calc(100vh - 200px);
     padding: 0;
     margin: 0;
+    --page-surface: var(--surface-bg);
+    --page-surface-hover: var(--surface-bg-hover);
+    --page-border: var(--surface-border);
+    --page-text: var(--surface-text);
+    --page-muted: var(--surface-muted);
+    --page-accent: var(--surface-accent);
+    --page-accent-soft: var(--surface-accent-soft);
 }
 
 .events-main-container {
@@ -28,8 +35,8 @@
     text-align: center;
     background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.80)),
                 url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg') center/cover no-repeat;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--page-border);
     margin: 0 0 1rem 0;
 }
 body.theme-white .events-hero {
@@ -37,18 +44,18 @@ body.theme-white .events-hero {
                 url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg') center/cover no-repeat;
     border-color: rgba(0, 82, 163, 0.15);
 }
-body.theme-white .events-hero h1 { color: rgba(0, 52, 122, 0.95); }
-body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
+body.theme-white .events-hero h1 { color: var(--page-text); }
+body.theme-white .events-hero p { color: var(--page-muted); }
 
 .events-hero h1 {
     font-size: 1.75rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0 0 0.25rem 0;
     font-weight: 600;
 }
 
 .events-hero p {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--page-muted);
     font-size: 0.9rem;
     margin: 0;
     line-height: 1.5;
@@ -56,17 +63,17 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 
 /* Glass Card Styling - Matching about.html */
 .evt-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
     padding: 1rem;
     margin: 0.75rem 0;
     transition: all 0.3s ease;
 }
 
 .evt-card:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--page-surface-hover);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
@@ -78,9 +85,9 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 .evt-cat {
     display: inline-block;
     padding: 0.25rem 0.5rem;
-    background: rgba(0, 82, 163, 0.3);
+    background: var(--page-accent-soft);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--page-text);
     font-size: 0.75rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -88,14 +95,14 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 
 .evt-title {
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0.5rem 0 0.25rem 0;
     font-weight: 600;
 }
 
 .evt-meta {
     margin: 0.5rem 0;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--page-muted);
     font-size: 0.85rem;
     display: flex;
     gap: 0.5rem;
@@ -103,11 +110,11 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 }
 
 .evt-when {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--page-text);
 }
 
 .evt-loc {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--page-muted);
 }
 
 .evt-desc {
@@ -127,28 +134,28 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 .evt-actions .btn {
     display: inline-block;
     padding: 0.4rem 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
+    border-radius: 999px;
+    color: var(--page-text);
     text-decoration: none;
     font-size: 0.85rem;
     transition: all 0.2s;
 }
 
 .evt-actions .btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
+    background: var(--page-surface-hover);
+    color: var(--page-text);
     border-color: rgba(255, 255, 255, 0.3);
 }
 
 .evt-month {
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 1.5rem 0 0.75rem 0;
     font-weight: 600;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--page-border);
 }
 
 .evt-month:first-child {
@@ -157,10 +164,10 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 
 /* Controls Styling */
 .evt-controls {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
     padding: 0.75rem;
     margin-bottom: 0.75rem;
 }
@@ -169,15 +176,15 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
     flex: 1;
     min-width: 240px;
     padding: 0.6rem 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--page-surface-hover);
+    border: 1px solid var(--page-border);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--page-text);
     font-size: 0.9rem;
 }
 
 .evt-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--page-muted);
 }
 
 .evt-chips {
@@ -189,10 +196,10 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 
 .chip {
     padding: 0.35rem 0.7rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--page-border);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--page-surface);
+    color: var(--page-muted);
     cursor: pointer;
     font-size: 0.85rem;
     transition: all 0.2s;
@@ -200,15 +207,15 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 
 .chip.active,
 .chip:hover {
-    background: rgba(0, 82, 163, 0.3);
-    color: rgba(255, 255, 255, 0.95);
-    border-color: rgba(0, 82, 163, 0.5);
+    background: var(--page-accent-soft);
+    color: var(--page-text);
+    border-color: var(--page-accent);
 }
 
 /* Section Styling */
 .events-section {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
+    background: var(--page-surface);
+    border-radius: var(--radius-lg);
     padding: 1rem;
     margin-bottom: 0.75rem;
 }
@@ -222,7 +229,7 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
     margin-top: 0.75rem;
     /* Firefox Scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 82, 163, 0.6) rgba(255, 255, 255, 0.05);
+    scrollbar-color: var(--page-accent) var(--page-surface);
 }
 
 /* Custom Scrollbar Styling for Events List (Webkit browsers) */
@@ -231,23 +238,23 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 }
 
 #evt-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     border-radius: 4px;
 }
 
 #evt-list::-webkit-scrollbar-thumb {
-    background: rgba(0, 82, 163, 0.6);
+    background: var(--page-accent);
     border-radius: 4px;
     transition: background 0.2s;
 }
 
 #evt-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 82, 163, 0.8);
+    background: var(--page-accent);
 }
 
 .section-title {
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0 0 0.75rem 0;
     font-weight: 600;
 }
@@ -261,30 +268,30 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 }
 
 .category-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
     padding: 0.75rem;
     text-align: center;
     transition: all 0.3s ease;
 }
 
 .category-card:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--page-surface-hover);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
 
 .category-icon {
     font-size: 2rem;
-    color: rgba(0, 82, 163, 0.8);
+    color: var(--page-accent);
     margin-bottom: 0.5rem;
 }
 
 .category-card h3 {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0 0 0.5rem 0;
     font-weight: 600;
 }
@@ -292,16 +299,16 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 .category-card p {
     font-size: 0.85rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--page-muted);
     margin: 0;
 }
 
 /* Regular Schedule */
 .schedule-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
     padding: 0.75rem;
     margin-bottom: 0.75rem;
 }
@@ -309,10 +316,10 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 .schedule-day {
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(0, 82, 163, 0.8);
+    color: var(--page-accent);
     margin-bottom: 0.5rem;
     padding-bottom: 0.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--page-border);
 }
 
 .schedule-item {
@@ -324,20 +331,20 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
 
 .schedule-time {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--page-text);
     min-width: 80px;
 }
 
 .schedule-activity {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--page-muted);
 }
 
 /* Contact Section */
 .contact-section {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
     padding: 1rem;
     margin-top: 1.5rem;
 }
@@ -347,12 +354,12 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--page-muted);
     font-size: 0.9rem;
 }
 
 .contact-icon {
-    color: rgba(0, 82, 163, 0.8);
+    color: var(--page-accent);
     width: 20px;
 }
 
@@ -378,15 +385,15 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
             <h2 class="section-title">Upcoming Events</h2>
 
             <!-- Phase 3: Filter Bar -->
-            <div class="sermon-controls" style="display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); align-items: center; margin-bottom: 1rem;">
+            <div class="sermon-controls" style="display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem; background: var(--page-surface); backdrop-filter: blur(10px); border-radius: var(--radius-lg); border: 1px solid var(--page-border); align-items: center; margin-bottom: 1rem;">
                 <div class="search-container" style="flex: 1; min-width: 200px;">
-                    <input type="text" id="eventSearchInput" placeholder="Search events..." style="width: 100%; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; font-size: 0.9rem;">
+                    <input type="text" id="eventSearchInput" placeholder="Search events..." style="width: 100%; padding: 0.5rem 0.75rem; background: var(--page-surface-hover); border: 1px solid var(--page-border); border-radius: 6px; color: var(--page-text); font-size: 0.9rem;">
                 </div>
 
                 <button class="filter-toggle-mobile" id="eventFilterToggle" style="display: none;">Filters ▼</button>
 
                 <div class="filter-controls mobile-collapsible" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-                    <select id="eventCategoryFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
+                    <select id="eventCategoryFilter" style="padding: 0.5rem 0.75rem; background: var(--page-surface-hover); border: 1px solid var(--page-border); color: var(--page-text); border-radius: 6px; font-size: 0.85rem;">
                         <option value="">All Categories</option>
                     </select>
                 </div>
@@ -422,7 +429,7 @@ body.theme-white .events-hero p { color: rgba(0, 52, 122, 0.75); }
         <!-- Contact Section -->
         <section class="contact-section">
             <h2 class="section-title">Questions About Events?</h2>
-            <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 0.75rem; font-size: 0.9rem;">If you have questions about any of our events or would like to get involved, please don't hesitate to contact us.</p>
+            <p style="color: var(--page-muted); margin-bottom: 0.75rem; font-size: 0.9rem;">If you have questions about any of our events or would like to get involved, please don't hesitate to contact us.</p>
             <div class="contact-item">
                 <i class="fas fa-envelope contact-icon"></i>
                 <span>{{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}</span>

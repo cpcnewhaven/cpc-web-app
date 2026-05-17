@@ -75,6 +75,8 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 0.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .page-editor-page h2 {
@@ -102,6 +104,117 @@
             color: rgba(255, 255, 255, 0.55);
             font-size: 0.88rem;
             margin-bottom: 2rem;
+        }
+
+        .appearance-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.75rem 0 1rem;
+        }
+
+        .appearance-toolbar button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+        }
+
+        .appearance-toolbar button:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .appearance-preview {
+            margin: 0 0 1.25rem;
+            padding: 1rem;
+            border-radius: var(--radius-lg);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+        }
+
+        .preview-shell {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .preview-hero {
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            min-height: 180px;
+            background:
+                linear-gradient(135deg, var(--preview-primary, #0052a3), var(--preview-primary-dark, #003d7a)),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 30%);
+            pointer-events: none;
+        }
+
+        .preview-hero > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .preview-hero h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.35rem;
+        }
+
+        .preview-hero p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.78);
+            max-width: 38rem;
+        }
+
+        .preview-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+
+        .preview-card {
+            background: var(--preview-surface, rgba(255, 255, 255, 0.06));
+            border: 1px solid var(--preview-border, rgba(255, 255, 255, 0.12));
+            border-radius: var(--radius-lg);
+            padding: 0.9rem;
+            color: var(--preview-text, rgba(255, 255, 255, 0.95));
+            box-shadow: var(--preview-shadow, 0 10px 28px rgba(0, 0, 0, 0.1));
+        }
+
+        .preview-card span {
+            display: inline-block;
+            margin-bottom: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--preview-accent, #9bc7ff);
+        }
+
+        .preview-card p {
+            margin: 0;
+            color: var(--preview-muted, rgba(255, 255, 255, 0.72));
+            line-height: 1.5;
+            font-size: 0.88rem;
         }
 
         /* ── Badges ── */
@@ -177,10 +290,44 @@
             transition: box-shadow 0.2s, border-color 0.2s;
         }
 
+        input[type="text"],
+        input[type="color"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        input[type="color"] {
+            min-height: 52px;
+            padding: 0.35rem;
+            cursor: pointer;
+        }
+
+        input[type="text"]:focus,
         textarea:focus {
             outline: none;
             border-color: var(--cpc-blue-light);
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .color-input-row {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .color-swatch-label {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
         }
 
         /* ── Alert ── */
@@ -283,6 +430,37 @@
             Fields marked <span class="json-badge">JSON</span> must be valid JSON arrays.
         </p>
 
+        {% if active_page == 'appearance' %}
+        <div class="appearance-toolbar">
+            <button type="button" data-action="reset-defaults"><i class="fas fa-rotate-left"></i> Reset Defaults</button>
+            <button type="button" data-preset="cpc-dark"><i class="fas fa-moon"></i> CPC Dark</button>
+            <button type="button" data-preset="cpc-light"><i class="fas fa-sun"></i> CPC Light</button>
+        </div>
+
+        <div class="appearance-preview" id="appearancePreview" aria-label="Live appearance preview">
+            <div class="preview-shell">
+                <div class="preview-hero">
+                    <h3>Live Preview</h3>
+                    <p>This sample hero, card row, and buttons update as you change the appearance tokens.</p>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-card">
+                        <span>Surface</span>
+                        <p>Card and panel styling uses the shared appearance tokens.</p>
+                    </div>
+                    <div class="preview-card">
+                        <span>Accent</span>
+                        <p>Buttons and highlights pull from the selected accent color.</p>
+                    </div>
+                    <div class="preview-card">
+                        <span>Theme</span>
+                        <p>The editor can preview both the dark and light site direction.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         {% if saved %}
         <div class="alert-success">
             <i class="fas fa-check-circle"></i> Changes saved successfully!
@@ -302,12 +480,30 @@
                     JSON array — validate your format with 
                     <a href="https://jsonlint.com" target="_blank">jsonlint.com</a>.
                 </div>
+                {% elif field.input_type == 'color' %}
+                <div class="field-hint">Pick a color token for the live site. Hex values update the public theme immediately.</div>
+                {% elif field.input_type == 'text' %}
+                <div class="field-hint">Enter a raw CSS value such as a hex color or `rgba(...)` string.</div>
                 {% else %}
                 <div class="field-hint">You may use HTML tags like &lt;strong&gt;, &lt;em&gt;, &lt;a href="…"&gt;, and
                     &lt;br&gt;.</div>
                 {% endif %}
+                {% if field.input_type == 'color' %}
+                <div class="color-input-row">
+                        <input type="color" id="field_{{ field.key }}_picker" value="{{ field.value if field.value else '#0052a3' }}"
+                        data-default="{{ field.default }}"
+                        oninput="document.getElementById('field_{{ field.key }}').value = this.value;">
+                    <div>
+                        <input type="text" id="field_{{ field.key }}" name="{{ field.key }}" value="{{ field.value }}" data-default="{{ field.default }}">
+                        <div class="color-swatch-label">CSS value</div>
+                    </div>
+                </div>
+                {% elif field.input_type == 'text' %}
+                <input type="text" id="field_{{ field.key }}" name="{{ field.key }}" value="{{ field.value }}" data-default="{{ field.default }}">
+                {% else %}
                 <textarea id="field_{{ field.key }}" name="{{ field.key }}"
-                    rows="{{ 14 if field.is_json else 4 }}">{{ field.value }}</textarea>
+                    rows="{{ 14 if field.is_json else 4 }}" data-default="{{ field.default }}">{{ field.value }}</textarea>
+                {% endif %}
             </div>
             {% endfor %}
 
@@ -322,6 +518,127 @@
         </form>
     </div>
 
+    <script>
+        (function () {
+            const form = document.querySelector('form');
+            const preview = document.getElementById('appearancePreview');
+            if (!form) return;
+
+            const presetSets = {
+                'cpc-dark': {
+                    appearance_primary_color: '#0052a3',
+                    appearance_primary_dark: '#003d7a',
+                    appearance_primary_light: '#e8f2ff',
+                    appearance_primary_medium: '#0066cc',
+                    appearance_bg_start: '#004080',
+                    appearance_bg_mid: '#003366',
+                    appearance_bg_end: '#00264d',
+                    appearance_about_accent: '#9bc7ff',
+                    appearance_about_accent_soft: 'rgba(155, 199, 255, 0.18)',
+                    appearance_about_surface: 'rgba(255, 255, 255, 0.06)',
+                    appearance_about_border: 'rgba(255, 255, 255, 0.12)',
+                    appearance_about_shadow: '0 10px 28px rgba(0, 0, 0, 0.1)',
+                    appearance_surface_bg: 'rgba(255, 255, 255, 0.05)',
+                    appearance_surface_bg_hover: 'rgba(255, 255, 255, 0.08)',
+                    appearance_surface_border: 'rgba(255, 255, 255, 0.1)',
+                    appearance_surface_text: 'rgba(255, 255, 255, 0.95)',
+                    appearance_surface_muted: 'rgba(255, 255, 255, 0.7)',
+                    appearance_surface_accent: '#9bc7ff',
+                    appearance_surface_accent_soft: 'rgba(155, 199, 255, 0.18)',
+                    appearance_surface_shadow: '0 10px 30px rgba(0, 0, 0, 0.12)',
+                    appearance_white_bg_start: '#f5f7fa',
+                    appearance_white_bg_mid: '#e8ecf1',
+                    appearance_white_bg_end: '#dde2e8'
+                },
+                'cpc-light': {
+                    appearance_primary_color: '#0052a3',
+                    appearance_primary_dark: '#003d7a',
+                    appearance_primary_light: '#e8f2ff',
+                    appearance_primary_medium: '#0066cc',
+                    appearance_bg_start: '#f5f7fa',
+                    appearance_bg_mid: '#e8ecf1',
+                    appearance_bg_end: '#dde2e8',
+                    appearance_about_accent: '#0052a3',
+                    appearance_about_accent_soft: 'rgba(0, 82, 163, 0.14)',
+                    appearance_about_surface: 'rgba(255, 255, 255, 0.72)',
+                    appearance_about_border: 'rgba(0, 50, 120, 0.12)',
+                    appearance_about_shadow: '0 10px 28px rgba(0, 0, 0, 0.08)',
+                    appearance_surface_bg: 'rgba(255, 255, 255, 0.72)',
+                    appearance_surface_bg_hover: 'rgba(255, 255, 255, 0.86)',
+                    appearance_surface_border: 'rgba(0, 50, 120, 0.12)',
+                    appearance_surface_text: 'rgba(28, 32, 40, 0.95)',
+                    appearance_surface_muted: 'rgba(28, 32, 40, 0.68)',
+                    appearance_surface_accent: '#0052a3',
+                    appearance_surface_accent_soft: 'rgba(0, 82, 163, 0.14)',
+                    appearance_surface_shadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
+                    appearance_white_bg_start: '#ffffff',
+                    appearance_white_bg_mid: '#f5f7fa',
+                    appearance_white_bg_end: '#e8ecf1'
+                }
+            };
+
+            function getField(name) {
+                return form.querySelector(`[name="${name}"]`);
+            }
+
+            function applyVars() {
+                if (!preview) return;
+                const map = {
+                    '--preview-primary': getField('appearance_primary_color'),
+                    '--preview-primary-dark': getField('appearance_primary_dark'),
+                    '--preview-surface': getField('appearance_surface_bg'),
+                    '--preview-border': getField('appearance_surface_border'),
+                    '--preview-text': getField('appearance_surface_text'),
+                    '--preview-muted': getField('appearance_surface_muted'),
+                    '--preview-accent': getField('appearance_surface_accent'),
+                    '--preview-accent-soft': getField('appearance_surface_accent_soft'),
+                    '--preview-shadow': getField('appearance_surface_shadow')
+                };
+                Object.keys(map).forEach(function (cssVar) {
+                    const el = map[cssVar];
+                    if (el && el.value) preview.style.setProperty(cssVar, el.value);
+                });
+            }
+
+            function setValue(name, value) {
+                const input = getField(name);
+                if (!input) return;
+                input.value = value;
+                const picker = form.querySelector(`#${input.id}_picker`);
+                if (picker) picker.value = value;
+            }
+
+            function resetDefaults() {
+                form.querySelectorAll('[data-default]').forEach(function (el) {
+                    const def = el.getAttribute('data-default');
+                    if (def !== null) el.value = def;
+                });
+                applyVars();
+            }
+
+            form.querySelectorAll('input, textarea').forEach(function (el) {
+                el.addEventListener('input', applyVars);
+            });
+
+            form.querySelectorAll('[data-preset]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const preset = presetSets[this.getAttribute('data-preset')];
+                    if (!preset) return;
+                    Object.keys(preset).forEach(function (key) {
+                        setValue(key, preset[key]);
+                    });
+                    applyVars();
+                });
+            });
+
+            const resetBtn = form.querySelector('[data-action="reset-defaults"]');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', resetDefaults);
+            }
+
+            applyVars();
+        })();
+    </script>
 </body>
 
 </html>

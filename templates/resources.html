@@ -12,6 +12,12 @@
     min-height: calc(100vh - 200px);
     padding: 0;
     margin: 0;
+    --page-surface: var(--surface-bg);
+    --page-surface-hover: var(--surface-bg-hover);
+    --page-border: var(--surface-border);
+    --page-text: var(--surface-text);
+    --page-muted: var(--surface-muted);
+    --page-accent: var(--surface-accent);
 }
 
 .resources-main-container {
@@ -27,30 +33,30 @@
     text-align: center;
     background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
                 url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/CPC_AUTUMN_PHOTO.jpg') center/cover no-repeat;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--page-border);
     margin: 0 0 0.75rem 0;
 }
 
 .resources-hero h1 {
     font-size: 1.75rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0 0 0.25rem 0;
     font-weight: 600;
 }
 
 .resources-hero p {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--page-muted);
     font-size: 0.9rem;
     margin: 0;
 }
 
 /* Page Submenu - Vertical List Format */
 .page-submenu {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
     padding: 0.75rem;
     margin-bottom: 0.75rem;
 }
@@ -58,12 +64,12 @@
 .submenu-title {
     font-size: 0.85rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--page-text);
     margin-bottom: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding-bottom: 0.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--page-border);
 }
 
 .submenu-list {
@@ -82,20 +88,20 @@
 .submenu-list a {
     display: block;
     padding: 0.4rem 0.75rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--page-muted);
     text-decoration: none;
     font-size: 0.85rem;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
     transition: all 0.2s;
     white-space: nowrap;
 }
 
 .submenu-list a:hover,
 .submenu-list a.active {
-    background: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--page-surface-hover);
+    color: var(--page-text);
     border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -108,27 +114,27 @@
 }
 
 .resources-section {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
+    background: var(--page-surface);
+    border-radius: var(--radius-lg);
     padding: 1rem;
 }
 
 .section-header {
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--page-border);
 }
 
 .section-header h2 {
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0 0 0.25rem 0;
     font-weight: 600;
 }
 
 .section-header p {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--page-muted);
     margin: 0;
 }
 
@@ -141,27 +147,27 @@
 }
 
 .resource-category {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--page-surface);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
     padding: 0.75rem;
     transition: all 0.3s ease;
 }
 
 .resource-category:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--page-surface-hover);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
 
 .resource-category h3 {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0 0 0.75rem 0;
     font-weight: 600;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--page-border);
 }
 
 .resource-category ul {
@@ -177,7 +183,7 @@
 .resource-category a {
     display: block;
     padding: 0.5rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--page-text);
     text-decoration: none;
     font-size: 0.85rem;
     border-radius: 4px;
@@ -185,8 +191,8 @@
 }
 
 .resource-category a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--page-surface-hover);
+    color: var(--page-text);
     padding-left: 0.75rem;
 }
 
@@ -194,12 +200,12 @@
 .contact-resources {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--page-border);
 }
 
 .contact-resources h3 {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--page-text);
     margin: 0 0 0.5rem 0;
     font-weight: 600;
 }
@@ -207,12 +213,12 @@
 .contact-resources p {
     font-size: 0.85rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--page-muted);
     margin: 0;
 }
 
 .contact-resources a {
-    color: rgba(0, 82, 163, 0.8);
+    color: var(--page-accent);
     text-decoration: none;
     font-weight: 500;
 }
@@ -261,24 +267,24 @@
 
         <!-- Content Area -->
         <div class="resources-content-area">
-            <div style="margin-bottom: 1.5rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <div style="margin-bottom: 1.5rem; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--surface-shadow);">
                 <img src="https://storage.googleapis.com/cpc-public-website/67.jpg" alt="CPC Resources" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block;">
             </div>
             
             <section class="resources-section">
                 {% if site_content.get('pastors_book_active', 'True') == 'True' %}
                 <!-- Featured Pastor's Book Pick -->
-                <div class="featured-book-pick" style="margin-bottom: 2rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; overflow: hidden; display: flex; align-items: stretch;">
+                <div class="featured-book-pick" style="margin-bottom: 2rem; background: var(--page-surface); backdrop-filter: blur(20px); border: 1px solid var(--page-border); border-radius: var(--radius-lg); overflow: hidden; display: flex; align-items: stretch;">
                     <div style="width: 180px; flex-shrink: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; padding: 1rem;">
                         <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}"
                              alt="Book Cover" loading="lazy"
-                             style="width: 100%; height: auto; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+                             style="width: 100%; height: auto; border-radius: 4px; box-shadow: var(--surface-shadow);">
                     </div>
                     <div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-                        <span style="font-size: 0.7rem; font-weight: 700; color: #5AC8FA; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">{{ site_content.get('pastors_book_label', "Pastor's Book Pick") }}</span>
-                        <h3 style="font-size: 1.5rem; margin: 0 0 0.25rem 0; color: #fff;">{{ site_content.get('pastors_book_title', 'Life Together') }}</h3>
-                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.7); margin: 0 0 1rem 0;">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</p>
-                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8); line-height: 1.5; margin-bottom: 1.25rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        <span style="font-size: 0.7rem; font-weight: 700; color: var(--page-accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">{{ site_content.get('pastors_book_label', "Pastor's Book Pick") }}</span>
+                        <h3 style="font-size: 1.5rem; margin: 0 0 0.25rem 0; color: var(--page-text);">{{ site_content.get('pastors_book_title', 'Life Together') }}</h3>
+                        <p style="font-size: 0.95rem; color: var(--page-muted); margin: 0 0 1rem 0;">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</p>
+                        <p style="font-size: 0.9rem; color: var(--page-text); line-height: 1.5; margin-bottom: 1.25rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                             {{ site_content.get('pastors_book_description', '') | striptags }}
                         </p>
                         <a href="{{ url_for('pastors_book') }}" class="btn btn-primary" style="align-self: flex-start; padding: 0.5rem 1.25rem; font-size: 0.85rem;">Read Recommendation →</a>

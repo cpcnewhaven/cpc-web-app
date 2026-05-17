@@ -263,11 +263,30 @@
 
     @media (max-width: 768px) {
         .hero-banner {
-            min-height: 320px;
+            min-height: 70vh;
         }
 
         .hero-banner .banner-slide {
-            background-position: center 15%;
+            background-position: center 30%;
+        }
+
+        .splash-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.65rem;
+        }
+
+        .splash-buttons .btn {
+            flex: 1 1 calc(50% - 0.65rem);
+            min-width: 130px;
+            max-width: 180px;
+            text-align: center;
+        }
+
+        .splash-buttons .btn:first-child {
+            flex: 1 1 100%;
+            max-width: 260px;
         }
     }
 </style>
@@ -296,9 +315,7 @@
             us by Christ.</p>
         <div class="splash-buttons mt-4 md:mt-6">
             <a href="{{ url_for('live') }}" class="btn btn-primary">Watch Live</a>
-            <a href="{{ url_for('about') }}" class="btn btn-secondary">About CPC</a>
             <a href="{{ url_for('plan_a_visit') }}" class="btn btn-secondary">Plan a Visit</a>
-            <a href="{{ url_for('what_we_believe') }}" class="btn btn-secondary">What We Believe</a>
             <a href="{{ url_for('sermons') }}" class="btn btn-secondary">Latest Sermon</a>
         </div>
     </div>
