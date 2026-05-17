@@ -16,6 +16,7 @@ A modern Flask web application for Christ Presbyterian Church New Haven, featuri
 - **Responsive Design**: Mobile-first design with Alpine.js for interactive components
 - **API-First Architecture**: RESTful API endpoints for all content types
 - **Image Gallery**: Dynamic image management with tagging and categorization
+- **Deploy Verification**: Public and admin shells display the current frontend/admin build version and git hash so Render deploys are easy to confirm at a glance
 
 ## Technology Stack
 

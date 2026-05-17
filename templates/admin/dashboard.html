@@ -157,15 +157,19 @@
                         </div>
                         
                         <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Frontend Sync</span>
-                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest">Active</span>
+                            <div class="flex items-center justify-between gap-3">
+                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Public Frontend</span>
+                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest text-right">v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
                             </div>
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between gap-3">
+                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">CRUD Frontend</span>
+                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest text-right">v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-3">
                                 <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Database Latency</span>
                                 <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">Optimized</span>
                             </div>
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between gap-3">
                                 <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Banner Alerts</span>
                                 <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">{{ stats.active_announcements }} Live</span>
                             </div>
