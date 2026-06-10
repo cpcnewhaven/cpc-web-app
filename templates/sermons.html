@@ -985,12 +985,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fab fa-spotify"></i> Spotify
                             </a>
                         ` : ''}
-                        ${sermon.url.includes('youtube') ? `
+                        ${sermon.url.includes('youtube') || sermon.url.includes('youtu.be') ? `
                             <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-youtube" title="Watch on YouTube">
                                 <i class="fab fa-youtube"></i> YouTube
                             </a>
                         ` : ''}
-                        ${!sermon.url.includes('spotify') && !sermon.url.includes('youtube') && sermon.url ? `
+                        ${sermon.url.includes('apple') ? `
+                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-apple" title="Listen on Apple Podcasts">
+                                <i class="fab fa-apple"></i> Apple
+                            </a>
+                        ` : ''}
+                        ${sermon.audio_file_url && sermon.audio_file_url.includes('.mp3') && !sermon.url.includes('spotify') ? `
+                            <audio controls preload="metadata" class="sermon-audio" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'; console.error('Audio failed to load:', this.src);">
+                                <source src="${sermon.audio_file_url}">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <span class="audio-unavailable" style="display: none;">Audio unavailable</span>
+                        ` : ''}
+                        ${!sermon.url.includes('spotify') && !sermon.url.includes('youtube') && !sermon.url.includes('youtu.be') && !sermon.url.includes('apple') && !sermon.url.includes('.mp3') && sermon.url ? `
                             <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play">
                                 <i class="fas fa-play"></i> Listen
                             </a>
