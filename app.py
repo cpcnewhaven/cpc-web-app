@@ -1880,6 +1880,9 @@ def api_search():
                     'series': series_title,
                     'url': s.spotify_url or s.youtube_url or s.apple_podcasts_url or s.audio_file_url or '',
                     'audio_file_url': s.audio_file_url,
+                    'spotify_url': s.spotify_url or '',
+                    'youtube_url': s.youtube_url or '',
+                    'apple_podcasts_url': s.apple_podcasts_url or '',
                     'thumbnail': s.podcast_thumbnail_url or ''
                 })
 

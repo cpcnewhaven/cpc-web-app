@@ -980,18 +980,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     </p>
                     ${sermon.scripture ? `<p class="sermon-scripture">${sermon.scripture}</p>` : ''}
                     <div class="sermon-links">
-                        ${sermon.url.includes('spotify') ? `
-                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-spotify" title="Listen on Spotify">
+                        ${sermon.spotify_url.includes('spotify') ? `
+                            <a href="${sermon.spotify_url}" target="_blank" rel="noopener" class="btn-spotify" title="Listen on Spotify">
                                 <i class="fab fa-spotify"></i> Spotify
                             </a>
                         ` : ''}
-                        ${sermon.url.includes('youtube') || sermon.url.includes('youtu.be') ? `
-                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-youtube" title="Watch on YouTube">
+                        ${sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be') ? `
+                            <a href="${sermon.youtube_url}" target="_blank" rel="noopener" class="btn-youtube" title="Watch on YouTube">
                                 <i class="fab fa-youtube"></i> YouTube
                             </a>
                         ` : ''}
-                        ${sermon.url.includes('apple') ? `
-                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-apple" title="Listen on Apple Podcasts">
+                        ${sermon.apple_podcasts_url.includes('apple') ? `
+                            <a href="${sermon.apple_podcasts_url}" target="_blank" rel="noopener" class="btn-apple" title="Listen on Apple Podcasts">
                                 <i class="fab fa-apple"></i> Apple
                             </a>
                         ` : ''}
