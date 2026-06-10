@@ -40,7 +40,7 @@ class SermonDataHelper:
             'episode_number': sermon.episode_number,
             'audio_file_url': sermon.audio_file_url,
             'video_file_url': sermon.video_file_url,
-            'link': sermon.spotify_url or sermon.youtube_url or sermon.apple_podcasts_url,
+            'link': sermon.spotify_url or sermon.youtube_url or sermon.apple_podcasts_url or sermon.audio_file_url,
             'tags': [], # Tags are not yet fully implemented in the model as a separate table
             'sermon_type': 'sermon'
         }
