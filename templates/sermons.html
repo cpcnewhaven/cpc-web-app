@@ -923,7 +923,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (data.results && data.results.length > 0) {
-                filteredSermons = data.results;
+                // Client-side guard: at most 1 upcoming badge, only within 14 days
+                const cutoff = new Date();
+                cutoff.setDate(cutoff.getDate() + 14);
+                let upcomingShown = false;
+                filteredSermons = data.results.map(s => {
+                    if (s._nextUpcoming && !upcomingShown && s.date && new Date(s.date) <= cutoff) {
+                        upcomingShown = true;
+                        return s;
+                    }
+                    return Object.assign({}, s, { _nextUpcoming: false });
+                });
                 renderSermons();
 
                 // Update pagination
