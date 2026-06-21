@@ -978,6 +978,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // HTML-escape helper for data attribute values
+    function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
+
     function renderCardView() {
         const container = document.getElementById('sermonResults');
         document.getElementById('sermonTable').style.display = 'none';
@@ -1037,7 +1040,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </a>
                             ` : ''}
                             ${audioSrc && !hasStreamingLinks ? `
-                                <button class="btn-play-mp3" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(audioSrc)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
+                                <button class="btn-play-mp3"
+                                    data-play-audio="${esc(audioSrc)}"
+                                    data-play-title="${esc(sermon.title)}"
+                                    data-play-img="${esc(sermon.thumbnail || '')}"
+                                    data-play-subtitle="${esc(sermon.speaker || '')}">
                                     <i class="fas fa-play"></i> Play
                                 </button>
                             ` : ''}
@@ -1104,7 +1111,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             </a>
                         ` : ''}
                         ${audioSrc && !hasStreamingLinks ? `
-                            <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(audioSrc)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
+                            <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;"
+                                data-play-audio="${esc(audioSrc)}"
+                                data-play-title="${esc(sermon.title)}"
+                                data-play-img="${esc(sermon.thumbnail || '')}"
+                                data-play-subtitle="${esc(sermon.speaker || '')}">
                                 <i class="fas fa-play"></i> Play
                             </button>
                         ` : ''}

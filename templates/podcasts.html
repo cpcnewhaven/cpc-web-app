@@ -669,7 +669,7 @@ function renderFullEpisodes(data) {
                     </div>
                 </div>
                 <div class="episode-actions">
-                    ${episode.audio_file ? `<button class="btn-play-mp3" onclick="playEpisode(${JSON.stringify(episode.title || 'Untitled')}, ${JSON.stringify(episode.audio_file)}, '', ${JSON.stringify(episode.guest || '')})"><i class="fas fa-play"></i> Play</button>` : ''}
+                    ${episode.audio_file ? `<button class="btn-play-mp3" data-play-audio="${escAttr(episode.audio_file)}" data-play-title="${escAttr(episode.title || 'Untitled')}" data-play-img="${escAttr(episode.thumbnail || '')}" data-play-subtitle="${escAttr(episode.guest || '')}"><i class="fas fa-play"></i> Play</button>` : ''}
                     ${episode.link && !episode.audio_file ? `<a href="${episode.link}" target="_blank" class="podcast-btn podcast-btn-primary">Listen</a>` : ''}
                     ${episode.listen_url && !episode.audio_file ? `<a href="${episode.listen_url}" target="_blank" class="podcast-btn podcast-btn-primary">Listen</a>` : ''}
                 </div>
@@ -700,19 +700,18 @@ async function loadPodcast() {
             return;
         }
 
+        const escAttr = s => (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
         for (const ep of data.episodes) {
             const li = document.createElement('li');
-            const safeTitle = (ep.title ?? 'Untitled').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-            const safeAudio = (ep.audio?.url || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-            const safeImg   = (ep.image || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            const audioUrl = ep.audio?.url || '';
             li.innerHTML = `
                 <div style="display:flex; align-items:flex-start; gap:0.75rem;">
-                    ${ep.image ? `<img src="${ep.image}" alt="" style="width:56px;height:56px;border-radius:6px;object-fit:cover;flex-shrink:0;">` : ''}
+                    ${ep.image ? `<img src="${escAttr(ep.image)}" alt="" style="width:56px;height:56px;border-radius:6px;object-fit:cover;flex-shrink:0;">` : ''}
                     <div style="flex:1;min-width:0;">
                         <div style="font-weight:600;color:rgba(255,255,255,0.95);margin-bottom:0.2rem;">${ep.title ?? 'Untitled'}</div>
                         <div style="font-size:0.8rem;color:rgba(255,255,255,0.55);margin-bottom:0.6rem;">${ep.published ?? ''}${ep.duration ? ' · ' + ep.duration : ''}</div>
                         <p style="font-size:0.85rem;color:rgba(255,255,255,0.75);line-height:1.55;margin:0 0 0.6rem;">${(ep.summary || '').replace(/<[^>]+>/g,'').slice(0, 200)}${(ep.summary || '').length > 200 ? '…' : ''}</p>
-                        ${safeAudio ? `<button class="btn-play-mp3" onclick="playEpisode('${safeTitle}', '${safeAudio}', '${safeImg}', 'CPC New Haven')"><i class="fas fa-play"></i> Play</button>` : ''}
+                        ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(ep.image || '')}" data-play-subtitle="CPC New Haven"><i class="fas fa-play"></i> Play</button>` : ''}
                     </div>
                 </div>
             `;

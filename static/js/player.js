@@ -51,6 +51,18 @@
     return `${m}:${sec}`;
   }
 
+  // Delegated listener — handles play buttons added dynamically via innerHTML
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-play-audio]');
+    if (!btn) return;
+    window.playEpisode(
+      btn.dataset.playTitle  || '',
+      btn.dataset.playAudio  || '',
+      btn.dataset.playImg    || '',
+      btn.dataset.playSubtitle || ''
+    );
+  });
+
   document.addEventListener('DOMContentLoaded', function () {
     const player = getPlayer();
     if (!player) return;
