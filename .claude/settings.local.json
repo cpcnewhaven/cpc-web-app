@@ -57,7 +57,9 @@
       "Bash(sed -n '20,35p' /Users/agworkywork/cpc-web-app/templates/contact.html)",
       "Bash(sed -n '20,40p' /Users/agworkywork/cpc-web-app/templates/contact.html)",
       "Bash(sed -n '665,680p' /Users/agworkywork/cpc-web-app/templates/sermons.html)",
-      "Bash(sed -n '5,20p' /Users/agworkywork/cpc-web-app/templates/plan-a-visit.html)"
+      "Bash(sed -n '5,20p' /Users/agworkywork/cpc-web-app/templates/plan-a-visit.html)",
+      "Bash(git pull *)",
+      "Bash(git stash *)"
     ]
   }
 }

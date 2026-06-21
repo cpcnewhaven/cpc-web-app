@@ -1828,9 +1828,9 @@ def api_search():
     }
 
     try:
-        # Search sermons — DB only
+        # Search sermons — DB only (include inactive to show "Upcoming Sermon" badge)
         if content_type in ['all', 'sermons']:
-            q = Sermon.query.filter(Sermon.active == True).filter(_not_expired(Sermon))
+            q = Sermon.query.filter(_not_expired(Sermon))
 
             # Text search (only on text fields, not integer speaker)
             if query:
@@ -1883,7 +1883,8 @@ def api_search():
                     'spotify_url': s.spotify_url or '',
                     'youtube_url': s.youtube_url or '',
                     'apple_podcasts_url': s.apple_podcasts_url or '',
-                    'thumbnail': s.podcast_thumbnail_url or ''
+                    'thumbnail': s.podcast_thumbnail_url or '',
+                    'active': s.active
                 })
 
         # Search announcements

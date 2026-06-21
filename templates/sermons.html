@@ -348,6 +348,45 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
+/* MP3 Player Styling */
+.sermon-audio-player {
+    margin-top: auto;
+    background: rgba(29, 185, 84, 0.2);
+    border: 1px solid rgba(29, 185, 84, 0.3);
+    border-radius: 10px;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.sermon-audio-player audio {
+    flex: 1;
+    height: 32px;
+    border-radius: 6px;
+    accent-color: rgb(29, 185, 84);
+}
+
+.sermon-audio-player audio::-webkit-media-controls-panel {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Upcoming Sermon Badge */
+.upcoming-badge {
+    display: inline-block;
+    background: rgba(255, 193, 7, 0.25);
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    color: rgba(255, 193, 7, 0.95);
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: auto;
+}
+
 /* Dropdown Menu for Play Button */
 .sermon-play-dropdown {
     position: relative;
@@ -966,6 +1005,16 @@ document.addEventListener('DOMContentLoaded', function() {
         filteredSermons.forEach(sermon => {
             const card = document.createElement('div');
             card.className = 'sermon-card';
+
+            // Check if sermon is published
+            const isPublished = sermon.active !== false;
+
+            // Check if sermon has MP3 file but no streaming links
+            const hasMP3 = sermon.audio_file_url && sermon.audio_file_url.includes('.mp3');
+            const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
+                                     (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
+                                     (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
+
             card.innerHTML = `
                 ${sermon.thumbnail ? `
                     <div class="sermon-thumbnail">
@@ -979,36 +1028,44 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="sermon-date">${formatDate(sermon.date)}</span>
                     </p>
                     ${sermon.scripture ? `<p class="sermon-scripture">${sermon.scripture}</p>` : ''}
-                    <div class="sermon-links">
-                        ${sermon.spotify_url.includes('spotify') ? `
-                            <a href="${sermon.spotify_url}" target="_blank" rel="noopener" class="btn-spotify" title="Listen on Spotify">
-                                <i class="fab fa-spotify"></i> Spotify
-                            </a>
-                        ` : ''}
-                        ${sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be') ? `
-                            <a href="${sermon.youtube_url}" target="_blank" rel="noopener" class="btn-youtube" title="Watch on YouTube">
-                                <i class="fab fa-youtube"></i> YouTube
-                            </a>
-                        ` : ''}
-                        ${sermon.apple_podcasts_url.includes('apple') ? `
-                            <a href="${sermon.apple_podcasts_url}" target="_blank" rel="noopener" class="btn-apple" title="Listen on Apple Podcasts">
-                                <i class="fab fa-apple"></i> Apple
-                            </a>
-                        ` : ''}
-                        ${sermon.audio_file_url && sermon.audio_file_url.includes('.mp3') && !sermon.url.includes('spotify') ? `
-                            <audio controls preload="metadata" class="sermon-audio" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'; console.error('Audio failed to load:', this.src);">
-                                <source src="${sermon.audio_file_url}">
-                                Your browser does not support the audio element.
-                            </audio>
-                            <span class="audio-unavailable" style="display: none;">Audio unavailable</span>
-                        ` : ''}
-                        ${!sermon.url.includes('spotify') && !sermon.url.includes('youtube') && !sermon.url.includes('youtu.be') && !sermon.url.includes('apple') && !sermon.url.includes('.mp3') && sermon.url ? `
-                            <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play">
-                                <i class="fas fa-play"></i> Listen
-                            </a>
-                        ` : ''}
-                        ${!sermon.url ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
-                    </div>
+                    ${!isPublished ? `
+                        <span class="upcoming-badge">
+                            <i class="fas fa-calendar-alt"></i> Upcoming Sermon
+                        </span>
+                    ` : `
+                        <div class="sermon-links">
+                            ${sermon.spotify_url.includes('spotify') ? `
+                                <a href="${sermon.spotify_url}" target="_blank" rel="noopener" class="btn-spotify" title="Listen on Spotify">
+                                    <i class="fab fa-spotify"></i> Spotify
+                                </a>
+                            ` : ''}
+                            ${sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be') ? `
+                                <a href="${sermon.youtube_url}" target="_blank" rel="noopener" class="btn-youtube" title="Watch on YouTube">
+                                    <i class="fab fa-youtube"></i> YouTube
+                                </a>
+                            ` : ''}
+                            ${sermon.apple_podcasts_url.includes('apple') ? `
+                                <a href="${sermon.apple_podcasts_url}" target="_blank" rel="noopener" class="btn-apple" title="Listen on Apple Podcasts">
+                                    <i class="fab fa-apple"></i> Apple
+                                </a>
+                            ` : ''}
+                            ${hasMP3 && !hasStreamingLinks ? `
+                                <div class="sermon-audio-player">
+                                    <i class="fas fa-music" style="color: rgba(29, 185, 84, 0.8); font-size: 0.9rem;"></i>
+                                    <audio controls preload="metadata" style="flex: 1;">
+                                        <source src="${sermon.audio_file_url}" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                            ` : ''}
+                            ${!hasStreamingLinks && !hasMP3 && sermon.url ? `
+                                <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play">
+                                    <i class="fas fa-play"></i> Listen
+                                </a>
+                            ` : ''}
+                            ${!sermon.url && !hasMP3 ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
+                        </div>
+                    `}
                 </div>
             `;
             container.appendChild(card);
@@ -1028,28 +1085,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
         filteredSermons.forEach(sermon => {
             const tr = document.createElement('tr');
+            const isPublished = sermon.active !== false;
+            const hasMP3 = sermon.audio_file_url && sermon.audio_file_url.includes('.mp3');
+            const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
+                                     (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
+                                     (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
+
             tr.innerHTML = `
                 <td>${formatDate(sermon.date)}</td>
                 <td>${sermon.title}</td>
                 <td>${sermon.speaker || 'Unknown'}</td>
                 <td>${sermon.scripture || '-'}</td>
                 <td class="sermon-links">
-                    ${sermon.url.includes('spotify') ? `
-                        <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-spotify" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Spotify">
-                            <i class="fab fa-spotify"></i> Spotify
-                        </a>
-                    ` : ''}
-                    ${sermon.url.includes('youtube') ? `
-                        <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-youtube" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="YouTube">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </a>
-                    ` : ''}
-                    ${!sermon.url.includes('spotify') && !sermon.url.includes('youtube') && sermon.url ? `
-                         <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Listen">
-                            <i class="fas fa-play"></i> Listen
-                        </a>
-                    ` : ''}
-                    ${!sermon.url ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
+                    ${!isPublished ? `
+                        <span style="color: rgba(255, 193, 7, 0.95); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                            <i class="fas fa-calendar-alt"></i> Upcoming
+                        </span>
+                    ` : `
+                        ${sermon.spotify_url.includes('spotify') ? `
+                            <a href="${sermon.spotify_url}" target="_blank" rel="noopener" class="btn-spotify" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Spotify">
+                                <i class="fab fa-spotify"></i> Spotify
+                            </a>
+                        ` : ''}
+                        ${sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be') ? `
+                            <a href="${sermon.youtube_url}" target="_blank" rel="noopener" class="btn-youtube" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="YouTube">
+                                <i class="fab fa-youtube"></i> YouTube
+                            </a>
+                        ` : ''}
+                        ${sermon.apple_podcasts_url.includes('apple') ? `
+                            <a href="${sermon.apple_podcasts_url}" target="_blank" rel="noopener" class="btn-apple" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Apple Podcasts">
+                                <i class="fab fa-apple"></i> Apple
+                            </a>
+                        ` : ''}
+                        ${hasMP3 && !hasStreamingLinks ? `
+                            <span style="color: rgba(29, 185, 84, 0.8); font-size: 0.75rem; font-weight: 600;">
+                                <i class="fas fa-music"></i> Audio
+                            </span>
+                        ` : ''}
+                        ${!hasStreamingLinks && !hasMP3 && sermon.url ? `
+                             <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Listen">
+                                <i class="fas fa-play"></i> Listen
+                            </a>
+                        ` : ''}
+                        ${!sermon.url && !hasMP3 ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
+                    `}
                 </td>
             `;
             tbody.appendChild(tr);
