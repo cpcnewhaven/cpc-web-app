@@ -1,6 +1,8 @@
-import os
 os.environ["FLASK_ENV"] = "development"
 os.environ["DATABASE_URL"] = "sqlite:///cpc_newhaven.db"
+# Allow running from any directory by pointing Python at the project root
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from app import app, ContentFeedView
 import traceback
 

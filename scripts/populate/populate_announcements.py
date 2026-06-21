@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """
-Script to populate the database with highlights from highlights.json
+Script to populate the database with announcements from announcements.json
 """
 
 import json
 from datetime import datetime
+# Allow running from any directory by pointing Python at the project root
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from app import app
 from database import db
 from models import Announcement, next_global_id
@@ -15,12 +18,15 @@ def parse_date(date_string):
         return datetime.utcnow()
     
     try:
+        # Try parsing as ISO format (YYYY-MM-DDTHH:MM:SSZ)
+        if 'T' in date_string:
+            return datetime.fromisoformat(date_string.replace('Z', '+00:00'))
         # Try parsing as YYYY-MM-DD
         return datetime.strptime(date_string, '%Y-%m-%d')
     except ValueError:
         try:
-            # Try parsing as ISO format
-            return datetime.fromisoformat(date_string.replace('Z', '+00:00'))
+            # Try parsing as ISO format without timezone
+            return datetime.fromisoformat(date_string)
         except:
             # Default to current time if parsing fails
             return datetime.utcnow()
@@ -34,24 +40,31 @@ def parse_active(active_value):
     return True
 
 def populate_database():
-    """Main function to populate database with highlights"""
+    """Main function to populate database with announcements"""
     
     with app.app_context():
-        print("🚀 Starting database population...")
+        print("🚀 Starting announcements database population...")
         
-        # Read highlights.json
+        # Read announcements.json
         try:
-            with open('data/highlights.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            with open('data/announcements.json', 'r', encoding='utf-8') as f:
+                announcements_data = json.load(f)
         except FileNotFoundError:
-            print("❌ Error: data/highlights.json not found!")
+            print("❌ Error: data/announcements.json not found!")
             return
         except json.JSONDecodeError as e:
             print(f"❌ Error parsing JSON: {e}")
             return
         
-        announcements_data = data.get('announcements', [])
-        print(f"📋 Found {len(announcements_data)} highlights to import")
+        # Handle both array format and object with 'announcements' key
+        if isinstance(announcements_data, dict):
+            announcements_data = announcements_data.get('announcements', [])
+        
+        if not isinstance(announcements_data, list):
+            print("❌ Error: announcements.json must contain an array of announcements")
+            return
+        
+        print(f"📋 Found {len(announcements_data)} announcements to import")
         
         added_count = 0
         updated_count = 0
@@ -65,21 +78,25 @@ def populate_database():
                     skipped_count += 1
                     continue
                 
+                # Map JSON fields to database fields
+                date_entered = item.get('date_entered') or item.get('dateEntered')
+                featured_image = item.get('featured_image') or item.get('featuredImage')
+                
                 # Check if announcement already exists (match by title)
                 existing = Announcement.query.filter_by(title=title).first()
                 
                 if existing:
                     # Update existing announcement
                     existing.description = item.get('description', existing.description)
-                    existing.date_entered = parse_date(item.get('dateEntered'))
+                    if date_entered:
+                        existing.date_entered = parse_date(date_entered)
                     existing.active = parse_active(item.get('active', True))
                     existing.type = item.get('type')
                     existing.category = item.get('category')
                     existing.tag = item.get('tag')
                     existing.superfeatured = item.get('superfeatured', False)
-                    existing.featured_image = item.get('featuredImage')
-                    existing.image_display_type = item.get('imageDisplayType')
-                    existing.show_in_banner = parse_active(item.get('showInBanner', False))
+                    existing.featured_image = featured_image
+                    existing.image_display_type = item.get('image_display_type') or item.get('imageDisplayType')
                     
                     updated_count += 1
                     print(f"♻️  Updated: #{existing.id} - {title[:50]}")
@@ -89,15 +106,14 @@ def populate_database():
                         id=next_global_id(),
                         title=title,
                         description=item.get('description', ''),
-                        date_entered=parse_date(item.get('dateEntered')),
+                        date_entered=parse_date(date_entered) if date_entered else datetime.utcnow(),
                         active=parse_active(item.get('active', True)),
                         type=item.get('type'),
                         category=item.get('category'),
                         tag=item.get('tag'),
                         superfeatured=item.get('superfeatured', False),
-                        featured_image=item.get('featuredImage'),
-                        image_display_type=item.get('imageDisplayType'),
-                        show_in_banner=parse_active(item.get('showInBanner', False)),
+                        featured_image=featured_image,
+                        image_display_type=item.get('image_display_type') or item.get('imageDisplayType')
                     )
                     
                     db.session.add(announcement)
@@ -106,6 +122,8 @@ def populate_database():
                 
             except Exception as e:
                 print(f"❌ Error processing {item.get('title', 'unknown')}: {e}")
+                import traceback
+                traceback.print_exc()
                 skipped_count += 1
                 continue
         
@@ -123,6 +141,8 @@ def populate_database():
             db.session.rollback()
             print(f"\n❌ Error committing to database: {e}")
             print("Changes have been rolled back.")
+            import traceback
+            traceback.print_exc()
 
 if __name__ == '__main__':
     populate_database()

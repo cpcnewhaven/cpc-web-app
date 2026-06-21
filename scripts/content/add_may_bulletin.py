@@ -4,6 +4,9 @@ Add May bulletin content to Render database via CRUD models.
 Run: python add_may_bulletin.py
 """
 
+# Allow running from any directory by pointing Python at the project root
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from app import app, db
 from models import Announcement, OngoingEvent, next_global_id
 from datetime import datetime, date
