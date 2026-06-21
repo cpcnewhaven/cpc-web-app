@@ -517,6 +517,9 @@
 
 {% block scripts %}
 <script>
+// HTML-escape helper for data attribute values
+function escAttr(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
+
 // Load all podcast series
 function loadPodcastSeries() {
     const container = document.getElementById('podcast-series-container');
@@ -700,7 +703,6 @@ async function loadPodcast() {
             return;
         }
 
-        const escAttr = s => (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
         for (const ep of data.episodes) {
             const li = document.createElement('li');
             const audioUrl = ep.audio?.url || '';
