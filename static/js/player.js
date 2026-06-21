@@ -56,6 +56,7 @@
     if (!player) return;
 
     const playpause = player.querySelector('#cpc-player-playpause');
+    const rewindBtn = player.querySelector('#cpc-player-rewind');
     const scrubber  = player.querySelector('#cpc-player-scrubber');
     const elapsed   = player.querySelector('#cpc-player-elapsed');
     const duration  = player.querySelector('#cpc-player-duration');
@@ -63,6 +64,10 @@
 
     playpause?.addEventListener('click', () => {
       audio.paused ? audio.play() : audio.pause();
+    });
+
+    rewindBtn?.addEventListener('click', () => {
+      audio.currentTime = Math.max(0, audio.currentTime - 15);
     });
 
     audio.addEventListener('play', updateBtn);

@@ -5461,6 +5461,33 @@ body.player-open .page-wrapper {
     transform: scale(1.07);
 }
 
+#cpc-player-rewind {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0.25rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+#cpc-player-rewind:hover {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+#cpc-player-rewind span {
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+body.theme-white #cpc-player-rewind { color: #6c757d; }
+body.theme-white #cpc-player-rewind:hover { color: #1d1d1f; }
+
 #cpc-player-elapsed,
 #cpc-player-duration {
     font-size: 0.72rem;
@@ -5560,7 +5587,8 @@ body.player-open .page-wrapper {
         height: 40px;
     }
     #cpc-player-elapsed,
-    #cpc-player-duration {
+    #cpc-player-duration,
+    #cpc-player-rewind {
         display: none;
     }
 }

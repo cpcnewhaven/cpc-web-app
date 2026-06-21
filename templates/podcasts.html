@@ -69,6 +69,26 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
+.podcast-card-artwork {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.podcast-card-artwork img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.podcast-series-card:hover .podcast-card-artwork img {
+    transform: scale(1.04);
+}
+
 .podcast-card-header {
     display: flex;
     align-items: flex-start;
@@ -451,7 +471,7 @@
 
             <!-- RSS Feed Episodes List -->
             <div class="rss-episodes-section">
-                <h2>Latest Episodes from RSS Feed</h2>
+                <h2>Latest Episodes</h2>
                 <ul id="episodes" class="divide-y"></ul>
             </div>
         </div>
@@ -518,6 +538,11 @@ function loadPodcastSeries() {
                 
                 html += `
                     <div class="podcast-series-card">
+                        ${series.thumbnail_url ? `
+                            <div class="podcast-card-artwork">
+                                <img src="${series.thumbnail_url}" alt="${series.title}" loading="lazy">
+                            </div>
+                        ` : ''}
                         <div class="podcast-card-header">
                             <div class="podcast-card-info">
                                 <h2 class="podcast-card-title">${series.title || 'Untitled Series'}</h2>

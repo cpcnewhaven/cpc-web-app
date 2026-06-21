@@ -72,15 +72,21 @@ def json_podcasts():
     results = []
     for s in series_list:
         episodes = PodcastEpisode.query.filter_by(series_id=s.id).order_by(PodcastEpisode.date_added.desc()).all()
+        thumbnail = next((ep.podcast_thumbnail_url for ep in episodes if ep.podcast_thumbnail_url), None)
         results.append({
             'id': s.id,
             'title': s.title,
             'description': s.description,
+            'thumbnail_url': thumbnail,
             'episodes': [
                 {
                     'title': ep.title,
+                    'number': ep.number,
+                    'guest': ep.guest or '',
                     'link': ep.link,
                     'listen_url': ep.listen_url,
+                    'audio_file': None,
+                    'thumbnail': ep.podcast_thumbnail_url or thumbnail or '',
                     'date_added': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None
                 } for ep in episodes
             ]
