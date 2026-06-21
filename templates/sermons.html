@@ -348,29 +348,6 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* MP3 Player Styling */
-.sermon-audio-player {
-    margin-top: auto;
-    background: rgba(29, 185, 84, 0.2);
-    border: 1px solid rgba(29, 185, 84, 0.3);
-    border-radius: 10px;
-    padding: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    width: 100%;
-}
-
-.sermon-audio-player audio {
-    flex: 1;
-    height: 32px;
-    border-radius: 6px;
-    accent-color: rgb(29, 185, 84);
-}
-
-.sermon-audio-player audio::-webkit-media-controls-panel {
-    background-color: rgba(255, 255, 255, 0.05);
-}
 
 /* Upcoming Sermon Badge */
 .upcoming-badge {
@@ -1050,13 +1027,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </a>
                             ` : ''}
                             ${hasMP3 && !hasStreamingLinks ? `
-                                <div class="sermon-audio-player">
-                                    <i class="fas fa-music" style="color: rgba(29, 185, 84, 0.8); font-size: 0.9rem;"></i>
-                                    <audio controls preload="metadata" style="flex: 1;">
-                                        <source src="${sermon.audio_file_url}" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                                </div>
+                                <button class="btn-play-mp3" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(sermon.audio_file_url)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
+                                    <i class="fas fa-play"></i> Play
+                                </button>
                             ` : ''}
                             ${!hasStreamingLinks && !hasMP3 && sermon.url ? `
                                 <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play">
@@ -1118,9 +1091,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             </a>
                         ` : ''}
                         ${hasMP3 && !hasStreamingLinks ? `
-                            <span style="color: rgba(29, 185, 84, 0.8); font-size: 0.75rem; font-weight: 600;">
-                                <i class="fas fa-music"></i> Audio
-                            </span>
+                            <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(sermon.audio_file_url)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
+                                <i class="fas fa-play"></i> Play
+                            </button>
                         ` : ''}
                         ${!hasStreamingLinks && !hasMP3 && sermon.url ? `
                              <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Listen">

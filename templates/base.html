@@ -1097,6 +1097,23 @@
         });
     </script>
 
+    <!-- Universal Audio Player -->
+    <div id="cpc-player" role="region" aria-label="Audio player">
+        <img id="cpc-player-img" src="" alt="" style="display:none;">
+        <div id="cpc-player-info">
+            <div id="cpc-player-title">Now Playing</div>
+            <div id="cpc-player-subtitle"></div>
+        </div>
+        <div id="cpc-player-controls">
+            <button id="cpc-player-playpause" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+            <span id="cpc-player-elapsed">0:00</span>
+            <input type="range" id="cpc-player-scrubber" min="0" max="100" value="0" aria-label="Seek">
+            <span id="cpc-player-duration">0:00</span>
+        </div>
+        <button id="cpc-player-close" aria-label="Close player">×</button>
+    </div>
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+
 </body>
 
 </html>
