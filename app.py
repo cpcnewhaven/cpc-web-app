@@ -1828,9 +1828,9 @@ def api_search():
     }
 
     try:
-        # Search sermons — DB only (include inactive to show "Upcoming Sermon" badge)
+        # Search sermons — active only, plus single next-upcoming sermon
         if content_type in ['all', 'sermons']:
-            q = Sermon.query.filter(_not_expired(Sermon))
+            q = Sermon.query.filter(Sermon.active == True).filter(_not_expired(Sermon))
 
             # Text search (only on text fields, not integer speaker)
             if query:
@@ -1869,10 +1869,22 @@ def api_search():
 
             sermon_hits = q.order_by(Sermon.date.desc()).limit(100).all()
 
-            for s in sermon_hits:
+            # Find single next-upcoming sermon (inactive, nearest future date, has a title)
+            next_upcoming = None
+            if not query and not any(sermon_filters.values()):
+                from datetime import date as date_type
+                next_upcoming = Sermon.query.filter(
+                    Sermon.active == False,
+                    Sermon.title != None,
+                    Sermon.title != '',
+                    Sermon.date >= date_type.today()
+                ).order_by(Sermon.date.asc()).first()
+
+            def _sermon_dict(s, upcoming=False):
                 series_title = s.series.title if s.series else ''
-                results['results'].append({
+                return {
                     'type': 'sermon',
+                    'id': s.id,
                     'title': s.title,
                     'description': s.scripture or series_title,
                     'speaker': s.speaker or '',
@@ -1884,8 +1896,15 @@ def api_search():
                     'youtube_url': s.youtube_url or '',
                     'apple_podcasts_url': s.apple_podcasts_url or '',
                     'thumbnail': s.podcast_thumbnail_url or '',
-                    'active': s.active
-                })
+                    'active': s.active,
+                    '_nextUpcoming': upcoming,
+                }
+
+            if next_upcoming:
+                results['results'].append(_sermon_dict(next_upcoming, upcoming=True))
+
+            for s in sermon_hits:
+                results['results'].append(_sermon_dict(s))
 
         # Search announcements
         if content_type in ['all', 'announcements']:

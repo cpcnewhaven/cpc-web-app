@@ -65,6 +65,10 @@ def json_sermons():
         'episodes': episodes
     })
 
+_SERIES_THUMBNAILS = {
+    'Beyond the Sunday Sermon': 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/1_BEYOND%20-%20THE%20SUNDAY%20SERMON_001.jpg',
+}
+
 @json_api.route('/api/json/podcasts')
 def json_podcasts():
     """Serve all podcast series from database."""
@@ -72,7 +76,7 @@ def json_podcasts():
     results = []
     for s in series_list:
         episodes = PodcastEpisode.query.filter_by(series_id=s.id).order_by(PodcastEpisode.date_added.desc()).all()
-        thumbnail = next((ep.podcast_thumbnail_url for ep in episodes if ep.podcast_thumbnail_url), None)
+        thumbnail = _SERIES_THUMBNAILS.get(s.title) or next((ep.podcast_thumbnail_url for ep in episodes if ep.podcast_thumbnail_url), None)
         results.append({
             'id': s.id,
             'title': s.title,

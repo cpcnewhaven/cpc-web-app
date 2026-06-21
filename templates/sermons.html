@@ -923,20 +923,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (data.results && data.results.length > 0) {
-                // Identify the single "next upcoming" sermon (nearest future inactive)
-                const today = new Date(); today.setHours(0,0,0,0);
-                const inactive = data.results.filter(s => s.active === false);
-                let nextUpcomingId = null;
-                if (inactive.length > 0) {
-                    const future = inactive.filter(s => s.date && new Date(s.date) >= today);
-                    if (future.length > 0) {
-                        const nearest = future.reduce((a, b) => new Date(a.date) <= new Date(b.date) ? a : b);
-                        nextUpcomingId = nearest.id;
-                    }
-                }
-                // Remove inactive sermons that aren't the next upcoming
-                filteredSermons = data.results.filter(s => s.active !== false || s.id === nextUpcomingId);
-                filteredSermons.forEach(s => { s._nextUpcoming = (s.id === nextUpcomingId); });
+                filteredSermons = data.results;
                 renderSermons();
 
                 // Update pagination
