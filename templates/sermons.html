@@ -42,13 +42,13 @@
 
 .sermon-controls {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
     margin-bottom: 0.75rem;
-    padding: 0.75rem;
+    padding: 0.5rem 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     align-items: center;
 }
@@ -60,20 +60,20 @@
 
 .filter-controls select,
 .year-filter {
-    min-width: 140px;
-    padding: 0.65rem 1rem;
-    border-radius: 10px;
+    min-width: 0;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
     background: rgba(0, 50, 120, 0.25);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     color: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.3);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
     font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(0, 50, 120, 0.2);
+    transition: all 0.2s ease;
     outline: none;
+    max-width: 120px;
 }
 
 .filter-controls select:hover,
@@ -100,12 +100,12 @@
 
 .search-container {
     flex: 1;
-    min-width: 250px;
+    min-width: 120px;
 }
 
 .search-container input {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: 0.4rem 0.75rem;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
@@ -123,13 +123,15 @@
 }
 
 .view-controls button {
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.4rem 0.6rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 0.85rem;
+    line-height: 1;
 }
 
 .view-controls button.active {
@@ -706,27 +708,25 @@
 <!-- Sermons Section -->
 <section class="sermons-section sermons-page compact-page">
     <div class="compact-content" style="max-width: 100%; padding: 0 0.75rem;">
-        <!-- Phase 3: Filter Controls -->
+        <!-- Filter Controls -->
         <div class="sermon-controls">
             <div class="search-container">
-                <input type="text" id="sermonSearchInput"
-                    placeholder="Search sermons...">
+                <input type="text" id="sermonSearchInput" placeholder="Search sermons...">
             </div>
-            <button class="filter-toggle-mobile" id="sermonFilterToggle" style="display: none;">Filters ▼</button>
-            <div class="filter-controls mobile-collapsible" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-                <select id="speakerFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
-                    <option value="">All Speakers</option>
+            <div class="filter-controls" style="display: flex; gap: 0.5rem;">
+                <select id="speakerFilter">
+                    <option value="">Speakers</option>
                 </select>
-                <select id="seriesFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
-                    <option value="">All Series</option>
+                <select id="seriesFilter">
+                    <option value="">Series</option>
                 </select>
-                <select id="yearFilter" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border-radius: 6px; font-size: 0.85rem;">
-                    <option value="">All Years</option>
+                <select id="yearFilter">
+                    <option value="">Year</option>
                 </select>
             </div>
             <div class="view-controls">
-                <button class="view-btn active" data-view="card" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;">Card View</button>
-                <button class="view-btn" data-view="table" style="padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s;">Table View</button>
+                <button class="view-btn active" data-view="card" title="Card View"><i class="fas fa-th-large"></i></button>
+                <button class="view-btn" data-view="table" title="Table View"><i class="fas fa-list"></i></button>
             </div>
         </div>
 
@@ -923,7 +923,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (data.results && data.results.length > 0) {
-                filteredSermons = data.results;
+                // Identify the single "next upcoming" sermon (nearest future inactive)
+                const today = new Date(); today.setHours(0,0,0,0);
+                const inactive = data.results.filter(s => s.active === false);
+                let nextUpcomingId = null;
+                if (inactive.length > 0) {
+                    const future = inactive.filter(s => s.date && new Date(s.date) >= today);
+                    if (future.length > 0) {
+                        const nearest = future.reduce((a, b) => new Date(a.date) <= new Date(b.date) ? a : b);
+                        nextUpcomingId = nearest.id;
+                    }
+                }
+                // Remove inactive sermons that aren't the next upcoming
+                filteredSermons = data.results.filter(s => s.active !== false || s.id === nextUpcomingId);
+                filteredSermons.forEach(s => { s._nextUpcoming = (s.id === nextUpcomingId); });
                 renderSermons();
 
                 // Update pagination
@@ -983,11 +996,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const card = document.createElement('div');
             card.className = 'sermon-card';
 
-            // Check if sermon is published
-            const isPublished = sermon.active !== false;
-
-            // Check if sermon has MP3 file but no streaming links
-            const hasMP3 = sermon.audio_file_url && sermon.audio_file_url.includes('.mp3');
+            const isUpcoming = sermon._nextUpcoming === true;
+            const AUDIO_RE = /\.(mp3|m4a|ogg|wav|aac)(\?|$)/i;
+            const hasAudio = !!sermon.audio_file_url;
+            const urlIsAudio = sermon.url && AUDIO_RE.test(sermon.url);
+            const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
             const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
                                      (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
                                      (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
@@ -1005,7 +1018,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="sermon-date">${formatDate(sermon.date)}</span>
                     </p>
                     ${sermon.scripture ? `<p class="sermon-scripture">${sermon.scripture}</p>` : ''}
-                    ${!isPublished ? `
+                    ${isUpcoming ? `
                         <span class="upcoming-badge">
                             <i class="fas fa-calendar-alt"></i> Upcoming Sermon
                         </span>
@@ -1026,12 +1039,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <i class="fab fa-apple"></i> Apple
                                 </a>
                             ` : ''}
-                            ${hasMP3 && !hasStreamingLinks ? `
-                                <button class="btn-play-mp3" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(sermon.audio_file_url)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
+                            ${audioSrc && !hasStreamingLinks ? `
+                                <button class="btn-play-mp3" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(audioSrc)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
                                     <i class="fas fa-play"></i> Play
                                 </button>
                             ` : ''}
-                            ${!hasStreamingLinks && !hasMP3 && sermon.url ? `
+                            ${!hasStreamingLinks && !audioSrc && sermon.url ? `
                                 <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play">
                                     <i class="fas fa-play"></i> Listen
                                 </a>
@@ -1058,8 +1071,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         filteredSermons.forEach(sermon => {
             const tr = document.createElement('tr');
-            const isPublished = sermon.active !== false;
-            const hasMP3 = sermon.audio_file_url && sermon.audio_file_url.includes('.mp3');
+            const isUpcoming = sermon._nextUpcoming === true;
+            const AUDIO_RE = /\.(mp3|m4a|ogg|wav|aac)(\?|$)/i;
+            const hasAudio = !!sermon.audio_file_url;
+            const urlIsAudio = sermon.url && AUDIO_RE.test(sermon.url);
+            const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
             const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
                                      (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
                                      (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
@@ -1070,7 +1086,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${sermon.speaker || 'Unknown'}</td>
                 <td>${sermon.scripture || '-'}</td>
                 <td class="sermon-links">
-                    ${!isPublished ? `
+                    ${isUpcoming ? `
                         <span style="color: rgba(255, 193, 7, 0.95); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
                             <i class="fas fa-calendar-alt"></i> Upcoming
                         </span>
@@ -1090,17 +1106,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fab fa-apple"></i> Apple
                             </a>
                         ` : ''}
-                        ${hasMP3 && !hasStreamingLinks ? `
-                            <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(sermon.audio_file_url)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
+                        ${audioSrc && !hasStreamingLinks ? `
+                            <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;" onclick="playEpisode(${JSON.stringify(sermon.title)}, ${JSON.stringify(audioSrc)}, ${JSON.stringify(sermon.thumbnail || '')}, ${JSON.stringify(sermon.speaker || '')})">
                                 <i class="fas fa-play"></i> Play
                             </button>
                         ` : ''}
-                        ${!hasStreamingLinks && !hasMP3 && sermon.url ? `
+                        ${!hasStreamingLinks && !audioSrc && sermon.url ? `
                              <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Listen">
                                 <i class="fas fa-play"></i> Listen
                             </a>
                         ` : ''}
-                        ${!sermon.url && !hasMP3 ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
+                        ${!sermon.url && !audioSrc ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
                     `}
                 </td>
             `;
