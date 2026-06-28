@@ -407,31 +407,38 @@ body.theme-white .events-hero p { color: var(--page-muted); }
             <h2 class="section-title">Regular Schedule</h2>
             <div class="schedule-card">
                 <div class="schedule-day">Sunday</div>
-                {% set prayer_time = site_content.get('service_prayer_time', '') %}
-                {% if prayer_time and prayer_time.strip().lower() != 'no' %}
+                {% if active_schedule == 'summer' %}
+                  {% set _p = site_content.get('service_summer_prayer_time','') %}
+                  {% set _s = site_content.get('service_summer_school_time','') %}
+                  {% set _w = site_content.get('service_summer_worship_time','') %}
+                  {% set _f = site_content.get('service_summer_fellowship_time','') %}
+                {% else %}
+                  {% set _p = site_content.get('service_prayer_time','') %}
+                  {% set _s = site_content.get('service_school_time','') %}
+                  {% set _w = site_content.get('service_worship_time','') %}
+                  {% set _f = site_content.get('service_fellowship_time','') %}
+                {% endif %}
+                {% if _p and _p.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ prayer_time }}</span>
+                    <span class="schedule-time">{{ _p }}</span>
                     <span class="schedule-activity">Prayer in the Parlor</span>
                 </div>
                 {% endif %}
-                {% set school_time = site_content.get('service_school_time', '') %}
-                {% if school_time and school_time.strip().lower() != 'no' %}
+                {% if _s and _s.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ school_time }}</span>
+                    <span class="schedule-time">{{ _s }}</span>
                     <span class="schedule-activity">Children's Sunday School & Adult Sunday Studies</span>
                 </div>
                 {% endif %}
-                {% set worship_time = site_content.get('service_worship_time', '') %}
-                {% if worship_time and worship_time.strip().lower() != 'no' %}
+                {% if _w and _w.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ worship_time }}</span>
+                    <span class="schedule-time">{{ _w }}</span>
                     <span class="schedule-activity">Sunday Worship Service</span>
                 </div>
                 {% endif %}
-                {% set fellowship_time = site_content.get('service_fellowship_time', '') %}
-                {% if fellowship_time and fellowship_time.strip().lower() != 'no' %}
+                {% if _f and _f.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ fellowship_time }}</span>
+                    <span class="schedule-time">{{ _f }}</span>
                     <span class="schedule-activity">Fellowship Lunch</span>
                 </div>
                 {% endif %}

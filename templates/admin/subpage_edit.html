@@ -467,8 +467,38 @@
         </div>
         {% endif %}
 
-        <form method="POST" action="/admin/subpage-edit/?page={{ active_page }}">
+        {% if active_page == 'service_times' %}
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+            <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.5); margin:0 0 0.85rem;">Quick Switch</p>
+            <div style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1rem;">
+                <button type="button" id="btn-regular" onclick="setScheduleMode('regular')"
+                    style="padding:0.55rem 1.1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.85); font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                    <i class="fas fa-calendar-check" style="margin-right:0.4rem;"></i>Regular Schedule
+                </button>
+                <button type="button" id="btn-summer" onclick="setScheduleMode('summer')"
+                    style="padding:0.55rem 1.1rem; border-radius:8px; border:1px solid rgba(255,200,50,0.35); background:rgba(255,200,50,0.08); color:#ffd666; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                    <i class="fas fa-sun" style="margin-right:0.4rem;"></i>Summer Schedule
+                </button>
+                <button type="button" id="btn-auto" onclick="setScheduleMode('auto')"
+                    style="padding:0.55rem 1.1rem; border-radius:8px; border:1px solid rgba(100,200,255,0.3); background:rgba(100,200,255,0.07); color:#74c0fc; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                    <i class="fas fa-robot" style="margin-right:0.4rem;"></i>Auto (by date)
+                </button>
+            </div>
+            <p style="font-size:0.78rem; color:rgba(255,255,255,0.42); margin:0;">
+                <strong style="color:rgba(255,255,255,0.6);">Regular</strong> — always show the regular times.
+                <strong style="color:#ffd666;">Summer</strong> — always show the summer times.
+                <strong style="color:#74c0fc;">Auto</strong> — auto-switches based on the month range you set below.
+                Clicking a button saves immediately.
+            </p>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/admin/subpage-edit/?page={{ active_page }}" id="mainForm">
             {% for field in fields %}
+            {% if active_page == 'service_times' and field.key in ('schedule_mode', 'summer_start_month', 'summer_end_month') %}
+            {# These are controlled by the quick-switch buttons above; still include hidden inputs so they save #}
+            <input type="hidden" name="{{ field.key }}" id="hidden_{{ field.key }}" value="{{ field.value }}">
+            {% else %}
             <div class="editor-section">
                 <label for="field_{{ field.key }}">
                     {{ field.label }}
@@ -508,7 +538,31 @@
                     rows="{{ 14 if field.is_json else 4 }}" data-default="{{ field.default }}">{{ field.value }}</textarea>
                 {% endif %}
             </div>
+            {% endif %}{# end skip for schedule_mode hidden fields #}
             {% endfor %}
+
+            {# Auto date-range inputs — shown inline below the field list for service_times #}
+            {% if active_page == 'service_times' %}
+            <div id="auto-date-range" style="display:none; background:rgba(100,200,255,0.06); border:1px solid rgba(100,200,255,0.2); border-radius:10px; padding:1.1rem 1.25rem; margin-bottom:1.25rem;">
+                <p style="font-size:0.82rem; font-weight:700; color:#74c0fc; margin:0 0 0.75rem; text-transform:uppercase; letter-spacing:0.06em;"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>Auto Date Range</p>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:140px;">
+                        <label style="display:block; font-size:0.8rem; color:rgba(255,255,255,0.6); margin-bottom:0.3rem;">Summer starts (month)</label>
+                        <input type="number" min="1" max="12" id="vis_summer_start" value="{{ fields | selectattr('key','equalto','summer_start_month') | map(attribute='value') | first | default('6') }}"
+                            oninput="document.getElementById('hidden_summer_start_month').value=this.value"
+                            style="width:100%; background:rgba(0,0,0,0.28); border:1px solid rgba(100,200,255,0.3); border-radius:6px; color:rgba(255,255,255,0.9); padding:0.6rem 0.75rem; font-size:0.9rem;">
+                        <div style="font-size:0.72rem; color:rgba(255,255,255,0.38); margin-top:0.3rem;">1=Jan · 6=Jun · 9=Sep</div>
+                    </div>
+                    <div style="flex:1; min-width:140px;">
+                        <label style="display:block; font-size:0.8rem; color:rgba(255,255,255,0.6); margin-bottom:0.3rem;">Summer ends (month)</label>
+                        <input type="number" min="1" max="12" id="vis_summer_end" value="{{ fields | selectattr('key','equalto','summer_end_month') | map(attribute='value') | first | default('8') }}"
+                            oninput="document.getElementById('hidden_summer_end_month').value=this.value"
+                            style="width:100%; background:rgba(0,0,0,0.28); border:1px solid rgba(100,200,255,0.3); border-radius:6px; color:rgba(255,255,255,0.9); padding:0.6rem 0.75rem; font-size:0.9rem;">
+                        <div style="font-size:0.72rem; color:rgba(255,255,255,0.38); margin-top:0.3rem;">1=Jan · 8=Aug · 12=Dec</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
 
             <div class="save-bar">
                 <button type="submit" class="btn-save">
@@ -640,6 +694,34 @@
             }
 
             applyVars();
+        })();
+
+        // ── Service Times quick-switch ──────────────────────────────────────
+        (function () {
+            var modeInput = document.getElementById('hidden_schedule_mode');
+            if (!modeInput) return; // not on service_times page
+
+            var autoBlock = document.getElementById('auto-date-range');
+            var btnRegular = document.getElementById('btn-regular');
+            var btnSummer  = document.getElementById('btn-summer');
+            var btnAuto    = document.getElementById('btn-auto');
+
+            function highlight(mode) {
+                [btnRegular, btnSummer, btnAuto].forEach(function(b){ if(b) b.style.opacity='0.55'; });
+                var active = mode === 'summer' ? btnSummer : mode === 'auto' ? btnAuto : btnRegular;
+                if (active) active.style.opacity='1';
+                if (autoBlock) autoBlock.style.display = (mode === 'auto') ? 'block' : 'none';
+            }
+
+            // Init on page load
+            highlight(modeInput.value || 'regular');
+
+            window.setScheduleMode = function(mode) {
+                modeInput.value = mode;
+                highlight(mode);
+                // Submit the form immediately so the change persists
+                document.getElementById('mainForm').submit();
+            };
         })();
     </script>
 </body>

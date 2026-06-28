@@ -8,12 +8,32 @@
 {% block canonical %}https://cpcnewhaven.org/sundays{% endblock %}
 
 {% block content %}
+{# ── resolve effective times based on active_schedule (regular vs summer) ── #}
+{% if active_schedule == 'summer' %}
+  {% set eff_prayer     = site_content.get('service_summer_prayer_time', '') %}
+  {% set eff_school     = site_content.get('service_summer_school_time', '') %}
+  {% set eff_worship    = site_content.get('service_summer_worship_time', '') %}
+  {% set eff_fellowship = site_content.get('service_summer_fellowship_time', '') %}
+{% else %}
+  {% set eff_prayer     = site_content.get('service_prayer_time', '') %}
+  {% set eff_school     = site_content.get('service_school_time', '') %}
+  {% set eff_worship    = site_content.get('service_worship_time', '') %}
+  {% set eff_fellowship = site_content.get('service_fellowship_time', '') %}
+{% endif %}
+{% set show_prayer     = eff_prayer     and eff_prayer.strip().lower()     != 'no' %}
+{% set show_school     = eff_school     and eff_school.strip().lower()     != 'no' %}
+{% set show_worship    = eff_worship    and eff_worship.strip().lower()    != 'no' %}
+{% set show_fellowship = eff_fellowship and eff_fellowship.strip().lower() != 'no' %}
+
 <div class="sundays-page">
     <!-- Hero Section with photo background -->
     <div style="background: linear-gradient(135deg, rgba(0,40,100,0.72), rgba(0,30,80,0.80)), url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); padding: 3.5rem 1.25rem; margin-bottom: 2rem; text-align: center;">
         <div class="container mx-auto">
             <h1 style="font-size: 2.5rem; font-weight: 700; color: rgba(255,255,255,0.95); margin-bottom: 0.5rem; font-family:'Manrope',sans-serif;">Join Us This Sunday</h1>
-            <p style="font-size: 1.1rem; color: rgba(255,255,255,0.78);">Worship · Community · 135 Whitney Avenue, New Haven CT · {{ site_content.get('service_worship_time', '10:30am') }}</p>
+            <p style="font-size: 1.1rem; color: rgba(255,255,255,0.78);">Worship · Community · 135 Whitney Avenue, New Haven CT{% if show_worship %} · {{ eff_worship }}{% endif %}</p>
+            {% if active_schedule == 'summer' %}
+            <span style="display:inline-block; margin-top:0.75rem; background:rgba(255,200,50,0.18); border:1px solid rgba(255,200,50,0.4); color:#ffd666; font-size:0.8rem; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; border-radius:999px; padding:0.25rem 0.85rem;">Summer Schedule</span>
+            {% endif %}
         </div>
     </div>
 
@@ -22,50 +42,53 @@
         <section style="margin-bottom: 3rem;">
             <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Sunday Schedule</h2>
             <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
-                {% set prayer_time = site_content.get('service_prayer_time', '') %}
-                {% if prayer_time and prayer_time.strip().lower() != 'no' %}
+                {% if show_prayer %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ prayer_time }}</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ eff_prayer }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Prayer in the Parlor</p>
                 </div>
                 {% endif %}
-                {% set school_time = site_content.get('service_school_time', '') %}
-                {% if school_time and school_time.strip().lower() != 'no' %}
+                {% if show_school %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ school_time }}</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ eff_school }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Sunday School & Adult Studies</p>
                 </div>
                 {% endif %}
-                {% set worship_time = site_content.get('service_worship_time', '') %}
-                {% if worship_time and worship_time.strip().lower() != 'no' %}
+                {% if show_worship %}
                 <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 2px solid #74c0fc; border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ worship_time }}</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ eff_worship }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Worship Service</p>
                 </div>
                 {% endif %}
-                {% set fellowship_time = site_content.get('service_fellowship_time', '') %}
-                {% if fellowship_time and fellowship_time.strip().lower() != 'no' %}
+                {% if show_fellowship %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ fellowship_time }}</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ eff_fellowship }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Fellowship Lunch</p>
                 </div>
                 {% endif %}
             </div>
         </section>
 
+        {% if show_school or show_fellowship %}
         <!-- What We Offer -->
         <section style="margin-bottom: 3rem;">
             <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">What We Offer</h2>
             <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                {% if show_school %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
                     <p style="color: rgba(255,255,255,0.9);"><strong>Children Welcome</strong> — Age-appropriate care and Sunday School classes for all ages</p>
                 </div>
+                {% endif %}
+                {% if show_fellowship %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
                     <p style="color: rgba(255,255,255,0.9);"><strong>Fellowship Lunch</strong> — Complimentary catered meal after worship</p>
                 </div>
+                {% endif %}
             </div>
         </section>
+        {% endif %}
 
+        {% if show_school %}
         <!-- Children's Sunday School -->
         <section style="margin-bottom: 3rem;">
             <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Children's Sunday School</h2>
@@ -95,10 +118,11 @@
         <section style="margin-bottom: 3rem;">
             <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Adult Sunday Studies</h2>
             <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
-                <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;"><strong>Fellowship Hall at {{ site_content.get('service_school_time', '9:30am') }}</strong></p>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;"><strong>Fellowship Hall at {{ eff_school }}</strong></p>
                 <p style="color: rgba(255,255,255,0.75);">Led by Rev. Craig Luekens</p>
             </div>
         </section>
+        {% endif %}
 
         <!-- Location & Parking -->
         <section style="margin-bottom: 3rem;">
@@ -113,6 +137,7 @@
             </div>
         </section>
 
+        {% if show_fellowship %}
         <!-- Fellowship Lunch -->
         <section style="margin-bottom: 3rem;">
             <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Fellowship Lunch</h2>
@@ -120,6 +145,7 @@
                 <p style="color: rgba(255,255,255,0.85); line-height: 1.6;">On most Sundays throughout the year, our worship service is followed by a shared fellowship meal at about 12pm. The meal is free to visitors and an enjoyable way to get to know some people while eating a catered meal.</p>
             </div>
         </section>
+        {% endif %}
 
         <!-- CTA -->
         <section style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, rgba(0, 100, 200, 0.2), rgba(0, 80, 180, 0.15)); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">

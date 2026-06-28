@@ -488,13 +488,23 @@ SUBPAGE_CONFIGS = {
     'service_times': {
         'title': 'Service Times',
         'url': '/sundays',
-        'icon': 'schedule',
+        'icon': 'fas fa-clock',
         'color': '#0071e3',
         'keys': [
-            ('service_prayer_time', 'Prayer Time', '', 'text'),
-            ('service_school_time', 'Sunday School Time', '', 'text'),
-            ('service_worship_time', 'Worship Service Time', '', 'text'),
-            ('service_fellowship_time', 'Fellowship Lunch Time', '', 'text'),
+            # Mode control (rendered as quick-switch buttons in admin UI)
+            ('schedule_mode', 'Schedule Mode', 'regular', 'text'),
+            ('summer_start_month', 'Auto Summer Start (month number, e.g. 6 = June)', '6', 'text'),
+            ('summer_end_month', 'Auto Summer End (month number, e.g. 8 = August)', '8', 'text'),
+            # Regular schedule
+            ('service_prayer_time', 'Regular — Prayer Time', '', 'text'),
+            ('service_school_time', 'Regular — Sunday School Time', '', 'text'),
+            ('service_worship_time', 'Regular — Worship Service Time', '', 'text'),
+            ('service_fellowship_time', 'Regular — Fellowship Lunch Time', '', 'text'),
+            # Summer schedule
+            ('service_summer_prayer_time', 'Summer — Prayer Time', '', 'text'),
+            ('service_summer_school_time', 'Summer — Sunday School Time', '', 'text'),
+            ('service_summer_worship_time', 'Summer — Worship Service Time', '', 'text'),
+            ('service_summer_fellowship_time', 'Summer — Fellowship Lunch Time', '', 'text'),
         ]
     },
     'contact': {
@@ -2475,11 +2485,27 @@ def inject_current_user_metadata():
 
 @app.context_processor
 def inject_site_content():
-    """Expose editable site content globally so templates can read shared settings."""
+    """Expose editable site content and active schedule mode globally to all templates."""
     try:
-        return {'site_content': {r.key: r.value for r in SiteContent.query.all()}}
+        sc = {r.key: r.value for r in SiteContent.query.all()}
     except Exception:
-        return {'site_content': {}}
+        sc = {}
+
+    mode = (sc.get('schedule_mode') or 'regular').strip().lower()
+    if mode == 'auto':
+        month = datetime.utcnow().month
+        try:
+            start = int(sc.get('summer_start_month') or 6)
+            end   = int(sc.get('summer_end_month')   or 8)
+            active_schedule = 'summer' if start <= month <= end else 'regular'
+        except (ValueError, TypeError):
+            active_schedule = 'regular'
+    elif mode == 'summer':
+        active_schedule = 'summer'
+    else:
+        active_schedule = 'regular'
+
+    return {'site_content': sc, 'active_schedule': active_schedule}
 
 def require_auth(f):
     """Decorator to require authentication"""
