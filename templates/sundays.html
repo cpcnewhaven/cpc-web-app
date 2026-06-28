@@ -22,22 +22,34 @@
         <section style="margin-bottom: 3rem;">
             <h2 style="font-size: 1.75rem; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 2rem;">Sunday Schedule</h2>
             <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                {% set prayer_time = site_content.get('service_prayer_time', '8:30am') %}
+                {% if prayer_time and prayer_time.strip().lower() != 'no' %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">8:30am</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ prayer_time }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Prayer in the Parlor</p>
                 </div>
+                {% endif %}
+                {% set school_time = site_content.get('service_school_time', '9:30am') %}
+                {% if school_time and school_time.strip().lower() != 'no' %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">9:30am</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ school_time }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Sunday School & Adult Studies</p>
                 </div>
+                {% endif %}
+                {% set worship_time = site_content.get('service_worship_time', '10:30am') %}
+                {% if worship_time and worship_time.strip().lower() != 'no' %}
                 <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 2px solid #74c0fc; border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">10:30am</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ worship_time }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Worship Service</p>
                 </div>
+                {% endif %}
+                {% set fellowship_time = site_content.get('service_fellowship_time', '12:00pm') %}
+                {% if fellowship_time and fellowship_time.strip().lower() != 'no' %}
                 <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem;">
-                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">12:00pm</h3>
+                    <h3 style="color: #74c0fc; font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600;">{{ fellowship_time }}</h3>
                     <p style="color: rgba(255,255,255,0.9); font-weight: 500;">Fellowship Lunch</p>
                 </div>
+                {% endif %}
             </div>
         </section>
 

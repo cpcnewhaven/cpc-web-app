@@ -106,38 +106,50 @@
     <div class="container">
         <h2>Service Schedule</h2>
         <div class="schedule-timeline">
+            {% set prayer_time = site_content.get('service_prayer_time', '8:30am') %}
+            {% if prayer_time and prayer_time.strip().lower() != 'no' %}
             <div class="schedule-item">
-                <div class="schedule-time">{{ site_content.get('service_prayer_time', '8:30am') }}</div>
+                <div class="schedule-time">{{ prayer_time }}</div>
                 <div class="schedule-content">
                     <h3>Prayer in the Parlor</h3>
                     <p>Join us for prayer and fellowship in the church parlor</p>
                 </div>
             </div>
+            {% endif %}
 
+            {% set school_time = site_content.get('service_school_time', '9:30am') %}
+            {% if school_time and school_time.strip().lower() != 'no' %}
             <div class="schedule-item">
-                <div class="schedule-time">{{ site_content.get('service_school_time', '9:30am') }}</div>
+                <div class="schedule-time">{{ school_time }}</div>
                 <div class="schedule-content">
                     <h3>Sunday School & Adult Studies</h3>
                     <p>Children's Sunday School and Adult Bible Studies</p>
                 </div>
             </div>
+            {% endif %}
 
+            {% set worship_time = site_content.get('service_worship_time', '10:30am') %}
+            {% if worship_time and worship_time.strip().lower() != 'no' %}
             <div class="schedule-item featured">
-                <div class="schedule-time">{{ site_content.get('service_worship_time', '10:30am') }}</div>
+                <div class="schedule-time">{{ worship_time }}</div>
                 <div class="schedule-content">
                     <h3>Sunday Worship Service</h3>
                     <p>Our main worship service with preaching, prayer, and communion</p>
                     <span class="live-badge">LIVE STREAM</span>
                 </div>
             </div>
+            {% endif %}
 
+            {% set fellowship_time = site_content.get('service_fellowship_time', '12:00pm') %}
+            {% if fellowship_time and fellowship_time.strip().lower() != 'no' %}
             <div class="schedule-item">
-                <div class="schedule-time">{{ site_content.get('service_fellowship_time', '12:00pm') }}</div>
+                <div class="schedule-time">{{ fellowship_time }}</div>
                 <div class="schedule-content">
                     <h3>Fellowship Lunch</h3>
                     <p>Stay for fellowship and community after worship</p>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </section>

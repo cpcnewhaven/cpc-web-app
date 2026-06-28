@@ -386,22 +386,34 @@
         <div class="service-times">
             <h2 class="section-heading border-l-4 border-blue-400 pl-3">Sunday Service Information</h2>
             <div class="service-schedule leading-relaxed">
+                {% set prayer_time = site_content.get('service_prayer_time', '8:30am') %}
+                {% if prayer_time and prayer_time.strip().lower() != 'no' %}
                 <div class="time-slot">
-                    <h3>8:30am</h3>
+                    <h3>{{ prayer_time }}</h3>
                     <p>Prayer in the Parlor</p>
                 </div>
+                {% endif %}
+                {% set school_time = site_content.get('service_school_time', '9:30am') %}
+                {% if school_time and school_time.strip().lower() != 'no' %}
                 <div class="time-slot">
-                    <h3>9:30am</h3>
+                    <h3>{{ school_time }}</h3>
                     <p>Children's Sunday School &amp; Adult Sunday Studies</p>
                 </div>
+                {% endif %}
+                {% set worship_time = site_content.get('service_worship_time', '10:30am') %}
+                {% if worship_time and worship_time.strip().lower() != 'no' %}
                 <div class="time-slot featured">
-                    <h3>10:30am</h3>
+                    <h3>{{ worship_time }}</h3>
                     <p>Sunday Worship Service</p>
                 </div>
+                {% endif %}
+                {% set fellowship_time = site_content.get('service_fellowship_time', '12:00pm') %}
+                {% if fellowship_time and fellowship_time.strip().lower() != 'no' %}
                 <div class="time-slot">
-                    <h3>12:00pm</h3>
+                    <h3>{{ fellowship_time }}</h3>
                     <p>Fellowship Lunch</p>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

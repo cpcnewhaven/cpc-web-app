@@ -407,22 +407,34 @@ body.theme-white .events-hero p { color: var(--page-muted); }
             <h2 class="section-title">Regular Schedule</h2>
             <div class="schedule-card">
                 <div class="schedule-day">Sunday</div>
+                {% set prayer_time = site_content.get('service_prayer_time', '8:30am') %}
+                {% if prayer_time and prayer_time.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ site_content.get('service_prayer_time', '8:30am') }}</span>
+                    <span class="schedule-time">{{ prayer_time }}</span>
                     <span class="schedule-activity">Prayer in the Parlor</span>
                 </div>
+                {% endif %}
+                {% set school_time = site_content.get('service_school_time', '9:30am') %}
+                {% if school_time and school_time.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ site_content.get('service_school_time', '9:30am') }}</span>
+                    <span class="schedule-time">{{ school_time }}</span>
                     <span class="schedule-activity">Children's Sunday School & Adult Sunday Studies</span>
                 </div>
+                {% endif %}
+                {% set worship_time = site_content.get('service_worship_time', '10:30am') %}
+                {% if worship_time and worship_time.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ site_content.get('service_worship_time', '10:30am') }}</span>
+                    <span class="schedule-time">{{ worship_time }}</span>
                     <span class="schedule-activity">Sunday Worship Service</span>
                 </div>
+                {% endif %}
+                {% set fellowship_time = site_content.get('service_fellowship_time', '12:00pm') %}
+                {% if fellowship_time and fellowship_time.strip().lower() != 'no' %}
                 <div class="schedule-item">
-                    <span class="schedule-time">{{ site_content.get('service_fellowship_time', '12:00pm') }}</span>
+                    <span class="schedule-time">{{ fellowship_time }}</span>
                     <span class="schedule-activity">Fellowship Lunch</span>
                 </div>
+                {% endif %}
             </div>
         </section>
 
