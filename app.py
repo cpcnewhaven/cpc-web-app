@@ -431,7 +431,7 @@ SUBPAGE_CONFIGS = {
     'about': {
         'title': 'About Page',
         'url': '/about',
-        'icon': 'fas fa-file-alt',
+        'icon': 'article',
         'color': '#7c3aed',
         'keys': [
             ('hero_description', 'Hero Description', 'We are a community of believers in New Haven, Connecticut, committed to growing in the truth and grace of Jesus Christ, acting as faithful witnesses in our community and world, and trusting in the grace and power of the Holy Spirit.'),
@@ -445,7 +445,7 @@ SUBPAGE_CONFIGS = {
     'appearance': {
         'title': 'Appearance',
         'url': '/',
-        'icon': 'fas fa-palette',
+        'icon': 'palette',
         'color': '#0ea5e9',
         'keys': [
             ('appearance_primary_color', 'Primary Color', '#0052a3', 'color'),
@@ -477,7 +477,7 @@ SUBPAGE_CONFIGS = {
     'bulletin': {
         'title': 'Weekly Bulletin',
         'url': '/sundays',
-        'icon': 'fas fa-newspaper',
+        'icon': 'newspaper',
         'color': '#d97706',
         'keys': [
             ('bulletin_title', 'Bulletin Heading', 'This Week at CPC'),
@@ -488,7 +488,7 @@ SUBPAGE_CONFIGS = {
     'service_times': {
         'title': 'Service Times',
         'url': '/sundays',
-        'icon': 'fas fa-clock',
+        'icon': 'schedule',
         'color': '#0071e3',
         'keys': [
             ('service_prayer_time', 'Prayer Time', ''),
@@ -500,7 +500,7 @@ SUBPAGE_CONFIGS = {
     'contact': {
         'title': 'Contact Info',
         'url': '/contact',
-        'icon': 'fas fa-address-card',
+        'icon': 'contact_page',
         'color': '#059669',
         'keys': [
             ('contact_address', 'Address', '135 Whitney Ave, New Haven, CT 06510'),
@@ -511,7 +511,7 @@ SUBPAGE_CONFIGS = {
     'community': {
         'title': 'Community Page',
         'url': '/community',
-        'icon': 'fas fa-users',
+        'icon': 'groups',
         'color': '#00a0a0',
         'keys': [
             ('community_hero_subtitle', 'Hero Subtitle', 'Join our vibrant community of believers and seekers'),
@@ -528,7 +528,7 @@ SUBPAGE_CONFIGS = {
     'lifegroups': {
         'title': 'LifeGroups Page',
         'url': '/lifegroups',
-        'icon': 'fas fa-circle-nodes',
+        'icon': 'hub',
         'color': '#2563eb',
         'keys': [
             ('lifegroups_tagline', 'Hero Tagline', 'Church in the Small — Prayer, Teaching, Fellowship & Care'),
@@ -548,7 +548,7 @@ SUBPAGE_CONFIGS = {
     'pastors_book': {
         'title': "Pastor's Book Pick",
         'url': '/pastors-book',
-        'icon': 'fas fa-book-open',
+        'icon': 'auto_stories',
         'color': '#007aff',
         'keys': [
             ('pastors_book_active', 'Show Book Pick (True/False)', 'True'),
