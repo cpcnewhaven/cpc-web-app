@@ -475,9 +475,11 @@
                     {% if field.is_json %}<span class="json-badge">JSON</span>{% else %}<span
                         class="html-badge">HTML</span>{% endif %}
                 </label>
-                {% if field.is_json %}
+                {% if active_page == 'service_times' %}
+                <div class="field-hint">Enter a time (e.g. <strong style="color:rgba(255,255,255,0.7);">10:30am</strong>). Type <strong style="color:rgba(255,255,255,0.7);">No</strong> or leave it blank to hide this slot everywhere on the site.</div>
+                {% elif field.is_json %}
                 <div class="field-hint">
-                    JSON array — validate your format with 
+                    JSON array — validate your format with
                     <a href="https://jsonlint.com" target="_blank">jsonlint.com</a>.
                 </div>
                 {% elif field.input_type == 'color' %}

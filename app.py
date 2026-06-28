@@ -491,10 +491,10 @@ SUBPAGE_CONFIGS = {
         'icon': 'fas fa-clock',
         'color': '#0071e3',
         'keys': [
-            ('service_prayer_time', 'Prayer Time', '8:30am'),
-            ('service_school_time', 'Sunday School Time', '9:30am'),
-            ('service_worship_time', 'Worship Service Time', '10:30am'),
-            ('service_fellowship_time', 'Fellowship Lunch Time', '12:00pm'),
+            ('service_prayer_time', 'Prayer Time', ''),
+            ('service_school_time', 'Sunday School Time', ''),
+            ('service_worship_time', 'Worship Service Time', ''),
+            ('service_fellowship_time', 'Fellowship Lunch Time', ''),
         ]
     },
     'contact': {
@@ -3168,7 +3168,6 @@ class AnnouncementView(AuthenticatedModelView):
     page_size_choices = (20, 50, 100, 500, 1000)
     form_excluded_columns = ['id']
     create_template = 'admin/announcement_create.html'
-    edit_template = 'admin/announcement_create.html'
 
     form_rules = [
         rules.FieldSet(('type',), 'What kind of announcement?'),
@@ -3192,7 +3191,11 @@ class AnnouncementView(AuthenticatedModelView):
             ]
         ),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
-        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+        'expiration_date': DatePickerField(
+            'Expiration date (when "Pick a date…" is selected)',
+            validators=[Optional()],
+            default=None,
+        ),
     }
     form_overrides = {
         'type': SelectField,
