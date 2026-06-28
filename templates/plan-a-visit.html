@@ -79,7 +79,7 @@
                             </p>
                             <p>
                                 <strong>Sunday Morning Worship:</strong> We hold one service with communion
-                                at 10:30am. 
+                                at {{ site_content.get('service_worship_time', '10:30am') if site_content is defined else '10:30am' }}.
                             </p>
                           
                             <p>
@@ -178,7 +178,7 @@
                 <li class="visit-list-item">
                     <h3>Children's Sunday School and Adult Sunday Studies</h3>
                     <p>
-                        Before worship during the academic year you are welcome to join us at 9:30am for our
+                        Before worship during the academic year you are welcome to join us at {{ site_content.get('service_school_time', '9:30am') if site_content is defined else '9:30am' }} for our
                         School of Discipleship. During this time, children age 2.5 through high school are
                         invited to participate in age-specific Sunday School classes located throughout the
                         church building.

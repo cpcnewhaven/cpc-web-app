@@ -678,7 +678,8 @@ def sundays():
 
 @app.route('/plan-a-visit')
 def plan_a_visit():
-    return render_template('plan-a-visit.html')
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('plan-a-visit.html', site_content=site_content)
 
 @app.route('/give')
 def give():
