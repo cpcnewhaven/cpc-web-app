@@ -491,10 +491,10 @@ SUBPAGE_CONFIGS = {
         'icon': 'schedule',
         'color': '#0071e3',
         'keys': [
-            ('service_prayer_time', 'Prayer Time', ''),
-            ('service_school_time', 'Sunday School Time', ''),
-            ('service_worship_time', 'Worship Service Time', ''),
-            ('service_fellowship_time', 'Fellowship Lunch Time', ''),
+            ('service_prayer_time', 'Prayer Time', '', 'text'),
+            ('service_school_time', 'Sunday School Time', '', 'text'),
+            ('service_worship_time', 'Worship Service Time', '', 'text'),
+            ('service_fellowship_time', 'Fellowship Lunch Time', '', 'text'),
         ]
     },
     'contact': {

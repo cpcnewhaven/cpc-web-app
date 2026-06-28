@@ -472,8 +472,9 @@
             <div class="editor-section">
                 <label for="field_{{ field.key }}">
                     {{ field.label }}
-                    {% if field.is_json %}<span class="json-badge">JSON</span>{% else %}<span
-                        class="html-badge">HTML</span>{% endif %}
+                    {% if active_page == 'service_times' %}{# no badge for time fields #}
+                    {% elif field.is_json %}<span class="json-badge">JSON</span>
+                    {% else %}<span class="html-badge">HTML</span>{% endif %}
                 </label>
                 {% if active_page == 'service_times' %}
                 <div class="field-hint">Enter a time (e.g. <strong style="color:rgba(255,255,255,0.7);">10:30am</strong>). Type <strong style="color:rgba(255,255,255,0.7);">No</strong> or leave it blank to hide this slot everywhere on the site.</div>
