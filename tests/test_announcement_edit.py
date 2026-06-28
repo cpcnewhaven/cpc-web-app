@@ -10,6 +10,7 @@ os.environ["SECRET_KEY"] = "announcement-edit-test"
 
 from app import app, db  # noqa: E402
 from models import Announcement  # noqa: E402
+from wtforms.validators import Optional  # noqa: E402
 
 
 class AnnouncementEditTestCase(unittest.TestCase):
@@ -57,6 +58,7 @@ class AnnouncementEditTestCase(unittest.TestCase):
         self.assertIn("Original body", body)
         self.assertIn('name="event_end_time"', body)
         self.assertIn('name="featured_image"', body)
+        self.assertIn('name="_save_and_publish"', body)
 
     def test_edit_persists_with_no_expiration_date(self):
         response = self.client.post(
@@ -104,6 +106,114 @@ class AnnouncementEditTestCase(unittest.TestCase):
         public_body = self.client.get("/announcement/481").get_data(as_text=True)
         self.assertIn("Edited title", public_body)
         self.assertIn("Edited body", public_body)
+
+    def test_save_and_deploy_publishes_a_draft(self):
+        with app.app_context():
+            announcement = db.session.get(Announcement, 481)
+            announcement.active = False
+            db.session.commit()
+
+        response = self.client.post(
+            "/admin/announcement/edit/?id=481&url=/admin/announcement/",
+            data={
+                "type": "event",
+                "title": "Published title",
+                "description": "Published body",
+                "category": "general",
+                "tag": "",
+                "speaker": "",
+                "event_date": "",
+                "event_start_time": "",
+                "event_end_time": "",
+                "banner_type": "",
+                "featured_image": "",
+                "image_display_type": "",
+                "expiration_preset": "never",
+                "expiration_date": "",
+                "date_entered": "2026-06-28T14:13",
+                "_save_and_publish": "1",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        with app.app_context():
+            announcement = db.session.get(Announcement, 481)
+            self.assertTrue(announcement.active)
+
+    def test_create_supports_dates_image_and_expiration(self):
+        create_page = self.client.get("/admin/announcement/create/")
+        create_body = create_page.get_data(as_text=True)
+        self.assertEqual(create_page.status_code, 200)
+        self.assertIn('id="admin-form"', create_body)
+        for field_name in (
+            "event_date",
+            "featured_image",
+            "image_display_type",
+            "expiration_preset",
+            "expiration_date",
+        ):
+            self.assertIn(f'name="{field_name}"', create_body)
+
+        response = self.client.post(
+            "/admin/announcement/create/",
+            data={
+                "type": "event",
+                "title": "Created with complete fields",
+                "description": "Complete create workflow",
+                "category": "worship",
+                "tag": "summer",
+                "speaker": "",
+                "event_date": "2026-07-19",
+                "event_start_time": "9:00 AM",
+                "event_end_time": "10:30 AM",
+                "featured_image": "https://example.com/created.jpg",
+                "image_display_type": "poster",
+                "expiration_preset": "specific",
+                "expiration_date": "2026-07-20",
+                "_save_and_publish": "1",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        with app.app_context():
+            announcement = Announcement.query.filter_by(
+                title="Created with complete fields"
+            ).one()
+            self.assertTrue(announcement.active)
+            self.assertEqual(str(announcement.event_date), "2026-07-19")
+            self.assertEqual(
+                announcement.featured_image,
+                "https://example.com/created.jpg",
+            )
+            self.assertEqual(announcement.image_display_type, "poster")
+            self.assertEqual(str(announcement.expires_at), "2026-07-20")
+
+    def test_all_expiration_date_fields_accept_empty_values(self):
+        endpoints = {
+            "announcement",
+            "event",
+            "sermon",
+            "podcastepisode",
+            "galleryimage",
+            "teachingseries",
+        }
+        views = {
+            view.endpoint: view
+            for view in app.extensions["admin"][0]._views
+            if getattr(view, "endpoint", None) in endpoints
+        }
+
+        self.assertEqual(set(views), endpoints)
+        with app.test_request_context("/admin/"):
+            for endpoint, view in views.items():
+                form = view.create_form()
+                self.assertTrue(
+                    any(
+                        isinstance(validator, Optional)
+                        for validator in form.expiration_date.validators
+                    ),
+                    endpoint,
+                )
 
     def test_missing_record_shows_error_instead_of_edit_shell(self):
         response = self.client.get(

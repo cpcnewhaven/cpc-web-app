@@ -32,7 +32,7 @@
     </div>
   {% endif %}
 
-  <form method="POST" action="{{ url_for('announcement.create_view') }}">
+  <form method="POST" action="{{ url_for('announcement.create_view') }}" id="admin-form">
 
     <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Content</legend>
@@ -91,6 +91,11 @@
 
     <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Event Dates</legend>
+      <div class="form-group" style="margin-bottom:1.25rem;">
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Event Date</label>
+        <input type="date" name="event_date" value="{{ form_data.get('event_date', '') }}"
+          style="width:100%; max-width:220px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+      </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
         <div>
           <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Start Time</label>
@@ -103,6 +108,45 @@
           <input type="text" name="event_end_time" value="{{ form_data.get('event_end_time', '') }}"
             style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
             placeholder="e.g. 12:00 PM">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+      <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Image</legend>
+      <div class="form-group" style="margin-bottom:1.25rem;">
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Featured Image URL</label>
+        <input type="url" name="featured_image" value="{{ form_data.get('featured_image', '') }}"
+          style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
+          placeholder="https://example.com/image.jpg">
+      </div>
+      <div class="form-group">
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Image Display Type</label>
+        <select name="image_display_type"
+          style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+          <option value="" {% if not form_data.get('image_display_type') %}selected{% endif %}>Default</option>
+          <option value="cover" {% if form_data.get('image_display_type') == 'cover' %}selected{% endif %}>Cover</option>
+          <option value="poster" {% if form_data.get('image_display_type') == 'poster' %}selected{% endif %}>Poster</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+      <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Expiration</legend>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <div class="form-group">
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Expiration</label>
+          <select name="expiration_preset"
+            style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+            {% for val, label in [('never', 'Never'), ('1_week', '1 week'), ('2_weeks', '2 weeks'), ('3_weeks', '3 weeks'), ('4_weeks', '4 weeks'), ('specific', 'Pick a date…')] %}
+              <option value="{{ val }}" {% if form_data.get('expiration_preset', 'never') == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Expiration Date</label>
+          <input type="date" name="expiration_date" value="{{ form_data.get('expiration_date', '') }}"
+            style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
         </div>
       </div>
     </fieldset>

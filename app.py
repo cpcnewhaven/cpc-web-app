@@ -3334,11 +3334,27 @@ class AnnouncementView(AuthenticatedModelView):
             form_data = request.form.to_dict()
             title = form_data.get('title', '').strip()
             description = form_data.get('description', '').strip()
+            event_date = None
+            expiration_date = None
             if not title:
                 errors.append('Title is required.')
             if not description:
                 errors.append('Description is required.')
+            if form_data.get('event_date'):
+                try:
+                    event_date = date.fromisoformat(form_data['event_date'])
+                except ValueError:
+                    errors.append('Event date must be a valid date.')
+            if form_data.get('expiration_date'):
+                try:
+                    expiration_date = date.fromisoformat(form_data['expiration_date'])
+                except ValueError:
+                    errors.append('Expiration date must be a valid date.')
+            expiration_preset = form_data.get('expiration_preset', 'never')
+            if expiration_preset == 'specific' and not expiration_date:
+                errors.append('Choose an expiration date or select another expiration option.')
             if not errors:
+                now = datetime.utcnow()
                 ann = Announcement(
                     id=next_global_id(),
                     title=title,
@@ -3347,13 +3363,22 @@ class AnnouncementView(AuthenticatedModelView):
                     category=form_data.get('category', 'general'),
                     tag=form_data.get('tag', '') or None,
                     speaker=form_data.get('speaker', '') or None,
+                    event_date=event_date,
                     event_start_time=form_data.get('event_start_time', '') or None,
                     event_end_time=form_data.get('event_end_time', '') or None,
-                    active='_publish' in request.form,
+                    active=('_publish' in request.form or
+                            '_save_and_publish' in request.form),
                     superfeatured=bool(form_data.get('superfeatured')),
                     show_in_banner=bool(form_data.get('show_in_banner')),
+                    featured_image=form_data.get('featured_image', '').strip() or None,
+                    image_display_type=form_data.get('image_display_type', '').strip() or None,
+                    expires_at=_compute_expires_at(
+                        expiration_preset,
+                        expiration_date,
+                        now,
+                    ),
                     archived=False,
-                    date_entered=datetime.utcnow(),
+                    date_entered=now,
                 )
                 db.session.add(ann)
                 db.session.commit()
@@ -3707,7 +3732,11 @@ class SermonView(AuthenticatedModelView):
 
     form_extra_fields = {
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
-        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+        'expiration_date': DatePickerField(
+            'Expiration date (when "Pick a date…" is selected)',
+            validators=[Optional()],
+            default=None,
+        ),
         'series_name': DatalistField('Series',
             choices_func=lambda: [s.title for s in SermonSeries.query.order_by(SermonSeries.start_date.desc()).all()]),
         'book_name': DatalistField('Bible Book',
@@ -3936,7 +3965,11 @@ class PodcastEpisodeView(AuthenticatedModelView):
         'handout_url': URLField('Handout URL', validators=[Optional(), URL()]),
         'podcast_thumbnail_url': URLField('Thumbnail URL', validators=[Optional(), URL()]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
-        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+        'expiration_date': DatePickerField(
+            'Expiration date (when "Pick a date…" is selected)',
+            validators=[Optional()],
+            default=None,
+        ),
     }
     form_overrides = {'date_added': DatePickerField}
 
@@ -4019,7 +4052,11 @@ class GalleryImageView(AuthenticatedModelView):
         'url': URLField('Image URL', validators=[Optional(), URL()]),
         'tags': TextAreaField('Tags (comma-separated)', widget=TextArea()),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
-        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+        'expiration_date': DatePickerField(
+            'Expiration date (when "Pick a date…" is selected)',
+            validators=[Optional()],
+            default=None,
+        ),
     }
     form_overrides = {'created': DateTimePickerField}
 
@@ -4230,7 +4267,11 @@ class OngoingEventView(AuthenticatedModelView):
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[Optional(), Length(max=2000)]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
-        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+        'expiration_date': DatePickerField(
+            'Expiration date (when "Pick a date…" is selected)',
+            validators=[Optional()],
+            default=None,
+        ),
     }
     form_overrides = {
         'date_entered': DateTimePickerField,
@@ -4466,7 +4507,11 @@ class TeachingSeriesView(AuthenticatedModelView):
         'description': TextAreaField('Description', widget=TextArea(), validators=[Length(max=2000)]),
         'event_info': TextAreaField('Event info (when/where)', widget=TextArea(), validators=[Length(max=500)]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
-        'expiration_date': DatePickerField('Expiration date (when "Pick a date…" is selected)', default=None),
+        'expiration_date': DatePickerField(
+            'Expiration date (when "Pick a date…" is selected)',
+            validators=[Optional()],
+            default=None,
+        ),
     }
     form_overrides = {
         'start_date': DatePickerField,

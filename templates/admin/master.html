@@ -89,6 +89,9 @@
                 !window.location.pathname.includes('/edit') && 
                 !window.location.pathname.includes('/create')) return;
 
+            var form = document.querySelector('#admin-form, form.admin-form, form');
+            if (!form) return;
+
             // Compact creation/edit form: grid layout, dropdowns and toggles (dials)
             (function compactForm() {
                 var formGroups = form.querySelectorAll('.form-group');
@@ -784,7 +787,7 @@
                 <div class="h-10 w-px bg-outline-variant/30"></div>
                 <div class="flex items-center gap-4">
                     <a href="{{ return_url or '/admin/dashboard' }}" class="px-6 py-2.5 rounded-xl border border-outline-variant/50 text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-all">Cancel</a>
-                    <button type="submit" form="admin-form" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-dim text-background text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all">Save & Deploy</button>
+                    <button type="submit" form="admin-form" name="_save_and_publish" value="1" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-dim text-background text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all">Save & Deploy</button>
                 </div>
             </div>
         </header>
@@ -806,7 +809,7 @@
                 System Online — CPC Portal
             </p>
             <a href="{{ return_url or '/admin/dashboard/' }}" class="px-8 py-4 rounded-xl text-on-surface-variant text-[10px] font-bold uppercase tracking-widest hover:text-on-surface transition-colors">Discard Changes</a>
-            <button type="submit" form="admin-form" class="px-10 py-4 rounded-xl bg-primary text-background text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-primary/30 hover:shadow-primary/40 active:scale-95 transition-all">Publish Content</button>
+            <button type="submit" form="admin-form" name="_save_and_publish" value="1" class="px-10 py-4 rounded-xl bg-primary text-background text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-primary/30 hover:shadow-primary/40 active:scale-95 transition-all">Publish Content</button>
         </div>
         {% endif %}
     </main>
