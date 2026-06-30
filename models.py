@@ -142,6 +142,14 @@ class Sermon(db.Model):
     beyond_episode = db.relationship('PodcastEpisode', foreign_keys=[beyond_episode_id])
     speaker_user = db.relationship('User', foreign_keys=[speaker_id], backref='sermons')
 
+    @property
+    def display_speaker(self):
+        """Return the linked user's display name or the manually entered name."""
+        if self.speaker_user:
+            return self.speaker_user.full_name or self.speaker_user.username
+        return self.speaker or ''
+
+
 class PodcastEpisode(db.Model):
     __tablename__ = 'podcast_episodes'
 

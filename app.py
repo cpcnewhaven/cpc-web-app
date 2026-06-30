@@ -1270,7 +1270,7 @@ def api_sermons():
             sermon_data = {
                 'id': s.id,
                 'title': s.title or '',
-                'speaker': (s.speaker_user.username if s.speaker_user else s.speaker) or '',
+                'speaker': s.display_speaker,
                 'scripture': s.scripture or '',
                 'date': s.date.strftime('%Y-%m-%d') if s.date else '',
                 'spotify_url': s.spotify_url or '',
@@ -1898,7 +1898,7 @@ def api_search():
                     'id': s.id,
                     'title': s.title,
                     'description': s.scripture or series_title,
-                    'speaker': s.speaker or '',
+                    'speaker': s.display_speaker,
                     'date': s.date.strftime('%Y-%m-%d') if s.date else None,
                     'series': series_title,
                     'url': s.spotify_url or s.youtube_url or s.apple_podcasts_url or s.audio_file_url or '',
@@ -2314,7 +2314,7 @@ def api_archive():
                 results['items'].append({
                     'type': 'sermon',
                     'title': s.title,
-                    'speaker': s.speaker or '',
+                    'speaker': s.display_speaker,
                     'date': sermon_date,
                     'url': s.spotify_url or s.youtube_url or s.apple_podcasts_url or '',
                     'scripture': s.scripture or '',
@@ -3750,10 +3750,7 @@ class SermonView(AuthenticatedModelView):
     
     column_formatters = {
         'active': _format_sermon_status,
-        'speaker_user': lambda view, context, model, name: (
-            model.speaker_user.full_name if model.speaker_user and model.speaker_user.full_name
-            else (model.speaker_user.username if model.speaker_user else (model.speaker if model.speaker else '—'))
-        )
+        'speaker_user': lambda view, context, model, name: model.display_speaker or '—'
     }
 
     form_extra_fields = {
@@ -3768,7 +3765,10 @@ class SermonView(AuthenticatedModelView):
         'book_name': DatalistField('Bible Book',
             choices_func=lambda: [b.name for b in BibleBook.query.order_by(BibleBook.sort_order).all()]),
         'speaker_name': DatalistField('Speaker',
-            choices_func=lambda: [u.full_name for u in User.query.filter(User.full_name != None).order_by(User.full_name).all()]),
+            choices_func=lambda: [
+                u.full_name or u.username
+                for u in User.query.order_by(User.full_name, User.username).all()
+            ]),
         'beyond_episode_name': DatalistField('Beyond Link',
             choices_func=lambda: [e.title for e in PodcastEpisode.query.order_by(PodcastEpisode.date_added.desc()).all()]),
     }
@@ -3797,7 +3797,7 @@ class SermonView(AuthenticatedModelView):
         if hasattr(form, 'book_name'):
             form.book_name.data = sermon.book.name if sermon.book else ''
         if hasattr(form, 'speaker_name'):
-            form.speaker_name.data = sermon.speaker_user.full_name if sermon.speaker_user else ''
+            form.speaker_name.data = sermon.display_speaker
         if hasattr(form, 'beyond_episode_name'):
             form.beyond_episode_name.data = sermon.beyond_episode.title if sermon.beyond_episode else ''
         if hasattr(form, 'expiration_preset'):
@@ -3818,7 +3818,17 @@ class SermonView(AuthenticatedModelView):
         model.book = book_obj
 
         speaker_name = (getattr(form, 'speaker_name', None) and form.speaker_name.data or '').strip()
-        model.speaker_user = User.query.filter_by(full_name=speaker_name).first() if speaker_name else None
+        speaker_user = None
+        if speaker_name:
+            from sqlalchemy import func, or_
+            speaker_user = User.query.filter(or_(
+                func.lower(User.full_name) == speaker_name.lower(),
+                func.lower(User.username) == speaker_name.lower(),
+            )).first()
+        # Preserve every submitted name in the sermons table. If it matches an
+        # admin user, also maintain the FK so database-backed speakers stay linked.
+        model.speaker = speaker_name or None
+        model.speaker_user = speaker_user
 
         beyond_name = (getattr(form, 'beyond_episode_name', None) and form.beyond_episode_name.data or '').strip()
         model.beyond_episode = PodcastEpisode.query.filter_by(title=beyond_name).first() if beyond_name else None

@@ -26,8 +26,8 @@ class SermonDataHelper:
         return {
             'id': sermon.id,
             'title': sermon.title,
-            'speaker': sermon.speaker or '',
-            'author': sermon.speaker or '', # Keep for backward compatibility
+            'speaker': sermon.display_speaker,
+            'author': sermon.display_speaker, # Keep for backward compatibility
             'scripture': sermon.scripture or '',
             'date': sermon.date.isoformat() if sermon.date else '',
             'active': sermon.active,
