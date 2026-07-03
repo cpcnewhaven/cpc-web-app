@@ -364,54 +364,83 @@
 
     <!-- Fixed Left Dashboard (Desktop) -->
     <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data x-show="$store.dash.showLeftSidebar">
-        <div class="dashboard-section">
-            <div class="dashboard-title">Search</div>
-            <form
-                @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
-                <input x-ref="leftSearch" type="search" placeholder="Search site..."
-                    class="w-full px-2.5 py-1.5 rounded-md bg-white/80 text-gray-800 focus:outline-none text-sm"
-                    autocomplete="off">
-            </form>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-title">Watch & Listen</div>
-            <div class="quick-links-grid">
-                <a href="{{ url_for('live') }}"><span>Live</span></a>
-                <a href="{{ url_for('sermons') }}"><span>Sermons</span></a>
-                <a href="{{ url_for('podcasts') }}"><span>Podcasts</span></a>
-                <a href="{{ url_for('teaching_series') }}"><span>Series</span></a>
-                <a href="{{ url_for('pastor_teaching') }}"><span>Pastor
-                        Teaching</span></a>
+        <div class="dashboard-left-shell">
+            <div class="sidebar-search">
+                <form class="sidebar-search-form"
+                    @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
+                    <i class="fa-solid fa-magnifying-glass sidebar-search-icon" aria-hidden="true"></i>
+                    <input x-ref="leftSearch" type="search" placeholder="Search sermons, events…"
+                        class="sidebar-search-input" autocomplete="off">
+                </form>
             </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-title">Stay Connected</div>
-            <div class="quick-links-grid">
-                <a href="{{ url_for('events') }}"><span>Events</span></a>
-                <a href="{{ url_for('highlights') }}"><span>New Content</span></a>
-                <a href="{{ url_for('community') }}"><span>Community</span></a>
-                <a href="{{ url_for('lifegroups') }}"><span>LifeGroups</span></a>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-title">Get Involved</div>
-            <div class="quick-links-grid">
-                <a href="{{ url_for('give') }}"><span>Give</span></a>
-                <a href="{{ url_for('contact') }}"><span>Contact</span></a>
-                <a href="{{ url_for('plan_a_visit') }}"><span>Plan a Visit</span></a>
-                <a href="{{ url_for('resources') }}"><span>Resources</span></a>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-title">Follow Us</div>
-            <div class="flex gap-2">
-                <a href="https://www.facebook.com/caboruschurch" target="_blank" rel="noopener"
-                    class="text-white/70 hover:text-white text-base"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener"
-                    class="text-white/70 hover:text-white text-base"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.youtube.com/@caboruschurch" target="_blank" rel="noopener"
-                    class="text-white/70 hover:text-white text-base"><i class="fa-brands fa-youtube"></i></a>
-            </div>
+
+            <section class="sidebar-section">
+                <div class="dashboard-title">Watch &amp; Listen</div>
+                <a href="{{ url_for('live') }}" class="sidebar-live-card">
+                    <span class="sidebar-live-eyebrow">
+                        <span class="sidebar-live-dot" aria-hidden="true"></span>
+                        <span>Live Sundays</span>
+                    </span>
+                    <span class="sidebar-live-title">Watch Live</span>
+                    <span class="sidebar-live-subtitle">Sundays · 10:30a</span>
+                    <i class="fa-solid fa-play sidebar-live-play" aria-hidden="true"></i>
+                </a>
+                <div class="sidebar-link-stack">
+                    <a href="{{ url_for('sermons') }}" class="sidebar-link-row">
+                        <i class="fa-solid fa-play sidebar-link-icon" aria-hidden="true"></i>
+                        <span>Sermons</span>
+                        <i class="fa-solid fa-chevron-right sidebar-link-chevron" aria-hidden="true"></i>
+                    </a>
+                    <a href="{{ url_for('podcasts') }}" class="sidebar-link-row">
+                        <i class="fa-solid fa-microphone sidebar-link-icon" aria-hidden="true"></i>
+                        <span>Podcasts</span>
+                        <i class="fa-solid fa-chevron-right sidebar-link-chevron" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <a href="{{ url_for('teaching_series') }}" class="sidebar-teaching-link">Series &amp; Pastor Teaching →</a>
+            </section>
+
+            <section class="sidebar-section">
+                <div class="dashboard-title">Connect</div>
+                <div class="sidebar-connect-grid">
+                    <a href="{{ url_for('events') }}" class="sidebar-connect-card">
+                        <span class="sidebar-connect-icon"><i class="fa-solid fa-calendar-day" aria-hidden="true"></i></span>
+                        <span class="sidebar-connect-label">Events</span>
+                    </a>
+                    <a href="{{ url_for('lifegroups') }}" class="sidebar-connect-card">
+                        <span class="sidebar-connect-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
+                        <span class="sidebar-connect-label">LifeGroups</span>
+                    </a>
+                    <a href="{{ url_for('plan_a_visit') }}" class="sidebar-connect-card">
+                        <span class="sidebar-connect-icon"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i></span>
+                        <span class="sidebar-connect-label">Plan a Visit</span>
+                    </a>
+                    <a href="{{ url_for('give') }}" class="sidebar-connect-card">
+                        <span class="sidebar-connect-icon"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i></span>
+                        <span class="sidebar-connect-label">Give</span>
+                    </a>
+                </div>
+            </section>
+
+            <div class="sidebar-spacer" aria-hidden="true"></div>
+
+            <footer class="sidebar-follow">
+                <span class="sidebar-follow-label">Follow along</span>
+                <div class="sidebar-social-row">
+                    <a href="https://www.facebook.com/caboruschurch" target="_blank" rel="noopener"
+                        class="sidebar-social-button" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener"
+                        class="sidebar-social-button" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@caboruschurch" target="_blank" rel="noopener"
+                        class="sidebar-social-button" aria-label="YouTube">
+                        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </footer>
         </div>
     </aside>
 
