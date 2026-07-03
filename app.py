@@ -686,6 +686,11 @@ def sundays():
     site_content = {r.key: r.value for r in SiteContent.query.all()}
     return render_template('sundays.html', site_content=site_content)
 
+@app.route('/display')
+def display():
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('display.html', site_content=site_content)
+
 @app.route('/plan-a-visit')
 def plan_a_visit():
     site_content = {r.key: r.value for r in SiteContent.query.all()}

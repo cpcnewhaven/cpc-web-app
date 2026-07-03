@@ -1,0 +1,503 @@
+{% extends "base.html" %}
+
+{% block title %}Display — CPC New Haven{% endblock %}
+{% block meta_description %}Display view for CPC New Haven: leadership carousel, community highlights, and Sundays details in a three-pane layout.{% endblock %}
+{% block og_title %}Display — CPC New Haven{% endblock %}
+{% block og_description %}A display page showing leaders, highlights, and the Sundays page side by side for a 1920x1080 layout.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/display{% endblock %}
+
+{% block head %}
+<style>
+    .display-page {
+        min-height: calc(100vh - 140px);
+        padding: 1rem 1rem 2rem;
+        color: rgba(255, 255, 255, 0.95);
+    }
+
+    .display-layout {
+        display: grid;
+        grid-template-columns: minmax(300px, 28%) minmax(420px, 44%) minmax(300px, 28%);
+        gap: 1rem;
+        min-height: calc(100vh - 180px);
+    }
+
+    .pane {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 18px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+        backdrop-filter: blur(18px);
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .pane h1,
+    .pane h2,
+    .pane h3 {
+        color: rgba(255, 255, 255, 0.96);
+    }
+
+    .pane-left {
+        position: relative;
+    }
+
+    .pane-center,
+    .pane-right {
+        min-height: 0;
+    }
+
+    .pane-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .pane-heading h2 {
+        font-size: 1.35rem;
+        margin: 0;
+    }
+
+    .carousel-frame {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        place-items: center;
+        position: relative;
+    }
+
+    .carousel-card {
+        width: 100%;
+        height: 100%;
+        min-height: 420px;
+        max-height: 100%;
+        border-radius: 16px;
+        background: rgba(4, 20, 55, 0.88);
+        border: 1px solid rgba(120, 190, 255, 0.16);
+        padding: 1.25rem;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 1rem;
+        overflow: hidden;
+    }
+
+    .carousel-group-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #a8d8ff;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    .carousel-title {
+        font-size: 1.3rem;
+        margin: 0;
+    }
+
+    .carousel-note {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .carousel-members {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        overflow: auto;
+        padding-right: 0.25rem;
+    }
+
+    .carousel-members::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .carousel-members::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+    }
+
+    .member-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 0.95rem;
+        min-height: 72px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.2rem;
+    }
+
+    .member-initials {
+        color: #b0d7ff;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+    }
+
+    .member-name {
+        margin: 0;
+        font-size: 0.98rem;
+        font-weight: 600;
+    }
+
+    .member-title {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 0.86rem;
+    }
+
+    .carousel-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+    }
+
+    .carousel-button {
+        border: none;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.9);
+        padding: 0.7rem 1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .carousel-button:hover {
+        background: rgba(255, 255, 255, 0.16);
+    }
+
+    .carousel-indicators {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.45rem;
+        width: 100%;
+        justify-items: center;
+    }
+
+    .indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .indicator.active {
+        background: #7cc2ff;
+        transform: scale(1.25);
+    }
+
+    .highlights-list {
+        display: grid;
+        gap: 1rem;
+        overflow: auto;
+        min-height: 0;
+        padding-right: 0.25rem;
+    }
+
+    .highlight-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1rem;
+        align-items: start;
+    }
+
+    .highlight-details {
+        min-width: 0;
+    }
+
+    .highlight-title {
+        margin: 0 0 0.45rem 0;
+        font-size: 1rem;
+        line-height: 1.35;
+        font-weight: 700;
+    }
+
+    .highlight-type {
+        display: inline-block;
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(124, 196, 255, 0.16);
+        color: #b8e0ff;
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.55rem;
+    }
+
+    .highlight-snippet {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.6;
+        font-size: 0.92rem;
+    }
+
+    .highlight-link {
+        color: #94ccff;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 0.93rem;
+    }
+
+    .highlight-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 14px;
+        object-fit: cover;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .iframe-wrapper {
+        flex: 1;
+        min-height: 0;
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .iframe-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    .iframe-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), transparent 15%, transparent 85%, rgba(0, 0, 0, 0.08));
+    }
+
+    @media (max-width: 1320px) {
+        .display-layout {
+            grid-template-columns: 1fr;
+        }
+        .carousel-card {
+            min-height: 360px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="display-page">
+    <div class="display-layout">
+        <aside class="pane pane-left">
+            <div class="pane-heading">
+                <h2>Leadership Carousel</h2>
+            </div>
+            <div class="carousel-frame">
+                <div class="carousel-card" id="carouselCard">
+                    <div>
+                        <div class="carousel-group-label" id="carouselGroupLabel">Group</div>
+                        <h3 class="carousel-title" id="carouselTitle">Loading…</h3>
+                        <p class="carousel-note" id="carouselNote">Rotating through CPC leadership groups from the About page.</p>
+                    </div>
+                    <div class="carousel-members" id="carouselMembers"></div>
+                    <div class="carousel-controls">
+                        <button type="button" class="carousel-button" id="carouselPrev">Previous</button>
+                        <div class="carousel-indicators" id="carouselIndicators"></div>
+                        <button type="button" class="carousel-button" id="carouselNext">Next</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="pane pane-center">
+            <div class="pane-heading">
+                <h2>Homepage Highlights</h2>
+            </div>
+            <div class="highlights-list" id="displayHighlights">
+                <div style="color: rgba(255,255,255,0.7);">Loading highlights from the homepage…</div>
+            </div>
+        </section>
+
+        <aside class="pane pane-right">
+            <div class="pane-heading">
+                <h2>Sundays Page</h2>
+            </div>
+            <div class="iframe-wrapper">
+                <iframe src="{{ url_for('sundays') }}" title="Sundays page for CPC New Haven"></iframe>
+                <div class="iframe-overlay"></div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script id="staff-data" type="application/json">{{ site_content.get('staff_json', '[{"initials":"CL","name":"Craig Luekens","title":"Senior Pastor"},{"initials":"JO","name":"Jerry Ornelas","title":"Assistant Pastor"},{"initials":"AV","name":"Alexis Vano","title":"Administrative Coordinator"},{"initials":"AG","name":"Alex Gonzalez","title":"AV Director"},{"initials":"CB","name":"Christopher Battista","title":"Audio and IT Specialist"},{"initials":"PW","name":"Paul Wildey","title":"Sexton"},{"initials":"JC","name":"Jennifer Cheng","title":"Music Coordinator"}]') | safe }}</script>
+<script>
+    const carouselGroups = [
+        {
+            label: 'Staff',
+            title: 'Our Staff Team',
+            note: 'The team who keeps CPC running and cares for church life every week.',
+            members: JSON.parse(document.getElementById('staff-data').textContent)
+        },
+        {
+            label: 'Session',
+            title: 'Session of Elders',
+            note: 'Spiritual oversight and pastoral care for the church.',
+            members: [
+                { initials: 'CL', name: 'Craig Luekens', title: 'Senior Pastor' },
+                { initials: 'RH', name: 'Rob Hawkes', title: 'Emeritus' },
+                { initials: 'GL', name: 'George Levesque', title: '' },
+                { initials: 'DT', name: 'David Taylor', title: '' },
+                { initials: 'TR', name: 'Tyler Rice', title: 'Clerk' },
+                { initials: 'JK', name: 'Josh Kebabian', title: '' },
+                { initials: 'PC', name: 'Peter Chuchta', title: '' },
+                { initials: 'AP', name: 'Alan Phillips', title: 'Emeritus Member' }
+            ]
+        },
+        {
+            label: 'Women',
+            title: "Women's Leadership Board",
+            note: 'Women serving the church through ministry, support, and discipleship.',
+            members: [
+                { initials: 'LH', name: 'Lisa Hawkes', title: '' },
+                { initials: 'DM', name: 'Diane Miller', title: 'Clerk' },
+                { initials: 'PK', name: 'Peggy Kebabian', title: '' },
+                { initials: 'JC', name: 'Jennifer Cheng', title: '(Sabbatical 24-25)' },
+                { initials: 'MB', name: 'Meg Bogue', title: '' },
+                { initials: 'SR', name: 'Stacy Roney', title: 'Moderator' },
+                { initials: 'TB', name: 'Tanilla Brown', title: '' },
+                { initials: 'PC', name: 'Patty Chuchta', title: '' }
+            ]
+        },
+        {
+            label: 'Servant',
+            title: 'Servant Leadership Board',
+            note: 'Serving our congregation through support, hospitality, and care.',
+            members: [
+                { initials: 'CL', name: 'Craig Luekens', title: '(Moderator)' },
+                { initials: 'GW', name: 'Gary Wininger', title: '(Security)' },
+                { initials: 'PW', name: 'Paul Wildey', title: '(Sexton)' },
+                { initials: 'CC', name: 'Crossan Cooper', title: '(Welcome)' },
+                { initials: 'CR', name: 'Colleen Rice', title: '(Sabbatical 24-25)' },
+                { initials: 'EG', name: 'Elena Gerard', title: '(Sabbatical 24-25)' },
+                { initials: 'KJ', name: 'Kaitlyn Jessee', title: '(Mercy)' },
+                { initials: 'JW', name: 'Julie Walker', title: '(Nursery)' },
+                { initials: 'BB', name: 'Barbara Battista', title: '(Facilities)' },
+                { initials: 'EF', name: 'Evan Finch', title: '' },
+                { initials: 'MP', name: 'Megan Paek', title: '(Food Service)' },
+                { initials: 'JS', name: 'Josh Sanders', title: '' },
+                { initials: 'PC', name: 'Pat Clendenen', title: '' }
+            ]
+        }
+    ];
+
+    const indicators = document.getElementById('carouselIndicators');
+    const membersElement = document.getElementById('carouselMembers');
+    const titleElement = document.getElementById('carouselTitle');
+    const labelElement = document.getElementById('carouselGroupLabel');
+    const noteElement = document.getElementById('carouselNote');
+    const prevButton = document.getElementById('carouselPrev');
+    const nextButton = document.getElementById('carouselNext');
+    let currentIndex = 0;
+    let autoRotate;
+
+    function renderCarousel(index) {
+        const group = carouselGroups[index];
+        titleElement.textContent = group.title;
+        labelElement.textContent = group.label;
+        noteElement.textContent = group.note;
+        membersElement.innerHTML = group.members.map(member => `
+            <div class="member-card">
+                <div class="member-initials">${member.initials || ''}</div>
+                <p class="member-name">${member.name || ''}</p>
+                <p class="member-title">${member.title || 'Team Member'}</p>
+            </div>
+        `).join('');
+        document.querySelectorAll('.indicator').forEach((dot, dotIndex) => {
+            dot.classList.toggle('active', dotIndex === index);
+        });
+    }
+
+    function buildIndicators() {
+        indicators.innerHTML = '';
+        carouselGroups.forEach((group, index) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'indicator';
+            dot.title = group.title;
+            dot.addEventListener('click', () => {
+                currentIndex = index;
+                renderCarousel(currentIndex);
+                resetAutoRotate();
+            });
+            indicators.appendChild(dot);
+        });
+    }
+
+    function showPrevious() {
+        currentIndex = (currentIndex - 1 + carouselGroups.length) % carouselGroups.length;
+        renderCarousel(currentIndex);
+        resetAutoRotate();
+    }
+
+    function showNext() {
+        currentIndex = (currentIndex + 1) % carouselGroups.length;
+        renderCarousel(currentIndex);
+        resetAutoRotate();
+    }
+
+    function resetAutoRotate() {
+        clearInterval(autoRotate);
+        autoRotate = setInterval(showNext, 5500);
+    }
+
+    prevButton.addEventListener('click', showPrevious);
+    nextButton.addEventListener('click', showNext);
+
+    buildIndicators();
+    renderCarousel(0);
+    resetAutoRotate();
+
+    function renderHighlights(items) {
+        const container = document.getElementById('displayHighlights');
+        if (!items.length) {
+            container.innerHTML = '<div style="color: rgba(255,255,255,0.72);">No highlights are available right now.</div>';
+            return;
+        }
+        container.innerHTML = items.slice(0, 6).map(highlight => {
+            const typeLabel = highlight.type ? `<span class="highlight-type">${highlight.type}</span>` : '';
+            const description = highlight.description ? `<p class="highlight-snippet">${highlight.description}</p>` : '';
+            const image = highlight.featuredImage ? `<img src="${highlight.featuredImage}" alt="${highlight.title}" class="highlight-image">` : '';
+            return `
+                <div class="highlight-card">
+                    <div class="highlight-details">
+                        ${typeLabel}
+                        <h3 class="highlight-title">${highlight.title}</h3>
+                        ${description}
+                        <a href="/announcement/${highlight.id}" class="highlight-link">View highlight →</a>
+                    </div>
+                    ${image}
+                </div>
+            `;
+        }).join('');
+    }
+
+    fetch('/api/highlights')
+        .then(response => response.json())
+        .then(data => {
+            const items = data.announcements || [];
+            renderHighlights(items);
+        })
+        .catch(() => {
+            document.getElementById('displayHighlights').innerHTML = '<div style="color: rgba(255,255,255,0.72);">Unable to load highlights at this time.</div>';
+        });
+</script>
+{% endblock %}
