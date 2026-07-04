@@ -570,6 +570,16 @@ SUBPAGE_CONFIGS = {
             ('pastors_book_cta_text', 'CTA Text', 'Suggested donation of $15'),
             ('pastors_book_cta_link', 'External Purchase Link (optional)', ''),
         ]
+    },
+    'homepage': {
+        'title': 'Homepage & Featured',
+        'url': '/',
+        'icon': 'home',
+        'color': '#f97316',
+        'keys': [
+            ('current_teaching_series_title', 'Current Teaching Series Title', 'Luke', 'select_series'),
+            ('current_teaching_series_subtitle', 'Current Teaching Series Subtitle', 'The Sunday Sermon Podcast', 'text'),
+        ]
     }
 }
 
@@ -608,17 +618,30 @@ def admin_subpage_edit():
     # Load current values
     rows = {r.key: r.value for r in SiteContent.query.all()}
     fields = []
+
+    # Fetch sermon series for dropdown (if needed)
+    sermon_series_options = []
+    if active_page == 'homepage':
+        sermon_series_options = [
+            {'id': s.title, 'label': s.title}
+            for s in SermonSeries.query.filter_by(active=True).order_by(SermonSeries.title).all()
+        ]
+
     for item in config['keys']:
         key, label, default = item[:3]
         input_type = item[3] if len(item) > 3 else 'textarea'
-        fields.append({
+        field_dict = {
             'key': key,
             'label': label,
             'value': rows.get(key, default) or default,
             'default': default,
             'is_json': key.endswith('_json'),
             'input_type': input_type,
-        })
+        }
+        # Add options for select fields
+        if input_type == 'select_series':
+            field_dict['options'] = sermon_series_options
+        fields.append(field_dict)
 
     return render_template('admin/subpage_edit.html',
                            fields=fields,
@@ -4844,9 +4867,13 @@ class DashboardView(BaseView):
             latest_luke = helper.get_latest_luke_chapter()
         except Exception as e:
             print(f"Error getting latest Luke chapter: {e}")
-        
-        return self.render('admin/dashboard.html', 
-                         stats=stats, 
+
+        # Get current teaching series for featured display
+        current_teaching_series = SiteContent.query.filter_by(key='current_teaching_series_title').first()
+        current_series_title = current_teaching_series.value if current_teaching_series else 'Luke'
+
+        return self.render('admin/dashboard.html',
+                         stats=stats,
                          recent_announcements=recent_announcements,
                          recent_sermons=recent_sermons,
                          today=today,
@@ -4854,7 +4881,8 @@ class DashboardView(BaseView):
                          user_xp=user_xp,
                          admin_level=admin_level,
                          xp_next=xp_next,
-                         progress_pct=progress_pct)
+                         progress_pct=progress_pct,
+                         current_teaching_series=current_series_title)
 
 
 class ReleasesView(BaseView):

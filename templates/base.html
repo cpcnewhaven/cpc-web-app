@@ -450,9 +450,9 @@
         <div class="dashboard-section" id="luke-chapter-section">
             <div class="dashboard-title" style="border-left: none;">Current Teaching Series</div>
             <div class="dashboard-note" id="luke-chapter-content">
-                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">Luke</div>
-                <div class="study-date" style="margin-top: 0.25rem;">The Sunday Sermon Podcast</div>
-                <a href="{{ url_for('teaching_series') }}?q=Luke"
+                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Luke') }}</div>
+                <div class="study-date" style="margin-top: 0.25rem;">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
+                <a href="{{ url_for('teaching_series') }}?q={{ site_content.get('current_teaching_series_title', 'Luke') | urlencode }}"
                     class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">View Series →</a>
             </div>
         </div>

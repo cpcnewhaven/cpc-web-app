@@ -508,6 +508,8 @@
                 </label>
                 {% if active_page == 'service_times' %}
                 <div class="field-hint">Enter a time (e.g. <strong style="color:rgba(255,255,255,0.7);">10:30am</strong>). Type <strong style="color:rgba(255,255,255,0.7);">No</strong> or leave it blank to hide this slot everywhere on the site.</div>
+                {% elif field.input_type == 'select_series' %}
+                <div class="field-hint">Select from your active sermon series. The homepage sidebar updates immediately.</div>
                 {% elif field.is_json %}
                 <div class="field-hint">
                     JSON array — validate your format with
@@ -531,6 +533,15 @@
                         <div class="color-swatch-label">CSS value</div>
                     </div>
                 </div>
+                {% elif field.input_type == 'select_series' %}
+                <select id="field_{{ field.key }}" name="{{ field.key }}" style="width:100%; background:rgba(0,0,0,0.28); border:1px solid rgba(255,255,255,0.14); border-radius:6px; color:rgba(255,255,255,0.9); padding:0.75rem; font-size:0.9rem; cursor:pointer;">
+                    <option value="{{ field.value }}" selected>{{ field.value }}</option>
+                    {% for option in field.options %}
+                        {% if option.id != field.value %}
+                        <option value="{{ option.id }}">{{ option.label }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
                 {% elif field.input_type == 'text' %}
                 <input type="text" id="field_{{ field.key }}" name="{{ field.key }}" value="{{ field.value }}" data-default="{{ field.default }}">
                 {% else %}
