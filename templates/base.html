@@ -364,83 +364,79 @@
 
     <!-- Fixed Left Dashboard (Desktop) -->
     <aside class="dashboard-sidebar dashboard-left hidden lg:block" x-data x-show="$store.dash.showLeftSidebar">
-        <div class="dashboard-left-shell">
-            <div class="sidebar-search">
-                <form class="sidebar-search-form"
-                    @submit.prevent="window.location.href='{{ url_for('search') }}?q='+encodeURIComponent($refs.leftSearch.value)">
-                    <i class="fa-solid fa-magnifying-glass sidebar-search-icon" aria-hidden="true"></i>
-                    <input x-ref="leftSearch" type="search" placeholder="Search sermons, events…"
-                        class="sidebar-search-input" autocomplete="off">
-                </form>
+        <form class="dash-search" action="{{ url_for('search') }}" method="get"
+              x-data @submit.prevent="window.location = '{{ url_for('search') }}?q=' + encodeURIComponent($refs.q.value)">
+            <i class="fas fa-magnifying-glass dash-search__icon" aria-hidden="true"></i>
+            <input x-ref="q" type="search" name="q" class="dash-search__input"
+                   placeholder="Search…" aria-label="Search the site">
+        </form>
+
+        <a href="{{ url_for('live') }}" class="dash-live">
+            <span class="dash-live__eyebrow">
+                <span class="dash-live__dot" aria-hidden="true"></span> Live Sundays
+            </span>
+            <span class="dash-live__title">Watch Live</span>
+            <span class="dash-live__sub">10:30a · Worship service</span>
+            <i class="fas fa-play dash-live__play" aria-hidden="true"></i>
+        </a>
+
+        <div class="dash-block">
+            <h3 class="dash-heading">Watch &amp; Listen</h3>
+            <a href="{{ url_for('sermons') }}" class="dash-row">
+                <i class="fas fa-play dash-row__icon" aria-hidden="true"></i>
+                <span class="dash-row__label">Sermons</span>
+                <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
+            </a>
+            <a href="{{ url_for('podcasts') }}" class="dash-row">
+                <i class="fas fa-microphone dash-row__icon" aria-hidden="true"></i>
+                <span class="dash-row__label">Podcasts</span>
+                <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
+            </a>
+            <a href="{{ url_for('teaching_series') }}" class="dash-row dash-row--last">
+                <i class="fas fa-layer-group dash-row__icon" aria-hidden="true"></i>
+                <span class="dash-row__label">Teaching Series</span>
+                <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div class="dash-block">
+            <h3 class="dash-heading">This Week</h3>
+            <a href="{{ url_for('events') }}" class="dash-item">
+                <span class="dash-item__chip"><i class="fas fa-calendar-day" aria-hidden="true"></i></span>
+                <span class="dash-item__text">
+                    <span class="dash-item__title">Events</span>
+                    <span class="dash-item__sub">What's coming up</span>
+                </span>
+            </a>
+            <a href="{{ url_for('lifegroups') }}" class="dash-item">
+                <span class="dash-item__chip"><i class="fas fa-users" aria-hidden="true"></i></span>
+                <span class="dash-item__text">
+                    <span class="dash-item__title">LifeGroups</span>
+                    <span class="dash-item__sub">Find community</span>
+                </span>
+            </a>
+            <a href="{{ url_for('plan_a_visit') }}" class="dash-item">
+                <span class="dash-item__chip"><i class="fas fa-map-location-dot" aria-hidden="true"></i></span>
+                <span class="dash-item__text">
+                    <span class="dash-item__title">Plan a Visit</span>
+                    <span class="dash-item__sub">First time here?</span>
+                </span>
+            </a>
+        </div>
+
+        <a href="{{ url_for('give') }}" class="dash-give">
+            <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Give
+        </a>
+
+        <div class="dash-spacer"></div>
+
+        <div class="dash-follow">
+            <span class="dash-follow__label">Follow along</span>
+            <div class="dash-follow__icons">
+                <a href="https://www.facebook.com/caboruschurch" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@caboruschurch" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
             </div>
-
-            <section class="sidebar-section">
-                <div class="dashboard-title">Watch &amp; Listen</div>
-                <a href="{{ url_for('live') }}" class="sidebar-live-card">
-                    <span class="sidebar-live-eyebrow">
-                        <span class="sidebar-live-dot" aria-hidden="true"></span>
-                        <span>Live Sundays</span>
-                    </span>
-                    <span class="sidebar-live-title">Watch Live</span>
-                    <span class="sidebar-live-subtitle">Sundays · 10:30a</span>
-                    <i class="fa-solid fa-play sidebar-live-play" aria-hidden="true"></i>
-                </a>
-                <div class="sidebar-link-stack">
-                    <a href="{{ url_for('sermons') }}" class="sidebar-link-row">
-                        <i class="fa-solid fa-play sidebar-link-icon" aria-hidden="true"></i>
-                        <span>Sermons</span>
-                        <i class="fa-solid fa-chevron-right sidebar-link-chevron" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ url_for('podcasts') }}" class="sidebar-link-row">
-                        <i class="fa-solid fa-microphone sidebar-link-icon" aria-hidden="true"></i>
-                        <span>Podcasts</span>
-                        <i class="fa-solid fa-chevron-right sidebar-link-chevron" aria-hidden="true"></i>
-                    </a>
-                </div>
-                <a href="{{ url_for('teaching_series') }}" class="sidebar-teaching-link">Series &amp; Pastor Teaching →</a>
-            </section>
-
-            <section class="sidebar-section">
-                <div class="dashboard-title">Connect</div>
-                <div class="sidebar-connect-grid">
-                    <a href="{{ url_for('events') }}" class="sidebar-connect-card">
-                        <span class="sidebar-connect-icon"><i class="fa-solid fa-calendar-day" aria-hidden="true"></i></span>
-                        <span class="sidebar-connect-label">Events</span>
-                    </a>
-                    <a href="{{ url_for('lifegroups') }}" class="sidebar-connect-card">
-                        <span class="sidebar-connect-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
-                        <span class="sidebar-connect-label">LifeGroups</span>
-                    </a>
-                    <a href="{{ url_for('plan_a_visit') }}" class="sidebar-connect-card">
-                        <span class="sidebar-connect-icon"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i></span>
-                        <span class="sidebar-connect-label">Plan a Visit</span>
-                    </a>
-                    <a href="{{ url_for('give') }}" class="sidebar-connect-card">
-                        <span class="sidebar-connect-icon"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i></span>
-                        <span class="sidebar-connect-label">Give</span>
-                    </a>
-                </div>
-            </section>
-
-            <div class="sidebar-spacer" aria-hidden="true"></div>
-
-            <footer class="sidebar-follow">
-                <span class="sidebar-follow-label">Follow along</span>
-                <div class="sidebar-social-row">
-                    <a href="https://www.facebook.com/caboruschurch" target="_blank" rel="noopener"
-                        class="sidebar-social-button" aria-label="Facebook">
-                        <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
-                    </a>
-                    <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener"
-                        class="sidebar-social-button" aria-label="Instagram">
-                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-                    </a>
-                    <a href="https://www.youtube.com/@caboruschurch" target="_blank" rel="noopener"
-                        class="sidebar-social-button" aria-label="YouTube">
-                        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </footer>
         </div>
     </aside>
 
