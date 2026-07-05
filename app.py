@@ -505,6 +505,11 @@ SUBPAGE_CONFIGS = {
             ('service_summer_school_time', 'Summer — Sunday School Time', '', 'text'),
             ('service_summer_worship_time', 'Summer — Worship Service Time', '', 'text'),
             ('service_summer_fellowship_time', 'Summer — Fellowship Lunch Time', '', 'text'),
+            # Slot descriptions (labels for what happens at each time)
+            ('service_prayer_label', 'Prayer Slot Label', 'Prayer in the Parlor', 'text'),
+            ('service_school_label', 'Sunday School Slot Label', 'Children\'s Sunday School & Adult Sunday Studies', 'text'),
+            ('service_worship_label', 'Worship Slot Label', 'Sunday Worship Service', 'text'),
+            ('service_fellowship_label', 'Fellowship Slot Label', 'Fellowship Lunch', 'text'),
         ]
     },
     'contact': {

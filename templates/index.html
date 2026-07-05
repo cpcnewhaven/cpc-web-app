@@ -400,25 +400,25 @@
                 {% if _p and _p.strip().lower() != 'no' %}
                 <div class="time-slot">
                     <h3>{{ _p }}</h3>
-                    <p>Prayer in the Parlor</p>
+                    <p>{{ site_content.get('service_prayer_label', 'Prayer in the Parlor') }}</p>
                 </div>
                 {% endif %}
                 {% if _s and _s.strip().lower() != 'no' %}
                 <div class="time-slot">
                     <h3>{{ _s }}</h3>
-                    <p>Children's Sunday School &amp; Adult Sunday Studies</p>
+                    <p>{{ site_content.get('service_school_label', 'Children\'s Sunday School & Adult Sunday Studies') }}</p>
                 </div>
                 {% endif %}
                 {% if _w and _w.strip().lower() != 'no' %}
                 <div class="time-slot featured">
                     <h3>{{ _w }}</h3>
-                    <p>Sunday Worship Service</p>
+                    <p>{{ site_content.get('service_worship_label', 'Sunday Worship Service') }}</p>
                 </div>
                 {% endif %}
                 {% if _f and _f.strip().lower() != 'no' %}
                 <div class="time-slot">
                     <h3>{{ _f }}</h3>
-                    <p>Fellowship Lunch</p>
+                    <p>{{ site_content.get('service_fellowship_label', 'Fellowship Lunch') }}</p>
                 </div>
                 {% endif %}
             </div>
