@@ -66,7 +66,7 @@ def json_sermons():
     })
 
 _SERIES_THUMBNAILS = {
-    'Beyond the Sunday Sermon': 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/1_BEYOND%20-%20THE%20SUNDAY%20SERMON_001.jpg',
+    'Beyond the Sunday Sermon': 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png',
 }
 
 @json_api.route('/api/json/podcasts')
