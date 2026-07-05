@@ -493,24 +493,24 @@ SUBPAGE_CONFIGS = {
         'keys': [
             # Mode control (rendered as quick-switch buttons in admin UI)
             ('schedule_mode', 'Schedule Mode', 'regular', 'text'),
-            ('summer_start_month', 'Auto Summer Start (month number, e.g. 6 = June)', '6', 'text'),
-            ('summer_end_month', 'Auto Summer End (month number, e.g. 8 = August)', '8', 'text'),
-            ('summer_worship_only', 'Summer Worship-Only Mode (True/False)', 'False', 'text'),
+            ('summer_start_month', 'Summer: Start Month (1-12)', '6', 'text'),
+            ('summer_end_month', 'Summer: End Month (1-12)', '8', 'text'),
+            ('summer_worship_only', 'Summer: Worship-Only (True/False)', 'False', 'text'),
             # Regular schedule
-            ('service_prayer_time', 'Regular — Prayer Time', '', 'text'),
-            ('service_school_time', 'Regular — Sunday School Time', '', 'text'),
-            ('service_worship_time', 'Regular — Worship Service Time', '', 'text'),
-            ('service_fellowship_time', 'Regular — Fellowship Lunch Time', '', 'text'),
+            ('service_prayer_time', '[REGULAR] Prayer', '', 'text'),
+            ('service_school_time', '[REGULAR] Sunday School', '', 'text'),
+            ('service_worship_time', '[REGULAR] Worship', '', 'text'),
+            ('service_fellowship_time', '[REGULAR] Fellowship', '', 'text'),
             # Summer schedule
-            ('service_summer_prayer_time', 'Summer — Prayer Time', '', 'text'),
-            ('service_summer_school_time', 'Summer — Sunday School Time', '', 'text'),
-            ('service_summer_worship_time', 'Summer — Worship Service Time', '', 'text'),
-            ('service_summer_fellowship_time', 'Summer — Fellowship Lunch Time', '', 'text'),
-            # Slot descriptions (labels for what happens at each time)
-            ('service_prayer_label', 'Prayer Slot Label', 'Prayer in the Parlor', 'text'),
-            ('service_school_label', 'Sunday School Slot Label', 'Children\'s Sunday School & Adult Sunday Studies', 'text'),
-            ('service_worship_label', 'Worship Slot Label', 'Sunday Worship Service', 'text'),
-            ('service_fellowship_label', 'Fellowship Slot Label', 'Fellowship Lunch', 'text'),
+            ('service_summer_prayer_time', '[SUMMER] Prayer', '', 'text'),
+            ('service_summer_school_time', '[SUMMER] Sunday School', '', 'text'),
+            ('service_summer_worship_time', '[SUMMER] Worship', '', 'text'),
+            ('service_summer_fellowship_time', '[SUMMER] Fellowship', '', 'text'),
+            # Slot descriptions
+            ('service_prayer_label', 'Label: Prayer', 'Prayer in the Parlor', 'text'),
+            ('service_school_label', 'Label: School', 'Children\'s Sunday School & Adult Sunday Studies', 'text'),
+            ('service_worship_label', 'Label: Worship', 'Sunday Worship Service', 'text'),
+            ('service_fellowship_label', 'Label: Fellowship', 'Fellowship Lunch', 'text'),
         ]
     },
     'contact': {

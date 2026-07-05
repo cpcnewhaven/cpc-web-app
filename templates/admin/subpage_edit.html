@@ -507,7 +507,11 @@
                     {% else %}<span class="html-badge">HTML</span>{% endif %}
                 </label>
                 {% if active_page == 'service_times' %}
-                <div class="field-hint">Enter a time (e.g. <strong style="color:rgba(255,255,255,0.7);">10:30am</strong>). Type <strong style="color:rgba(255,255,255,0.7);">No</strong> or leave it blank to hide this slot everywhere on the site.</div>
+                  {% if field.key.endswith('_label') or field.key == 'summer_worship_only' or field.key.endswith('_month') or field.key == 'schedule_mode' %}
+                    {# Skip hints for label fields and config fields #}
+                  {% else %}
+                    <div class="field-hint">Enter a time (e.g. <strong style="color:rgba(255,255,255,0.7);">10:30am</strong>) or <strong style="color:rgba(255,255,255,0.7);">No</strong> to hide.</div>
+                  {% endif %}
                 {% elif field.input_type == 'select_series' %}
                 <div class="field-hint">Select from your active sermon series. The homepage sidebar updates immediately.</div>
                 {% elif field.is_json %}
