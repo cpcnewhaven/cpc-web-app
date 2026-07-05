@@ -599,16 +599,17 @@
                   {% set _w = site_content.get('service_worship_time','') %}
                   {% set _f = site_content.get('service_fellowship_time','') %}
                 {% endif %}
-                {% if _p and _p.strip().lower() != 'no' %}
+                {% set _worship_only = site_content.get('summer_worship_only', 'False').lower() in ('true', '1', 'yes') and active_schedule == 'summer' %}
+                {% if not _worship_only and _p and _p.strip().lower() != 'no' %}
                 <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _p }}</span> &nbsp;Prayer in the Parlor</p>
                 {% endif %}
-                {% if _s and _s.strip().lower() != 'no' %}
+                {% if not _worship_only and _s and _s.strip().lower() != 'no' %}
                 <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _s }}</span> &nbsp;Sunday School</p>
                 {% endif %}
                 {% if _w and _w.strip().lower() != 'no' %}
                 <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _w }}</span> Worship Service</p>
                 {% endif %}
-                {% if _f and _f.strip().lower() != 'no' %}
+                {% if not _worship_only and _f and _f.strip().lower() != 'no' %}
                 <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _f }}</span> Fellowship Lunch</p>
                 {% endif %}
                 <p style="margin-top:0.75rem;"><a href="{{ url_for('plan_a_visit') }}" style="color:var(--surface-accent); text-decoration:none; font-weight:500;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-accent)'">Plan a Visit →</a></p>

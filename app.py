@@ -495,6 +495,7 @@ SUBPAGE_CONFIGS = {
             ('schedule_mode', 'Schedule Mode', 'regular', 'text'),
             ('summer_start_month', 'Auto Summer Start (month number, e.g. 6 = June)', '6', 'text'),
             ('summer_end_month', 'Auto Summer End (month number, e.g. 8 = August)', '8', 'text'),
+            ('summer_worship_only', 'Summer Worship-Only Mode (True/False)', 'False', 'text'),
             # Regular schedule
             ('service_prayer_time', 'Regular — Prayer Time', '', 'text'),
             ('service_school_time', 'Regular — Sunday School Time', '', 'text'),

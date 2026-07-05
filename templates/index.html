@@ -397,13 +397,14 @@
                   {% set _w = site_content.get('service_worship_time','') %}
                   {% set _f = site_content.get('service_fellowship_time','') %}
                 {% endif %}
-                {% if _p and _p.strip().lower() != 'no' %}
+                {% set _worship_only = site_content.get('summer_worship_only', 'False').lower() in ('true', '1', 'yes') and active_schedule == 'summer' %}
+                {% if not _worship_only and _p and _p.strip().lower() != 'no' %}
                 <div class="time-slot">
                     <h3>{{ _p }}</h3>
                     <p>{{ site_content.get('service_prayer_label', 'Prayer in the Parlor') }}</p>
                 </div>
                 {% endif %}
-                {% if _s and _s.strip().lower() != 'no' %}
+                {% if not _worship_only and _s and _s.strip().lower() != 'no' %}
                 <div class="time-slot">
                     <h3>{{ _s }}</h3>
                     <p>{{ site_content.get('service_school_label', 'Children\'s Sunday School & Adult Sunday Studies') }}</p>
@@ -415,7 +416,7 @@
                     <p>{{ site_content.get('service_worship_label', 'Sunday Worship Service') }}</p>
                 </div>
                 {% endif %}
-                {% if _f and _f.strip().lower() != 'no' %}
+                {% if not _worship_only and _f and _f.strip().lower() != 'no' %}
                 <div class="time-slot">
                     <h3>{{ _f }}</h3>
                     <p>{{ site_content.get('service_fellowship_label', 'Fellowship Lunch') }}</p>
