@@ -425,6 +425,48 @@
     body.theme-white .community-hero p { color: var(--page-muted); }
 
     /* Responsive */
+    .email-clickable {
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .email-clickable[data-email] {
+        color: var(--page-accent);
+        text-decoration: underline;
+        text-decoration-style: dotted;
+    }
+
+    .email-clickable[data-email]:hover {
+        color: var(--page-accent-soft);
+        opacity: 0.8;
+    }
+
+    .email-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: rgba(0, 150, 100, 0.95);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        z-index: 1000;
+        animation: slideUp 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
     @media (max-width: 1024px) {
 
         .groups-grid,
@@ -575,15 +617,15 @@
                     <div class="group-card">
                         <h3>Session (Elders)</h3>
                         <ul>
-                            <li><strong>Craig Luekens</strong> - Moderator</li>
-                            <li><strong>Tyler Rice</strong> - Clerk</li>
-                            <li>David Taylor</li>
-                            <li>Josh Kebabian</li>
-                            <li>George Levesque</li>
-                            <li>Pete Chuchta</li>
-                            <li><strong>Rob Hawkes</strong> - Emeritus</li>
-                            <li><strong>Alan Phillips</strong> - Emeritus</li>
-                            <li><strong>Preston Graham</strong> - Emeritus</li>
+                            <li><strong class="email-clickable">Craig Luekens</strong> - Moderator</li>
+                            <li><strong class="email-clickable">Tyler Rice</strong> - Clerk</li>
+                            <li><strong class="email-clickable" data-email="david.taylor@cpcnewhaven.org">David Taylor</strong></li>
+                            <li><strong class="email-clickable">Josh Kebabian</strong></li>
+                            <li><strong class="email-clickable">George Levesque</strong></li>
+                            <li><strong class="email-clickable">Pete Chuchta</strong></li>
+                            <li><strong class="email-clickable">Rob Hawkes</strong> - Emeritus</li>
+                            <li><strong class="email-clickable">Alan Phillips</strong> - Emeritus</li>
+                            <li><strong class="email-clickable">Preston Graham</strong> - Emeritus</li>
                         </ul>
                     </div>
 
@@ -591,14 +633,14 @@
                     <div class="group-card">
                         <h3>Women's Leadership Board</h3>
                         <ul>
-                            <li><strong>Stacy Roney</strong> - Moderator</li>
-                            <li><strong>Diane Miller</strong> - Clerk</li>
-                            <li>Peggy Kebabian</li>
-                            <li>Meg Bogue</li>
-                            <li>Tanilla Brown</li>
-                            <li>Patty Chuchta</li>
-                            <li><strong>Jennifer Cheng</strong> - Sabbatical</li>
-                            <li><strong>Lisa Hawkes</strong> - Emeritus</li>
+                            <li><strong class="email-clickable" data-email="mrsprofdoc@icloud.com">Stacy Roney</strong> - Moderator</li>
+                            <li><strong class="email-clickable" data-email="diane.miller@cpcnewhaven.org">Diane Miller</strong> - Clerk</li>
+                            <li><strong class="email-clickable">Peggy Kebabian</strong></li>
+                            <li><strong class="email-clickable" data-email="mhbogue@me.co">Meg Bogue</strong></li>
+                            <li><strong class="email-clickable">Tanilla Brown</strong></li>
+                            <li><strong class="email-clickable">Patty Chuchta</strong></li>
+                            <li><strong class="email-clickable">Jennifer Cheng</strong> - Sabbatical</li>
+                            <li><strong class="email-clickable">Lisa Hawkes</strong> - Emeritus</li>
                         </ul>
                     </div>
 
@@ -606,17 +648,17 @@
                     <div class="group-card">
                         <h3>Servant Leadership Board</h3>
                         <ul>
-                            <li><strong>Craig Luekens</strong> - Moderator</li>
-                            <li>Evan Finch</li>
-                            <li>Gary Wininger</li>
-                            <li>Barbara Battista</li>
-                            <li>Megan Paek</li>
-                            <li>Josh Sanders</li>
-                            <li>Layne Boles</li>
-                            <li>Julie Walker</li>
-                            <li>Paul Wildey</li>
-                            <li>Pat Clendenen</li>
-                            <li>Crossan Cooper</li>
+                            <li><strong class="email-clickable">Craig Luekens</strong> - Moderator</li>
+                            <li><strong class="email-clickable">Evan Finch</strong></li>
+                            <li><strong class="email-clickable">Gary Wininger</strong></li>
+                            <li><strong class="email-clickable">Barbara Battista</strong></li>
+                            <li><strong class="email-clickable">Megan Paek</strong></li>
+                            <li><strong class="email-clickable">Josh Sanders</strong></li>
+                            <li><strong class="email-clickable">Layne Boles</strong></li>
+                            <li><strong class="email-clickable">Julie Walker</strong></li>
+                            <li><strong class="email-clickable">Paul Wildey</strong></li>
+                            <li><strong class="email-clickable">Pat Clendenen</strong></li>
+                            <li><strong class="email-clickable">Crossan Cooper</strong></li>
                         </ul>
                     </div>
 
@@ -624,15 +666,15 @@
                     <div class="group-card">
                         <h3>Staff</h3>
                         <ul>
-                            <li><strong>Craig Luekens</strong> - Senior Pastor</li>
-                            <li><strong>Jerry Ornelas</strong> - Assistant Pastor (Children, Youth, College)</li>
-                            <li><strong>Alexis Vano</strong> - Administrative Coordinator</li>
-                            <li><strong>Alex Gonzalez</strong> - Director of AV Team</li>
-                            <li><strong>Christopher Battista</strong> - Audio & IT Specialist</li>
-                            <li><strong>Jennifer Cheng</strong> - Music Coordinator</li>
-                            <li><strong>Paul Wildey</strong> - Sexton</li>
-                            <li><strong>Barbara Battista</strong> - Facilities Coordinator</li>
-                            <li><strong>Preston Graham</strong> - Pastor Emeritus</li>
+                            <li><strong class="email-clickable">Craig Luekens</strong> - Senior Pastor</li>
+                            <li><strong class="email-clickable" data-email="jerry@cpcnewhaven.org">Jerry Ornelas</strong> - Assistant Pastor (Children, Youth, College)</li>
+                            <li><strong class="email-clickable">Alexis Vano</strong> - Administrative Coordinator</li>
+                            <li><strong class="email-clickable">Alex Gonzalez</strong> - Director of AV Team</li>
+                            <li><strong class="email-clickable">Christopher Battista</strong> - Audio & IT Specialist</li>
+                            <li><strong class="email-clickable">Jennifer Cheng</strong> - Music Coordinator</li>
+                            <li><strong class="email-clickable">Paul Wildey</strong> - Sexton</li>
+                            <li><strong class="email-clickable">Barbara Battista</strong> - Facilities Coordinator</li>
+                            <li><strong class="email-clickable">Preston Graham</strong> - Pastor Emeritus</li>
                         </ul>
                     </div>
 
@@ -689,13 +731,13 @@
                     <div class="group-card">
                         <h3>Small Group Leaders</h3>
                         <ul>
-                            <li><strong>East Rock:</strong> Trey Billings, Kaitlyn Jessee, Bennie Finch</li>
-                            <li><strong>North Haven/Hamden:</strong> Josh Kebabian, Pete Chuchta</li>
-                            <li><strong>Shoreline Saturday:</strong> Cliff Bogue, Meg Bogue</li>
-                            <li><strong>Trumbull:</strong> Stacy Roney, David Taylor</li>
-                            <li><strong>West Side:</strong> Fred & Julie Walker, Miranda Healy</li>
-                            <li><strong>Downtown Wednesday:</strong> Tyler Rice, Colleen Rice</li>
-                            <li><strong>Downtown Thursday:</strong> Craig Luekens, Allison Luekens</li>
+                            <li><strong>East Rock:</strong> <span class="email-clickable">Trey Billings</span>, <span class="email-clickable" data-email="kaijessee@gmail.com">Kaitlyn Jessee</span>, <span class="email-clickable">Bennie Finch</span></li>
+                            <li><strong>North Haven/Hamden:</strong> <span class="email-clickable">Josh Kebabian</span>, <span class="email-clickable">Pete Chuchta</span></li>
+                            <li><strong>Shoreline Saturday:</strong> <span class="email-clickable" data-email="mhbogue@yahoo.com">Cliff Bogue</span>, <span class="email-clickable" data-email="mhbogue@me.co">Meg Bogue</span></li>
+                            <li><strong>Trumbull:</strong> <span class="email-clickable" data-email="mrsprofdoc@icloud.com">Stacy Roney</span>, <span class="email-clickable" data-email="david.taylor@cpcnewhaven.org">David Taylor</span></li>
+                            <li><strong>West Side:</strong> <span class="email-clickable">Fred & Julie Walker</span>, <span class="email-clickable" data-email="mirandajrdn8@gmail.com">Miranda Healy</span></li>
+                            <li><strong>Downtown Wednesday:</strong> <span class="email-clickable">Tyler Rice</span>, <span class="email-clickable" data-email="c.mccormack418@gmail.com">Colleen Rice</span></li>
+                            <li><strong>Downtown Thursday:</strong> <span class="email-clickable">Craig Luekens</span>, <span class="email-clickable" data-email="allison.luekens@gmail.com">Allison Luekens</span></li>
                         </ul>
                     </div>
 
@@ -703,10 +745,10 @@
                     <div class="group-card">
                         <h3>Discipleship Groups</h3>
                         <ul>
-                            <li><strong>Men's Discipleship:</strong> David Taylor</li>
-                            <li><strong>Women's Discipleship:</strong> Diane Miller</li>
-                            <li><strong>Young at Heart:</strong> Stacy Roney</li>
-                            <li><strong>Moms Group:</strong> Meg Bogue</li>
+                            <li><strong>Men's Discipleship:</strong> <span class="email-clickable" data-email="david.taylor@cpcnewhaven.org">David Taylor</span></li>
+                            <li><strong>Women's Discipleship:</strong> <span class="email-clickable" data-email="diane.miller@cpcnewhaven.org">Diane Miller</span></li>
+                            <li><strong>Young at Heart:</strong> <span class="email-clickable" data-email="mrsprofdoc@icloud.com">Stacy Roney</span></li>
+                            <li><strong>Moms Group:</strong> <span class="email-clickable" data-email="mhbogue@me.co">Meg Bogue</span></li>
                         </ul>
                     </div>
                 </div>
@@ -907,6 +949,31 @@
         }
         window.addEventListener('scroll', updateActiveNav);
         updateActiveNav();
+
+        // Email copy functionality
+        function showEmailToast() {
+            const toast = document.createElement('div');
+            toast.className = 'email-toast';
+            toast.textContent = 'Email copied to clipboard!';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideUp 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        document.querySelectorAll('.email-clickable[data-email]').forEach(element => {
+            element.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const email = this.getAttribute('data-email');
+                navigator.clipboard.writeText(email).then(() => {
+                    showEmailToast();
+                }).catch(err => {
+                    console.error('Failed to copy email:', err);
+                });
+            });
+        });
     });
 </script>
 {% endblock %}
