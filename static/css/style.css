@@ -5578,19 +5578,37 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 .dash-live {
     position: relative; display: block; text-decoration: none;
     padding: 16px; border-radius: 12px;
-    background: linear-gradient(150deg, #ec3f5d, #b0203f);
-    box-shadow: 0 8px 22px rgba(236, 63, 93, .28);
-    transition: transform .15s ease, box-shadow .15s ease;
+    background: rgba(0, 100, 200, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 100, 200, 0.28);
+    box-shadow: 0 8px 22px rgba(0, 100, 200, 0.12);
+    transition: transform .15s ease, box-shadow .15s ease, background .3s ease, border-color .3s ease;
+    margin-bottom: 16px;
 }
-.dash-live:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(236, 63, 93, .38); }
+.dash-live:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(0, 100, 200, 0.18); }
+
+/* Sunday variant: subtle red tint */
+.dash-live.is-sunday {
+    background: rgba(220, 60, 80, 0.14);
+    border-color: rgba(220, 60, 80, 0.26);
+    box-shadow: 0 8px 22px rgba(220, 60, 80, 0.1);
+}
+.dash-live.is-sunday:hover {
+    box-shadow: 0 12px 28px rgba(220, 60, 80, 0.15);
+}
 .dash-live__eyebrow {
     display: flex; align-items: center; gap: 7px;
     font: 800 10px/1 'Barlow', sans-serif; letter-spacing: .18em;
     text-transform: uppercase; color: rgba(255, 255, 255, .9);
 }
 .dash-live__dot {
-    width: 8px; height: 8px; border-radius: 50%; background: #fff;
+    width: 8px; height: 8px; border-radius: 50%; background: rgba(155, 199, 255, 0.9);
     animation: cpcpulse 1.6s ease-in-out infinite;
+}
+
+.dash-live.is-sunday .dash-live__dot {
+    background: rgba(220, 60, 80, 0.85);
 }
 .dash-live__title { display: block; margin-top: 14px; font: 800 22px/1 'Barlow', sans-serif; color: #fff; }
 .dash-live__sub   { display: block; margin-top: 6px; font: 500 12.5px/1 'Barlow', sans-serif; color: rgba(255, 255, 255, .85); }
@@ -5686,3 +5704,29 @@ body.theme-white .dash-follow__btn {
     background: rgba(10, 42, 82, .06); border-color: rgba(10, 42, 82, .12); color: #0a52a3;
 }
 body.theme-white .dash-follow__btn:hover { background: rgba(10, 42, 82, .12); }
+
+body.theme-white .dash-live {
+    background: rgba(10, 82, 163, 0.12);
+    border-color: rgba(10, 82, 163, 0.22);
+    box-shadow: 0 8px 22px rgba(10, 82, 163, 0.08);
+    color: #0a52a3;
+}
+body.theme-white .dash-live:hover {
+    box-shadow: 0 12px 28px rgba(10, 82, 163, 0.12);
+}
+body.theme-white .dash-live__eyebrow { color: rgba(10, 82, 163, 0.8); }
+body.theme-white .dash-live__title { color: #0a52a3; }
+body.theme-white .dash-live__sub { color: rgba(10, 82, 163, 0.7); }
+body.theme-white .dash-live__play { color: rgba(10, 82, 163, 0.75); }
+
+body.theme-white .dash-live.is-sunday {
+    background: rgba(220, 60, 80, 0.1);
+    border-color: rgba(220, 60, 80, 0.2);
+    box-shadow: 0 8px 22px rgba(220, 60, 80, 0.07);
+}
+body.theme-white .dash-live.is-sunday:hover {
+    box-shadow: 0 12px 28px rgba(220, 60, 80, 0.1);
+}
+
+body.theme-white .dash-live__dot { background: rgba(0, 100, 200, 0.7); }
+body.theme-white .dash-live.is-sunday .dash-live__dot { background: rgba(200, 50, 70, 0.75); }

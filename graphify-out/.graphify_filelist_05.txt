@@ -1,0 +1,14 @@
+/Users/agworkywork/cpc-web-app/templates/admin/reorder_events.html
+/Users/agworkywork/cpc-web-app/templates/admin/reorder_sessions.html
+/Users/agworkywork/cpc-web-app/templates/admin/subpage_edit.html
+/Users/agworkywork/cpc-web-app/templates/admin/teaching_series_create.html
+/Users/agworkywork/cpc-web-app/templates/admin/teaching_series_edit.html
+/Users/agworkywork/cpc-web-app/templates/admin/teaching_series_overview.html
+/Users/agworkywork/cpc-web-app/templates/admin/model/create_bento.html
+/Users/agworkywork/cpc-web-app/templates/admin/model/edit_bento.html
+/Users/agworkywork/cpc-web-app/templates/admin/model/gallery_create.html
+/Users/agworkywork/cpc-web-app/templates/admin/model/gallery_edit.html
+/Users/agworkywork/cpc-web-app/analytics_charts/author_distribution.png
+/Users/agworkywork/cpc-web-app/analytics_charts/publishing_frequency.png
+/Users/agworkywork/cpc-web-app/analytics_charts/series_distribution.png
+/Users/agworkywork/cpc-web-app/static/img/default-cover.jpg

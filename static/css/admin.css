@@ -761,6 +761,118 @@ body.admin-body {
 }
 
 /* ---------------------------------------------------------------------------
+   Announcement List – Advanced/Basic Toggle
+   --------------------------------------------------------------------------- */
+.advanced-toggle-section {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.advanced-toggle-btn {
+  background: var(--cpc-blue);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.advanced-toggle-btn:hover {
+  background: var(--cpc-blue-dark);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.advanced-toggle-btn.active {
+  background: var(--cpc-blue-dark);
+}
+
+/* Hide non-critical columns by default in basic view */
+.admin-list.basic-view .col-speaker,
+.admin-list.basic-view .col-type,
+.admin-list.basic-view .col-category,
+.admin-list.basic-view .col-show_in_banner,
+.admin-list.basic-view .col-superfeatured,
+.admin-list.basic-view .col-revision,
+.admin-list.basic-view .col-updated_at,
+.admin-list.basic-view .col-updated_by,
+.admin-list.basic-view .col-event_date,
+.admin-list.basic-view .col-event_start_time,
+.admin-list.basic-view .col-event_end_time,
+.admin-list.basic-view .col-expires_at {
+  display: none !important;
+}
+
+/* Enhance action buttons in announcement list */
+.admin-list tbody td.col-actions {
+  padding: 0.75rem !important;
+}
+
+.admin-list .list-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-list .list-actions a {
+  padding: 0.5rem 0.9rem !important;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.admin-list .list-actions a.btn-primary {
+  background: var(--cpc-blue) !important;
+  color: white !important;
+  border: none;
+}
+
+.admin-list .list-actions a.btn-primary:hover {
+  background: var(--cpc-blue-dark) !important;
+  transform: translateY(-2px);
+}
+
+.admin-list .list-actions a.btn-default {
+  background: rgba(0, 50, 120, 0.3) !important;
+  color: var(--admin-text) !important;
+  border: 1px solid var(--cpc-blue);
+}
+
+.admin-list .list-actions a.btn-default:hover {
+  background: var(--cpc-blue) !important;
+  color: white !important;
+}
+
+/* Status badge styling in announcement list */
+.admin-list .col-active span.admin-status-tag {
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.admin-list .col-active .admin-status-published {
+  background: rgba(40, 167, 69, 0.2);
+  color: #2ca745;
+}
+
+.admin-list .col-active .admin-status-draft {
+  background: rgba(108, 117, 125, 0.2);
+  color: #6c757d;
+}
+
+/* ---------------------------------------------------------------------------
    Panels / wells / cards
    --------------------------------------------------------------------------- */
 .admin-body .panel,

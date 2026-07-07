@@ -1,0 +1,156 @@
+/* ===========================================================================
+   LEFT DASHBOARD SIDEBAR — Direction 1B (Content-first & minimal)
+   Append to static/css/style.css. These classes replace the old
+   .dashboard-section / .quick-links-grid usage for the LEFT sidebar.
+
+   The outer <aside class="dashboard-sidebar dashboard-left"> keeps its
+   existing width / position / glass-panel rules. If it does NOT already
+   lay children out vertically, add the display:flex block below.
+   =========================================================================== */
+
+/* Ensure the panel is a vertical flex column so .dash-spacer can push the
+   footer to the bottom. Merge into your existing .dashboard-left rule. */
+.dashboard-left {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 16px 15px;
+}
+
+/* ---- 1. Search (borderless) ---- */
+.dash-search { position: relative; margin: 0; }
+.dash-search__icon {
+    position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; color: rgba(255, 255, 255, .5); pointer-events: none;
+}
+.dash-search__input {
+    width: 100%; box-sizing: border-box;
+    padding: 9px 8px 9px 24px;
+    border: none; border-bottom: 1px solid rgba(255, 255, 255, .2);
+    background: transparent; color: #fff;
+    font: 400 14px/1 'Barlow', sans-serif; outline: none;
+}
+.dash-search__input::placeholder { color: rgba(255, 255, 255, .5); }
+.dash-search__input:focus { border-bottom-color: var(--surface-accent, #9bc7ff); }
+
+/* ---- 2. Live hero card ---- */
+.dash-live {
+    position: relative; display: block; text-decoration: none;
+    padding: 16px; border-radius: 12px;
+    background: linear-gradient(150deg, #ec3f5d, #b0203f);
+    box-shadow: 0 8px 22px rgba(236, 63, 93, .28);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.dash-live:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(236, 63, 93, .38); }
+.dash-live__eyebrow {
+    display: flex; align-items: center; gap: 7px;
+    font: 800 10px/1 'Barlow', sans-serif; letter-spacing: .18em;
+    text-transform: uppercase; color: rgba(255, 255, 255, .9);
+}
+.dash-live__dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #fff;
+    animation: cpcpulse 1.6s ease-in-out infinite;
+}
+.dash-live__title { display: block; margin-top: 14px; font: 800 22px/1 'Barlow', sans-serif; color: #fff; }
+.dash-live__sub   { display: block; margin-top: 6px; font: 500 12.5px/1 'Barlow', sans-serif; color: rgba(255, 255, 255, .85); }
+.dash-live__play  { position: absolute; right: 16px; bottom: 16px; font-size: 16px; color: rgba(255, 255, 255, .9); }
+
+@keyframes cpcpulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: .35; transform: scale(.85); }
+}
+@media (prefers-reduced-motion: reduce) { .dash-live__dot { animation: none; } }
+
+/* ---- shared: section heading (brighter for contrast) ---- */
+.dash-block { display: block; }
+.dash-heading {
+    margin: 0 0 4px; font: 800 11px/1 'Barlow', sans-serif;
+    letter-spacing: .16em; text-transform: uppercase; color: #c3daf7;
+}
+
+/* ---- 3. Watch & Listen: list rows ---- */
+.dash-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 2px; text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, .09);
+    transition: padding-left .15s ease;
+}
+.dash-row--last { border-bottom: none; }
+.dash-row__icon  { width: 18px; text-align: center; font-size: 13px; color: var(--surface-accent, #9bc7ff); }
+.dash-row__label { color: #fff; font: 600 14px/1 'Barlow', sans-serif; }
+.dash-row__chev  { margin-left: auto; font-size: 11px; color: rgba(255, 255, 255, .35); }
+.dash-row:hover  { padding-left: 6px; }
+.dash-row:hover .dash-row__chev { color: rgba(255, 255, 255, .7); }
+
+/* ---- 4. This Week: icon-chip rows ---- */
+.dash-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 4px 0; text-decoration: none;
+}
+.dash-item + .dash-item { margin-top: 5px; }
+.dash-item__chip {
+    flex: none; width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(155, 199, 255, .16); color: var(--surface-accent, #9bc7ff);
+    font-size: 13px; transition: background .15s ease;
+}
+.dash-item:hover .dash-item__chip { background: rgba(155, 199, 255, .28); }
+.dash-item__text  { display: flex; flex-direction: column; }
+.dash-item__title { color: #fff; font: 600 13.5px/1.1 'Barlow', sans-serif; }
+.dash-item__sub   { margin-top: 3px; color: rgba(255, 255, 255, .6); font: 400 11.5px/1 'Barlow', sans-serif; }
+
+/* ---- 5. Give CTA ---- */
+.dash-give {
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    padding: 12px; border-radius: 11px; text-decoration: none;
+    background: rgba(255, 255, 255, .9); color: #0a2a52;
+    font: 700 14px/1 'Barlow', sans-serif;
+    transition: background .15s ease, transform .15s ease;
+}
+.dash-give:hover { background: #fff; transform: translateY(-1px); }
+
+/* ---- spacer + footer ---- */
+.dash-spacer { flex: 1 1 auto; }
+.dash-follow {
+    border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.dash-follow__label { font: 600 12px/1 'Barlow', sans-serif; color: rgba(255, 255, 255, .6); letter-spacing: .02em; }
+.dash-follow__icons { display: flex; gap: 9px; }
+.dash-follow__btn {
+    width: 32px; height: 32px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14);
+    color: #cfe0f5; font-size: 14px; text-decoration: none;
+    transition: background .15s ease;
+}
+.dash-follow__btn:hover { background: rgba(255, 255, 255, .16); }
+
+/* ===========================================================================
+   WHITE THEME OVERRIDES
+   Match the pattern of your existing body.theme-white rules so the light
+   theme keeps working. Values below are starting points — align to your
+   --surface-* light-theme tokens.
+   =========================================================================== */
+body.theme-white .dash-search__icon,
+body.theme-white .dash-search__input { color: #1a2b45; }
+body.theme-white .dash-search__input { border-bottom-color: rgba(10, 42, 82, .2); }
+body.theme-white .dash-search__input::placeholder { color: rgba(10, 42, 82, .45); }
+
+body.theme-white .dash-heading { color: #0a52a3; }
+body.theme-white .dash-row { border-bottom-color: rgba(10, 42, 82, .12); }
+body.theme-white .dash-row__label,
+body.theme-white .dash-item__title { color: #12233d; }
+body.theme-white .dash-row__chev { color: rgba(10, 42, 82, .3); }
+body.theme-white .dash-item__sub { color: rgba(10, 42, 82, .55); }
+body.theme-white .dash-item__chip { background: rgba(10, 82, 163, .1); color: #0a52a3; }
+
+body.theme-white .dash-give { background: #0a52a3; color: #fff; }
+body.theme-white .dash-give:hover { background: #08478c; }
+
+body.theme-white .dash-follow { border-top-color: rgba(10, 42, 82, .12); }
+body.theme-white .dash-follow__label { color: rgba(10, 42, 82, .6); }
+body.theme-white .dash-follow__btn {
+    background: rgba(10, 42, 82, .06); border-color: rgba(10, 42, 82, .12); color: #0a52a3;
+}
+body.theme-white .dash-follow__btn:hover { background: rgba(10, 42, 82, .12); }

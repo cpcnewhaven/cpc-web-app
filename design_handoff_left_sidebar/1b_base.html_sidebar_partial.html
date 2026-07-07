@@ -1,0 +1,96 @@
+{# ===========================================================================
+   LEFT DASHBOARD SIDEBAR — Direction 1B (Content-first & minimal)
+   Replace the inner markup of the existing
+     <aside class="dashboard-sidebar dashboard-left …"> … </aside>
+   block in templates/base.html (was ~lines 366–418).
+
+   Keep the OUTER <aside> tag + its Alpine toggle (x-show / $store.dash.showLeftSidebar)
+   exactly as it is today — only the CONTENTS below change.
+
+   ⚠ ROUTES: the url_for endpoint names below are best-guess placeholders.
+   Map each to the SAME endpoint the current sidebar link points at.
+   Search the old block for the real names and swap them in.
+=========================================================================== #}
+
+{# 1 — Search: borderless, single bottom rule, inset icon #}
+<form class="dash-search" action="{{ url_for('search') }}" method="get"
+      x-data @submit.prevent="window.location = '{{ url_for('search') }}?q=' + encodeURIComponent($refs.q.value)">
+  <i class="fas fa-magnifying-glass dash-search__icon" aria-hidden="true"></i>
+  <input x-ref="q" type="search" name="q" class="dash-search__input"
+         placeholder="Search…" aria-label="Search the site">
+</form>
+
+{# 2 — Live hero card #}
+<a href="{{ url_for('live') }}" class="dash-live">
+  <span class="dash-live__eyebrow">
+    <span class="dash-live__dot" aria-hidden="true"></span> Live Sundays
+  </span>
+  <span class="dash-live__title">Watch Live</span>
+  <span class="dash-live__sub">10:30a · Worship service</span>
+  <i class="fas fa-play dash-live__play" aria-hidden="true"></i>
+</a>
+
+{# 3 — Watch & Listen: clean list rows, no boxes #}
+<div class="dash-block">
+  <h3 class="dash-heading">Watch &amp; Listen</h3>
+  <a href="{{ url_for('sermons') }}" class="dash-row">
+    <i class="fas fa-play dash-row__icon" aria-hidden="true"></i>
+    <span class="dash-row__label">Sermons</span>
+    <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
+  </a>
+  <a href="{{ url_for('podcasts') }}" class="dash-row">
+    <i class="fas fa-microphone dash-row__icon" aria-hidden="true"></i>
+    <span class="dash-row__label">Podcasts</span>
+    <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
+  </a>
+  <a href="{{ url_for('teaching_series') }}" class="dash-row dash-row--last">
+    <i class="fas fa-layer-group dash-row__icon" aria-hidden="true"></i>
+    <span class="dash-row__label">Teaching Series</span>
+    <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
+  </a>
+</div>
+
+{# 4 — This Week: icon-chip rows with subtitles (merges old Stay Connected + Get Involved) #}
+<div class="dash-block">
+  <h3 class="dash-heading">This Week</h3>
+  <a href="{{ url_for('events') }}" class="dash-item">
+    <span class="dash-item__chip"><i class="fas fa-calendar-day" aria-hidden="true"></i></span>
+    <span class="dash-item__text">
+      <span class="dash-item__title">Events</span>
+      <span class="dash-item__sub">What's coming up</span>
+    </span>
+  </a>
+  <a href="{{ url_for('lifegroups') }}" class="dash-item">
+    <span class="dash-item__chip"><i class="fas fa-users" aria-hidden="true"></i></span>
+    <span class="dash-item__text">
+      <span class="dash-item__title">LifeGroups</span>
+      <span class="dash-item__sub">Find community</span>
+    </span>
+  </a>
+  <a href="{{ url_for('plan_a_visit') }}" class="dash-item">
+    <span class="dash-item__chip"><i class="fas fa-map-location-dot" aria-hidden="true"></i></span>
+    <span class="dash-item__text">
+      <span class="dash-item__title">Plan a Visit</span>
+      <span class="dash-item__sub">First time here?</span>
+    </span>
+  </a>
+</div>
+
+{# 5 — Give: single solid high-intent CTA #}
+<a href="{{ url_for('give') }}" class="dash-give">
+  <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Give
+</a>
+
+{# push footer down #}
+<div class="dash-spacer"></div>
+
+{# 6 — Follow along footer #}
+<div class="dash-follow">
+  <span class="dash-follow__label">Follow along</span>
+  <div class="dash-follow__icons">
+    {# swap hrefs for the church's real social URLs already in base.html #}
+    <a href="{{ social_facebook or '#' }}"  class="dash-follow__btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+    <a href="{{ social_instagram or '#' }}" class="dash-follow__btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+    <a href="{{ social_youtube or '#' }}"   class="dash-follow__btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+  </div>
+</div>
