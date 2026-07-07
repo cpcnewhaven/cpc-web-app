@@ -71,7 +71,9 @@
       "Bash(curl *)",
       "Skill(run)",
       "Artifact",
-      "Bash(pkill -f start_app)"
+      "Bash(pkill -f start_app)",
+      "Bash(git hash-object *)",
+      "Bash(git status *)"
     ]
   }
 }
