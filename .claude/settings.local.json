@@ -70,7 +70,8 @@
       "Bash(curl -s \"http://localhost:5001/api/event-announcements\")",
       "Bash(curl *)",
       "Skill(run)",
-      "Bash(pkill -f \"python \\(start_app|app\\).py\")"
+      "Artifact",
+      "Bash(pkill -f start_app)"
     ]
   }
 }
