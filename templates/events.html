@@ -363,6 +363,28 @@ body.theme-white .events-hero p { color: var(--page-muted); }
     width: 20px;
 }
 
+/* Announcement cards - slightly enhanced styling */
+.announcement-card {
+    border-color: rgba(13, 110, 253, 0.4);
+    position: relative;
+}
+
+.announcement-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(13, 110, 253, 0.6), rgba(74, 192, 247, 0.4));
+    border-radius: 12px 12px 0 0;
+}
+
+.announcement-card:hover {
+    border-color: rgba(13, 110, 253, 0.6);
+    background: var(--page-surface-hover);
+}
+
 @media (max-width: 1024px) {
     .category-grid {
         grid-template-columns: 1fr;
@@ -379,6 +401,14 @@ body.theme-white .events-hero p { color: var(--page-muted); }
             <h1>Events & Activities</h1>
             <p>Join us for fellowship, learning, and community events</p>
         </div>
+
+        <!-- Event Announcements Section (3-month view) -->
+        <section class="events-section">
+            <h2 class="section-title">Featured Announcements</h2>
+            <div id="event-announcements-container" style="min-height: 100px;">
+                <div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">Loading announcements...</div>
+            </div>
+        </section>
 
         <!-- Events Content -->
         <section class="events-section">
@@ -463,5 +493,6 @@ body.theme-white .events-hero p { color: var(--page-muted); }
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/event-announcements.js') }}"></script>
 <script src="{{ url_for('static', filename='js/events.js') }}"></script>
 {% endblock %}

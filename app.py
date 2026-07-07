@@ -1210,6 +1210,39 @@ def api_banner_announcements():
         ]
     })
 
+@app.route('/api/event-announcements')
+@cache.cached(timeout=300)
+def api_event_announcements():
+    """Fetch announcements with event_date for the events page (3-month view)"""
+    from datetime import datetime, timedelta
+    today = datetime.utcnow().date()
+
+    # Get announcements with event_date in the next 3 months
+    future_limit = today + timedelta(days=90)
+    announcements = Announcement.query.filter(
+        Announcement.active == True,
+        Announcement.event_date != None,
+        Announcement.event_date >= today,
+        Announcement.event_date <= future_limit
+    ).filter(_not_expired(Announcement))\
+    .order_by(Announcement.event_date.asc()).all()
+
+    return jsonify({
+        'announcements': [
+            {
+                'id': a.id,
+                'title': a.title,
+                'description': a.description,
+                'eventDate': a.event_date.strftime('%Y-%m-%d') if a.event_date else None,
+                'eventStartTime': getattr(a, 'event_start_time', None),
+                'eventEndTime': getattr(a, 'event_end_time', None),
+                'category': a.category,
+                'type': a.type,
+                'featuredImage': a.featured_image,
+            } for a in announcements
+        ]
+    })
+
 @app.route('/api/highlights')
 @cache.cached(timeout=60)
 def api_highlights():
