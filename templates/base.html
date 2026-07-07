@@ -176,8 +176,8 @@
                     style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
                     <li><a href="{{ url_for('search') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Search</a></li>
-                    <li><a href="{{ url_for('suggest_event') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Suggest an Event</a></li>
+                    {# <li><a href="{{ url_for('suggest_event') }}"
+                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Suggest an Event</a></li> #}
                     <li><a href="{{ url_for('archive') }}"
                             class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Archive</a></li>
                     <li><a href="/admin/dashboard/"
@@ -268,8 +268,8 @@
                     </p>
                     <a href="{{ url_for('highlights') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 text-sm">New Content</a>
-                    <a href="{{ url_for('suggest_event') }}"
-                        class="block text-blue-200 hover:text-blue-100 font-medium py-1 text-sm"><i class="fas fa-calendar-plus text-xs mr-1 opacity-70"></i>Suggest Event</a>
+                    {# <a href="{{ url_for('suggest_event') }}"
+                        class="block text-blue-200 hover:text-blue-100 font-medium py-1 text-sm"><i class="fas fa-calendar-plus text-xs mr-1 opacity-70"></i>Suggest Event</a> #}
                     <a href="{{ url_for('events') }}"
                         class="block text-white hover:text-blue-200 font-medium py-1 text-sm">Events</a>
                     <a href="{{ url_for('community') }}"
@@ -475,7 +475,8 @@
         <div class="dashboard-section" x-show="$store.dash.showService">
             <div class="dashboard-title">Sunday Service</div>
             <div class="dashboard-note">
-                10:30am Worship • 135 Whitney Ave
+                <div>10:30am Worship</div>
+                <div>135 Whitney Ave</div>
             </div>
         </div>
     </aside>
@@ -529,7 +530,7 @@
                 <a href="{{ url_for('live') }}" class="mobile-more-link"><span>Live Stream</span></a>
                 <a href="{{ url_for('podcasts') }}" class="mobile-more-link"><span>Podcasts</span></a>
                 <a href="{{ url_for('search') }}" class="mobile-more-link"><span>Search</span></a>
-                <a href="{{ url_for('suggest_event') }}" class="mobile-more-link"><span>Suggest an Event</span></a>
+                {# <a href="{{ url_for('suggest_event') }}" class="mobile-more-link"><span>Suggest an Event</span></a> #}
                 <a href="{{ url_for('contact') }}" class="mobile-more-link"><span>Contact</span></a>
                 <a href="{{ url_for('plan_a_visit') }}" class="mobile-more-link"><span>Plan a Visit</span></a>
                 <a href="{{ url_for('highlights') }}" class="mobile-more-link"><span>New Content</span></a>
@@ -562,7 +563,7 @@
         </div>
     </div>
     <style>
-    .site-footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; }
+    .site-footer-grid { display: grid; grid-template-columns: 1.5fr 1.5fr; gap: 3rem; }
     @media (max-width: 680px) { .site-footer-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
     </style>
     <!-- Site Footer -->
@@ -585,47 +586,50 @@
                 </div>
             </div>
 
-            <!-- Worship -->
-            <div>
-                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
-                {% if active_schedule == 'summer' %}
-                  {% set _p = site_content.get('service_summer_prayer_time','') %}
-                  {% set _s = site_content.get('service_summer_school_time','') %}
-                  {% set _w = site_content.get('service_summer_worship_time','') %}
-                  {% set _f = site_content.get('service_summer_fellowship_time','') %}
-                {% else %}
-                  {% set _p = site_content.get('service_prayer_time','') %}
-                  {% set _s = site_content.get('service_school_time','') %}
-                  {% set _w = site_content.get('service_worship_time','') %}
-                  {% set _f = site_content.get('service_fellowship_time','') %}
-                {% endif %}
-                {% set _worship_only = site_content.get('summer_worship_only', 'False').lower() in ('true', '1', 'yes') and active_schedule == 'summer' %}
-                {% if not _worship_only and _p and _p.strip().lower() != 'no' %}
-                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _p }}</span> &nbsp;Prayer in the Parlor</p>
-                {% endif %}
-                {% if not _worship_only and _s and _s.strip().lower() != 'no' %}
-                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _s }}</span> &nbsp;Sunday School</p>
-                {% endif %}
-                {% if _w and _w.strip().lower() != 'no' %}
-                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _w }}</span> Worship Service</p>
-                {% endif %}
-                {% if not _worship_only and _f and _f.strip().lower() != 'no' %}
-                <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _f }}</span> Fellowship Lunch</p>
-                {% endif %}
-                <p style="margin-top:0.75rem;"><a href="{{ url_for('plan_a_visit') }}" style="color:var(--surface-accent); text-decoration:none; font-weight:500;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-accent)'">Plan a Visit →</a></p>
-            </div>
+            <!-- Worship + Quick links (combined) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <!-- Worship -->
+                <div>
+                    <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
+                    {% if active_schedule == 'summer' %}
+                      {% set _p = site_content.get('service_summer_prayer_time','') %}
+                      {% set _s = site_content.get('service_summer_school_time','') %}
+                      {% set _w = site_content.get('service_summer_worship_time','') %}
+                      {% set _f = site_content.get('service_summer_fellowship_time','') %}
+                    {% else %}
+                      {% set _p = site_content.get('service_prayer_time','') %}
+                      {% set _s = site_content.get('service_school_time','') %}
+                      {% set _w = site_content.get('service_worship_time','') %}
+                      {% set _f = site_content.get('service_fellowship_time','') %}
+                    {% endif %}
+                    {% set _worship_only = site_content.get('summer_worship_only', 'False').lower() in ('true', '1', 'yes') and active_schedule == 'summer' %}
+                    {% if not _worship_only and _p and _p.strip().lower() != 'no' %}
+                    <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _p }}</span> &nbsp;Prayer in the Parlor</p>
+                    {% endif %}
+                    {% if not _worship_only and _s and _s.strip().lower() != 'no' %}
+                    <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _s }}</span> &nbsp;Sunday School</p>
+                    {% endif %}
+                    {% if _w and _w.strip().lower() != 'no' %}
+                    <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _w }}</span> Worship Service</p>
+                    {% endif %}
+                    {% if not _worship_only and _f and _f.strip().lower() != 'no' %}
+                    <p style="margin:0 0 0.3rem;"><span style="color:var(--surface-accent); font-weight:600;">{{ _f }}</span> Fellowship Lunch</p>
+                    {% endif %}
+                    <p style="margin-top:0.75rem;"><a href="{{ url_for('plan_a_visit') }}" style="color:var(--surface-accent); text-decoration:none; font-weight:500;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-accent)'">Plan a Visit →</a></p>
+                </div>
 
-            <!-- Quick links -->
-            <div>
-                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Links</p>
-                {% set footer_links = [
-                    ('Sermons', 'sermons'), ('Podcasts', 'podcasts'), ('Events', 'events'),
-                    ('LifeGroups', 'lifegroups'), ('Media Gallery', 'media'), ('Give', 'give'),
-                    ('About', 'about'), ('Contact', 'contact')
-                ] %}
-                {% for label, endpoint in footer_links %}
-                <p style="margin:0 0 0.3rem;"><a href="{{ url_for(endpoint) }}" style="color:var(--surface-muted); text-decoration:none;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'">{{ label }}</a></p>
-                {% endfor %}
+                <!-- Quick links -->
+                <div>
+                    <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Links</p>
+                    {% set footer_links = [
+                        ('Sermons', 'sermons'), ('Podcasts', 'podcasts'), ('Events', 'events'),
+                        ('LifeGroups', 'lifegroups'), ('Media Gallery', 'media'), ('Give', 'give'),
+                        ('About', 'about'), ('Contact', 'contact')
+                    ] %}
+                    {% for label, endpoint in footer_links %}
+                    <p style="margin:0 0 0.3rem;"><a href="{{ url_for(endpoint) }}" style="color:var(--surface-muted); text-decoration:none;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'">{{ label }}</a></p>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
@@ -682,6 +686,20 @@
                 }
             });
         });
+    </script>
+
+    <!-- Sunday detection for Watch Live widget -->
+    <script>
+        (function () {
+            const watchLiveEl = document.querySelector('.dash-live');
+            if (watchLiveEl) {
+                const today = new Date();
+                const isSunday = today.getDay() === 0;
+                if (isSunday) {
+                    watchLiveEl.classList.add('is-sunday');
+                }
+            }
+        })();
     </script>
 
     <!-- Dashboard Settings Store -->
