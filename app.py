@@ -717,46 +717,34 @@ def sundays():
 
 @app.route('/display')
 def display():
-    site_content = {r.key: r.value for r in SiteContent.query.all()}
-    return render_template('display.html', site_content=site_content)
-
-@app.route('/today-at-cpc')
-def today_at_cpc():
     """TV dashboard for lobby/foyer showing today's service and this week's events."""
     from datetime import datetime, timedelta
 
-    # Get today's worship service (latest sermon for today's date)
+    # Get today's worship service
     today = datetime.now().date()
     today_sermon = Sermon.query.filter_by(date=today, active=True).first()
 
-    # Get this week's events (fetch from API endpoint and filter by date)
+    # Get active events (ongoing events that are active and not expired)
+    this_week_events = []
     try:
-        events_data = _fetch_events_json()
-        events = events_data.get('events', [])
+        active_events = OngoingEvent.query.filter(
+            OngoingEvent.active == True,
+            db.or_(
+                OngoingEvent.expires_at == None,
+                OngoingEvent.expires_at >= today
+            )
+        ).order_by(OngoingEvent.sort_order).limit(3).all()
 
-        # Filter events for this week (today through 7 days out)
-        this_week_events = []
-        week_end = today + timedelta(days=7)
-        local_tz = pytz.timezone(app.config.get("SITE_TIMEZONE", "America/New_York"))
-
-        for event in events:
-            try:
-                # Parse event start time (ISO format)
-                start_str = event.get('start')
-                if start_str:
-                    event_dt = datetime.fromisoformat(start_str)
-                    event_date = event_dt.date()
-                    if today <= event_date <= week_end:
-                        # Format event for template
-                        event['formatted_date'] = event_dt.strftime('%a').upper()
-                        event['formatted_date_num'] = event_dt.day
-                        event['formatted_time'] = event_dt.strftime('%I:%M %p').lstrip('0')
-                        this_week_events.append(event)
-            except (ValueError, TypeError, AttributeError):
-                continue
-
-        # Limit to top 3 events
-        this_week_events = this_week_events[:3]
+        for event in active_events:
+            this_week_events.append({
+                'title': event.title,
+                'description': event.description,
+                'category': event.category or 'Event',
+                'location': event.type or '',
+                'formatted_date': 'TBD',
+                'formatted_date_num': 0,
+                'formatted_time': '',
+            })
     except Exception as e:
         this_week_events = []
 
