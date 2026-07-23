@@ -720,6 +720,53 @@ def display():
     site_content = {r.key: r.value for r in SiteContent.query.all()}
     return render_template('display.html', site_content=site_content)
 
+@app.route('/today-at-cpc')
+def today_at_cpc():
+    """TV dashboard for lobby/foyer showing today's service and this week's events."""
+    from datetime import datetime, timedelta
+
+    # Get today's worship service (latest sermon for today's date)
+    today = datetime.now().date()
+    today_sermon = Sermon.query.filter_by(date=today, active=True).first()
+
+    # Get this week's events (fetch from API endpoint and filter by date)
+    try:
+        events_data = _fetch_events_json()
+        events = events_data.get('events', [])
+
+        # Filter events for this week (today through 7 days out)
+        this_week_events = []
+        week_end = today + timedelta(days=7)
+        local_tz = pytz.timezone(app.config.get("SITE_TIMEZONE", "America/New_York"))
+
+        for event in events:
+            try:
+                # Parse event start time (ISO format)
+                start_str = event.get('start')
+                if start_str:
+                    event_dt = datetime.fromisoformat(start_str)
+                    event_date = event_dt.date()
+                    if today <= event_date <= week_end:
+                        # Format event for template
+                        event['formatted_date'] = event_dt.strftime('%a').upper()
+                        event['formatted_date_num'] = event_dt.day
+                        event['formatted_time'] = event_dt.strftime('%I:%M %p').lstrip('0')
+                        this_week_events.append(event)
+            except (ValueError, TypeError, AttributeError):
+                continue
+
+        # Limit to top 3 events
+        this_week_events = this_week_events[:3]
+    except Exception as e:
+        this_week_events = []
+
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+
+    return render_template('today-at-cpc.html',
+                          today_sermon=today_sermon,
+                          this_week_events=this_week_events,
+                          site_content=site_content)
+
 @app.route('/plan-a-visit')
 def plan_a_visit():
     site_content = {r.key: r.value for r in SiteContent.query.all()}

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today at CPC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: oklch(0.20 0.035 262);
+            font-family: 'Work Sans', sans-serif;
+            color: oklch(0.96 0.01 90);
+            overflow: hidden;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, oklch(0.21 0.04 262) 0%, oklch(0.17 0.035 260) 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 48px;
+            gap: 28px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 96px;
+            flex: none;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .logo-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 2px solid oklch(0.78 0.1 85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: none;
+            background: oklch(0.24 0.04 262);
+        }
+
+        .logo-circle img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .church-name {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        .church-name-main {
+            font-family: 'Lora', serif;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .church-name-sub {
+            font-size: 15px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: oklch(0.68 0.03 260);
+        }
+
+        .header-center {
+            font-family: 'Lora', serif;
+            font-size: 40px;
+            font-weight: 600;
+            letter-spacing: 0.005em;
+            color: oklch(0.97 0.01 90);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .time-date {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            line-height: 1.2;
+        }
+
+        .time {
+            font-size: 30px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date {
+            font-size: 16px;
+            color: oklch(0.7 0.03 260);
+        }
+
+        .divider {
+            width: 1px;
+            height: 48px;
+            background: oklch(0.4 0.03 260);
+        }
+
+        .weather-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: oklch(0.26 0.04 262);
+            padding: 10px 18px;
+            border-radius: 100px;
+        }
+
+        .weather-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .weather-content {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        .weather-temp {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .weather-desc {
+            font-size: 13px;
+            color: oklch(0.68 0.03 260);
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.42fr 1fr;
+            gap: 36px;
+            min-height: 0;
+        }
+
+        /* LEFT: TODAY */
+        .today-card {
+            position: relative;
+            border-radius: 22px;
+            overflow: hidden;
+            background: oklch(0.26 0.045 262);
+        }
+
+        .photo-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: oklch(0.6 0.02 260);
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, oklch(0.15 0.03 260 / 0.94) 0%, oklch(0.15 0.03 260 / 0.55) 46%, oklch(0.15 0.03 260 / 0.05) 72%);
+            pointer-events: none;
+        }
+
+        .summer-badge {
+            position: absolute;
+            top: 36px;
+            left: 36px;
+            display: inline-block;
+            background: oklch(0.78 0.1 85 / 0.95);
+            color: oklch(0.18 0.03 260);
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 9px 20px;
+            border-radius: 100px;
+            pointer-events: none;
+        }
+
+        .today-content {
+            position: absolute;
+            left: 44px;
+            right: 44px;
+            bottom: 40px;
+            pointer-events: none;
+        }
+
+        .service-title {
+            font-family: 'Lora', serif;
+            font-size: 64px;
+            font-weight: 600;
+            line-height: 1.03;
+            margin-bottom: 14px;
+        }
+
+        .service-address {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            color: oklch(0.9 0.015 90);
+            margin-bottom: 18px;
+        }
+
+        .address-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .teaching-series {
+            font-size: 20px;
+            color: oklch(0.75 0.02 90);
+            margin-bottom: 16px;
+        }
+
+        .teaching-series-bold {
+            color: oklch(0.97 0.01 90);
+            font-weight: 600;
+        }
+
+        .welcome-text {
+            font-size: 20px;
+            line-height: 1.4;
+            color: oklch(0.86 0.015 90);
+            max-width: 640px;
+        }
+
+        /* RIGHT: THIS WEEK */
+        .this-week {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 0;
+        }
+
+        .this-week-label {
+            font-size: 16px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: oklch(0.68 0.03 260);
+            flex: none;
+        }
+
+        .events-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            min-height: 0;
+        }
+
+        .event-card {
+            flex: 1;
+            display: flex;
+            gap: 22px;
+            align-items: center;
+            background: oklch(0.255 0.045 262);
+            border-radius: 18px;
+            padding: 24px 28px;
+            border: 1px solid oklch(0.36 0.04 262);
+        }
+
+        .event-date {
+            flex: none;
+            width: 88px;
+            text-align: center;
+            padding: 12px 0;
+            border-radius: 12px;
+            background: oklch(0.32 0.05 262);
+        }
+
+        .event-day {
+            font-size: 14px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: oklch(0.7 0.03 260);
+        }
+
+        .event-date-num {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Lora', serif;
+        }
+
+        .event-details {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .event-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .event-title {
+            font-family: 'Lora', serif;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .event-category {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: oklch(0.78 0.1 85);
+            border: 1px solid oklch(0.78 0.1 85 / 0.5);
+            border-radius: 100px;
+            padding: 3px 12px;
+            flex: none;
+        }
+
+        .event-time {
+            font-size: 17px;
+            color: oklch(0.72 0.03 260);
+            margin-bottom: 6px;
+        }
+
+        .event-description {
+            font-size: 17px;
+            color: oklch(0.86 0.015 90);
+        }
+
+        /* BOTTOM STRIP */
+        .bottom-strip {
+            flex: none;
+            height: 158px;
+            background: oklch(0.24 0.045 262);
+            border-radius: 18px;
+            border: 1px solid oklch(0.36 0.04 262);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            gap: 40px;
+        }
+
+        .next-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .next-steps-label {
+            font-size: 15px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: oklch(0.68 0.03 260);
+        }
+
+        .next-steps-buttons {
+            display: flex;
+            gap: 18px;
+        }
+
+        .next-step-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            background: oklch(0.3 0.05 262);
+            border-radius: 100px;
+            padding: 14px 26px;
+            color: oklch(0.96 0.01 90);
+            border: none;
+            cursor: default;
+        }
+
+        .step-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .bottom-divider {
+            width: 1px;
+            height: 96px;
+            background: oklch(0.4 0.03 260);
+            flex: none;
+        }
+
+        .qr-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex: none;
+        }
+
+        .qr-code {
+            width: 104px;
+            height: 104px;
+            border-radius: 14px;
+            overflow: hidden;
+            flex: none;
+            background: oklch(0.97 0.01 90);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: oklch(0.35 0.02 260);
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .qr-text {
+            font-size: 19px;
+            color: oklch(0.86 0.015 90);
+            max-width: 220px;
+            line-height: 1.35;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <img src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png" alt="CPC Logo" style="filter: brightness-0 invert;">
+                </div>
+                <div class="church-name">
+                    <div class="church-name-main">Christ Presbyterian Church</div>
+                    <div class="church-name-sub">New Haven, Connecticut</div>
+                </div>
+            </div>
+
+            <div class="header-center">Today at CPC</div>
+
+            <div class="header-right">
+                <div class="time-date">
+                    <div class="time" id="cpc-time">10:30 AM</div>
+                    <div class="date" id="cpc-date">Sunday, July 19</div>
+                </div>
+                <div class="divider"></div>
+                <div class="weather-pill">
+                    <svg class="weather-icon" viewBox="0 0 24 24" fill="none" stroke="oklch(0.78 0.1 85)" stroke-width="1.6">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke-linecap="round"/>
+                    </svg>
+                    <div class="weather-content">
+                        <div class="weather-temp">69°F · New Haven</div>
+                        <div class="weather-desc">Clear skies</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+            <!-- LEFT: TODAY -->
+            <div class="today-card">
+                <div class="photo-bg">[ Sunday worship photograph ]</div>
+                <div class="gradient-overlay"></div>
+
+                <div class="summer-badge">Summer Schedule</div>
+
+                <div class="today-content">
+                    {% if today_sermon %}
+                        <div class="service-title">Worship — 10:30 AM</div>
+                        <div class="service-address">
+                            <svg class="address-icon" viewBox="0 0 24 24" fill="none" stroke="oklch(0.78 0.1 85)" stroke-width="1.8">
+                                <path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/>
+                                <circle cx="12" cy="10" r="2.4"/>
+                            </svg>
+                            135 Whitney Avenue
+                        </div>
+                        {% if today_sermon.series %}
+                            <div class="teaching-series">Teaching series: <span class="teaching-series-bold">{{ today_sermon.series.title }}</span></div>
+                        {% endif %}
+                        <div class="welcome-text">All are welcome — come as you are and join us in worship this Sunday.</div>
+                    {% else %}
+                        <div class="service-title">Worship — 10:30 AM</div>
+                        <div class="service-address">
+                            <svg class="address-icon" viewBox="0 0 24 24" fill="none" stroke="oklch(0.78 0.1 85)" stroke-width="1.8">
+                                <path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/>
+                                <circle cx="12" cy="10" r="2.4"/>
+                            </svg>
+                            135 Whitney Avenue
+                        </div>
+                        <div class="teaching-series">Teaching series: <span class="teaching-series-bold">Luke</span></div>
+                        <div class="welcome-text">All are welcome — come as you are and join us in worship this Sunday.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- RIGHT: THIS WEEK -->
+            <div class="this-week">
+                <div class="this-week-label">This Week</div>
+
+                <div class="events-container">
+                    {% if this_week_events|length >= 1 %}
+                        {% for event in this_week_events[:3] %}
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <div class="event-day">{{ event.formatted_date }}</div>
+                                    <div class="event-date-num">{{ event.formatted_date_num }}</div>
+                                </div>
+                                <div class="event-details">
+                                    <div class="event-title-row">
+                                        <div class="event-title">{{ event.title }}</div>
+                                        {% if event.category %}
+                                            <div class="event-category">{{ event.category }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="event-time">
+                                        {{ event.formatted_time }}{% if event.location %} · {{ event.location }}{% endif %}
+                                    </div>
+                                    <div class="event-description">{{ event.description or event.title }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="padding: 20px; text-align: center; color: oklch(0.72 0.03 260);">No events this week</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM STRIP -->
+        <div class="bottom-strip">
+            <div class="next-steps">
+                <div class="next-steps-label">Next Steps</div>
+                <div class="next-steps-buttons">
+                    <div class="next-step-btn">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="oklch(0.78 0.1 85)" stroke-width="1.8">
+                            <path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/>
+                            <circle cx="12" cy="10" r="2.4"/>
+                        </svg>
+                        New here? Plan your visit
+                    </div>
+                    <div class="next-step-btn">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="oklch(0.78 0.1 85)" stroke-width="1.8">
+                            <path d="M17 20v-1.6a3.6 3.6 0 0 0-3.6-3.6H8.6A3.6 3.6 0 0 0 5 18.4V20M11 11.4a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8zM19 20v-1.6a3.4 3.4 0 0 0-2-3.1M15.4 4.7a3.4 3.4 0 0 1 0 6.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Join a LifeGroup
+                    </div>
+                    <div class="next-step-btn">
+                        <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="oklch(0.78 0.1 85)" stroke-width="1.8">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/>
+                            <path d="M3 9h18M8 2v4M16 2v4" stroke-linecap="round"/>
+                        </svg>
+                        View all events
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-divider"></div>
+
+            <div class="qr-section">
+                <div class="qr-code">QR</div>
+                <div class="qr-text">Scan for this week's complete schedule</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function tick() {
+            const now = new Date();
+            document.getElementById('cpc-time').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            document.getElementById('cpc-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+        }
+        tick();
+        setInterval(tick, 30000);
+    </script>
+</body>
+</html>
