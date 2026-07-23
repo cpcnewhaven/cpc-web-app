@@ -733,7 +733,7 @@ def display():
                 OngoingEvent.expires_at == None,
                 OngoingEvent.expires_at >= today
             )
-        ).order_by(OngoingEvent.sort_order).limit(3).all()
+        ).order_by(OngoingEvent.sort_order).limit(4).all()
 
         for event in active_events:
             this_week_events.append({
@@ -741,9 +741,6 @@ def display():
                 'description': event.description,
                 'category': event.category or 'Event',
                 'location': event.type or '',
-                'formatted_date': 'TBD',
-                'formatted_date_num': 0,
-                'formatted_time': '',
             })
     except Exception as e:
         this_week_events = []
