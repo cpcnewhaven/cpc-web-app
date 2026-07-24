@@ -1,0 +1,87 @@
+:root {
+  /* ---- Brand blue ---- */
+  --cpc-blue: #0052a3;
+  --cpc-blue-dark: #003d7a;
+  --cpc-blue-medium: #0066cc;
+  --cpc-blue-light: #e8f2ff;
+
+  /* ---- Public site: dark navy glass theme (default) ---- */
+  --bg-gradient: linear-gradient(135deg, #004080 0%, #003366 50%, #00264d 100%);
+  --glass-bg: rgba(0, 60, 130, 0.22);
+  --glass-bg-hover: rgba(0, 60, 130, 0.32);
+  --glass-border: rgba(0, 60, 130, 0.35);
+  --glass-white: rgba(255, 255, 255, 0.22);
+  --glass-white-strong: rgba(255, 255, 255, 0.32);
+  --surface-blue: rgba(0, 50, 120, 0.15);
+  --border-blue: rgba(0, 50, 120, 0.3);
+  --surface-bg: rgba(255, 255, 255, 0.05);
+  --surface-bg-hover: rgba(255, 255, 255, 0.08);
+  --surface-border: rgba(255, 255, 255, 0.1);
+  --surface-text: rgba(255, 255, 255, 0.95);
+  --surface-muted: rgba(255, 255, 255, 0.7);
+  --surface-accent: #9bc7ff;
+  --surface-accent-soft: rgba(155, 199, 255, 0.18);
+
+  /* Text on dark */
+  --text-primary: #1d1d1f;
+  --text-secondary: #6c757d;
+  --text-white: rgba(255, 255, 255, 0.95);
+  --heading-color: #2c3e50;
+
+  /* Semantic status (shared) */
+  --status-success-bg: #0f5132;
+  --status-success-text: #75b798;
+  --status-success-border: #2ea043;
+  --status-draft-bg: #3d3d3d;
+  --status-draft-text: #adb5bd;
+  --status-draft-border: #495057;
+  --status-featured-text: #74c0fc;
+  --status-featured-border: #228be6;
+  --status-banner-text: #ffd43b;
+  --status-banner-border: #fab005;
+  --status-danger-bg: #dc3545;
+  --status-info-bg: #17a2b8;
+
+  /* ---- Admin dashboard: separate dark theme, MD3-flavored ---- */
+  --admin-bg: #0d2137;
+  --admin-panel: #132f4c;
+  --admin-panel-strong: #1a3a5c;
+  --admin-border: #1e4976;
+  --admin-text: rgba(255, 255, 255, 0.96);
+  --admin-text-muted: rgba(255, 255, 255, 0.72);
+  --admin-blue: #0d6efd;
+  --admin-blue-dark: #0a58ca;
+  --admin-blue-light: #4dabf7;
+  --admin-liquid-blue: #228be6;
+  --admin-liquid-blue-bright: #74c0fc;
+  --admin-surface-container: #1a3a5c;
+  --admin-surface-container-high: #1e4976;
+  --admin-surface-container-highest: #2a5a96;
+  --admin-surface-container-low: #132f4c;
+  --admin-surface-bright: #224d7a;
+  --admin-primary: #4dabf7;
+  --admin-secondary: #74c0fc;
+  --admin-tertiary: #8dd9f7;
+  --admin-primary-dim: #3b7ab8;
+  --admin-outline-variant: rgba(255, 255, 255, 0.15);
+}
+
+/* ---- Public site: light theme override ---- */
+body.theme-white {
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 50%, #dde2e8 100%);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-bg-hover: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-white: rgba(255, 255, 255, 0.9);
+  --glass-white-strong: rgba(255, 255, 255, 0.95);
+  --surface-blue: rgba(0, 50, 120, 0.08);
+  --border-blue: rgba(0, 50, 120, 0.15);
+  --surface-bg: rgba(255, 255, 255, 0.7);
+  --surface-bg-hover: rgba(255, 255, 255, 0.85);
+  --surface-border: rgba(0, 50, 120, 0.12);
+  --surface-text: rgba(28, 32, 40, 0.95);
+  --surface-muted: rgba(28, 32, 40, 0.68);
+  --surface-accent: #0052a3;
+  --surface-accent-soft: rgba(0, 82, 163, 0.14);
+  --text-white: rgba(30, 30, 35, 0.95);
+}

@@ -22,18 +22,23 @@ async function loadEvents() {
 
 async function loadEventCategories() {
   try {
-    const response = await fetch('/api/search/meta?type=events');
+    const response = await fetch('/api/events');
     const data = await response.json();
-    if (data.success && data.meta && data.meta.categories) {
-      allCategories = data.meta.categories;
-      const select = document.getElementById('eventCategoryFilter');
-      allCategories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        select.appendChild(option);
-      });
-    }
+
+    // Extract unique categories from events
+    const categories = new Set();
+    (data.events || []).forEach(ev => {
+      if (ev.category) categories.add(ev.category);
+    });
+
+    allCategories = Array.from(categories).sort();
+    const select = document.getElementById('eventCategoryFilter');
+    allCategories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat;
+      option.textContent = cat;
+      select.appendChild(option);
+    });
   } catch (error) {
     console.error('Failed to load event categories:', error);
   }
@@ -78,15 +83,43 @@ async function searchEvents() {
   listContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">Loading events...</div>';
 
   try {
-    let url = `/api/search?type=events&page=${currentEventPage}&per_page=15`;
-    if (currentEventQuery) url += `&q=${encodeURIComponent(currentEventQuery)}`;
-    if (currentEventCategory) url += `&category=${encodeURIComponent(currentEventCategory)}`;
-
-    const response = await fetch(url);
+    // Fetch from /api/events (Google Calendar)
+    const response = await fetch('/api/events');
     const data = await response.json();
 
-    if (data.results && data.results.length > 0) {
-      renderEventResults(data.results, listContainer);
+    // Normalize Google Calendar events to search results format
+    let events = (data.events || []).map(ev => ({
+      id: ev.id,
+      title: ev.title,
+      date: ev.start,
+      description: ev.description || '',
+      category: ev.category || 'General',
+      location: ev.location || '',
+      url: ev.url || ''
+    }));
+
+    // Apply filters
+    if (currentEventQuery) {
+      const q = currentEventQuery.toLowerCase();
+      events = events.filter(e =>
+        e.title.toLowerCase().includes(q) ||
+        (e.description || '').toLowerCase().includes(q)
+      );
+    }
+
+    if (currentEventCategory) {
+      events = events.filter(e => e.category === currentEventCategory);
+    }
+
+    // Sort by date
+    events.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateB - dateA;
+    });
+
+    if (events && events.length > 0) {
+      renderEventResults(events, listContainer);
 
       // Show/update pagination
       const paginationContainer = document.getElementById('eventPagination') || createPaginationContainer();

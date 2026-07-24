@@ -73,7 +73,8 @@
       "Artifact",
       "Bash(pkill -f start_app)",
       "Bash(git hash-object *)",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "Bash(lsof -ti:5000)"
     ]
   }
 }

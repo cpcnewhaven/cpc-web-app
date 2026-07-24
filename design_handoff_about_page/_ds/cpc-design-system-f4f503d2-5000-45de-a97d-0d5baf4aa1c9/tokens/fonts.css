@@ -1,0 +1,6 @@
+/* CPC's own site loads these from Google Fonts via <link> tags (not self-hosted files).
+   No webfont binaries were found in the source repo, so we mirror that here with @import.
+   Font Awesome 6 (icons) is CDN-linked per-page — see readme.md ICONOGRAPHY section. */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap');

@@ -1,0 +1,23 @@
+:root {
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.15);
+  --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);
+  --admin-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+  --blur-sm: blur(8px); /* @kind other */
+  --blur-md: blur(12px); /* @kind other */
+  --blur-lg: blur(20px); /* @kind other */
+  --blur-xl: blur(40px); /* @kind other */
+
+  --transition-fast: 0.2s ease; /* @kind other */
+  --transition-base: 0.3s ease; /* @kind other */
+  --transition-slow: 0.5s ease; /* @kind other */
+}
+
+body.theme-white {
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.12);
+  --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.15);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}

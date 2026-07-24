@@ -1,0 +1,389 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/admin/**",
+              "components/content/**",
+              "components/core/**",
+              "components/feedback/**",
+              "components/forms/**",
+              "components/navigation/**",
+              "ui_kits/admin-dashboard/**",
+              "ui_kits/public-site/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Barlow|Manrope|Libre Baskerville))/i]",
+        "message": "Font not provided by the design system. Available: Barlow, Manrope, Libre Baskerville."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminButton'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|size|children|onClick|key|ref|className|style|children)$/]",
+        "message": "<AdminButton> doesn't accept that prop. Declared props: variant, size, children, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminButton'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|default|success|danger|info)$/]",
+        "message": "<AdminButton> variant must be one of 'primary' | 'default' | 'success' | 'danger' | 'info'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminButton'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md)$/]",
+        "message": "<AdminButton> size must be one of 'sm' | 'md'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminFormField'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|type|toggle|checked|onChange|placeholder|key|ref|className|style|children)$/]",
+        "message": "<AdminFormField> doesn't accept that prop. Declared props: label, type, toggle, checked, onChange, placeholder."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminModal'] > JSXAttribute > JSXIdentifier[name!=/^(?:open|title|children|footer|onClose|key|ref|className|style|children)$/]",
+        "message": "<AdminModal> doesn't accept that prop. Declared props: open, title, children, footer, onClose."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminPanel'] > JSXAttribute > JSXIdentifier[name!=/^(?:heading|children|key|ref|className|style|children)$/]",
+        "message": "<AdminPanel> doesn't accept that prop. Declared props: heading, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminStatusTag'] > JSXAttribute > JSXIdentifier[name!=/^(?:status|children|key|ref|className|style|children)$/]",
+        "message": "<AdminStatusTag> doesn't accept that prop. Declared props: status, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminStatusTag'] > JSXAttribute[name.name='status'] > Literal[value!=/^(?:published|draft|featured|banner|archived)$/]",
+        "message": "<AdminStatusTag> status must be one of 'published' | 'draft' | 'featured' | 'banner' | 'archived'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdminTable'] > JSXAttribute > JSXIdentifier[name!=/^(?:columns|rows|key|ref|className|style|children)$/]",
+        "message": "<AdminTable> doesn't accept that prop. Declared props: columns, rows."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute > JSXIdentifier[name!=/^(?:type|children|key|ref|className|style|children)$/]",
+        "message": "<Badge> doesn't accept that prop. Declared props: type, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='type'] > Literal[value!=/^(?:event|announcement|ongoing|upcoming)$/]",
+        "message": "<Badge> type must be one of 'event' | 'announcement' | 'ongoing' | 'upcoming'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|size|children|onClick|disabled|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, size, children, onClick, disabled."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|secondary|glass)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'secondary' | 'glass'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Button> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Chip'] > JSXAttribute > JSXIdentifier[name!=/^(?:active|children|onClick|key|ref|className|style|children)$/]",
+        "message": "<Chip> doesn't accept that prop. Declared props: active, children, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='EventCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:category|title|when|location|description|actions|key|ref|className|style|children)$/]",
+        "message": "<EventCard> doesn't accept that prop. Declared props: category, title, when, location, description, actions."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FormField'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|type|as|options|value|onChange|placeholder|key|ref|className|style|children)$/]",
+        "message": "<FormField> doesn't accept that prop. Declared props: label, type, as, options, value, onChange, placeholder."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FormField'] > JSXAttribute[name.name='as'] > Literal[value!=/^(?:input|select|textarea)$/]",
+        "message": "<FormField> as must be one of 'input' | 'select' | 'textarea'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GlassCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|hover|as|key|ref|className|style|children)$/]",
+        "message": "<GlassCard> doesn't accept that prop. Declared props: children, hover, as."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NavBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:logoText|links|active|key|ref|className|style|children)$/]",
+        "message": "<NavBar> doesn't accept that prop. Declared props: logoText, links, active."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "AdminButton": {
+        "replaces": []
+      },
+      "AdminFormField": {
+        "replaces": []
+      },
+      "AdminModal": {
+        "replaces": []
+      },
+      "AdminPanel": {
+        "replaces": []
+      },
+      "AdminStatusTag": {
+        "replaces": []
+      },
+      "AdminTable": {
+        "replaces": []
+      },
+      "Badge": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Chip": {
+        "replaces": []
+      },
+      "EventCard": {
+        "replaces": []
+      },
+      "FormField": {
+        "replaces": []
+      },
+      "GlassCard": {
+        "replaces": []
+      },
+      "NavBar": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--admin-bg",
+      "--admin-blue",
+      "--admin-blue-dark",
+      "--admin-blue-light",
+      "--admin-border",
+      "--admin-liquid-blue",
+      "--admin-liquid-blue-bright",
+      "--admin-outline-variant",
+      "--admin-panel",
+      "--admin-panel-strong",
+      "--admin-primary",
+      "--admin-primary-dim",
+      "--admin-radius",
+      "--admin-radius-sm",
+      "--admin-secondary",
+      "--admin-shadow",
+      "--admin-surface-bright",
+      "--admin-surface-container",
+      "--admin-surface-container-high",
+      "--admin-surface-container-highest",
+      "--admin-surface-container-low",
+      "--admin-tertiary",
+      "--admin-text",
+      "--admin-text-muted",
+      "--bg-gradient",
+      "--blur-lg",
+      "--blur-md",
+      "--blur-sm",
+      "--blur-xl",
+      "--border-blue",
+      "--cpc-blue",
+      "--cpc-blue-dark",
+      "--cpc-blue-light",
+      "--cpc-blue-medium",
+      "--font-display",
+      "--font-primary",
+      "--font-serif",
+      "--glass-bg",
+      "--glass-bg-hover",
+      "--glass-border",
+      "--glass-shadow",
+      "--glass-white",
+      "--glass-white-strong",
+      "--heading-color",
+      "--leading-body",
+      "--leading-heading",
+      "--leading-tight",
+      "--radius-lg",
+      "--radius-md",
+      "--radius-pill",
+      "--radius-sm",
+      "--radius-xl",
+      "--shadow-medium",
+      "--shadow-soft",
+      "--shadow-strong",
+      "--space-2xl",
+      "--space-lg",
+      "--space-md",
+      "--space-sm",
+      "--space-xl",
+      "--space-xs",
+      "--status-banner-border",
+      "--status-banner-text",
+      "--status-danger-bg",
+      "--status-draft-bg",
+      "--status-draft-border",
+      "--status-draft-text",
+      "--status-featured-border",
+      "--status-featured-text",
+      "--status-info-bg",
+      "--status-success-bg",
+      "--status-success-border",
+      "--status-success-text",
+      "--surface-accent",
+      "--surface-accent-soft",
+      "--surface-bg",
+      "--surface-bg-hover",
+      "--surface-blue",
+      "--surface-border",
+      "--surface-muted",
+      "--surface-text",
+      "--text-body",
+      "--text-h1",
+      "--text-h2",
+      "--text-h3",
+      "--text-h4",
+      "--text-micro",
+      "--text-primary",
+      "--text-secondary",
+      "--text-small",
+      "--text-white",
+      "--transition-base",
+      "--transition-fast",
+      "--transition-slow",
+      "--weight-black",
+      "--weight-bold",
+      "--weight-medium",
+      "--weight-regular",
+      "--weight-semibold"
+    ],
+    "tokenKinds": {
+      "--cpc-blue": "color",
+      "--cpc-blue-dark": "color",
+      "--cpc-blue-medium": "color",
+      "--cpc-blue-light": "color",
+      "--bg-gradient": "color",
+      "--glass-bg": "color",
+      "--glass-bg-hover": "color",
+      "--glass-border": "color",
+      "--glass-white": "color",
+      "--glass-white-strong": "color",
+      "--surface-blue": "color",
+      "--border-blue": "color",
+      "--surface-bg": "color",
+      "--surface-bg-hover": "color",
+      "--surface-border": "color",
+      "--surface-text": "font",
+      "--surface-muted": "color",
+      "--surface-accent": "color",
+      "--surface-accent-soft": "color",
+      "--text-primary": "font",
+      "--text-secondary": "font",
+      "--text-white": "font",
+      "--heading-color": "color",
+      "--status-success-bg": "color",
+      "--status-success-text": "font",
+      "--status-success-border": "color",
+      "--status-draft-bg": "color",
+      "--status-draft-text": "font",
+      "--status-draft-border": "color",
+      "--status-featured-text": "font",
+      "--status-featured-border": "color",
+      "--status-banner-text": "font",
+      "--status-banner-border": "color",
+      "--status-danger-bg": "color",
+      "--status-info-bg": "color",
+      "--admin-bg": "color",
+      "--admin-panel": "color",
+      "--admin-panel-strong": "color",
+      "--admin-border": "color",
+      "--admin-text": "font",
+      "--admin-text-muted": "font",
+      "--admin-blue": "color",
+      "--admin-blue-dark": "color",
+      "--admin-blue-light": "color",
+      "--admin-liquid-blue": "color",
+      "--admin-liquid-blue-bright": "color",
+      "--admin-surface-container": "color",
+      "--admin-surface-container-high": "color",
+      "--admin-surface-container-highest": "color",
+      "--admin-surface-container-low": "color",
+      "--admin-surface-bright": "color",
+      "--admin-primary": "color",
+      "--admin-secondary": "color",
+      "--admin-tertiary": "color",
+      "--admin-primary-dim": "color",
+      "--admin-outline-variant": "color",
+      "--font-primary": "font",
+      "--font-display": "font",
+      "--font-serif": "font",
+      "--text-h1": "font",
+      "--text-h2": "font",
+      "--text-h3": "font",
+      "--text-h4": "font",
+      "--text-body": "font",
+      "--text-small": "font",
+      "--text-micro": "font",
+      "--weight-regular": "font",
+      "--weight-medium": "font",
+      "--weight-semibold": "font",
+      "--weight-bold": "font",
+      "--weight-black": "font",
+      "--leading-tight": "font",
+      "--leading-heading": "font",
+      "--leading-body": "font",
+      "--space-xs": "spacing",
+      "--space-sm": "spacing",
+      "--space-md": "spacing",
+      "--space-lg": "spacing",
+      "--space-xl": "spacing",
+      "--space-2xl": "spacing",
+      "--radius-sm": "radius",
+      "--radius-md": "radius",
+      "--radius-lg": "radius",
+      "--radius-xl": "radius",
+      "--radius-pill": "radius",
+      "--admin-radius": "radius",
+      "--admin-radius-sm": "radius",
+      "--shadow-soft": "shadow",
+      "--shadow-medium": "shadow",
+      "--shadow-strong": "shadow",
+      "--glass-shadow": "shadow",
+      "--admin-shadow": "shadow",
+      "--blur-sm": "other",
+      "--blur-md": "other",
+      "--blur-lg": "other",
+      "--blur-xl": "other",
+      "--transition-fast": "other",
+      "--transition-base": "other",
+      "--transition-slow": "other"
+    },
+    "fontFamilies": [
+      "Barlow",
+      "Libre Baskerville",
+      "Manrope"
+    ]
+  }
+}

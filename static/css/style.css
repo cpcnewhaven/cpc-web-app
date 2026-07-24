@@ -87,6 +87,15 @@
     --sidebar-panel-border: rgba(255, 255, 255, 0.14);
     --sidebar-panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     --sidebar-title-color: #c3daf7;
+
+    /* About page redesign tokens */
+    --accent-warm: #e3bd7d;
+    --accent-warm-light: rgba(227, 189, 125, 0.15);
+    --quote-card-bg: linear-gradient(135deg, #fbf7ee, #f4ede0);
+    --quote-card-border: #ece2cc;
+    --quote-card-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    --quote-card-text: #332a1c;
+    --quote-card-attribution: #8a7550;
 }
 
 /* White Theme Variables */
@@ -128,6 +137,15 @@ body.theme-white {
     --sidebar-panel-border: rgba(0, 0, 0, 0.1);
     --sidebar-panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     --sidebar-title-color: #0d355f;
+
+    /* About page redesign tokens - white theme */
+    --accent-warm: #d4a574;
+    --accent-warm-light: rgba(212, 165, 116, 0.15);
+    --quote-card-bg: linear-gradient(135deg, #fef9f5, #f9f0e8);
+    --quote-card-border: #e8dcc8;
+    --quote-card-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    --quote-card-text: #4a3f2f;
+    --quote-card-attribution: #9d8668;
 }
 
 body.theme-white {
