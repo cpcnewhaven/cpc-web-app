@@ -1211,7 +1211,7 @@ main {
     border: 1px solid var(--sidebar-panel-border);
     border-radius: var(--radius-md);
     box-shadow: var(--sidebar-panel-shadow);
-    padding: 14px;
+    padding: 18px;
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 40;
@@ -1228,7 +1228,7 @@ body.theme-white .dashboard-sidebar {
     width: var(--dashboard-sidebar-width-left);
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 24px;
     padding: 16px 15px;
 }
 
@@ -1277,8 +1277,8 @@ body.sidebar-right-hidden .dashboard-right {
 }
 
 .dashboard-section+.dashboard-section {
-    margin-top: 12px;
-    padding-top: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 
@@ -1291,7 +1291,7 @@ body.theme-white .dashboard-section+.dashboard-section {
     font-weight: 800;
     letter-spacing: 0.15em;
     color: var(--sidebar-title-color);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     padding-left: 8px;
     border-left: 2px solid rgba(155, 199, 255, 0.45);
     text-transform: uppercase;
@@ -1304,12 +1304,12 @@ body.theme-white .dashboard-section+.dashboard-section {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .dashboard-link {
     display: block;
-    padding: 6px 8px;
+    padding: 8px 10px;
     border-radius: 6px;
     color: var(--text-white);
     text-decoration: none;
@@ -5577,20 +5577,28 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
    =========================================================================== */
 
 /* ---- 1. Search (borderless) ---- */
-.dash-search { position: relative; margin: 0; }
+.dash-search { position: relative; margin: 0; margin-bottom: 12px; }
 .dash-search__icon {
-    position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
-    font-size: 13px; color: rgba(255, 255, 255, .5); pointer-events: none;
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: rgba(255, 255, 255, .6); pointer-events: none;
 }
 .dash-search__input {
     width: 100%; box-sizing: border-box;
-    padding: 9px 8px 9px 24px;
-    border: none; border-bottom: 1px solid rgba(255, 255, 255, .2);
-    background: transparent; color: #fff;
+    padding: 11px 12px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    background: rgba(255, 255, 255, .08);
+    border-radius: 9px;
+    color: #fff;
     font: 400 14px/1 'Barlow', sans-serif; outline: none;
+    transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    text-align: center;
 }
 .dash-search__input::placeholder { color: rgba(255, 255, 255, .5); }
-.dash-search__input:focus { border-bottom-color: var(--surface-accent, #9bc7ff); }
+.dash-search__input:focus {
+    background: rgba(255, 255, 255, .12);
+    border-color: var(--surface-accent, #9bc7ff);
+    box-shadow: 0 0 12px rgba(155, 199, 255, .2);
+}
 
 /* ---- 2. Live hero card ---- */
 .dash-live {
@@ -5602,7 +5610,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
     border: 1px solid rgba(0, 100, 200, 0.28);
     box-shadow: 0 8px 22px rgba(0, 100, 200, 0.12);
     transition: transform .15s ease, box-shadow .15s ease, background .3s ease, border-color .3s ease;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 .dash-live:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(0, 100, 200, 0.18); }
 
@@ -5634,6 +5642,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 
 /* ---- shared: section heading (brighter for contrast) ---- */
 .dash-block { display: block; }
+.dash-block + .dash-block { margin-top: 18px; }
 .dash-heading {
     margin: 0 0 4px; font: 800 11px/1 'Barlow', sans-serif;
     letter-spacing: .16em; text-transform: uppercase; color: #c3daf7;
@@ -5673,10 +5682,11 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 /* ---- 5. Give CTA ---- */
 .dash-give {
     display: flex; align-items: center; justify-content: center; gap: 9px;
-    padding: 12px; border-radius: 11px; text-decoration: none;
+    padding: 14px 16px; border-radius: 11px; text-decoration: none;
     background: rgba(255, 255, 255, .9); color: #0a2a52;
     font: 700 14px/1 'Barlow', sans-serif;
     transition: background .15s ease, transform .15s ease;
+    margin-top: 18px;
 }
 .dash-give:hover { background: #fff; transform: translateY(-1px); }
 
