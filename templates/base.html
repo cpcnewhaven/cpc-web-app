@@ -553,13 +553,16 @@
                     <!-- Filled by JS -->
                 </div>
             </div>
-            <div class="footer-meta">
-                <span id="footerNext" class="hidden md:inline">Next: Sunday 10:30am</span>
-                <span class="sep hidden md:inline">•</span>
-                <span id="footerClock"></span>
-                <span class="sep">•</span>
-                <span id="footerDate"></span>
-            </div>
+        </div>
+    </div>
+    <!-- Bottom status bar (always visible) -->
+    <div class="footer-status-bar">
+        <div class="footer-status-bar-inner">
+            <span id="footerNext" class="hidden md:inline">Next: Sunday 10:30am</span>
+            <span class="sep hidden md:inline">•</span>
+            <span id="footerClock"></span>
+            <span class="sep">•</span>
+            <span id="footerDate"></span>
         </div>
     </div>
     <style>
@@ -715,7 +718,7 @@
             const leftSidebarMax = JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false');
             const rightSidebarMax = JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false');
             const savedShowTicker = localStorage.getItem('dash_showTicker');
-            const showTicker = savedShowTicker !== null ? JSON.parse(savedShowTicker) : true;
+            const showTicker = savedShowTicker !== null ? JSON.parse(savedShowTicker) : false;
             const stickyNav = JSON.parse(localStorage.getItem('dash_stickyNav') || 'false');
             if (savedTheme === 'white') {
                 document.body.classList.add('theme-white');
@@ -748,7 +751,7 @@
                     : true,
                 showTicker: localStorage.getItem('dash_showTicker') !== null
                     ? JSON.parse(localStorage.getItem('dash_showTicker'))
-                    : true,
+                    : false,
                 stickyNav: JSON.parse(localStorage.getItem('dash_stickyNav') || 'false'),
                 leftSidebarMax: JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false'),
                 rightSidebarMax: JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false'),

@@ -1167,6 +1167,39 @@ body.ticker-hidden {
     --dashboard-bottom-height: 0;
 }
 
+/* Bottom status bar (date/time) */
+.footer-status-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 34px;
+    background: rgba(10, 15, 25, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 997;
+}
+
+.footer-status-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 10px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+}
+
+@media (max-width: 767px) {
+    .footer-status-bar {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
 /* Sticky nav off = nav scrolls with page (Settings dropdown) */
 body.nav-not-sticky .top-nav {
     position: relative !important;
@@ -1499,10 +1532,10 @@ body.theme-white .dashboard-section+.dashboard-section {
     z-index: 998;
 }
 
-/* Adjust footer ticker position on mobile to be above bottom nav */
+/* Adjust footer ticker position on mobile to sit above the status bar and bottom nav */
 @media (max-width: 767px) {
     .footer-ticker {
-        bottom: 70px;
+        bottom: 34px;
         padding-bottom: env(safe-area-inset-bottom);
     }
 }
@@ -1580,17 +1613,7 @@ body.theme-white .dashboard-section+.dashboard-section {
     }
 }
 
-/* Footer right meta (next service, date/time) */
-.footer-meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 12px;
-    flex-shrink: 0;
-}
-
-.footer-meta .sep {
+.footer-status-bar .sep {
     opacity: 0.6;
 }
 
