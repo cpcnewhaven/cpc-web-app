@@ -95,7 +95,8 @@ async function searchEvents() {
       description: ev.description || '',
       category: ev.category || 'General',
       location: ev.location || '',
-      url: ev.url || ''
+      url: ev.url || '',
+      imageUrl: ev.imageUrl || ev.image_url || ''
     }));
 
     // Apply filters
@@ -184,6 +185,16 @@ function renderEventResults(events, container) {
   // Helper functions
   function monthLabel(d) { return d.toLocaleString(undefined, { month: 'long', year: 'numeric' }); }
   function parseDate(iso) { const d = new Date(iso); return isNaN(d.getTime()) ? null : d; }
+  function displayTag(cat) {
+    if (!cat) return 'General';
+    return String(cat)
+      .replace(/[_-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .split(' ')
+      .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1) : word)
+      .join(' ');
+  }
   function dateRange(ev) {
     const s = parseDate(ev.date);
     if (!s) return '';
@@ -202,7 +213,7 @@ function renderEventResults(events, container) {
     groups.get(key).items.push(ev);
   }
 
-  const orderedKeys = Array.from(groups.keys()).sort().reverse();
+  const orderedKeys = Array.from(groups.keys()).sort();
   for (const key of orderedKeys) {
     const group = groups.get(key);
     const h = document.createElement('h3');
@@ -215,10 +226,21 @@ function renderEventResults(events, container) {
       card.className = 'evt-card';
       const mapUrl = gmap(ev.category);
       const icsUrl = ev.id ? `/api/events/${ev.id}.ics` : null;
+      const isOngoing = ev.source === 'ongoing';
 
       card.innerHTML = `
+        ${(ev.imageUrl || ev.placeholderImage !== false) ? `
+        <div style="margin: -1rem -1rem 0.85rem; overflow: hidden; border-radius: calc(var(--radius-lg) - 1px); aspect-ratio: 16 / 9; background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(0,0,0,0.12)); border-bottom: 1px solid rgba(255,255,255,0.08);">
+          ${ev.imageUrl
+            ? `<img src="${ev.imageUrl}" alt="${ev.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;">`
+            : `<div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; color: rgba(255,255,255,0.82); text-align: center; padding: 1rem;">
+                <span style="font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Event Photo</span>
+                <span style="font-size: 0.8rem; color: rgba(255,255,255,0.62); max-width: 18rem;">Add an image in the event editor to replace this placeholder.</span>
+              </div>`}
+        </div>` : ''}
         <div class="evt-head">
-          <span class="evt-cat">${ev.category || 'General'}</span>
+          <span class="evt-cat">${displayTag(ev.category)}</span>
+          ${isOngoing ? '<span class="evt-cat" style="margin-left: 0.5rem; background: rgba(255, 196, 87, 0.16); color: #ffd98a;">Ongoing</span>' : ''}
           <h4 class="evt-title">${ev.title}</h4>
         </div>
         <div class="evt-meta">

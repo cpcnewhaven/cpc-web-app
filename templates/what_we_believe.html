@@ -1,394 +1,477 @@
 {% extends "base.html" %}
 
 {% block title %}What We Believe — CPC New Haven{% endblock %}
+{% block meta_description %}What CPC New Haven believes about Scripture, grace, worship, church, and Christian calling.{% endblock %}
+{% block og_title %}What We Believe — CPC New Haven{% endblock %}
+{% block og_description %}What CPC New Haven believes about Scripture, grace, worship, church, and Christian calling.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/what-we-believe{% endblock %}
 
 {% block head %}
 <style>
-    .about-page {
-        min-height: calc(100vh - 200px);
-        padding: 0;
-        margin: 0;
+    .belief-page {
+        color: var(--surface-text);
     }
 
-    .about-main-container {
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    .about-hero {
-        grid-column: 1 / -1;
-        padding: 0.5rem 0;
+    .belief-hero {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 96px 24px 40px;
         text-align: center;
-        background: transparent;
-        margin: 0 0 0.75rem 0;
     }
 
-    .about-hero h1 {
-        font-size: 1.75rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 0.25rem 0;
-        font-weight: 600;
-    }
-
-    .about-hero p {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.9rem;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    .about-hero .hero-cta {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 6px;
-        color: rgba(255, 255, 255, 0.9);
-        text-decoration: none;
-        font-size: 0.85rem;
-        transition: all 0.2s;
-        margin-top: 0.5rem;
-    }
-
-    .about-hero .hero-cta:hover {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-    }
-
-    .page-submenu {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        padding: 0.75rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .submenu-section {
-        margin-bottom: 0.75rem;
-    }
-
-    .submenu-section:last-child {
-        margin-bottom: 0;
-    }
-
-    .submenu-title {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 0.5rem;
+    .belief-kicker {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding-bottom: 0.25rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--surface-accent);
+        margin-bottom: 14px;
     }
 
-    .submenu-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+    .belief-hero h1 {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: clamp(2.4rem, 6vw, 4.4rem);
+        line-height: 1.04;
+        letter-spacing: -0.04em;
+        margin: 0 auto 18px;
+        max-width: 12ch;
+        color: var(--surface-text);
+    }
+
+    .belief-hero p {
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
+        line-height: 1.8;
+        color: var(--surface-muted);
+        max-width: 760px;
+        margin: 0 auto 28px;
+    }
+
+    .belief-hero-cta {
+        display: inline-flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .belief-wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px 100px;
+    }
+
+    .belief-nav {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 10px;
+        justify-content: center;
+        margin: 0 auto 28px;
+        padding: 14px;
+        background: var(--surface-bg);
+        border: 1px solid var(--surface-border);
+        border-radius: 18px;
+        backdrop-filter: blur(14px);
+        box-shadow: var(--surface-shadow);
+        max-width: 980px;
     }
 
-    .submenu-list li {
-        margin: 0;
-    }
-
-    .submenu-list a {
-        display: block;
-        padding: 0.4rem 0.75rem;
-        color: rgba(255, 255, 255, 0.7);
+    .belief-nav a {
+        color: var(--surface-text);
         text-decoration: none;
-        font-size: 0.85rem;
-        border-radius: 4px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.2s;
-        white-space: nowrap;
+        font-size: 0.92rem;
+        padding: 0.58rem 0.9rem;
+        border-radius: 999px;
+        background: transparent;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
     }
 
-    .submenu-list a:hover,
-    .submenu-list a.active {
-        background: rgba(255, 255, 255, 0.15);
-        color: rgba(255, 255, 255, 0.95);
-        border-color: rgba(255, 255, 255, 0.2);
+    .belief-nav a:hover,
+    .belief-nav a.active {
+        background: var(--surface-accent-soft);
+        border-color: rgba(255, 255, 255, 0.12);
     }
 
-    .about-content-area {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        max-width: 100%;
-    }
-
-    .about-section {
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 8px;
-        padding: 1rem;
-        scroll-margin-top: 1rem;
+    .belief-section {
+        max-width: 980px;
+        margin: 0 auto 24px;
+        padding: 28px 28px 30px;
+        background: var(--surface-bg);
+        border: 1px solid var(--surface-border);
+        border-radius: 22px;
+        box-shadow: var(--surface-shadow);
+        backdrop-filter: blur(14px);
+        scroll-margin-top: 96px;
     }
 
     .section-header {
-        margin-bottom: 0.75rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 22px;
+    }
+
+    .section-kicker {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--surface-accent);
+        margin-bottom: 10px;
     }
 
     .section-title {
-        font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 0.25rem 0;
-        font-weight: 600;
+        font-family: 'Manrope', var(--font-primary);
+        font-size: clamp(1.45rem, 3vw, 2.1rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin: 0 0 8px;
+        color: var(--surface-text);
     }
 
     .section-subtitle {
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.98rem;
+        line-height: 1.6;
+        color: var(--surface-muted);
         margin: 0;
     }
 
-    .section-content {
-        color: rgba(255, 255, 255, 0.85);
-        line-height: 1.6;
-        font-size: 0.9rem;
+    .belief-copy {
+        font-size: 1.04rem;
+        line-height: 1.9;
+        color: var(--surface-text);
+        margin: 0;
+        max-width: 74ch;
     }
 
-    .highlight-word {
-        font-weight: 700;
-        color: rgba(255, 255, 255, 1);
-        background: rgba(0, 82, 163, 0.3);
-        padding: 0.1rem 0.4rem;
-        border-radius: 4px;
+    .belief-copy + .belief-copy {
+        margin-top: 1rem;
     }
 
-    .class-schedule {
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 0.5rem;
+    .belief-response {
+        margin-top: 1.15rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--surface-border);
+        font-size: 0.98rem;
+        line-height: 1.8;
+        color: var(--surface-muted);
     }
 
-    .class-schedule strong {
-        color: rgba(255, 255, 255, 0.95);
+    .belief-response strong {
+        color: var(--surface-text);
+        letter-spacing: 0.03em;
     }
 
-    .class-note {
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.65);
-        margin-bottom: 1rem;
-        font-style: italic;
+    .belief-lede {
+        max-width: 860px;
+        margin: 0 auto 40px;
+        padding: 24px 26px;
+        border-left: 3px solid var(--surface-accent);
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        color: var(--surface-text);
+        font-family: 'Libre Baskerville', serif;
+        font-size: 1.08rem;
+        line-height: 1.9;
+    }
+
+    .belief-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .belief-side {
+        padding: 20px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .belief-side h3 {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: 1rem;
+        margin: 0 0 12px;
+        color: var(--surface-text);
+    }
+
+    .belief-side ul {
+        margin: 0;
+        padding-left: 1.1rem;
+        color: var(--surface-muted);
+        line-height: 1.8;
     }
 
     .lesson-list {
         list-style: none;
         padding: 0;
-        margin: 0.75rem 0 0 0;
+        margin: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 0.4rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 10px;
     }
 
     .lesson-list li {
-        padding: 0.35rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.88);
+        padding: 0.85rem 0.95rem;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--surface-text);
+        line-height: 1.55;
     }
 
-    .lesson-list li:last-child {
-        border-bottom: none;
+    .schedule-note {
+        margin-top: 12px;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--surface-muted);
+    }
+
+    .closing-cta {
+        max-width: 980px;
+        margin: 26px auto 0;
+        padding: 30px 24px 0;
+        text-align: center;
+    }
+
+    .closing-cta h2 {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        margin: 0 0 10px;
+        color: var(--surface-text);
+    }
+
+    .closing-cta p {
+        max-width: 760px;
+        margin: 0 auto 20px;
+        font-size: 1.02rem;
+        line-height: 1.8;
+        color: var(--surface-muted);
+    }
+
+    @media (max-width: 860px) {
+        .belief-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .belief-section {
+            padding: 22px 18px 24px;
+        }
+
+        .belief-hero {
+            padding-top: 80px;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="about-page compact-page">
-    <div class="about-main-container compact-content">
-        <div class="about-hero">
-            <h1>What We Believe</h1>
-            <p>Christ Presbyterian Church holds to the historic Christian faith as summarized in the Scriptures and
-                expressed in the Reformed confessions.</p>
-            <a href="{{ url_for('about') }}" class="hero-cta">About CPC</a>
+<div class="belief-page">
+    <section class="belief-hero">
+        <div class="belief-kicker">Our faith</div>
+        <h1>What We Believe</h1>
+        <p>Christ Presbyterian Church holds to the historic Christian faith as taught in Scripture and summarized in the Reformed confessions. We want the page to read less like a stack of notes and more like a clear guide to the convictions that shape our life together.</p>
+        <div class="belief-hero-cta">
+            <a href="{{ url_for('about') }}" class="btn btn-glass btn-lg">About CPC</a>
+            <a href="#beliefs" class="btn btn-primary btn-lg">Read the Beliefs</a>
         </div>
+    </section>
 
-        <nav class="page-submenu">
-            <div class="submenu-section">
-                <div class="submenu-title">About</div>
-                <ul class="submenu-list">
-                    <li><a href="{{ url_for('about') }}" class="submenu-link">About CPC</a></li>
-                    <li><a href="{{ url_for('what_we_believe') }}" class="submenu-link active">What We Believe</a></li>
-                </ul>
-            </div>
-            <div class="submenu-section">
-                <div class="submenu-title">On this page</div>
-                <ul class="submenu-list">
-                    <li><a href="#beliefs" class="submenu-link">Our Beliefs</a></li>
-                    <li><a href="#class" class="submenu-link">What We Believe Class</a></li>
-                </ul>
-            </div>
+    <div class="belief-wrap">
+        <nav class="belief-nav" aria-label="What We Believe sections">
+            <a href="{{ url_for('about') }}">About CPC</a>
+            <a href="{{ url_for('what_we_believe') }}" class="active">What We Believe</a>
+            <a href="#beliefs">Beliefs</a>
+            <a href="#class">Class</a>
         </nav>
 
-        <div class="about-content-area" id="beliefs">
-            <section id="scripture" class="about-section">
-                <div class="section-header">
-                    <h2 class="section-title">1. Scripture</h2>
-                    <p class="section-subtitle">Our only rule of faith and practice</p>
-                </div>
-                <div class="section-content">
-                    <p>We are committed to the Old and New Testament Scriptures as our only rule of faith and practice.
-                        While believing that God powerfully manifests his infinite glory in a general way through
-                        creation, our Christian faith and practice is grounded in God's works of redemption in history
-                        as explained to us through the divinely appointed means of inspired Scripture. We believe that
-                        all things necessary for salvation are sufficiently revealed to us by the Holy Spirit speaking
-                        through the Scriptures of the Old and New Testaments. It is, therefore, our ambition to teach
-                        the whole counsel of God's word, not adding to, or subtracting from, anything contained within
-                        it, recognizing no other source for divine revelation, whether by ecclesiastical traditions or
-                        private revelations.</p>
-                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> To liberate all of us from
-                        oppressive, human-made opinions and guard the gracious gospel against manipulation and
-                        self-serving abuses. We want the God of grace and glory to be our only Lord.</p>
-                </div>
-            </section>
-
-            <section id="teachings-of-grace" class="about-section">
-                <div class="section-header">
-                    <h2 class="section-title">2. Teachings of Grace</h2>
-                    <p class="section-subtitle">Commitment to historic teachings</p>
-                </div>
-                <div class="section-content">
-                    <p>We are committed to the teachings of grace as they are summarized in the historic Westminster
-                        Confession of Faith. Whereas the Holy Scriptures is our only rule of faith and practice, Church
-                        unity is predicated upon a consensus about what the Scriptures principally teach. Our consensus
-                        is reflected in the 350-year-old Westminster Confession of Faith. In summary, it affirms that
-                        God is no less sovereign in our salvation than He is sovereign in our creation, to the praise of
-                        God's glorious grace! This means that we are accepted by God, from beginning to end, not by our
-                        own works or attempts to perform for God, but by faith alone in the perfect and all sufficient
-                        work of Christ on our behalf, faith itself being the free gift of God.</p>
-                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> To affirm the sovereignty of grace,
-                        to connect us to wise men and women who have gone before us, and to prevent as much as possible
-                        our historical and cultural blind-spots.</p>
-                </div>
-            </section>
-
-            <section id="worship" class="about-section">
-                <div class="section-header">
-                    <h2 class="section-title">3. God-Centered Worship</h2>
-                    <p class="section-subtitle">Following a covenantal pattern</p>
-                </div>
-                <div class="section-content">
-                    <p>We are committed to God-centered worship designed after a covenantal pattern, where Christ
-                        promises to be present through Word and Sacrament. In every period of redemptive history, God
-                        has chosen to be with his people through the divine institutions of word, sacrament and prayers.
-                        Today, through the sacraments of the Lord's Supper and Christian Baptism, together with the
-                        preaching of God's word and corporate prayers (both sung and unsung), God has promised to be
-                        with us until the end of the age. Our worship is set to the pattern of covenant initiation and
-                        renewal including the weekly participation of the Lord's supper. Our music and style of worship
-                        is "blended" to reflect the vernacular context of those God has brought to our city. Our desire
-                        is for our worship to be as God-centered as our theology, communicating the truth and grace of
-                        God to the nations. We welcome all believers together with those who are searching.</p>
-                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> Not only is it biblical, but it
-                        keeps us grounded in the gospel every week, secured upon Christ's redemption accomplished. Our
-                        worship embodies the gospel as we experience God's presence.</p>
-                </div>
-            </section>
-
-            <section id="church-planting" class="about-section">
-                <div class="section-header">
-                    <h2 class="section-title">4. Multi-Cultural Church and Church Planting</h2>
-                    <p class="section-subtitle">Growing as a community and movement</p>
-                </div>
-                <div class="section-content">
-                    <p>We are committed to being a multi-cultural church and church planting movement. We believe that
-                        the church, the household of God, is an essential element of the gospel into which people of
-                        every tribe and nation are welcomed. While affirming that every follower of Christ is called to
-                        be a witness to the truth and grace of God revealed in Jesus Christ, we also believe that true
-                        evangelism is best accomplished through church planting. It is therefore our ambition to be not
-                        only a growing church, but also a growing church planting movement. While holding to a
-                        time-honored understanding of faith, we are strategically progressive. Our aim is to plant
-                        churches that reach the different cultures in our city, New England and the world. For more info
-                        on church planting, visit <a href="https://anabaino.org" target="_blank"
-                            style="text-decoration: underline;">anabaino.org</a>.</p>
-                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> Because no one culture is closer to
-                        God than another, you don't have to become American (or Western, or whatever!) to become
-                        Christian, and the communal witness of the gospel is the best testament to its power!</p>
-                </div>
-            </section>
-
-            <section id="calling" class="about-section">
-                <div class="section-header">
-                    <h2 class="section-title">5. High View of Christian Calling</h2>
-                    <p class="section-subtitle">Vocations of family, church, and public service</p>
-                </div>
-                <div class="section-content">
-                    <p>We are committed to a high view of Christian calling as reflected in the vocational spheres of
-                        family, church, and public service. We believe that God has given us roles that reflect his own
-                        sovereign design to accomplish his work in the world, which extends into the spheres of family,
-                        church and civil vocations. We desire to help people find a balance that is unique to their
-                        individual callings and spheres of service. While believing that the Christian Scriptures do not
-                        address all things pertaining to life in this world, we do affirm that we should take "every
-                        thought captive to the obedience of Christ" and that the Christian worldview is applicable and
-                        relevant to all spheres of life.</p>
-                    <p style="margin-top: 1rem;"><strong>WHY SHOULD I CARE?</strong> Because God didn't make us just one
-                        way or with one part of ourselves, but made ALL of us, and he deserves it all to be offered as
-                        thankful worship.</p>
-                </div>
-            </section>
-
-            <section id="class" class="about-section">
-                <div class="section-header">
-                    <h2 class="section-title">What We Believe: Knowing and Loving Our Doctrines</h2>
-                    <p class="section-subtitle">School of Discipleship class</p>
-                </div>
-                <div class="section-content">
-                    <p class="class-schedule"><strong>Sundays 9/17/23 – 5/19/24</strong> at 9:30am in the Fellowship
-                        Hall.</p>
-                    <p class="class-note">No class: Thanksgiving weekend 11/26/23, winter recess 12/17/23 – 12/31/23, or
-                        Easter Sunday 3/31/24.</p>
-                    <p>We’re called to not just know about God, but to know God personally. This class walks through the
-                        historic Christian beliefs we hold to at CPC—grappling with why they’re important, where they
-                        come from, and how we can grow in our love for the Lord and His Word. Much more than just a
-                        lecture, we discuss real-life implications of how our theology can inform our spiritual,
-                        emotional, and relational health, to the glory of God and the building of His Church. This class
-                        also serves as the requirement for teaching Sunday School and other leadership roles at CPC.</p>
-                    <h3 class="section-title" style="margin-top: 1.25rem; font-size: 1rem;">Overall Schedule &amp;
-                        Lessons</h3>
-                    <ul class="lesson-list">
-                        <li>Lesson 1: Intro – Why Theology?</li>
-                        <li>Lesson 2: How Could the Finite ever Know the Infinite?</li>
-                        <li>Lesson 3: What is the Bible?</li>
-                        <li>Lesson 4: How do we Interpret the Bible?</li>
-                        <li>Lesson 5: Beholding Who God is</li>
-                        <li>Lesson 6: Beholding Who God Is, cont. (Attributes &amp; Trinity)</li>
-                        <li>Lesson 7: Beholding Who God Is, cont. (Trinity)</li>
-                        <li>Lesson 8: Doctrine of God the Creator</li>
-                        <li>Lesson 9: Doctrine of Humanity – What is a Human?</li>
-                        <li>Lesson 10: Doctrine of Sin – What Have We Done?!</li>
-                        <li>Lesson 11: Implications of our Doctrine of Sin</li>
-                        <li>Lesson 12: Review &amp; Preview thru Covenant Theology</li>
-                        <li>Lesson 13: The Person of Christ</li>
-                        <li>Lesson 14: The Person of Christ, cont.</li>
-                        <li>Lesson 15: The Work of Christ</li>
-                        <li>Lesson 16: The Work of Christ, cont.</li>
-                        <li>Lesson 17: The Work of Christ in Judgment and Consummation</li>
-                        <li>Lesson 18: The Church and Total Christ</li>
-                        <li>Lesson 19: The Church as Communion and Institution</li>
-                        <li>Lesson 20: Church Government</li>
-                        <li>Lesson 21: Sacraments</li>
-                        <li>Lesson 22: Election and Effectual Calling</li>
-                        <li>Lesson 23: Faith and Repentance</li>
-                        <li>Lesson 24: Justification and Adoption</li>
-                        <li>Lesson 25: Sanctification</li>
-                        <li>Lesson 26: Assurance &amp; Perseverance</li>
-                        <li>Lesson 27: Good Works &amp; Law of God</li>
-                        <li>Lesson 28: Vocations</li>
-                        <li>Lesson 29: Marriage, Sex &amp; Gender</li>
-                        <li>Lesson 30: Marriage, Sex &amp; Gender, cont.</li>
-                    </ul>
-                </div>
-            </section>
+        <div class="belief-lede">
+            We are called to know God personally, not merely know about him. That conviction shapes the way we teach Scripture, talk about grace, worship together, and form disciples.
         </div>
+
+        <section class="belief-section" id="beliefs">
+            <div class="section-header">
+                <div class="section-kicker">The essentials</div>
+                <h2 class="section-title">Our Beliefs</h2>
+                <p class="section-subtitle">Five convictions that shape CPC's theology and life together</p>
+            </div>
+
+            <div class="belief-grid">
+                <div>
+                    <p class="belief-copy"><strong>1. Scripture.</strong> We are committed to the Old and New Testament Scriptures as our only rule of faith and practice. Our Christian faith and practice is grounded in God's works of redemption in history as explained through inspired Scripture. We believe that all things necessary for salvation are sufficiently revealed by the Holy Spirit speaking through the Scriptures.</p>
+                    <p class="belief-response"><strong>Why it matters:</strong> It keeps us anchored in God's word rather than human opinions, trends, or private revelations.</p>
+                </div>
+
+                <aside class="belief-side">
+                    <h3>In plain language</h3>
+                    <ul>
+                        <li>Scripture is our final authority.</li>
+                        <li>We want the whole counsel of God, not a selective message.</li>
+                        <li>The Bible shapes both doctrine and daily life.</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="belief-section">
+            <div class="section-header">
+                <div class="section-kicker">Grace</div>
+                <h2 class="section-title">Teachings of Grace</h2>
+                <p class="section-subtitle">Historic Reformed confessions, received with humility</p>
+            </div>
+
+            <div class="belief-grid">
+                <div>
+                    <p class="belief-copy">We are committed to the teachings of grace as summarized in the historic Westminster Confession of Faith. Church unity is predicated upon a consensus about what the Scriptures principally teach. This means that we are accepted by God, from beginning to end, not by our own works or attempts to perform for God, but by faith alone in the perfect and sufficient work of Christ on our behalf.</p>
+                    <p class="belief-response"><strong>Why it matters:</strong> Grace keeps the church honest, joyful, and grounded in what God has done rather than what we can produce.</p>
+                </div>
+                <aside class="belief-side">
+                    <h3>Takeaway</h3>
+                    <ul>
+                        <li>God is sovereign in salvation.</li>
+                        <li>Grace is the beginning, middle, and end of the Christian life.</li>
+                        <li>Confession helps us stay connected to the church across generations.</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="belief-section">
+            <div class="section-header">
+                <div class="section-kicker">Worship</div>
+                <h2 class="section-title">God-Centered Worship</h2>
+                <p class="section-subtitle">Christ present through Word, sacrament, and prayer</p>
+            </div>
+
+            <div class="belief-grid">
+                <div>
+                    <p class="belief-copy">We are committed to God-centered worship designed after a covenantal pattern, where Christ promises to be present through Word and Sacrament. In every period of redemptive history, God has chosen to be with his people through word, sacrament, and prayer. Our weekly worship is designed to follow that gospel pattern and to welcome believers and seekers alike.</p>
+                    <p class="belief-response"><strong>Why it matters:</strong> Worship is where the gospel becomes embodied in the gathered life of the church.</p>
+                </div>
+                <aside class="belief-side">
+                    <h3>What this means</h3>
+                    <ul>
+                        <li>Word and sacrament stay central.</li>
+                        <li>Worship is reverent, joyful, and accessible.</li>
+                        <li>The service shapes our imagination as a church.</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="belief-section">
+            <div class="section-header">
+                <div class="section-kicker">Church and mission</div>
+                <h2 class="section-title">Church Planting and a Multi-Cultural Witness</h2>
+                <p class="section-subtitle">The church as a living sign of Christ's kingdom</p>
+            </div>
+
+            <div class="belief-grid">
+                <div>
+                    <p class="belief-copy">We are committed to being a multi-cultural church and church planting movement. We believe that the church, the household of God, is an essential element of the gospel into which people of every tribe and nation are welcomed. Our aim is not just to grow, but to grow in a way that extends Christ's witness into New Haven and beyond.</p>
+                    <p class="belief-response"><strong>Why it matters:</strong> The gospel is for every culture, and the church should make that visible.</p>
+                </div>
+                <aside class="belief-side">
+                    <h3>Mission shape</h3>
+                    <ul>
+                        <li>We want a church that is open and inviting.</li>
+                        <li>We want to plant churches that reach different cultures.</li>
+                        <li>We want mission to feel local, not abstract.</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="belief-section">
+            <div class="section-header">
+                <div class="section-kicker">Calling</div>
+                <h2 class="section-title">A High View of Christian Calling</h2>
+                <p class="section-subtitle">Family, church, and public service as spheres of faithfulness</p>
+            </div>
+
+            <div class="belief-grid">
+                <div>
+                    <p class="belief-copy">We are committed to a high view of Christian calling as reflected in the vocational spheres of family, church, and public service. God has given us roles that reflect his own sovereign design to accomplish his work in the world. We desire to help people find a balance that is unique to their individual callings and spheres of service.</p>
+                    <p class="belief-response"><strong>Why it matters:</strong> The Christian life is not limited to Sunday, and our whole lives belong to God.</p>
+                </div>
+                <aside class="belief-side">
+                    <h3>Everyday faithfulness</h3>
+                    <ul>
+                        <li>Faith shapes vocation, family, and public life.</li>
+                        <li>We want doctrine to be lived, not just discussed.</li>
+                        <li>All of life can be offered as thankful worship.</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="belief-section" id="class">
+            <div class="section-header">
+                <div class="section-kicker">Adult studies</div>
+                <h2 class="section-title">What We Believe: Knowing and Loving Our Doctrines</h2>
+                <p class="section-subtitle">A school of discipleship class that walks through the historic Christian faith</p>
+            </div>
+
+            <div class="belief-grid">
+                <div>
+                    <p class="belief-copy">We’re called to not just know about God, but to know God personally. This class walks through the historic Christian beliefs we hold to at CPC, grappling with why they matter, where they come from, and how they shape our love for the Lord and his Word. It is more than a lecture. It is a space to discuss how theology informs our spiritual, emotional, and relational health.</p>
+                    <p class="schedule-note"><strong>Sundays 9/17/23 – 5/19/24</strong> at 9:30am in the Fellowship Hall. No class on Thanksgiving weekend, winter recess, or Easter Sunday.</p>
+                </div>
+                <aside class="belief-side">
+                    <h3>Why this class exists</h3>
+                    <ul>
+                        <li>To ground believers in the historic faith.</li>
+                        <li>To equip leaders and teachers at CPC.</li>
+                        <li>To connect doctrine with daily discipleship.</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <h3 class="section-title" style="font-size: 1.05rem; margin-bottom: 14px;">Overall Schedule & Lessons</h3>
+                <ul class="lesson-list">
+                    <li>Lesson 1: Intro – Why Theology?</li>
+                    <li>Lesson 2: How Could the Finite ever Know the Infinite?</li>
+                    <li>Lesson 3: What is the Bible?</li>
+                    <li>Lesson 4: How do we Interpret the Bible?</li>
+                    <li>Lesson 5: Beholding Who God is</li>
+                    <li>Lesson 6: Beholding Who God Is, cont. (Attributes & Trinity)</li>
+                    <li>Lesson 7: Beholding Who God Is, cont. (Trinity)</li>
+                    <li>Lesson 8: Doctrine of God the Creator</li>
+                    <li>Lesson 9: Doctrine of Humanity – What is a Human?</li>
+                    <li>Lesson 10: Doctrine of Sin – What Have We Done?!</li>
+                    <li>Lesson 11: Implications of our Doctrine of Sin</li>
+                    <li>Lesson 12: Review & Preview thru Covenant Theology</li>
+                    <li>Lesson 13: The Person of Christ</li>
+                    <li>Lesson 14: The Person of Christ, cont.</li>
+                    <li>Lesson 15: The Work of Christ</li>
+                    <li>Lesson 16: The Work of Christ, cont.</li>
+                    <li>Lesson 17: The Work of Christ in Judgment and Consummation</li>
+                    <li>Lesson 18: The Church and Total Christ</li>
+                    <li>Lesson 19: The Church as Communion and Institution</li>
+                    <li>Lesson 20: Church Government</li>
+                    <li>Lesson 21: Sacraments</li>
+                    <li>Lesson 22: Election and Effectual Calling</li>
+                    <li>Lesson 23: Faith and Repentance</li>
+                    <li>Lesson 24: Justification and Adoption</li>
+                    <li>Lesson 25: Sanctification</li>
+                    <li>Lesson 26: Assurance & Perseverance</li>
+                    <li>Lesson 27: Good Works & Law of God</li>
+                    <li>Lesson 28: Vocations</li>
+                    <li>Lesson 29: Marriage, Sex & Gender</li>
+                    <li>Lesson 30: Marriage, Sex & Gender, cont.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="closing-cta">
+            <h2>Come ready to ask questions</h2>
+            <p>We want this page to be useful, but we also want it to sound like CPC: direct, warm, and centered on Christ rather than performing certainty.</p>
+            <div class="belief-hero-cta">
+                <a href="{{ url_for('plan_a_visit') }}" class="btn btn-primary btn-lg">Plan Your Visit</a>
+                <a href="{{ url_for('contact') }}" class="btn btn-glass btn-lg">Get in Touch</a>
+            </div>
+        </section>
     </div>
 </div>
 {% endblock %}

@@ -1,293 +1,445 @@
 {% extends "base.html" %}
 
 {% block title %}LifeGroups - CPC New Haven{% endblock %}
-{% block meta_description %}Join a CPC New Haven LifeGroup — small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
-{% block og_title %}LifeGroups — CPC New Haven{% endblock %}
-{% block og_description %}Join a CPC New Haven LifeGroup — small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
+{% block meta_description %}Join a CPC New Haven LifeGroup - small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
+{% block og_title %}LifeGroups - CPC New Haven{% endblock %}
+{% block og_description %}Join a CPC New Haven LifeGroup - small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
 {% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/lifegroups{% endblock %}
 
 {% block head %}
 <style>
-    .lifegroups-page {
-        min-height: calc(100vh - 200px);
-        padding: 0;
-        margin: 0;
+    .lg-page {
+        color: var(--surface-text);
     }
 
-    .lifegroups-container {
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Hero Section */
-    .lifegroups-hero {
-        background: linear-gradient(135deg, rgba(0, 40, 100, 0.72), rgba(0, 30, 80, 0.78)),
-                    url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg') center/cover no-repeat;
-        backdrop-filter: blur(2px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 3rem 1.5rem;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .lifegroups-hero h1 {
-        font-size: 2.5rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 1rem 0;
-        font-weight: 700;
-        font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-
-    .lifegroups-hero .tagline {
-        font-size: 1.1rem;
-        color: rgba(255, 255, 255, 0.75);
-        margin: 0;
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
-        line-height: 1.6;
-        font-style: italic;
-    }
-
-    /* Content Area */
-    .lifegroups-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 1.5rem 3rem;
-    }
-
-    /* Vision Section */
-    .vision-section {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        display: grid;
-        grid-template-columns: 1fr 380px;
-        gap: 2rem;
-        align-items: start;
-    }
-    .vision-text { }
-    .vision-photo {
+    .lg-hero {
         position: relative;
-        border-radius: 12px;
+        min-height: 68vh;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        text-align: center;
         overflow: hidden;
-        cursor: pointer;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        padding: 120px 24px 124px;
     }
-    .vision-photo:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.5); }
-    .vision-photo img { width: 100%; height: 280px; object-fit: cover; display: block; }
-    .vision-photo .photo-hover-overlay {
+
+    .lg-hero::before {
+        content: '';
         position: absolute;
         inset: 0;
-        background: rgba(0,0,0,0);
+        background-image:
+            linear-gradient(180deg, rgba(3, 20, 44, 0.24) 0%, rgba(3, 20, 44, 0.58) 55%, rgba(3, 20, 44, 0.86) 100%),
+            url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -2;
+    }
+
+    .lg-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at top left, rgba(155, 199, 255, 0.12), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.08), transparent 28%);
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .lg-hero .hero-fade {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 120px;
+        background: linear-gradient(180deg, rgba(3, 20, 44, 0) 0%, rgba(3, 20, 44, 0.18) 35%, rgba(3, 20, 44, 0.68) 100%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .lg-hero-inner {
+        max-width: 920px;
+        width: 100%;
+        padding: 28px 28px 0;
+    }
+
+    .lg-kicker {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.88);
+        margin-bottom: 14px;
+    }
+
+    .lg-hero h1 {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: clamp(2.7rem, 7vw, 5rem);
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+        color: #fff;
+        margin: 0 auto 18px;
+        max-width: 10ch;
+        text-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .lg-hero p {
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
+        line-height: 1.85;
+        color: rgba(255, 255, 255, 0.88);
+        max-width: 760px;
+        margin: 0 auto 26px;
+    }
+
+    .lg-hero-actions {
         display: flex;
-        align-items: center;
         justify-content: center;
-        transition: background 0.25s ease;
-    }
-    .vision-photo:hover .photo-hover-overlay { background: rgba(0,0,0,0.3); }
-    .vision-photo .photo-hover-overlay i {
-        color: white;
-        font-size: 2rem;
-        opacity: 0;
-        transition: opacity 0.25s ease;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    }
-    .vision-photo:hover .photo-hover-overlay i { opacity: 1; }
-    @media (max-width: 768px) {
-        .vision-section { grid-template-columns: 1fr; }
-        .vision-photo { order: -1; }
-        .vision-photo img { height: 220px; }
+        flex-wrap: wrap;
+        gap: 12px;
     }
 
-    .vision-section h2 {
-        font-size: 1.75rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 1.5rem 0;
-        font-weight: 600;
+    .lg-wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px 104px;
     }
 
-    .vision-section p {
-        font-size: 1rem;
-        line-height: 1.8;
-        color: rgba(255, 255, 255, 0.85);
-        margin: 0 0 1rem 0;
+    .lg-intro {
+        max-width: 920px;
+        margin: -58px auto 32px;
+        padding: 26px 28px;
+        background: linear-gradient(180deg, rgba(9, 34, 68, 0.82), rgba(9, 34, 68, 0.74));
+        border: 1px solid var(--surface-border);
+        border-radius: 24px;
+        box-shadow: var(--surface-shadow);
+        backdrop-filter: blur(14px);
+        position: relative;
+        z-index: 2;
     }
 
-    .vision-section p:last-child {
-        margin-bottom: 0;
+    .lg-intro p {
+        margin: 0;
+        font-family: 'Libre Baskerville', serif;
+        font-size: 1.08rem;
+        line-height: 1.95;
+        color: rgba(255, 255, 255, 0.94);
     }
 
-    /* Pillars Grid */
-    .pillars-section h2 {
-        font-size: 1.75rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 1.5rem 0;
-        font-weight: 600;
-        text-align: center;
+    .lg-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        padding: 14px;
+        margin: 0 auto 28px;
+        max-width: 920px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(10, 42, 82, 0.72), rgba(10, 42, 82, 0.62));
+        border: 1px solid var(--surface-border);
+        box-shadow: var(--surface-shadow);
+        backdrop-filter: blur(14px);
+        position: relative;
+        z-index: 1;
+    }
+
+    .lg-nav a {
+        color: var(--surface-text);
+        text-decoration: none;
+        font-size: 0.92rem;
+        padding: 0.58rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    .lg-nav a:hover,
+    .lg-nav a.active {
+        background: var(--surface-accent-soft);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .lg-section {
+        max-width: 980px;
+        margin: 0 auto 24px;
+        padding: 28px;
+        background: var(--surface-bg);
+        border: 1px solid var(--surface-border);
+        border-radius: 22px;
+        box-shadow: var(--surface-shadow);
+        backdrop-filter: blur(14px);
+    }
+
+    .section-header {
+        margin-bottom: 22px;
+    }
+
+    .section-kicker {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--surface-accent);
+        margin-bottom: 10px;
+    }
+
+    .section-title {
+        font-family: 'Manrope', var(--font-primary);
+        font-size: clamp(1.5rem, 3vw, 2.15rem);
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+        margin: 0 0 8px;
+        color: var(--surface-text);
+    }
+
+    .section-subtitle {
+        margin: 0;
+        font-size: 0.98rem;
+        line-height: 1.65;
+        color: var(--surface-muted);
+    }
+
+    .vision-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
+    }
+
+    .vision-copy {
+        font-size: 1.04rem;
+        line-height: 1.9;
+        color: var(--surface-text);
+        margin: 0;
+        max-width: none;
+    }
+
+    .vision-copy + .vision-copy {
+        margin-top: 1rem;
+    }
+
+    .pillar-card h3,
+    .group-card h3 {
+        font-family: 'Manrope', var(--font-primary);
+        letter-spacing: -0.02em;
+    }
+
+    .photo-card {
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        aspect-ratio: 4 / 3;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+        cursor: pointer;
+    }
+
+    .photo-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .photo-card::after {
+        content: 'View photo';
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        padding: 0.5rem 0.75rem;
+        background: rgba(0, 0, 0, 0.4);
+        color: #fff;
+        border-radius: 999px;
+        font-size: 0.84rem;
+        letter-spacing: 0.02em;
+        backdrop-filter: blur(10px);
     }
 
     .pillars-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 3rem;
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-top: 6px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .pillar-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-align: center;
-        transition: all 0.3s ease;
+        padding: 22px 0 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: transparent;
+        border-radius: 0;
     }
 
-    .pillar-card:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-4px);
-    }
-
-    .pillar-icon {
-        font-size: 2.5rem;
-        color: rgba(0, 82, 163, 0.8);
-        margin-bottom: 1rem;
+    .pillar-card:last-child {
+        border-bottom: none;
     }
 
     .pillar-card h3 {
-        font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 0.75rem 0;
-        font-weight: 600;
+        margin: 0 0 8px;
+        font-size: 1.2rem;
+        color: var(--surface-text);
     }
 
-    .pillar-card p {
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.8);
-        line-height: 1.6;
+    .pillar-card p,
+    .group-card p {
         margin: 0;
+        max-width: 72ch;
+        line-height: 1.8;
+        color: var(--surface-muted);
     }
 
-    /* Groups Section */
-    .groups-section {
-        margin-bottom: 3rem;
-    }
-
-    .groups-section h2 {
-        font-size: 1.75rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 1rem 0;
-        font-weight: 600;
+    .groups-header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
     }
 
     .groups-section-intro {
+        max-width: 680px;
+        margin: 0;
         font-size: 1rem;
-        color: rgba(255, 255, 255, 0.75);
-        margin: 0 0 2rem 0;
-        max-width: 800px;
+        line-height: 1.75;
+        color: var(--surface-muted);
     }
 
-    .groups-list {
+    .groups-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
     }
 
     .group-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .group-card:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-4px);
-    }
-
-    .group-header {
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 22px 22px 20px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
     }
 
     .group-card h3 {
-        font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 0.5rem 0;
-        font-weight: 600;
+        font-size: 1.08rem;
+        margin: 0 0 8px;
+        color: var(--surface-text);
     }
 
-    .group-leader {
-        font-size: 0.9rem;
-        color: rgba(0, 82, 163, 0.9);
-        font-weight: 500;
-    }
-
-    .group-details {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
+    .detail-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 0;
     }
 
     .detail-item {
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.8);
         display: flex;
+        gap: 10px;
         align-items: flex-start;
-        gap: 0.5rem;
+        font-size: 0.95rem;
+        line-height: 1.65;
+        color: var(--surface-muted);
     }
 
-    .detail-icon {
-        color: rgba(0, 82, 163, 0.7);
-        flex-shrink: 0;
-        margin-top: 0.15rem;
+    .group-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
     }
 
-    /* CTA Section */
+    .meta-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.44rem 0.72rem;
+        border-radius: 999px;
+        font-size: 0.84rem;
+        line-height: 1;
+        color: var(--surface-text);
+        background: var(--surface-accent-soft);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .meta-pill.day-pill {
+        background: rgba(62, 134, 219, 0.22);
+        border-color: rgba(123, 179, 255, 0.32);
+        color: #d8e9ff;
+    }
+
+    .meta-pill.host-pill {
+        background: transparent;
+        border: 0;
+        padding-left: 0;
+        padding-right: 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 0.9rem;
+        font-style: italic;
+        letter-spacing: 0.01em;
+    }
+
+    .meta-pill.host-pill::before {
+        content: 'contact';
+        margin-right: 0.3rem;
+        font-style: normal;
+        text-transform: lowercase;
+        color: rgba(255, 255, 255, 0.52);
+    }
+
+    .meta-pill.host-pill a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .meta-pill.host-pill a:hover {
+        text-decoration: underline;
+    }
+
+    .group-location {
+        font-size: 0.98rem;
+        line-height: 1.65;
+        color: var(--surface-text);
+    }
+
+    .group-notes {
+        font-size: 0.93rem;
+        line-height: 1.65;
+        color: var(--surface-muted);
+    }
+
     .cta-section {
-        background: linear-gradient(135deg, rgba(0, 82, 163, 0.25), rgba(0, 60, 130, 0.2));
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 2.5rem;
+        max-width: 980px;
+        margin: 26px auto 0;
+        padding: 30px 28px;
         text-align: center;
-        margin-top: 3rem;
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(0, 82, 163, 0.18), rgba(0, 60, 130, 0.12));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: var(--surface-shadow);
     }
 
     .cta-section h2 {
-        font-size: 1.75rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 1rem 0;
-        font-weight: 600;
+        font-family: 'Manrope', var(--font-primary);
+        font-size: clamp(1.55rem, 3vw, 2.15rem);
+        margin: 0 0 10px;
+        color: var(--surface-text);
     }
 
     .cta-section p {
-        font-size: 1rem;
-        color: rgba(255, 255, 255, 0.85);
-        margin: 0 0 1.75rem 0;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        line-height: 1.6;
+        max-width: 700px;
+        margin: 0 auto 22px;
+        font-size: 1.02rem;
+        line-height: 1.8;
+        color: var(--surface-muted);
     }
 
     .cta-buttons {
         display: flex;
-        gap: 1rem;
         justify-content: center;
         flex-wrap: wrap;
+        gap: 12px;
     }
 
     .btn {
@@ -295,390 +447,348 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        font-weight: 600;
+        padding: 0.82rem 1.4rem;
+        border-radius: 999px;
         text-decoration: none;
-        transition: all 0.2s;
-        cursor: pointer;
-        border: none;
+        font-weight: 700;
+        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
     }
 
     .btn-primary {
-        background: rgba(0, 82, 163, 0.8);
-        color: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(0, 82, 163, 0.95);
-    }
-
-    .btn-primary:hover {
-        background: rgba(0, 82, 163, 0.95);
-        color: white;
-        transform: translateY(-2px);
+        background: #0052a3;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.14);
     }
 
     .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--surface-text);
+        border: 1px solid rgba(255, 255, 255, 0.14);
     }
 
-    .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
+    .lg-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.88);
+        backdrop-filter: blur(10px);
+        padding: 24px;
     }
 
-    /* White Theme Support */
-    body.theme-white .lifegroups-hero {
-        background: linear-gradient(135deg, rgba(232, 242, 255, 0.6), rgba(200, 230, 255, 0.4));
-        border-bottom-color: rgba(0, 82, 163, 0.15);
+    .lg-modal.is-open {
+        display: flex;
     }
 
-    body.theme-white .lifegroups-hero h1 {
-        color: rgba(0, 52, 122, 0.95);
+    .lg-modal img {
+        max-width: min(1100px, 100%);
+        max-height: 88vh;
+        border-radius: 18px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
     }
 
-    body.theme-white .lifegroups-hero .tagline {
-        color: rgba(0, 52, 122, 0.75);
+    @media (max-width: 860px) {
+        .lg-hero {
+            min-height: 56vh;
+            padding-top: 100px;
+            padding-bottom: 58px;
+        }
+
+        .lg-hero-inner,
+        .lg-wrap {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+
+        .lg-section,
+        .cta-section,
+        .lg-intro {
+            padding: 22px 18px;
+        }
+
+        .vision-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
-    body.theme-white .vision-section,
+    @media (min-width: 861px) {
+        .pillar-card {
+            display: grid;
+            grid-template-columns: 180px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .pillar-card h3 {
+            margin-bottom: 0;
+        }
+    }
+
+    body.theme-white .lg-hero::before {
+        background-image:
+            linear-gradient(180deg, rgba(245, 247, 250, 0.24) 0%, rgba(232, 236, 241, 0.6) 60%, rgba(221, 226, 232, 0.92) 100%),
+            url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg');
+    }
+
+    body.theme-white .lg-kicker,
+    body.theme-white .lg-hero p {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    body.theme-white .lg-intro,
+    body.theme-white .lg-nav,
+    body.theme-white .lg-section,
+    body.theme-white .cta-section {
+        background: rgba(255, 255, 255, 0.72);
+        border-color: rgba(0, 50, 120, 0.12);
+    }
+
+    body.theme-white .section-title,
+    body.theme-white .vision-copy,
+    body.theme-white .pillar-card h3,
+    body.theme-white .group-card h3,
+    body.theme-white .cta-section h2 {
+        color: #1b2738;
+    }
+
+    body.theme-white .section-subtitle,
+    body.theme-white .vision-side ul,
+    body.theme-white .vision-copy,
+    body.theme-white .pillar-card p,
+    body.theme-white .group-card p,
+    body.theme-white .groups-section-intro,
+    body.theme-white .cta-section p,
+    body.theme-white .detail-item {
+        color: rgba(27, 39, 56, 0.72);
+    }
+
+    body.theme-white .vision-side,
     body.theme-white .pillar-card,
     body.theme-white .group-card {
-        background: rgba(0, 82, 163, 0.08);
-        border-color: rgba(0, 82, 163, 0.2);
-    }
-
-    body.theme-white .vision-section h2,
-    body.theme-white .pillar-card h3,
-    body.theme-white .group-card h3 {
-        color: rgba(0, 52, 122, 0.95);
-    }
-
-    body.theme-white .vision-section p,
-    body.theme-white .pillar-card p,
-    body.theme-white .detail-item {
-        color: rgba(0, 52, 122, 0.85);
-    }
-
-    body.theme-white .groups-section h2 {
-        color: rgba(0, 52, 122, 0.95);
-    }
-
-    body.theme-white .groups-section-intro {
-        color: rgba(0, 52, 122, 0.75);
-    }
-
-    body.theme-white .pillar-icon {
-        color: rgba(0, 82, 163, 0.6);
-    }
-
-    body.theme-white .detail-icon {
-        color: rgba(0, 82, 163, 0.6);
-    }
-
-    body.theme-white .group-leader {
-        color: rgba(0, 82, 163, 0.85);
-    }
-
-    body.theme-white .cta-section {
-        background: linear-gradient(135deg, rgba(232, 242, 255, 0.5), rgba(200, 230, 255, 0.3));
-        border-color: rgba(0, 82, 163, 0.2);
-    }
-
-    body.theme-white .cta-section h2,
-    body.theme-white .cta-section p {
-        color: rgba(0, 52, 122, 0.95);
-    }
-
-    body.theme-white .btn-primary {
-        background: rgba(0, 82, 163, 0.75);
-        color: white;
+        background: rgba(0, 82, 163, 0.05);
+        border-color: rgba(0, 82, 163, 0.12);
     }
 
     body.theme-white .btn-secondary {
-        background: rgba(0, 82, 163, 0.1);
-        border-color: rgba(0, 82, 163, 0.3);
-        color: rgba(0, 52, 122, 0.95);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .lifegroups-hero {
-            padding: 2rem 1rem;
-        }
-
-        .lifegroups-hero h1 {
-            font-size: 2rem;
-        }
-
-        .lifegroups-content {
-            padding: 0 1rem 2rem;
-        }
-
-        .vision-section,
-        .cta-section {
-            padding: 1.5rem;
-        }
-
-        .pillars-grid,
-        .groups-list {
-            grid-template-columns: 1fr;
-        }
-
-        .cta-buttons {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-        }
+        color: #1b2738;
+        background: rgba(0, 82, 163, 0.06);
+        border-color: rgba(0, 82, 163, 0.14);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="lifegroups-page">
-    <div class="lifegroups-container">
-        <!-- Hero Section -->
-        <div class="lifegroups-hero">
+<div class="lg-page">
+    <section class="lg-hero">
+        <div class="hero-fade"></div>
+        <div class="lg-hero-inner">
+            <div class="lg-kicker">Church in the small</div>
             <h1>LifeGroups</h1>
-            <p class="tagline">{{ lifegroup_content.get('lifegroups_tagline', 'Church in the Small — Prayer, Teaching, Fellowship & Care') }}</p>
+            <p>{{ lifegroup_content.get('lifegroups_tagline', 'Prayer, teaching, fellowship, and care in smaller circles of discipleship.') }}</p>
+            <div class="lg-hero-actions">
+                <a href="#groups" class="btn btn-primary">Find a Group</a>
+                <a href="#vision" class="btn btn-secondary">Why LifeGroups?</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="lg-wrap">
+        <div class="lg-intro">
+            <p>LifeGroups are our way of doing church in the small, where Christ's care is practiced through prayer, teaching, fellowship, and mutual support. The page is designed to feel like an invitation, not a brochure.</p>
         </div>
 
-        <div class="lifegroups-content">
-            <!-- Vision Section -->
-            <div class="vision-section" x-data="{ open: false }">
-                <!-- Text -->
-                <div class="vision-text">
-                    <h2>{{ lifegroup_content.get('lifegroups_vision_heading', 'Our Vision for LifeGroups') }}</h2>
-                    <p>
-                        {{ lifegroup_content.get('lifegroups_vision_p1', '<strong>God\'s people are the hands and feet of Christ.</strong> We cannot experience God and grow spiritually in a truly gospel-centered and biblical way if we are living in isolation. Neither can we say we are flourishing if our brother or sister in Christ is suffering.') | safe }}
-                    </p>
-                    <p>
-                        {{ lifegroup_content.get('lifegroups_vision_p2', 'Bound together with covenant communion, God brings us into new relationships where sacrifice is freedom and giving to others is where we find life. <strong>LifeGroups are our way of doing church in the small</strong> with all sorts of people engaged in prayer, teaching, fellowship and care.') | safe }}
-                    </p>
-                    <p>
-                        {{ lifegroup_content.get('lifegroups_vision_p3', 'They are the vehicle that we use to help participants continue to experience Christ outside of our worship gatherings and to impart the pastoral care that Christ provides through the love of His people. Thus, the worship, teaching, fellowship, and care for one another supply a more intimate and hands-on encounter with the living Christ.') | safe }}
-                    </p>
-                </div>
-                <!-- Photo -->
-                <div class="vision-photo" @click="open = true" role="button" aria-label="View LifeGroup photo">
-                    <img src="https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg"
-                         alt="CPC LifeGroup"
-                         loading="lazy">
-                    <div class="photo-hover-overlay">
-                        <i class="fas fa-search-plus"></i>
-                    </div>
-                </div>
+        <nav class="lg-nav" aria-label="LifeGroups sections">
+            <a href="#vision" class="active">Vision</a>
+            <a href="#pillars">Pillars</a>
+            <a href="#groups">Groups</a>
+            <a href="#areas">By Area</a>
+            <a href="#join">Join</a>
+        </nav>
 
-                <!-- Lightbox -->
-                <template x-teleport="body">
-                    <div x-show="open" style="display:none;"
-                         class="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm"
-                         @click="open = false"
-                         @keydown.escape.window="open = false"
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0"
-                         x-transition:enter-end="opacity-100"
-                         x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="opacity-100"
-                         x-transition:leave-end="opacity-0">
-                        <button @click="open = false"
-                                class="absolute top-5 right-6 text-white/70 hover:text-white text-4xl z-10 focus:outline-none transition-colors"
-                                aria-label="Close">&times;</button>
-                        <div class="max-w-4xl max-h-[90vh] w-full px-6 flex flex-col items-center gap-3" @click.stop>
-                            <img src="https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg"
-                                 alt="CPC LifeGroup"
-                                 class="max-h-[82vh] max-w-full object-contain rounded-lg shadow-2xl"
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 scale-95"
-                                 x-transition:enter-end="opacity-100 scale-100">
-                            <p class="text-white/80 text-sm font-medium tracking-wide">CPC LifeGroups</p>
-                        </div>
-                    </div>
-                </template>
+        <section class="lg-section" id="pillars">
+            <div class="section-header">
+                <div class="section-kicker">What this looks like</div>
+                <h2 class="section-title">What LifeGroups Embody</h2>
+                <p class="section-subtitle">The shape of healthy church life in a smaller setting</p>
             </div>
 
-            <!-- Pillars Section -->
-            <section class="pillars-section">
-                <h2>What LifeGroups Embody</h2>
-                <div class="pillars-grid">
-                    <div class="pillar-card">
-                        <div class="pillar-icon"><i class="fas fa-hands-praying"></i></div>
-                        <h3>Prayer</h3>
-                        <p>Interceding for one another and lifting up the needs of our community and world</p>
-                    </div>
-                    <div class="pillar-card">
-                        <div class="pillar-icon"><i class="fas fa-book-open"></i></div>
-                        <h3>Teaching</h3>
-                        <p>Studying Scripture and growing together in our understanding of God's Word</p>
-                    </div>
-                    <div class="pillar-card">
-                        <div class="pillar-icon"><i class="fas fa-handshake"></i></div>
-                        <h3>Fellowship</h3>
-                        <p>Building meaningful relationships and genuine community with brothers and sisters in Christ</p>
-                    </div>
-                    <div class="pillar-card">
-                        <div class="pillar-icon"><i class="fas fa-heart"></i></div>
-                        <h3>Care</h3>
-                        <p>Supporting one another through life's joys and sorrows with compassion and love</p>
-                    </div>
+            <div class="vision-grid" style="margin-bottom: 22px;">
+                <div>
+                    <p class="vision-copy">{{ lifegroup_content.get('lifegroups_vision_p1', '<strong>God\'s people are the hands and feet of Christ.</strong> We cannot experience God and grow spiritually in a truly gospel-centered and biblical way if we are living in isolation. Neither can we say we are flourishing if our brother or sister in Christ is suffering.') | safe }}</p>
+                    <p class="vision-copy">{{ lifegroup_content.get('lifegroups_vision_p2', 'Bound together with covenant communion, God brings us into new relationships where sacrifice is freedom and giving to others is where we find life. <strong>LifeGroups are our way of doing church in the small</strong> with all sorts of people engaged in prayer, teaching, fellowship and care.') | safe }}</p>
+                    <p class="vision-copy">{{ lifegroup_content.get('lifegroups_vision_p3', 'They are the vehicle that we use to help participants continue to experience Christ outside of our worship gatherings and to impart the pastoral care that Christ provides through the love of His people. Thus, the worship, teaching, fellowship, and care for one another supply a more intimate and hands-on encounter with the living Christ.') | safe }}</p>
                 </div>
-            </section>
+            </div>
 
-            <!-- Groups Section -->
-            <section class="groups-section">
-                <h2>{{ lifegroup_content.get('lifegroups_groups_heading', 'Current LifeGroups') }}</h2>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <h3>Prayer</h3>
+                    <p>Interceding for one another and lifting up the needs of our community and world.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Teaching</h3>
+                    <p>Studying Scripture and growing together in our understanding of God's Word.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Fellowship</h3>
+                    <p>Building meaningful relationships and genuine community with brothers and sisters in Christ.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Care</h3>
+                    <p>Supporting one another through life's joys and sorrows with compassion and love.</p>
+                </div>
+            </div>
+
+            <div class="photo-card" id="visionPhoto" style="margin-top: 24px;">
+                <img src="https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg" alt="CPC LifeGroup gathering" loading="lazy">
+            </div>
+        </section>
+
+        <section class="lg-section" id="groups">
+            <div class="groups-header">
+                <div>
+                    <div class="section-kicker">Current groups</div>
+                    <h2 class="section-title">{{ lifegroup_content.get('lifegroups_groups_heading', 'Current LifeGroups') }}</h2>
+                </div>
                 <p class="groups-section-intro">{{ lifegroup_content.get('lifegroups_groups_intro', 'Join a LifeGroup near you. All groups meet regularly for Bible study, prayer, and fellowship. Whether you\'re new to faith or have been walking with Jesus for years, there\'s a place for you.') }}</p>
-
-                <div class="groups-list">
-                    {% if groups %}
-                        {% for group in groups %}
-                        <div class="group-card">
-                            <div class="group-header">
-                                <h3>{{ group.name }}</h3>
-                                {% if group.leaders %}<div class="group-leader"><strong>Leaders:</strong> {{ group.leaders }}</div>{% endif %}
-                            </div>
-                            <div class="group-details">
-                                {% if group.location %}
-                                <div class="detail-item">
-                                    <span class="detail-icon"><i class="fas fa-map-marker-alt"></i></span>
-                                    <span>{{ group.location }}</span>
-                                </div>
-                                {% endif %}
-                                {% if group.meeting_time %}
-                                <div class="detail-item">
-                                    <span class="detail-icon"><i class="fas fa-clock"></i></span>
-                                    <span>{{ group.meeting_time }}</span>
-                                </div>
-                                {% endif %}
-                                {% if group.description %}
-                                <div class="detail-item">
-                                    <span class="detail-icon"><i class="fas fa-heart"></i></span>
-                                    <span>{{ group.description }}</span>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                    <p style="color: rgba(255,255,255,0.6); font-style: italic; text-align: center; padding: 2rem;">No active groups at this time. Check back soon!</p>
-                    {% endif %}
-                </div>
-            </section>
-
-            <!-- LifeGroups by Area Section -->
-            <section class="groups-section">
-                <h2>LifeGroups by Area</h2>
-                <div class="groups-list">
-                    <div class="group-card">
-                        <div class="group-header">
-                            <h3>Hamden/North Haven</h3>
-                            <div class="group-leader"><strong>Thursdays</strong></div>
-                        </div>
-                        <div class="group-details">
-                            <div class="detail-item">
-                                <span class="detail-icon"><i class="fas fa-user"></i></span>
-                                <span>Alicia Kebabian</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group-card">
-                        <div class="group-header">
-                            <h3>Downtown New Haven</h3>
-                            <div class="group-leader"><strong>Wednesday</strong></div>
-                        </div>
-                        <div class="group-details">
-                            <div class="detail-item">
-                                <span class="detail-icon"><i class="fas fa-user"></i></span>
-                                <span>Colleen Rice</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group-card">
-                        <div class="group-header">
-                            <h3>Downtown New Haven</h3>
-                            <div class="group-leader"><strong>Thursday</strong></div>
-                        </div>
-                        <div class="group-details">
-                            <div class="detail-item">
-                                <span class="detail-icon"><i class="fas fa-user"></i></span>
-                                <span>Allison Luekens</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group-card">
-                        <div class="group-header">
-                            <h3>East Rock</h3>
-                        </div>
-                        <div class="group-details">
-                            <div class="detail-item">
-                                <span class="detail-icon"><i class="fas fa-user"></i></span>
-                                <span>Kaitlyn Jessee</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group-card">
-                        <div class="group-header">
-                            <h3>Trumbull</h3>
-                        </div>
-                        <div class="group-details">
-                            <div class="detail-item">
-                                <span class="detail-icon"><i class="fas fa-user"></i></span>
-                                <span>Stacy Roney</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group-card">
-                        <div class="group-header">
-                            <h3>Shoreline Saturday</h3>
-                        </div>
-                        <div class="group-details">
-                            <div class="detail-item">
-                                <span class="detail-icon"><i class="fas fa-user"></i></span>
-                                <span>Cliff Bogue</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group-card">
-                        <div class="group-header">
-                            <h3>West Side</h3>
-                        </div>
-                        <div class="group-details">
-                            <div class="detail-item">
-                                <span class="detail-icon"><i class="fas fa-user"></i></span>
-                                <span>Miranda Healy</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CTA Section -->
-            <div class="cta-section">
-                <h2>{{ lifegroup_content.get('lifegroups_cta_heading', 'Ready to Join?') }}</h2>
-                <p>{{ lifegroup_content.get('lifegroups_cta_text', 'Whether you\'re looking to deepen your faith, build genuine community, or experience Christ in a more intimate setting, there\'s a LifeGroup for you. Don\'t hesitate to reach out—our leaders are excited to welcome you.') }}</p>
-                <div class="cta-buttons">
-                    {% set cta_email = lifegroup_content.get('lifegroups_cta_email', 'admin@cpcnewhaven.org') %}
-                    {% set cta_phone = lifegroup_content.get('lifegroups_cta_phone', '203-777-6960') %}
-                    {% set cta_phone_tel = lifegroup_content.get('lifegroups_cta_phone_tel', '+12037776960') %}
-                    <a href="mailto:{{ cta_email }}?subject=LifeGroup Interest" class="btn btn-primary">
-                        <i class="fas fa-envelope"></i> Email Us
-                    </a>
-                    <a href="tel:{{ cta_phone_tel }}" class="btn btn-secondary">
-                        <i class="fas fa-phone"></i> Call {{ cta_phone }}
-                    </a>
-                </div>
             </div>
-        </div>
+
+            <div class="groups-grid">
+                {% if groups %}
+                    {% for group in groups %}
+                    <article class="group-card">
+                        <h3>{{ group.name }}</h3>
+                        {% if group.leaders or group.meeting_time %}
+                        <div class="group-meta">
+                            {% if group.meeting_time %}<span class="meta-pill">{{ group.meeting_time }}</span>{% endif %}
+                            {% if group.leaders %}<span class="meta-pill">{{ group.leaders }}</span>{% endif %}
+                        </div>
+                        {% endif %}
+                        {% if group.location %}
+                        <div class="group-location">{{ group.location }}</div>
+                        {% endif %}
+                        {% if group.description %}
+                        <div class="group-notes" style="margin-top: 10px;">{{ group.description }}</div>
+                        {% endif %}
+                    </article>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: var(--surface-muted); font-style: italic; text-align: center; padding: 2rem;">No active groups at this time. Check back soon!</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="lg-section" id="areas">
+            <div class="section-header">
+                <div class="section-kicker">By geography</div>
+                <h2 class="section-title">LifeGroups by Area</h2>
+                <p class="section-subtitle">A few established groups across Greater New Haven and beyond</p>
+            </div>
+
+            <div class="groups-grid">
+                <article class="group-card">
+                    <h3>Hamden / North Haven</h3>
+                    <div class="group-meta">
+                        <span class="meta-pill day-pill">Thursdays</span>
+                        <span class="meta-pill host-pill"><a href="mailto:akebabian@gmail.com">Alicia Kebabian</a></span>
+                    </div>
+                    <div class="group-location">Hamden / North Haven</div>
+                </article>
+
+                <article class="group-card">
+                    <h3>Downtown New Haven</h3>
+                    <div class="group-meta">
+                        <span class="meta-pill day-pill">Wednesday</span>
+                        <span class="meta-pill host-pill"><a href="mailto:c.mccormack418@gmail.com">Colleen Rice</a></span>
+                    </div>
+                </article>
+
+                <article class="group-card">
+                    <h3>Downtown New Haven</h3>
+                    <div class="group-meta">
+                        <span class="meta-pill day-pill">Thursday</span>
+                        <span class="meta-pill host-pill"><a href="mailto:allison.luekens@gmail.com">Allison Luekens</a></span>
+                    </div>
+                </article>
+
+                <article class="group-card">
+                    <h3>East Rock</h3>
+                    <div class="group-meta">
+                        <span class="meta-pill host-pill"><a href="mailto:kaijessee@gmail.com">Kaitlyn Jessee</a></span>
+                    </div>
+                </article>
+
+                <article class="group-card">
+                    <h3>Trumbull</h3>
+                    <div class="group-meta">
+                        <span class="meta-pill host-pill"><a href="mailto:mrsprofdoc@icloud.com">Stacy Roney</a></span>
+                    </div>
+                </article>
+
+                <article class="group-card">
+                    <h3>Shoreline Saturday</h3>
+                    <div class="group-meta">
+                        <span class="meta-pill host-pill"><a href="mailto:mhbogue@yahoo.com">Cliff Bogue</a></span>
+                    </div>
+                </article>
+
+                <article class="group-card">
+                    <h3>West Side</h3>
+                    <div class="group-meta">
+                        <span class="meta-pill host-pill"><a href="mailto:mirandajrdn8@gmail.com">Miranda Healy</a></span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="cta-section" id="join">
+            <h2>{{ lifegroup_content.get('lifegroups_cta_heading', 'Ready to Join?') }}</h2>
+            <p>{{ lifegroup_content.get('lifegroups_cta_text', 'Whether you\'re looking to deepen your faith, build genuine community, or experience Christ in a more intimate setting, there\'s a LifeGroup for you. Don\'t hesitate to reach out - our leaders are excited to welcome you.') }}</p>
+            <div class="cta-buttons">
+                {% set cta_email = lifegroup_content.get('lifegroups_cta_email', 'admin@cpcnewhaven.org') %}
+                {% set cta_phone = lifegroup_content.get('lifegroups_cta_phone', '203-777-6960') %}
+                {% set cta_phone_tel = lifegroup_content.get('lifegroups_cta_phone_tel', '+12037776960') %}
+                <a href="mailto:{{ cta_email }}?subject=LifeGroup Interest" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> Email Us
+                </a>
+                <a href="tel:{{ cta_phone_tel }}" class="btn btn-secondary">
+                    <i class="fas fa-phone"></i> Call {{ cta_phone }}
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <div id="lgModal" class="lg-modal" aria-hidden="true">
+        <img src="https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg" alt="CPC LifeGroup larger preview">
     </div>
 </div>
+
+<script>
+    (function () {
+        const trigger = document.getElementById('visionPhoto');
+        const modal = document.getElementById('lgModal');
+        if (!trigger || !modal) return;
+
+        const close = () => {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+        };
+
+        trigger.addEventListener('click', () => {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+        });
+
+        modal.addEventListener('click', close);
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') close();
+        });
+    })();
+</script>
 {% endblock %}

@@ -57,5 +57,75 @@
     "category": "prayer",
     "active": true,
     "date_entered": "2024-01-01T08:30:00Z"
+  },
+  {
+    "id": "event_007",
+    "title": "Last Thursday Picnic Next Week! | July 30 at 6pm",
+    "description": "Please sign up on the sheet in the foyer to help set up.\n\nJoin us for our Summer Thursday Picnics! These gatherings are a wonderful opportunity to enjoy fellowship, food, and fun together as a church family.\nEach picnic date will have two key leaders and three support volunteers responsible for, utilizing the provided budget to select the meal, and coordinating setup and cleanup.",
+    "type": "event",
+    "category": "fellowship",
+    "active": true,
+    "start": "2026-07-30T18:00:00-04:00",
+    "location": "CPC"
+  },
+  {
+    "id": "event_008",
+    "title": "Volunteers Still Needed! | Serve with CPC in the Hill",
+    "description": "Sign up here: https://us.list-manage.com/GDgRralFBKf?e=9da175cc40&c2id=6df9b900f2d1d0ec64fac5dfc299411c\n\nWednesday Night Summer BBQs (July 1-August 19) | Trowbridge Square Park in the Hill: 169 Cedar St, New Haven, CT 06519. Volunteers needed to help set up, serve, and clean up (4:45pm-7:00pm).",
+    "type": "event",
+    "category": "service",
+    "active": true,
+    "start": "2026-07-01T16:45:00-04:00",
+    "location": "Trowbridge Square Park in the Hill, 169 Cedar St, New Haven, CT 06519"
+  },
+  {
+    "id": "event_009",
+    "title": "Men’s Bike Ride & Lunch | Saturday, August 1 @11am",
+    "description": "Bike ride the Canal trail to Mikro for lunch, meeting at 11am at CPC parking lot. Sign up sheet in the foyer.",
+    "type": "event",
+    "category": "fellowship",
+    "active": true,
+    "start": "2026-08-01T11:00:00-04:00",
+    "location": "CPC Parking Lot"
+  },
+  {
+    "id": "event_010",
+    "title": "Mercy Day! | August 29 | BOTH Volunteers and Mercy Projects Needed!",
+    "description": "Sign up here! https://us.list-manage.com/XmvyHP5m0iv?e=9da175cc40&c2id=6df9b900f2d1d0ec64fac5dfc299411c\n\nTo truly love and serve one another, we’ll tackle projects for those who need any help. Each project will have a dedicated project lead/captain who will give instructions to volunteers.",
+    "type": "event",
+    "category": "service",
+    "active": true,
+    "start": "2026-08-29T09:00:00-04:00",
+    "location": "CPC"
+  },
+  {
+    "id": "event_011",
+    "title": "Regular Sunday Lunches Resume | August 23",
+    "description": "Regular Sunday Lunches Resume | August 23",
+    "type": "announcement",
+    "category": "announcement",
+    "active": true,
+    "start": "2026-08-23T09:00:00-04:00",
+    "location": "CPC"
+  },
+  {
+    "id": "event_012",
+    "title": "CPC Women’s Conference | Save the Date! | October 3rd at CPC",
+    "description": "CPC Women’s Conference | Save the Date! | October 3rd at CPC",
+    "type": "announcement",
+    "category": "announcement",
+    "active": true,
+    "start": "2026-10-03T09:00:00-04:00",
+    "location": "CPC"
+  },
+  {
+    "id": "event_013",
+    "title": "Join WhatsApp group “CPC Social!”",
+    "description": "If you’re interested in connecting more spontaneously with CPC folks, you’re welcome to join our WhatsApp group “CPC Social!”",
+    "type": "announcement",
+    "category": "announcement",
+    "active": true,
+    "start": "2026-08-23T09:00:00-04:00",
+    "location": "CPC"
   }
 ]

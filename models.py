@@ -202,6 +202,7 @@ class OngoingEvent(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String(500))
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
     active = db.Column(db.Boolean, default=True)
     archived = db.Column(db.Boolean, default=False)

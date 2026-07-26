@@ -217,6 +217,7 @@ def ensure_db_columns():
             ('updated_by', 'VARCHAR(80)', 'VARCHAR(80)'),
         ],
         'ongoing_events': [
+            ('image_url', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
             ('archived', 'BOOLEAN DEFAULT 0', 'BOOLEAN DEFAULT FALSE'),
             ('expires_at', 'DATE', 'DATE'),
@@ -1318,6 +1319,7 @@ def api_ongoing_events():
                 'id': e.id,
                 'title': e.title,
                 'description': e.description,
+                'imageUrl': getattr(e, 'image_url', None),
                 'dateEntered': e.date_entered.strftime('%Y-%m-%d') if e.date_entered else None,
                 'active': 'true' if e.active else 'false',
                 'type': e.type,
@@ -1781,9 +1783,82 @@ def _normalize_events(ics_text, site_tz, rules):
     items.sort(key=lambda x: x["start"] or "")
     return items
 
+def _load_active_ongoing_events(site_tz):
+    """Fallback event source from the live database."""
+    local = pytz.timezone(site_tz)
+    now = datetime.now(local)
+    items = []
+    try:
+        query = (
+            OngoingEvent.query.filter_by(active=True)
+            .filter(_not_expired(OngoingEvent))
+            .order_by(OngoingEvent.sort_order.asc(), OngoingEvent.date_entered.desc())
+        )
+        for ev in query.all():
+            # Ongoing events are evergreen; surface them as current items so
+            # they don't get filtered out just because the admin record was
+            # created long ago.
+            start = now
+            items.append({
+                "id": f"ongoing-{ev.id}",
+                "title": ev.title or "Untitled Event",
+                "start": start.isoformat() if start else None,
+                "end": None,
+                "all_day": True,
+                "location": ev.location,
+                "description": ev.description,
+                "imageUrl": getattr(ev, "image_url", None),
+                "url": None,
+                "category": ev.category or "Ongoing",
+                "source": "ongoing",
+            })
+    except Exception:
+        # Keep the endpoint resilient if the ongoing-events table is unavailable.
+        return []
+    return items
+
+def _load_local_events_json(site_tz):
+    """Load manually curated event entries from data/events.json."""
+    path = os.path.join("data", "events.json")
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+    except Exception:
+        return []
+
+    local = pytz.timezone(site_tz)
+    now = datetime.now(local)
+    items = []
+    for idx, ev in enumerate(raw if isinstance(raw, list) else []):
+        start_value = ev.get("start") or ev.get("date") or ev.get("date_entered") or ev.get("dateEntered")
+        if not start_value:
+            continue
+        try:
+            start = datetime.fromisoformat(start_value.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if start.tzinfo is None:
+            start = pytz.utc.localize(start)
+        start = start.astimezone(local)
+        items.append({
+            "id": ev.get("id") or f"local-event-{idx}",
+            "title": ev.get("title") or "Untitled Event",
+            "start": start.isoformat(),
+            "end": ev.get("end"),
+            "all_day": bool(ev.get("all_day", False)),
+            "location": ev.get("location") or "",
+            "description": ev.get("description") or "",
+            "imageUrl": ev.get("image_url") or ev.get("imageUrl"),
+            "url": ev.get("url") or "",
+            "category": ev.get("category") or "General",
+            "source": "local",
+        })
+    return items
+
 @cache.cached(timeout=900, key_prefix="events_json")
 def _fetch_events_json():
     ics_url = app.config.get("EVENTS_ICS_URL")
+    site_tz = app.config.get("SITE_TIMEZONE", "America/New_York")
     if not ics_url:
         # Fallback: if a public Google Calendar is configured (or implied), build its public ICS URL.
         # This keeps the site working even if EVENTS_ICS_URL isn't explicitly set.
@@ -1793,7 +1868,7 @@ def _fetch_events_json():
             site_content = {}
 
         gcal_id = (site_content.get("google_calendar_id") or "").strip() or "baf2h147ghi7nu8ifijjrt994k@group.calendar.google.com"
-        gcal_tz = (site_content.get("google_calendar_tz") or "").strip() or app.config.get("SITE_TIMEZONE", "America/New_York")
+        gcal_tz = (site_content.get("google_calendar_tz") or "").strip() or site_tz
 
         # Public/basic ICS endpoint
         ics_url = (
@@ -1802,20 +1877,52 @@ def _fetch_events_json():
             + "/public/basic.ics"
         )
         # Ensure the rest of the pipeline uses the requested tz (if provided via SiteContent)
+        site_tz = gcal_tz
         app.config["SITE_TIMEZONE"] = gcal_tz
 
-    r = requests.get(ics_url, timeout=10, headers={"User-Agent":"CPC-Web-App"})
-    r.raise_for_status()
-    items = _normalize_events(
-        r.text,
-        app.config.get("SITE_TIMEZONE", "America/New_York"),
-        app.config.get("EVENT_CATEGORY_RULES", {})
-    )
+    items = []
+    try:
+        r = requests.get(ics_url, timeout=10, headers={"User-Agent":"CPC-Web-App"})
+        r.raise_for_status()
+        items = _normalize_events(
+            r.text,
+            site_tz,
+            app.config.get("EVENT_CATEGORY_RULES", {})
+        )
+    except Exception:
+        # Calendar feeds can be intermittently unavailable; the page should still
+        # show active church events rather than an empty state.
+        items = []
+
+    # Add ongoing events from the database so the public page still has content
+    # even when the external calendar is sparse or unreachable.
+    items.extend(_load_active_ongoing_events(site_tz))
+    items.extend(_load_local_events_json(site_tz))
+
     # window filter
     lookahead = int(app.config.get("EVENTS_LOOKAHEAD_DAYS", 120))
-    now = datetime.now(pytz.timezone(app.config.get("SITE_TIMEZONE", "America/New_York")))
+    now = datetime.now(pytz.timezone(site_tz))
     until = now + timedelta(days=lookahead)
-    upcoming = [e for e in items if e["start"] and now.isoformat() <= e["start"] <= until.isoformat()]
+
+    upcoming = []
+    seen_ids = set()
+    for e in items:
+        if not e.get("start"):
+            continue
+        try:
+            start = datetime.fromisoformat(e["start"])
+        except ValueError:
+            continue
+        if start.tzinfo is None:
+            start = pytz.utc.localize(start)
+        if not (now <= start <= until):
+            continue
+        if e["id"] in seen_ids:
+            continue
+        seen_ids.add(e["id"])
+        upcoming.append(e)
+
+    upcoming.sort(key=lambda e: e.get("start") or "", reverse=True)
     return {"events": upcoming}
 
 @app.route("/api/events/<eid>.ics")
@@ -4396,12 +4503,13 @@ class OngoingEventView(AuthenticatedModelView):
     create_template = 'admin/event_create.html'
 
     form_rules = [
-        rules.FieldSet(('title', 'description', 'type', 'category', 'active'), 'Event Basics'),
+        rules.FieldSet(('title', 'description', 'image_url', 'type', 'category', 'active'), 'Event Basics'),
         rules.FieldSet(('date_entered', 'expiration_preset', 'expiration_date'), 'Dates & Expiration')
     ]
-    form_columns = ('date_entered', 'expiration_preset', 'expiration_date', 'title', 'description', 'type', 'category', 'active')
+    form_columns = ('date_entered', 'expiration_preset', 'expiration_date', 'title', 'description', 'image_url', 'type', 'category', 'active')
     form_extra_fields = {
         'description': TextAreaField('Description', widget=TextArea(), validators=[Optional(), Length(max=2000)]),
+        'image_url': StringField('Image URL', validators=[Optional(), Length(max=500)]),
         'expiration_preset': SelectField('Expiration', choices=EXPIRATION_PRESET_CHOICES, default='never'),
         'expiration_date': DatePickerField(
             'Expiration date (when "Pick a date…" is selected)',
@@ -4415,7 +4523,8 @@ class OngoingEventView(AuthenticatedModelView):
         'category': SelectField,
     }
     form_widget_args = {
-        'description': {'rows': 8, 'style': 'width: 100%'}
+        'description': {'rows': 8, 'style': 'width: 100%'},
+        'image_url': {'placeholder': 'https://example.com/event-photo.jpg'}
     }
 
     ONGOING_EVENT_TYPE_CHOICES = [

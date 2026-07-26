@@ -402,14 +402,6 @@ body.theme-white .events-hero p { color: var(--page-muted); }
             <p>Join us for fellowship, learning, and community events</p>
         </div>
 
-        <!-- Event Announcements Section (3-month view) -->
-        <section class="events-section">
-            <h2 class="section-title">Featured Announcements</h2>
-            <div id="event-announcements-container" style="min-height: 100px;">
-                <div style="padding: 2rem; text-align: center; color: rgba(255,255,255,0.6);">Loading announcements...</div>
-            </div>
-        </section>
-
         <!-- Events Content -->
         <section class="events-section">
             <h2 class="section-title">Upcoming Events</h2>
@@ -493,6 +485,5 @@ body.theme-white .events-hero p { color: var(--page-muted); }
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/event-announcements.js') }}"></script>
 <script src="{{ url_for('static', filename='js/events.js') }}"></script>
 {% endblock %}
