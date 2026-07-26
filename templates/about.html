@@ -261,6 +261,28 @@
         line-height: 1.65;
     }
 
+    .leadership-group-spacious h3 {
+        margin-bottom: 32px;
+    }
+
+    .leadership-group-spacious .leadership-grid {
+        gap: 32px;
+        max-width: 960px;
+    }
+
+    .leadership-group-spacious .person-photo {
+        margin-bottom: 16px;
+    }
+
+    .leadership-group-spacious .person-role {
+        margin-top: 6px;
+    }
+
+    .leadership-section-spacious {
+        padding-top: 100px;
+        padding-bottom: 110px;
+    }
+
     .leadership-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -359,6 +381,76 @@
         flex-wrap: wrap;
     }
 
+    /* Story Timeline */
+    .story-timeline {
+        max-width: 860px;
+        margin: 0 auto;
+    }
+
+    .story-milestone {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .story-milestone:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .story-milestone-year {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: white;
+        background: rgba(155, 199, 255, 0.16);
+        padding: 0.5rem;
+        border-radius: 10px;
+        text-align: center;
+        height: fit-content;
+    }
+
+    .story-milestone-content h3 {
+        font-size: 1rem;
+        color: white;
+        margin: 0 0 0.75rem;
+        font-weight: 600;
+        font-family: 'Manrope', var(--font-primary);
+    }
+
+    .story-milestone-content p {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.82);
+        margin: 0;
+    }
+
+    .story-milestone-image {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        margin-bottom: 1rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.82rem;
+        text-align: center;
+        padding: 1.25rem;
+    }
+
+    .story-milestone-image i {
+        font-size: 1.35rem;
+        color: rgba(155, 199, 255, 0.65);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .mission-grid {
@@ -400,6 +492,24 @@
         .leadership-grid {
             grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
             gap: 16px;
+        }
+
+        .leadership-group-spacious .leadership-grid {
+            gap: 24px;
+        }
+
+        .leadership-section-spacious {
+            padding-top: 72px;
+            padding-bottom: 80px;
+        }
+
+        .story-milestone {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .story-milestone-year {
+            width: fit-content;
         }
     }
 
@@ -460,6 +570,33 @@
 
     body.theme-white .closing-cta p {
         color: #6b7a8a;
+    }
+
+    body.theme-white .story-milestone {
+        border-bottom-color: rgba(0, 50, 120, 0.12);
+    }
+
+    body.theme-white .story-milestone-year {
+        color: #1a2a3f;
+        background: rgba(0, 82, 163, 0.1);
+    }
+
+    body.theme-white .story-milestone-content h3 {
+        color: #20303f;
+    }
+
+    body.theme-white .story-milestone-content p {
+        color: #5b6b7a;
+    }
+
+    body.theme-white .story-milestone-image {
+        background: rgba(0, 50, 120, 0.05);
+        border-color: rgba(0, 50, 120, 0.15);
+        color: #7a8a9a;
+    }
+
+    body.theme-white .story-milestone-image i {
+        color: rgba(0, 82, 163, 0.55);
     }
 </style>
 {% endblock %}
@@ -575,8 +712,8 @@
     </section>
 
     <!-- Leadership: Staff -->
-    <section class="about-section-container">
-        <div class="leadership-group">
+    <section class="about-section-container leadership-section-spacious">
+        <div class="leadership-group leadership-group-spacious">
             <h3>Our Staff Team</h3>
             <div class="leadership-grid">
                 {% set staff = [
@@ -654,8 +791,8 @@
     </section>
 
     <!-- Leadership: Servant Leadership Board -->
-    <section class="about-section-container">
-        <div class="leadership-group">
+    <section class="about-section-container leadership-section-spacious">
+        <div class="leadership-group leadership-group-spacious">
             <h3>Servant Leadership Board</h3>
             <div class="leadership-grid">
                 {% set slb = [
@@ -716,7 +853,7 @@
             <h2 class="section-title">Our Story</h2>
             <p class="section-subtitle">From a small Bible study to a thriving congregation</p>
         </div>
-        <div id="story-timeline" style="max-width: 800px; margin: 0 auto;"></div>
+        <div id="story-timeline" class="story-timeline"></div>
     </section>
 </div>
 
@@ -727,34 +864,42 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             year: '1991',
             title: 'The Beginning',
+            imageLabel: 'Church planting conversation, 1991',
             text: 'It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY. Their purpose was to meet up with several church planters and pastors from the Presbyterian Church in America to discuss a possible church plant in New Haven.'
         },
         {
             year: '1991-1992',
             title: 'The Vision Takes Shape',
+            imageLabel: 'Early Bible study gathering',
             text: 'Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale. After being introduced to one of the families, Preston was invited to join their providential ferry ride to Port Jeff. After a three-hour conversation on Long Island, Preston accepted an invitation to lead a Bible Study.'
         },
         {
             year: '1992',
             title: 'First Worship Service',
+            imageLabel: 'First worship service, October 1992',
             text: 'On October 11, 1992 at 9:30 am, the mission stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT. The sermon text that morning was Matthew 28 coupled with Christ\'s promise "I will build my church." In attendance were 28 people, children and adults combined. A high gospel, high church congregation was born!'
         },
         {
             year: '2017',
             title: 'Mission Anabaino',
+            imageLabel: 'Mission Anabaino church planting network',
             text: 'As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting. At present, Mission Anabaino consists of five local church plants, 12 global church plants with 3 anchor churches including CPC New Haven.'
         }
     ];
 
     const timelineContainer = document.getElementById('story-timeline');
-    timelineContainer.innerHTML = milestones.map((m, i) => `
-        <div style="display: grid; grid-template-columns: 120px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
-            <div style="font-size: 0.9rem; font-weight: 600; color: white; background: rgba(155, 199, 255, 0.16); padding: 0.5rem; border-radius: 10px; text-align: center; height: fit-content;">${m.year}</div>
-            <div>
-                <h3 style="font-size: 1rem; color: white; margin: 0 0 0.5rem 0; font-weight: 600;">${m.title}</h3>
-                <p style="font-size: 0.85rem; line-height: 1.6; color: rgba(255, 255, 255, 0.82); margin: 0;">${m.text}</p>
+    timelineContainer.innerHTML = milestones.map((m) => `
+        <article class="story-milestone">
+            <div class="story-milestone-year">${m.year}</div>
+            <div class="story-milestone-content">
+                <div class="story-milestone-image" aria-hidden="true">
+                    <i class="fa-solid fa-image"></i>
+                    <span>Image placeholder: ${m.imageLabel}</span>
+                </div>
+                <h3>${m.title}</h3>
+                <p>${m.text}</p>
             </div>
-        </div>
+        </article>
     `).join('');
 });
 </script>
