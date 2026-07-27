@@ -475,8 +475,20 @@
         <div class="dashboard-section" x-show="$store.dash.showService">
             <div class="dashboard-title">Sunday Service</div>
             <div class="dashboard-note">
-                <div>10:30am Worship</div>
-                <div>135 Whitney Ave</div>
+                {% set _sidebar_worship = site_content.get('service_summer_worship_time', '10:30am') if active_schedule == 'summer' else site_content.get('service_worship_time', '10:30am') %}
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+                    <strong style="color:var(--surface-text);">{{ _sidebar_worship }} Worship</strong>
+                    <span style="font-size:0.62rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--surface-accent); background:var(--surface-accent-soft); border-radius:999px; padding:0.2rem 0.45rem;">
+                        {{ 'Summer' if active_schedule == 'summer' else 'Regular' }}
+                    </span>
+                </div>
+                <a href="https://maps.google.com/?q={{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') | urlencode }}"
+                    target="_blank" rel="noopener"
+                    style="display:flex; align-items:flex-start; gap:0.4rem; margin-top:0.55rem; color:var(--surface-muted); text-decoration:none; line-height:1.45;">
+                    <i class="fas fa-location-dot" aria-hidden="true" style="color:var(--surface-accent); margin-top:0.18rem;"></i>
+                    <span>{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</span>
+                </a>
+                <a href="{{ url_for('sundays') }}" class="cta" style="display:inline-block; margin-top:0.65rem; color:var(--surface-accent);">Learn More About Sundays →</a>
             </div>
         </div>
     </aside>
