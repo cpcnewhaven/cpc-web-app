@@ -408,7 +408,7 @@
         <section class="belief-section" id="class">
             <div class="section-header">
                 <div class="section-kicker">Adult studies</div>
-                <h2 class="section-title">What We Believe: Knowing and Loving Our Doctrines</h2>
+                <h2 class="section-title">{{ site_content.get('belief_class_title', 'What We Believe: Knowing and Loving Our Doctrines') }}</h2>
                 <p class="section-subtitle">A school of discipleship class that walks through the historic Christian faith</p>
             </div>
 
@@ -430,7 +430,9 @@
             <div style="margin-top: 24px;">
                 <h3 class="section-title" style="font-size: 1.05rem; margin-bottom: 14px;">Overall Schedule & Lessons</h3>
                 <ul class="lesson-list">
-                    {% include 'partials/what_we_believe_lessons.html' %}
+                    {% for lesson in belief_lessons %}
+                    <li>{{ lesson }}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </section>

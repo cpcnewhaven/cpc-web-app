@@ -428,6 +428,39 @@ def about():
     about_content = {r.key: r.value for r in rows}
     return render_template('about.html', about_content=about_content)
 
+WHAT_WE_BELIEVE_LESSONS = [
+    'Lesson 1: Intro – Why Theology?',
+    'Lesson 2: How Could the Finite ever Know the Infinite?',
+    'Lesson 3: What is the Bible?',
+    'Lesson 4: How do we Interpret the Bible?',
+    'Lesson 5: Beholding Who God is',
+    'Lesson 6: Beholding Who God Is, cont. (Attributes & Trinity)',
+    'Lesson 7: Beholding Who God Is, cont. (Trinity)',
+    'Lesson 8: Doctrine of God the Creator',
+    'Lesson 9: Doctrine of Humanity – What is a Human?',
+    'Lesson 10: Doctrine of Sin – What Have We Done?!',
+    'Lesson 11: Implications of our Doctrine of Sin',
+    'Lesson 12: Review & Preview thru Covenant Theology',
+    'Lesson 13: The Person of Christ',
+    'Lesson 14: The Person of Christ, cont.',
+    'Lesson 15: The Work of Christ',
+    'Lesson 16: The Work of Christ, cont.',
+    'Lesson 17: The Work of Christ in Judgment and Consummation',
+    'Lesson 18: The Church and Total Christ',
+    'Lesson 19: The Church as Communion and Institution',
+    'Lesson 20: Church Government',
+    'Lesson 21: Sacraments',
+    'Lesson 22: Election and Effectual Calling',
+    'Lesson 23: Faith and Repentance',
+    'Lesson 24: Justification and Adoption',
+    'Lesson 25: Sanctification',
+    'Lesson 26: Assurance & Perseverance',
+    'Lesson 27: Good Works & Law of God',
+    'Lesson 28: Vocations',
+    'Lesson 29: Marriage, Sex & Gender',
+    'Lesson 30: Marriage, Sex & Gender, cont.',
+]
+
 SUBPAGE_CONFIGS = {
     'about': {
         'title': 'About Page',
@@ -441,6 +474,17 @@ SUBPAGE_CONFIGS = {
             ('augustine_quote', 'Augustine Quote', '"The Word was made flesh, and dwelled among us; to that flesh is joined the church, and there is made total Christ, both head and body."'),
             ('staff_json', 'Staff Members (JSON)', '[{"initials":"CL","name":"Craig Luekens","title":"Senior Pastor"},{"initials":"JO","name":"Jerry Ornelas","title":"Assistant Pastor"},{"initials":"AV","name":"Alexis Vano","title":"Administrative Coordinator"},{"initials":"AG","name":"Alex Gonzalez","title":"AV Director"},{"initials":"CB","name":"Christopher Battista","title":"Audio and IT Specialist"},{"initials":"PW","name":"Paul Wildey","title":"Sexton"},{"initials":"JC","name":"Jennifer Cheng","title":"Music Coordinator"}]'),
             ('story_milestones_json', 'Story Milestones (JSON)', '[{"year":"1991","title":"The Beginning","text":"It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY."},{"year":"1991-1992","title":"The Vision Takes Shape","text":"Recent Gordon Conwell Seminary graduate Preston Graham was scheduled to visit New Haven to locate housing for his family while studying American Religious History at Yale."},{"year":"1992","title":"First Worship Service","text":"On October 11, 1992 at 9:30 am, the mission stage of church planting was initiated with a first worship service held at the Amity Regional Junior High in Orange, CT."},{"year":"2017","title":"Mission Anabaino","text":"As of the Spring of 2017, Mission Anabaino is inspiring a multiplying momentum for both an engagement in theological collaboration in missional ecclesiology and church planting."}]'),
+        ]
+    },
+    'what_we_believe': {
+        'title': 'What We Believe',
+        'url': '/about/what-we-believe',
+        'icon': 'menu_book',
+        'color': '#2563eb',
+        'keys': [
+            ('belief_class_title', 'Class Title', 'What We Believe: Knowing and Loving Our Doctrines', 'text'),
+            ('belief_class_description', 'Class Description', 'This course walks through the historic Christian faith, connecting doctrine with worship, discipleship, and everyday life.'),
+            ('belief_lessons_json', 'Overall Schedule & Lessons (JSON)', json.dumps(WHAT_WE_BELIEVE_LESSONS)),
         ]
     },
     'appearance': {
@@ -637,6 +681,18 @@ def get_regular_schedule_resume_label(site_content):
         return resume_date.strftime('%B %d').replace(' 0', ' ')
     except (ValueError, TypeError):
         return 'August 23'
+
+def get_belief_lessons(site_content):
+    """Return the CRUD-managed lesson list with a safe default."""
+    try:
+        lessons = json.loads(site_content.get('belief_lessons_json') or '[]')
+        if isinstance(lessons, list):
+            cleaned = [str(lesson).strip() for lesson in lessons if str(lesson).strip()]
+            if cleaned:
+                return cleaned
+    except (TypeError, ValueError, json.JSONDecodeError):
+        pass
+    return WHAT_WE_BELIEVE_LESSONS
 
 @app.route('/admin/subpage-edit/', methods=['GET', 'POST'])
 def admin_subpage_edit():
@@ -2749,6 +2805,7 @@ def inject_site_content():
         'site_content': sc,
         'active_schedule': resolve_active_schedule(sc),
         'regular_schedule_resume_label': get_regular_schedule_resume_label(sc),
+        'belief_lessons': get_belief_lessons(sc),
     }
 
 def require_auth(f):

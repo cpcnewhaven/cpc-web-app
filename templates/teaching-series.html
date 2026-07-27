@@ -928,11 +928,13 @@
             </div>
 
             <section class="belief-bridge">
-                <div class="belief-bridge__kicker">Adult studies curriculum</div>
-                <h2>What We Believe: Overall Schedule &amp; Lessons</h2>
-                <p class="belief-bridge__lede">This course walks through the historic Christian faith, connecting doctrine with worship, discipleship, and everyday life.</p>
+                <div class="belief-bridge__kicker">Overall Schedule &amp; Lessons</div>
+                <h2>{{ site_content.get('belief_class_title', 'What We Believe: Knowing and Loving Our Doctrines') }}</h2>
+                <p class="belief-bridge__lede">{{ site_content.get('belief_class_description', 'This course walks through the historic Christian faith, connecting doctrine with worship, discipleship, and everyday life.') }}</p>
                 <ul class="belief-bridge__lessons">
-                    {% include 'partials/what_we_believe_lessons.html' %}
+                    {% for lesson in belief_lessons %}
+                    <li>{{ lesson }}</li>
+                    {% endfor %}
                 </ul>
                 <a class="belief-bridge__link" href="{{ url_for('what_we_believe') }}">Explore What We Believe →</a>
             </section>
