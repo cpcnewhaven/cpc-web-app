@@ -42,6 +42,300 @@
     max-width: 100%;
     padding: 0 0.75rem;
 }
+
+.technical-requirements-section {
+    max-width: 1100px;
+    margin: 1.5rem auto;
+    padding: 0 0.75rem;
+}
+
+.tech-panel {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    background: var(--surface-bg);
+    border: 1px solid var(--surface-border);
+    border-radius: 20px;
+    box-shadow: var(--surface-shadow);
+}
+
+.tech-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--surface-accent), transparent);
+    opacity: 0.55;
+}
+
+.tech-header {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    align-items: end;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.tech-kicker {
+    color: var(--surface-accent);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    margin-bottom: .65rem;
+}
+
+.tech-header h2 {
+    color: var(--surface-text);
+    font: 750 clamp(1.65rem, 4vw, 2.4rem)/1.12 'Manrope', sans-serif;
+    letter-spacing: -.035em;
+    margin: 0;
+}
+
+.tech-header p {
+    color: var(--surface-muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: .75rem;
+    padding: 1.25rem 0;
+}
+
+.requirement-card {
+    display: grid;
+    grid-template-columns: 38px 1fr;
+    column-gap: .8rem;
+    align-content: start;
+    padding: 1.15rem;
+    background: var(--surface-bg-hover);
+    border: 1px solid var(--surface-border);
+    border-radius: 13px;
+}
+
+.requirement-icon {
+    grid-row: 1 / 3;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    color: var(--surface-accent);
+    background: var(--surface-accent-soft);
+    border-radius: 10px;
+}
+
+.requirement-card h3 {
+    color: var(--surface-text);
+    font-size: .98rem;
+    font-weight: 750;
+    margin: 0 0 .35rem;
+}
+
+.requirement-card p {
+    color: var(--surface-muted);
+    font-size: .86rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.tech-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    background: var(--surface-accent-soft);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+}
+
+.tech-footer p {
+    color: var(--surface-muted);
+    font-size: .86rem;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.tech-footer strong { color: var(--surface-text); }
+
+.tech-fallback {
+    color: var(--surface-accent);
+    font-size: .86rem;
+    font-weight: 750;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.tech-fallback:hover { color: var(--surface-text); }
+
+.live-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1rem 0 1.5rem;
+}
+
+.live-video-container,
+.youtube-embed-container,
+.youtube-embed {
+    min-height: 0 !important;
+}
+
+.live-video-wrapper {
+    border: 1px solid var(--surface-border);
+    border-radius: 18px;
+    box-shadow: var(--surface-shadow);
+}
+
+.live-info {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--surface-bg);
+    border: 1px solid var(--surface-border);
+    border-radius: 18px;
+    box-shadow: var(--surface-shadow);
+}
+
+.live-info h2 {
+    grid-column: 1 / -1;
+    color: var(--surface-text);
+    font: 750 clamp(1.35rem, 3vw, 1.8rem)/1.2 'Manrope', sans-serif;
+    margin: 0;
+    padding: 0 0 .85rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.service-details {
+    min-height: 0;
+    gap: .8rem;
+    padding: 1rem;
+    background: var(--surface-bg-hover);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    box-shadow: none;
+}
+
+.service-time,
+.service-location {
+    align-items: flex-start;
+    color: var(--surface-text);
+    font-size: .92rem;
+    line-height: 1.5;
+}
+
+.service-time i,
+.service-location i {
+    color: var(--surface-accent);
+    font-size: 1rem;
+    margin-top: .2rem;
+}
+
+.live-actions {
+    justify-content: center;
+    gap: .7rem;
+}
+
+.live-actions .btn {
+    min-height: 46px;
+    margin: 0;
+}
+
+.support-section {
+    max-width: 1100px;
+    margin: 1.5rem auto 0;
+    padding: 0 .75rem;
+}
+
+.support-panel {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    align-items: center;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    background: linear-gradient(135deg, var(--surface-bg), var(--surface-accent-soft));
+    border: 1px solid var(--surface-border);
+    border-radius: 20px;
+    box-shadow: var(--surface-shadow);
+}
+
+.support-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--surface-accent), transparent);
+    opacity: .55;
+}
+
+.support-kicker {
+    color: var(--surface-accent);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    margin-bottom: .65rem;
+}
+
+.support-copy h2 {
+    color: var(--surface-text);
+    font: 750 clamp(1.65rem, 4vw, 2.35rem)/1.12 'Manrope', sans-serif;
+    letter-spacing: -.035em;
+    margin: 0 0 .65rem;
+}
+
+.support-copy p {
+    color: var(--surface-muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.support-contact {
+    display: grid;
+    gap: .7rem;
+}
+
+.support-item {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: .8rem;
+    align-items: center;
+    min-height: 58px;
+    padding: .7rem .85rem;
+    color: var(--surface-text);
+    text-decoration: none;
+    background: var(--surface-bg-hover);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    transition: .2s ease;
+}
+
+.support-item i {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: var(--surface-accent);
+    background: var(--surface-accent-soft);
+    border-radius: 9px;
+}
+
+.support-item span { overflow-wrap: anywhere; }
+.support-item:hover { color: var(--surface-accent); border-color: var(--surface-accent); transform: translateY(-2px); }
+
+@media (max-width: 760px) {
+    .tech-header { grid-template-columns: 1fr; gap: .65rem; }
+    .requirements-grid { grid-template-columns: 1fr; }
+}
 </style>
 {% endblock %}
 
@@ -92,9 +386,6 @@
                     <a href="https://www.youtube.com/playlist?list=PL7xij5KggExvD0S8Aq3oTT0XhMqFCyZ2l" target="_blank" class="btn btn-primary">
                         <i class="fas fa-external-link-alt"></i> Open on YouTube
                     </a>
-                    <button class="btn btn-secondary" onclick="openChat()">
-                        <i class="fas fa-comments"></i> Live Chat
-                    </button>
                 </div>
             </div>
         </div>
@@ -158,79 +449,65 @@
     </div>
 </section>
 
-<!-- Live Chat Section -->
-<section class="live-chat-section" id="liveChat" style="display: none;">
-    <div class="container">
-        <div class="chat-container">
-            <div class="chat-header">
-                <h3>Live Chat</h3>
-                <button class="close-chat" onclick="closeChat()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="chat-message">
-                    <span class="message-author">Moderator</span>
-                    <span class="message-text">Welcome to our live worship service! Please feel free to share prayer requests or ask questions.</span>
-                    <span class="message-time">10:30 AM</span>
-                </div>
-            </div>
-            <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="Type your message...">
-                <button onclick="sendMessage()">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Technical Requirements -->
 <section class="technical-requirements-section">
-    <div class="container">
-        <h2>Technical Requirements</h2>
+    <div class="tech-panel">
+        <div class="tech-header">
+            <div>
+                <div class="tech-kicker">Before you watch</div>
+                <h2>Technical Requirements</h2>
+            </div>
+            <p>The stream should play on most current devices. These three quick checks provide the smoothest viewing experience.</p>
+        </div>
         <div class="requirements-grid">
             <div class="requirement-card">
                 <div class="requirement-icon">
                     <i class="fas fa-wifi"></i>
                 </div>
                 <h3>Internet Connection</h3>
-                <p>Stable internet connection recommended for best viewing experience</p>
+                <p>Use a stable Wi-Fi or wired connection. If playback pauses, lower the video quality in YouTube.</p>
             </div>
             
             <div class="requirement-card">
                 <div class="requirement-icon">
                     <i class="fas fa-desktop"></i>
                 </div>
-                <h3>Device Compatibility</h3>
-                <p>Works on desktop, tablet, and mobile devices with modern browsers</p>
+                <h3>Current Browser</h3>
+                <p>Watch on a phone, tablet, computer, or smart TV using an up-to-date modern browser.</p>
             </div>
             
             <div class="requirement-card">
                 <div class="requirement-icon">
                     <i class="fas fa-volume-up"></i>
                 </div>
-                <h3>Audio</h3>
-                <p>Ensure your device's audio is enabled for the best worship experience</p>
+                <h3>Sound On</h3>
+                <p>Unmute both the video player and your device, then choose headphones or speakers.</p>
             </div>
+        </div>
+        <div class="tech-footer">
+            <p><strong>Stream not loading?</strong> Refresh this page or open the service directly on YouTube.</p>
+            <a class="tech-fallback" href="https://www.youtube.com/playlist?list=PL7xij5KggExvD0S8Aq3oTT0XhMqFCyZ2l" target="_blank" rel="noopener">Open on YouTube →</a>
         </div>
     </div>
 </section>
 
 <!-- Contact Support -->
 <section class="support-section">
-    <div class="container">
-        <h2>Need Help?</h2>
-        <p>If you're experiencing technical difficulties with our live stream, please contact us:</p>
+    <div class="support-panel">
+        <div class="support-copy">
+            <div class="support-kicker">Stream support</div>
+            <h2>Need Help?</h2>
+            <p>If the troubleshooting steps above don’t solve the issue, contact the CPC team and we’ll help you get connected.</p>
+        </div>
         <div class="support-contact">
-            <div class="support-item">
+            <a class="support-item" href="mailto:{{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}">
                 <i class="fas fa-envelope"></i>
-                <span>admin@cpcnewhaven.org</span>
-            </div>
-            <div class="support-item">
+                <span>{{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}</span>
+            </a>
+            <a class="support-item" href="tel:{{ site_content.get('contact_phone', '203-777-6960') | replace('(', '') | replace(')', '') | replace(' ', '') | replace('-', '') }}">
                 <i class="fas fa-phone"></i>
                 <span>{{ site_content.get('contact_phone', '203-777-6960') }}</span>
-            </div>
+            </a>
         </div>
     </div>
 </section>
@@ -245,8 +522,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update live indicator
     updateLiveIndicator();
     
-    // Set up chat functionality
-    setupChat();
 });
 
 function checkServiceTime() {
@@ -281,43 +556,5 @@ function joinLive() {
     }
 }
 
-function openChat() {
-    document.getElementById('liveChat').style.display = 'block';
-    document.getElementById('chatInput').focus();
-}
-
-function closeChat() {
-    document.getElementById('liveChat').style.display = 'none';
-}
-
-function setupChat() {
-    const chatInput = document.getElementById('chatInput');
-    if (chatInput) {
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    }
-}
-
-function sendMessage() {
-    const chatInput = document.getElementById('chatInput');
-    const chatMessages = document.getElementById('chatMessages');
-    
-    if (chatInput.value.trim()) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'chat-message';
-        messageDiv.innerHTML = `
-            <span class="message-author">You</span>
-            <span class="message-text">${chatInput.value}</span>
-            <span class="message-time">${new Date().toLocaleTimeString()}</span>
-        `;
-        
-        chatMessages.appendChild(messageDiv);
-        chatInput.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-}
 </script>
 {% endblock %}
