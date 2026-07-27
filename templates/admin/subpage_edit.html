@@ -495,7 +495,7 @@
 
         <form method="POST" action="/admin/subpage-edit/?page={{ active_page }}" id="mainForm">
             {% for field in fields %}
-            {% if active_page == 'service_times' and field.key in ('schedule_mode', 'summer_start_month', 'summer_end_month') %}
+            {% if active_page == 'service_times' and field.key in ('schedule_mode', 'summer_start_month', 'summer_end_month', 'summer_end_day') %}
             {# These are controlled by the quick-switch buttons above; still include hidden inputs so they save #}
             <input type="hidden" name="{{ field.key }}" id="hidden_{{ field.key }}" value="{{ field.value }}">
             {% else %}
@@ -574,6 +574,13 @@
                             oninput="document.getElementById('hidden_summer_end_month').value=this.value"
                             style="width:100%; background:rgba(0,0,0,0.28); border:1px solid rgba(100,200,255,0.3); border-radius:6px; color:rgba(255,255,255,0.9); padding:0.6rem 0.75rem; font-size:0.9rem;">
                         <div style="font-size:0.72rem; color:rgba(255,255,255,0.38); margin-top:0.3rem;">1=Jan · 8=Aug · 12=Dec</div>
+                    </div>
+                    <div style="flex:1; min-width:140px;">
+                        <label style="display:block; font-size:0.8rem; color:rgba(255,255,255,0.6); margin-bottom:0.3rem;">Last summer schedule day</label>
+                        <input type="number" min="1" max="31" id="vis_summer_end_day" value="{{ fields | selectattr('key','equalto','summer_end_day') | map(attribute='value') | first | default('22') }}"
+                            oninput="document.getElementById('hidden_summer_end_day').value=this.value"
+                            style="width:100%; background:rgba(0,0,0,0.28); border:1px solid rgba(100,200,255,0.3); border-radius:6px; color:rgba(255,255,255,0.9); padding:0.6rem 0.75rem; font-size:0.9rem;">
+                        <div style="font-size:0.72rem; color:rgba(255,255,255,0.38); margin-top:0.3rem;">22 = regular schedule resumes August 23</div>
                     </div>
                 </div>
             </div>

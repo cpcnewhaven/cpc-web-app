@@ -424,9 +424,9 @@ body.theme-white .events-hero p { color: var(--page-muted); }
             <div id="events-app"></div>
         </section>
 
-        <!-- Regular Schedule -->
+        <!-- Sunday Schedule (managed by Admin > Service Times) -->
         <section class="events-section">
-            <h2 class="section-title">Regular Schedule</h2>
+            <h2 class="section-title">{{ 'Summer' if active_schedule == 'summer' else 'Regular' }} Schedule</h2>
             <div class="schedule-card">
                 <div class="schedule-day">Sunday</div>
                 {% if active_schedule == 'summer' %}
@@ -440,32 +440,75 @@ body.theme-white .events-hero p { color: var(--page-muted); }
                   {% set _w = site_content.get('service_worship_time','') %}
                   {% set _f = site_content.get('service_fellowship_time','') %}
                 {% endif %}
-                {% if _p and _p.strip().lower() != 'no' %}
+                {% set _prayer_label = site_content.get('service_prayer_label', 'Prayer in the Parlor') %}
+                {% set _school_label = site_content.get('service_school_label', "Children's Sunday School & Adult Sunday Studies") %}
+                {% set _worship_label = site_content.get('service_worship_label', 'Sunday Worship Service') %}
+                {% set _fellowship_label = site_content.get('service_fellowship_label', 'Fellowship Lunch') %}
+                {% set _worship_only = site_content.get('summer_worship_only', 'False').lower() in ('true', '1', 'yes') and active_schedule == 'summer' %}
+                {% if not _worship_only and _p and _p.strip().lower() != 'no' %}
                 <div class="schedule-item">
                     <span class="schedule-time">{{ _p }}</span>
-                    <span class="schedule-activity">Prayer in the Parlor</span>
+                    <span class="schedule-activity">{{ _prayer_label }}</span>
                 </div>
                 {% endif %}
-                {% if _s and _s.strip().lower() != 'no' %}
+                {% if not _worship_only and _s and _s.strip().lower() != 'no' %}
                 <div class="schedule-item">
                     <span class="schedule-time">{{ _s }}</span>
-                    <span class="schedule-activity">Children's Sunday School & Adult Sunday Studies</span>
+                    <span class="schedule-activity">{{ _school_label }}</span>
                 </div>
                 {% endif %}
                 {% if _w and _w.strip().lower() != 'no' %}
                 <div class="schedule-item">
                     <span class="schedule-time">{{ _w }}</span>
-                    <span class="schedule-activity">Sunday Worship Service</span>
+                    <span class="schedule-activity">{{ _worship_label }}</span>
                 </div>
                 {% endif %}
-                {% if _f and _f.strip().lower() != 'no' %}
+                {% if not _worship_only and _f and _f.strip().lower() != 'no' %}
                 <div class="schedule-item">
                     <span class="schedule-time">{{ _f }}</span>
-                    <span class="schedule-activity">Fellowship Lunch</span>
+                    <span class="schedule-activity">{{ _fellowship_label }}</span>
                 </div>
                 {% endif %}
             </div>
         </section>
+
+        {% if active_schedule == 'summer' %}
+        <!-- Upcoming regular schedule (also managed by Admin > Service Times) -->
+        <section class="events-section">
+            <h2 class="section-title">Upcoming Schedule</h2>
+            <div class="schedule-card">
+                <div class="schedule-day">Regular schedule starting {{ regular_schedule_resume_label }}</div>
+                {% set _upcoming_prayer = site_content.get('service_prayer_time', '') %}
+                {% set _upcoming_school = site_content.get('service_school_time', '') %}
+                {% set _upcoming_worship = site_content.get('service_worship_time', '') %}
+                {% set _upcoming_fellowship = site_content.get('service_fellowship_time', '') %}
+                {% if _upcoming_prayer and _upcoming_prayer.strip().lower() != 'no' %}
+                <div class="schedule-item">
+                    <span class="schedule-time">{{ _upcoming_prayer }}</span>
+                    <span class="schedule-activity">{{ site_content.get('service_prayer_label', 'Prayer in the Parlor') }}</span>
+                </div>
+                {% endif %}
+                {% if _upcoming_school and _upcoming_school.strip().lower() != 'no' %}
+                <div class="schedule-item">
+                    <span class="schedule-time">{{ _upcoming_school }}</span>
+                    <span class="schedule-activity">{{ site_content.get('service_school_label', "Children's Sunday School & Adult Sunday Studies") }}</span>
+                </div>
+                {% endif %}
+                {% if _upcoming_worship and _upcoming_worship.strip().lower() != 'no' %}
+                <div class="schedule-item">
+                    <span class="schedule-time">{{ _upcoming_worship }}</span>
+                    <span class="schedule-activity">{{ site_content.get('service_worship_label', 'Sunday Worship Service') }}</span>
+                </div>
+                {% endif %}
+                {% if _upcoming_fellowship and _upcoming_fellowship.strip().lower() != 'no' %}
+                <div class="schedule-item">
+                    <span class="schedule-time">{{ _upcoming_fellowship }}</span>
+                    <span class="schedule-activity">{{ site_content.get('service_fellowship_label', 'Fellowship Lunch') }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
 
         <!-- Contact Section -->
         <section class="contact-section">

@@ -1,207 +1,203 @@
 {% extends "base.html" %}
 
 {% block title %}Plan a Visit - CPC New Haven{% endblock %}
-{% block meta_description %}Planning your first visit to CPC New Haven? Here's everything you need to know — what to expect, where we are, and how to connect.{% endblock %}
+{% block meta_description %}Plan your first Sunday at CPC New Haven: service times, parking, children, worship, and what to expect at 135 Whitney Avenue.{% endblock %}
 {% block og_title %}Plan a Visit — CPC New Haven{% endblock %}
-{% block og_description %}Planning your first visit to CPC New Haven? Here's everything you need to know — what to expect, where we are, and how to connect.{% endblock %}
+{% block og_description %}Everything you need for a comfortable first Sunday at Christ Presbyterian Church in New Haven.{% endblock %}
 {% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/plan-a-visit{% endblock %}
 
 {% block head %}
 <style>
-.plan-visit-hero {
-    padding: 2.5rem 1rem !important;
-    background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
-                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat !important;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 1rem;
+.visit-page {
+    max-width: 1120px; margin: 0 auto; padding: 0 1rem 3rem;
+    --page-surface: var(--surface-bg);
+    --page-surface-hover: var(--surface-bg-hover);
+    --page-border: var(--surface-border);
+    --page-text: var(--surface-text);
+    --page-muted: var(--surface-muted);
+    --page-accent: var(--surface-accent);
+}
+.visit-hero {
+    min-height: 440px; display: flex; align-items: flex-end; position: relative; overflow: hidden;
+    border-radius: 18px; margin-bottom: 1.25rem;
+    background: linear-gradient(90deg, rgba(0,25,62,.94) 0%, rgba(0,38,88,.75) 55%, rgba(0,24,60,.28) 100%),
+                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
+    border: 1px solid rgba(255,255,255,.13); box-shadow: 0 22px 60px rgba(0,0,0,.22);
+}
+.visit-hero__content { max-width: 680px; padding: clamp(2rem, 6vw, 4.5rem); }
+.visit-eyebrow { color: #9bc7ff; font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.visit-hero h1 { color: #fff; font: 750 clamp(2.6rem, 7vw, 5.2rem)/.98 'Manrope', sans-serif; letter-spacing: -.05em; margin: .7rem 0 1rem; }
+.visit-hero p { color: rgba(255,255,255,.84); font-size: clamp(1rem, 2vw, 1.22rem); line-height: 1.65; max-width: 590px; }
+.visit-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+.visit-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: .55rem; min-height: 48px;
+    padding: .75rem 1.15rem; border-radius: 10px; text-decoration: none; font-weight: 750; transition: .2s ease;
+}
+.visit-button--primary { color: #08244a; background: #fff; }
+.visit-button--secondary { color: #fff; border: 1px solid rgba(255,255,255,.34); background: rgba(255,255,255,.1); }
+.visit-button:hover { transform: translateY(-2px); }
+.visit-quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .85rem; margin: 1.25rem 0 2rem; }
+.visit-quick {
+    padding: 1.15rem; border-radius: 13px; background: var(--page-surface);
+    border: 1px solid var(--page-border); box-shadow: var(--surface-shadow);
+}
+.visit-quick i { color: var(--page-accent); margin-bottom: .75rem; font-size: 1.1rem; }
+.visit-quick span { display: block; color: var(--page-muted); font-size: .73rem; letter-spacing: .09em; text-transform: uppercase; font-weight: 750; }
+.visit-quick strong { display: block; color: var(--page-text); margin-top: .25rem; font-size: 1rem; }
+.visit-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(290px, .72fr); gap: 1.25rem; align-items: start; }
+.visit-panel {
+    background: var(--page-surface); border: 1px solid var(--page-border); border-radius: 16px;
+    padding: clamp(1.25rem, 3vw, 2rem); margin-bottom: 1.25rem;
+}
+.visit-panel h2 { color: var(--page-text); font: 750 clamp(1.45rem, 3vw, 2rem)/1.15 'Manrope', sans-serif; margin: 0 0 .65rem; letter-spacing: -.025em; }
+.visit-panel__intro { color: var(--page-muted); line-height: 1.7; margin-bottom: 1.4rem; }
+.visit-schedule { display: grid; gap: .65rem; }
+.visit-schedule__item {
+    display: grid; grid-template-columns: 90px 1fr; gap: 1rem; align-items: center;
+    padding: .9rem 1rem; background: var(--page-surface-hover); border: 1px solid var(--page-border); border-radius: 10px;
+}
+.visit-schedule__item--featured { border-color: var(--page-accent); background: color-mix(in srgb, var(--page-accent) 10%, transparent); }
+.visit-schedule__time { color: var(--page-accent); font-weight: 800; }
+.visit-schedule__label { color: var(--page-text); font-weight: 650; }
+.visit-guide { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.visit-guide__item { padding: 1.05rem; border-radius: 11px; background: var(--page-surface-hover); border: 1px solid var(--page-border); }
+.visit-guide__item i { color: var(--page-accent); font-size: 1.05rem; }
+.visit-guide__item h3 { color: var(--page-text); font-size: 1rem; margin: .6rem 0 .35rem; }
+.visit-guide__item p { color: var(--page-muted); font-size: .88rem; line-height: 1.6; margin: 0; }
+.visit-sidebar { position: sticky; top: 1rem; }
+.visit-address { color: var(--page-text); font-weight: 700; line-height: 1.55; }
+.visit-map { border: 0; width: 100%; height: 230px; border-radius: 11px; margin: .85rem 0; }
+.visit-text-link { color: var(--page-accent); font-weight: 700; text-decoration: none; }
+.visit-note { color: var(--page-muted); font-size: .86rem; line-height: 1.65; }
+.visit-welcome { text-align: center; padding: 2.2rem 1.25rem; background: linear-gradient(135deg, rgba(0,82,163,.25), rgba(0,82,163,.08)); }
+.visit-welcome p { color: var(--page-muted); max-width: 680px; margin: .7rem auto 1.2rem; line-height: 1.7; }
+@media (max-width: 820px) {
+    .visit-hero { min-height: 390px; }
+    .visit-quick-grid, .visit-layout { grid-template-columns: 1fr; }
+    .visit-sidebar { position: static; }
+}
+@media (max-width: 540px) {
+    .visit-page { padding-inline: .5rem; }
+    .visit-hero__content { padding: 1.5rem; }
+    .visit-quick-grid { gap: .6rem; }
+    .visit-quick { display: grid; grid-template-columns: 28px 1fr; column-gap: .45rem; }
+    .visit-quick i { grid-row: 1 / 3; }
+    .visit-guide { grid-template-columns: 1fr; }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="plan-visit-page compact-page">
-    <div class="compact-content">
-        <div class="plan-visit-hero compact-hero">
-            <h1>Plan a Visit</h1>
-            <p>We would love to welcome you to Christ Presbyterian Church</p>
-        </div>
+{% if active_schedule == 'summer' %}
+  {% set prayer_time = site_content.get('service_summer_prayer_time', '') %}
+  {% set school_time = site_content.get('service_summer_school_time', '') %}
+  {% set worship_time = site_content.get('service_summer_worship_time', '') %}
+  {% set fellowship_time = site_content.get('service_summer_fellowship_time', '') %}
+{% else %}
+  {% set prayer_time = site_content.get('service_prayer_time', '8:30am') %}
+  {% set school_time = site_content.get('service_school_time', '9:30am') %}
+  {% set worship_time = site_content.get('service_worship_time', '10:30am') %}
+  {% set fellowship_time = site_content.get('service_fellowship_time', '12:00pm') %}
+{% endif %}
+{% set worship_only = site_content.get('summer_worship_only', 'False').lower() in ('true', '1', 'yes') and active_schedule == 'summer' %}
+{% set show_prayer = not worship_only and prayer_time and prayer_time.strip().lower() != 'no' %}
+{% set show_school = not worship_only and school_time and school_time.strip().lower() != 'no' %}
+{% set show_worship = worship_time and worship_time.strip().lower() != 'no' %}
+{% set show_fellowship = not worship_only and fellowship_time and fellowship_time.strip().lower() != 'no' %}
 
-        <div class="visit-cta-row">
-            <a class="visit-cta" href="{{ url_for('sundays') }}">First Time Sundays</a>
-            <a class="visit-cta" href="#what-to-expect">What to Expect</a>
-        </div>
-
-        <section id="what-to-expect" class="visit-section">
-            <h2>What to Expect</h2>
-            <p>
-                Aspiring to be a gospel-centered community, we talk a lot about making this a safe place
-                for real-time sinful people to be in journey with Christ. There is no limit to God's grace
-                as accomplished for us by Christ.
-            </p>
-            <p>
-                And aspiring to not just learn about Christ and the good news of the gospel we talk a lot
-                about participating in Christ's presence. We do this both in the mystery of one-anothering
-                in the power of the Holy Spirit, and in the mystery of sacramental worship wherein we do
-                the gospel in the ancient temple pattern of four movements.
-            </p>
-            <p>
-                Through it all, Christ is in the midst of us by the Holy Spirit as our prophet, priest and
-                king. So we hope you will join us and enjoy our journey together in Christ.
-            </p>
-            <div class="visit-highlight">
-                <strong>Welcome:</strong> You are safe, loved, and invited to come as you are as we walk
-                with Christ together.
+<div class="visit-page">
+    <section class="visit-hero">
+        <div class="visit-hero__content">
+            <div class="visit-eyebrow">Your first Sunday</div>
+            <h1>Come as you are.</h1>
+            <p>A warm welcome, thoughtful worship, and a community learning to live by grace. Here’s everything you need to feel at home on your first visit.</p>
+            <div class="visit-actions">
+                <a class="visit-button visit-button--primary" href="https://maps.google.com/?q=135+Whitney+Ave+New+Haven+CT+06510" target="_blank" rel="noopener">
+                    <i class="fas fa-diamond-turn-right"></i> Get Directions
+                </a>
+                <a class="visit-button visit-button--secondary" href="#sunday-plan">See Sunday Schedule</a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="visit-section">
-            <h2>Planning Your First Visits</h2>
-            <p>
-                Below you will find relevant information for planning your first few visits to CPC. We
-                want you to be as comfortable as possible worshiping with us and hope the following helps
-                make your visit logistically smooth and open to knowing our community.
-            </p>
-        </section>
-
-        <section class="visit-section">
-            <h2>Visitor Guide</h2>
-            <ul class="visit-list">
-                <li class="visit-list-item">
-                    <h3>Directions and Time</h3>
-                    <div class="location-grid">
-                        <div>
-                            <p><strong>Address:</strong> 135 Whitney Avenue, New Haven, CT 06510</p>
-                            <p>
-                                We are located next to the Yale School of Management, at the corner of
-                                Whitney Ave. and Bradley St.
-                            </p>
-                            <p>
-                                <strong>Sunday Morning Worship:</strong> We hold one service with communion
-                                at {{ site_content.get('service_worship_time', '10:30am') if site_content is defined else '10:30am' }}.
-                            </p>
-                          
-                            <p>
-                                <a class="visit-link" href="https://maps.google.com/?q=135+Whitney+Ave+New+Haven+CT+06510" target="_blank" rel="noopener">Get directions in Google Maps</a>
-                            </p>
-                        </div>
-                        <div class="map-frame">
-                            <iframe
-                                src="https://www.google.com/maps?q=135+Whitney+Ave+New+Haven+CT+06510&output=embed"
-                                loading="lazy"
-                                referrerpolicy="no-referrer-when-downgrade"
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                    </div>
-                </li>
-                
-                <li style="list-style: none; margin: 1.5rem 0;">
-                    <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                        <img src="https://storage.googleapis.com/cpc-public-website/63.jpg" alt="CPC New Haven Community" loading="lazy" style="width: 100%; height: 300px; object-fit: cover; display: block;">
-                    </div>
-                </li>
-
-                <li class="visit-list-item">
-                    <h3>What to Wear</h3>
-                    <p>
-                        You will find a wide range of attire, from t-shirts and jeans to the occasional
-                        bowtie. Wear what makes you feel comfortable worshiping God.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>Parking</h3>
-                    <p>
-                        There is parking available on our property, however, there is not enough for everyone.
-                        Additional parking can be found on Bradley Street beside our building, on Whitney before
-                        you get to our building coming from Trumbull St./Downtown, and at two Yale parking lots
-                        north of the church on Whitney Ave. Lot 16: Gibbs Lab at Whitney Ave. and Humphrey St.,
-                        and the Whitney Ave. Garage located behind 221 Whitney Ave. For safety, exit our lot
-                        on the Bradley St. side only.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>Worship</h3>
-                    <p>
-                        As you enter the sanctuary, you will be greeted by folks who will hand you a worship
-                        bulletin that will direct you through every step of our service including explanations
-                        of why we are carrying out each element.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>A Safe Place</h3>
-                    <p>
-                        People often tell us that they have found CPC to be a very friendly place (what most
-                        people who stick around will say initially attracted them to come back a second time).
-                        But more than friendly, it is often talked about as a safe place where people can be in
-                        route no matter what the location of your spiritual journey.
-                    </p>
-                    <p>
-                        The spirituality of CPC is very much about grace as this not only makes it okay to be
-                        morally flawed and/or broken in some way, but expected even. There will be people there
-                        that are not yet Christians, people who are Christians and left the church and are
-                        venturing back into the church, and even people who have been going to church for a long
-                        time but are finding that the closer they get to God the more they see how flawed they
-                        are in comparison, and how much more loved and accepted than they ever expected possible
-                        because of what Christ accomplishes for us.
-                    </p>
-                    <p>
-                        So come as you are, both outwardly and inwardly, and let happen what happens. It is safe.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>Children</h3>
-                    <p>
-                        We love our children and enjoy having them in worship. That being said, we do have a
-                        quality and carefully managed childcare located in the children's wing of the church
-                        (at end of foyer) for any and all children who at any time during the service are
-                        getting antsy or are distracting their parents from worship. It is intentionally a
-                        free time for guided play to allow children to release some energy before they rejoin
-                        their parents after the sermon.
-                    </p>
-                    <p>
-                        The booklet "Together in God's Presence: Children and Families Together in Covenant
-                        Worship" explains our philosophy of children in relation to worshiping together with
-                        some very practical ways to help your children experience worship for themselves even
-                        if they do not understand much of it.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>Welcome Cards</h3>
-                    <p>
-                        Please fill out a Welcome Card so that we have an opportunity to greet you and follow up
-                        in case you have any questions. There is space to also include a prayer request or request
-                        to speak to a pastor about a spiritual concern.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>Children's Sunday School and Adult Sunday Studies</h3>
-                    <p>
-                        Before worship during the academic year you are welcome to join us at {{ site_content.get('service_school_time', '9:30am') if site_content is defined else '9:30am' }} for our
-                        School of Discipleship. During this time, children age 2.5 through high school are
-                        invited to participate in age-specific Sunday School classes located throughout the
-                        church building.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>Fellowship Lunch</h3>
-                    <p>
-                        On most Sundays throughout the year our worship service is followed by a shared
-                        fellowship meal at about 12pm. The meal is free to visitors and an enjoyable way to get
-                        to know some people while eating a catered meal.
-                    </p>
-                </li>
-                <li class="visit-list-item">
-                    <h3>Enjoy</h3>
-                    <p>
-                        Please pick up our Welcome Brochure and other materials from the foyer for more information
-                        about our church and programs. Feel free to ask anyone questions about the service, our
-                        programs, our people, or our faith. We are happy to help.
-                    </p>
-                </li>
-            </ul>
-        </section>
+    <div class="visit-quick-grid" aria-label="Visit essentials">
+        <div class="visit-quick"><i class="far fa-clock"></i><span>Worship</span><strong>{{ worship_time if show_worship else 'See schedule' }}</strong></div>
+        <div class="visit-quick"><i class="fas fa-location-dot"></i><span>Location</span><strong>135 Whitney Ave</strong></div>
+        <div class="visit-quick"><i class="fas fa-child-reaching"></i><span>Families</span><strong>Children are welcome</strong></div>
     </div>
+
+    <div class="visit-layout">
+        <div>
+            <section class="visit-panel" id="sunday-plan">
+                <h2>Your Sunday at CPC</h2>
+                <p class="visit-panel__intro">{{ 'Our summer schedule is currently active.' if active_schedule == 'summer' else 'Our regular Sunday schedule is shown below.' }} Times and activity names update directly from the church’s service-times editor.</p>
+                <div class="visit-schedule">
+                    {% if show_prayer %}
+                    <div class="visit-schedule__item"><span class="visit-schedule__time">{{ prayer_time }}</span><span class="visit-schedule__label">{{ site_content.get('service_prayer_label', 'Prayer in the Parlor') }}</span></div>
+                    {% endif %}
+                    {% if show_school %}
+                    <div class="visit-schedule__item"><span class="visit-schedule__time">{{ school_time }}</span><span class="visit-schedule__label">{{ site_content.get('service_school_label', "Children's Sunday School & Adult Sunday Studies") }}</span></div>
+                    {% endif %}
+                    {% if show_worship %}
+                    <div class="visit-schedule__item visit-schedule__item--featured"><span class="visit-schedule__time">{{ worship_time }}</span><span class="visit-schedule__label">{{ site_content.get('service_worship_label', 'Sunday Worship Service') }}</span></div>
+                    {% endif %}
+                    {% if show_fellowship %}
+                    <div class="visit-schedule__item"><span class="visit-schedule__time">{{ fellowship_time }}</span><span class="visit-schedule__label">{{ site_content.get('service_fellowship_label', 'Fellowship Lunch') }}</span></div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="visit-panel">
+                <h2>What to expect</h2>
+                <p class="visit-panel__intro">You don’t need to know the songs, the liturgy, or anyone in the room. Our bulletin guides you through the service, and our welcome team is happy to help.</p>
+                <div class="visit-guide">
+                    <article class="visit-guide__item">
+                        <i class="fas fa-shirt"></i><h3>Wear what’s comfortable</h3>
+                        <p>You’ll see everything from jeans and t-shirts to jackets and bowties.</p>
+                    </article>
+                    <article class="visit-guide__item">
+                        <i class="fas fa-music"></i><h3>Guided worship</h3>
+                        <p>A printed bulletin walks you through every part of the service and explains why we do it.</p>
+                    </article>
+                    <article class="visit-guide__item">
+                        <i class="fas fa-children"></i><h3>Children belong here</h3>
+                        <p>Children are welcome in worship. Carefully managed childcare is also available when your family needs it.</p>
+                    </article>
+                    <article class="visit-guide__item">
+                        <i class="fas fa-utensils"></i><h3>Stay for lunch</h3>
+                        <p>{% if show_fellowship %}Our shared meal is free for visitors and a relaxed way to meet people.{% else %}Ask our welcome team about the next community meal.{% endif %}</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="visit-panel">
+                <h2>A safe place for real people</h2>
+                <p class="visit-panel__intro">People arrive at CPC from many places in their spiritual journeys—curious about Christianity, returning to church, or following Christ for years. We want to be a community where you can be known honestly and encounter the grace of God in Jesus.</p>
+                <p class="visit-note">There is no pressure to have everything figured out. Come, observe, participate as you are comfortable, and let us know how we can serve you.</p>
+            </section>
+        </div>
+
+        <aside class="visit-sidebar">
+            <section class="visit-panel">
+                <h2>Find us</h2>
+                <p class="visit-address">{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</p>
+                <p class="visit-note">At the corner of Whitney Avenue and Bradley Street, next to the Yale School of Management.</p>
+                <iframe class="visit-map" title="Map to CPC New Haven" src="https://www.google.com/maps?q=135+Whitney+Ave+New+Haven+CT+06510&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                <a class="visit-text-link" href="https://maps.google.com/?q=135+Whitney+Ave+New+Haven+CT+06510" target="_blank" rel="noopener">Open in Google Maps →</a>
+            </section>
+            <section class="visit-panel">
+                <h2>Parking</h2>
+                <p class="visit-note">Limited parking is available on site. You can also park on Bradley Street, along Whitney Avenue, at Yale Lot 16 by Gibbs Lab, or in the Whitney Avenue Garage behind 221 Whitney Avenue.</p>
+                <p class="visit-note"><strong>For safety:</strong> exit the church lot on the Bradley Street side.</p>
+            </section>
+        </aside>
+    </div>
+
+    <section class="visit-panel visit-welcome">
+        <h2>We’d love to welcome you.</h2>
+        <p>Have a question before Sunday? Reach out and someone from CPC will be glad to help.</p>
+        <a class="visit-button visit-button--primary" href="{{ url_for('contact') }}">Ask a Question</a>
+    </section>
 </div>
 {% endblock %}

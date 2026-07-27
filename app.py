@@ -493,19 +493,20 @@ SUBPAGE_CONFIGS = {
         'color': '#0071e3',
         'keys': [
             # Mode control (rendered as quick-switch buttons in admin UI)
-            ('schedule_mode', 'Schedule Mode', 'regular', 'text'),
+            ('schedule_mode', 'Schedule Mode', 'auto', 'text'),
             ('summer_start_month', 'Summer: Start Month (1-12)', '6', 'text'),
             ('summer_end_month', 'Summer: End Month (1-12)', '8', 'text'),
-            ('summer_worship_only', 'Summer: Worship-Only (True/False)', 'False', 'text'),
+            ('summer_end_day', 'Summer: Last Day', '22', 'text'),
+            ('summer_worship_only', 'Summer: Worship-Only (True/False)', 'True', 'text'),
             # Regular schedule
-            ('service_prayer_time', '[REGULAR] Prayer', '', 'text'),
-            ('service_school_time', '[REGULAR] Sunday School', '', 'text'),
-            ('service_worship_time', '[REGULAR] Worship', '', 'text'),
-            ('service_fellowship_time', '[REGULAR] Fellowship', '', 'text'),
+            ('service_prayer_time', '[REGULAR] Prayer', '8:30am', 'text'),
+            ('service_school_time', '[REGULAR] Sunday School', '9:30am', 'text'),
+            ('service_worship_time', '[REGULAR] Worship', '10:30am', 'text'),
+            ('service_fellowship_time', '[REGULAR] Fellowship', '12:00pm', 'text'),
             # Summer schedule
             ('service_summer_prayer_time', '[SUMMER] Prayer', '', 'text'),
             ('service_summer_school_time', '[SUMMER] Sunday School', '', 'text'),
-            ('service_summer_worship_time', '[SUMMER] Worship', '', 'text'),
+            ('service_summer_worship_time', '[SUMMER] Worship', '10:30am', 'text'),
             ('service_summer_fellowship_time', '[SUMMER] Fellowship', '', 'text'),
             # Slot descriptions
             ('service_prayer_label', 'Label: Prayer', 'Prayer in the Parlor', 'text'),
@@ -590,6 +591,53 @@ SUBPAGE_CONFIGS = {
     }
 }
 
+def get_site_content():
+    """Return editable site content with the admin editor defaults applied.
+
+    The editor displays defaults for rows that have not been saved yet. Public
+    pages need the same fallback behavior so a fresh database does not render
+    empty service schedules.
+    """
+    content = {r.key: r.value for r in SiteContent.query.all()}
+    for config in SUBPAGE_CONFIGS.values():
+        for item in config.get('keys', []):
+            key, default = item[0], item[2]
+            if not content.get(key):
+                content[key] = default
+    return content
+
+def resolve_active_schedule(site_content, today=None):
+    """Resolve the public schedule, including the exact summer cutoff day."""
+    mode = (site_content.get('schedule_mode') or 'auto').strip().lower()
+    if mode == 'summer':
+        return 'summer'
+    if mode == 'regular':
+        return 'regular'
+    if mode != 'auto':
+        return 'regular'
+
+    today = today or datetime.now().date()
+    try:
+        start_month = int(site_content.get('summer_start_month') or 6)
+        end_month = int(site_content.get('summer_end_month') or 8)
+        end_day = int(site_content.get('summer_end_day') or 22)
+        summer_start = date(today.year, start_month, 1)
+        summer_end = date(today.year, end_month, end_day)
+        return 'summer' if summer_start <= today <= summer_end else 'regular'
+    except (ValueError, TypeError):
+        return 'regular'
+
+def get_regular_schedule_resume_label(site_content):
+    """Return the day after the configured summer cutoff for public copy."""
+    try:
+        year = datetime.now().year
+        end_month = int(site_content.get('summer_end_month') or 8)
+        end_day = int(site_content.get('summer_end_day') or 22)
+        resume_date = date(year, end_month, end_day) + timedelta(days=1)
+        return resume_date.strftime('%B %d').replace(' 0', ' ')
+    except (ValueError, TypeError):
+        return 'August 23'
+
 @app.route('/admin/subpage-edit/', methods=['GET', 'POST'])
 def admin_subpage_edit():
     """Unified admin page to edit various subpage contents."""
@@ -672,7 +720,7 @@ def podcasts():
 
 @app.route('/events')
 def events():
-    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    site_content = get_site_content()
     return render_template('events.html', site_content=site_content)
 
 @app.route('/announcements')
@@ -713,7 +761,7 @@ def lifegroups():
 
 @app.route('/sundays')
 def sundays():
-    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    site_content = get_site_content()
     return render_template('sundays.html', site_content=site_content)
 
 @app.route('/display')
@@ -755,7 +803,7 @@ def display():
 
 @app.route('/plan-a-visit')
 def plan_a_visit():
-    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    site_content = get_site_content()
     return render_template('plan-a-visit.html', site_content=site_content)
 
 @app.route('/give')
@@ -2693,25 +2741,15 @@ def inject_current_user_metadata():
 def inject_site_content():
     """Expose editable site content and active schedule mode globally to all templates."""
     try:
-        sc = {r.key: r.value for r in SiteContent.query.all()}
+        sc = get_site_content()
     except Exception:
         sc = {}
 
-    mode = (sc.get('schedule_mode') or 'regular').strip().lower()
-    if mode == 'auto':
-        month = datetime.utcnow().month
-        try:
-            start = int(sc.get('summer_start_month') or 6)
-            end   = int(sc.get('summer_end_month')   or 8)
-            active_schedule = 'summer' if start <= month <= end else 'regular'
-        except (ValueError, TypeError):
-            active_schedule = 'regular'
-    elif mode == 'summer':
-        active_schedule = 'summer'
-    else:
-        active_schedule = 'regular'
-
-    return {'site_content': sc, 'active_schedule': active_schedule}
+    return {
+        'site_content': sc,
+        'active_schedule': resolve_active_schedule(sc),
+        'regular_schedule_resume_label': get_regular_schedule_resume_label(sc),
+    }
 
 def require_auth(f):
     """Decorator to require authentication"""
