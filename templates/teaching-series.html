@@ -828,21 +828,22 @@
         margin: 0;
     }
 
-    .belief-bridge__list {
+    .belief-bridge__lessons {
+        display: grid;
+        gap: 0;
         margin: 1.5rem 0;
+        padding: 0;
+        list-style: none;
         border-top: 1px solid var(--series-border);
     }
 
-    .belief-bridge__item {
-        display: grid;
-        grid-template-columns: minmax(150px, .38fr) minmax(0, 1fr);
-        gap: clamp(1rem, 4vw, 2.5rem);
-        padding: 1rem 0;
+    .belief-bridge__lessons li {
+        color: var(--series-text);
+        font-size: .92rem;
+        line-height: 1.55;
+        padding: .8rem 0;
         border-bottom: 1px solid var(--series-border);
     }
-
-    .belief-bridge__item strong { color: var(--series-text); }
-    .belief-bridge__item span { color: var(--series-muted); line-height: 1.6; }
 
     .belief-bridge__link {
         display: inline-flex;
@@ -870,7 +871,6 @@
         .filter-sidebar { grid-template-columns: 1fr; }
         .category-header { align-items: flex-start; gap: .75rem; }
         .series-header { gap: .75rem; }
-        .belief-bridge__item { grid-template-columns: 1fr; gap: .3rem; }
     }
 </style>
 {% endblock %}
@@ -928,31 +928,12 @@
             </div>
 
             <section class="belief-bridge">
-                <div class="belief-bridge__kicker">The convictions behind our teaching</div>
-                <h2>What We Believe</h2>
-                <p class="belief-bridge__lede">We are called to know God personally, not merely know about him. That conviction shapes the way we teach Scripture, talk about grace, worship together, and form disciples.</p>
-                <div class="belief-bridge__list">
-                    <div class="belief-bridge__item">
-                        <strong>Scripture</strong>
-                        <span>The Bible is our final authority, shaping both doctrine and daily life.</span>
-                    </div>
-                    <div class="belief-bridge__item">
-                        <strong>Grace</strong>
-                        <span>We are accepted by God through faith in the perfect and sufficient work of Christ, not our own performance.</span>
-                    </div>
-                    <div class="belief-bridge__item">
-                        <strong>Worship</strong>
-                        <span>Christ is present with his gathered people through Word, sacrament, and prayer.</span>
-                    </div>
-                    <div class="belief-bridge__item">
-                        <strong>Church &amp; Mission</strong>
-                        <span>The gospel welcomes every culture and sends the church into New Haven and beyond.</span>
-                    </div>
-                    <div class="belief-bridge__item">
-                        <strong>Christian Calling</strong>
-                        <span>Faith shapes family, church, vocation, and public life—not Sunday alone.</span>
-                    </div>
-                </div>
+                <div class="belief-bridge__kicker">Adult studies curriculum</div>
+                <h2>What We Believe: Overall Schedule &amp; Lessons</h2>
+                <p class="belief-bridge__lede">This course walks through the historic Christian faith, connecting doctrine with worship, discipleship, and everyday life.</p>
+                <ul class="belief-bridge__lessons">
+                    {% include 'partials/what_we_believe_lessons.html' %}
+                </ul>
                 <a class="belief-bridge__link" href="{{ url_for('what_we_believe') }}">Explore What We Believe →</a>
             </section>
         </div>
