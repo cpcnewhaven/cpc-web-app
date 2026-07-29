@@ -22,66 +22,51 @@
 
     /* Hero Section */
     .about-hero {
-        position: relative;
-        height: 78vh;
-        min-height: 480px;
+        max-width: 1120px;
+        min-height: 440px;
         display: flex;
         align-items: flex-end;
-        justify-content: center;
-        text-align: center;
+        position: relative;
         overflow: hidden;
-        margin-bottom: 0;
-    }
-
-    .about-hero::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/%5BFEATURED%20IMAGE%5D%5BABOUT%20PAGE%5D%5BDrone%20Shot%5D-1.jpg');
-        background-size: cover;
-        background-position: center;
-        z-index: -2;
-    }
-
-    .about-hero::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(9,32,58,.35) 0%, rgba(9,32,58,.55) 55%, #0a3d75 100%);
-        z-index: -1;
-        pointer-events: none;
+        border-radius: 18px;
+        margin: 0 auto 1.25rem;
+        background:
+            linear-gradient(90deg, rgba(0, 25, 62, .94) 0%, rgba(0, 38, 88, .78) 55%, rgba(0, 24, 60, .35) 100%),
+            url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/%5BFEATURED%20IMAGE%5D%5BABOUT%20PAGE%5D%5BDrone%20Shot%5D-1.jpg') center/cover no-repeat;
+        border: 1px solid rgba(255, 255, 255, .13);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, .22);
     }
 
     .about-hero-content {
-        position: relative;
-        z-index: 1;
-        padding: 0 24px 64px;
-        max-width: 780px;
+        max-width: 680px;
+        padding: clamp(2rem, 6vw, 4.5rem);
+    }
+
+    .about-hero-eyebrow {
+        color: #9bc7ff;
+        font-family: 'Manrope', var(--font-primary);
+        font-size: .78rem;
+        font-weight: 800;
+        letter-spacing: .14em;
+        text-transform: uppercase;
     }
 
     .about-hero h1 {
+        color: #fff;
         font-family: 'Manrope', var(--font-primary);
-        font-size: clamp(2rem, 8vw, 3.2rem);
-        font-weight: 800;
-        color: white;
-        margin: 0 0 16px 0;
-        text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
-        line-height: 1.2;
+        font-size: clamp(2.6rem, 7vw, 5.2rem);
+        font-weight: 750;
+        line-height: .98;
+        letter-spacing: -.05em;
+        margin: .7rem 0 1rem;
     }
 
     .about-hero p {
-        font-size: clamp(1rem, 2vw, 1.15rem);
-        color: rgba(255, 255, 255, 0.9);
-        max-width: 620px;
-        margin: 0 auto 28px;
-        line-height: 1.6;
-    }
-
-    .about-hero-ctas {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: center;
+        color: rgba(255, 255, 255, .84);
+        font-size: clamp(1rem, 2vw, 1.22rem);
+        line-height: 1.65;
+        max-width: 590px;
+        margin: 0;
     }
 
     /* Pull Quote Card */
@@ -606,9 +591,10 @@
     <!-- Hero Section -->
     <section class="about-hero">
         <div class="about-hero-content">
+            <div class="about-hero-eyebrow">Who we are</div>
             <h1>You are welcome here</h1>
-            <p>A community in New Haven growing in the grace of Jesus Christ, acting as faithful witnesses, and trusting in the Holy Spirit — together.</p>
-            <div class="about-hero-ctas">
+            <p>A church family in New Haven growing in the grace of Jesus Christ, acting as faithful witnesses, and trusting in the Holy Spirit together.</p>
+            <div class="hero-actions about-hero-ctas">
                 <a href="{{ url_for('plan_a_visit') }}" class="btn btn-primary btn-lg">Plan Your Visit</a>
                 <a href="{{ url_for('live') }}" class="btn btn-glass btn-lg">Watch Live</a>
             </div>
@@ -821,7 +807,7 @@
         </div>
     </section>
 
-    <!-- Photo Gallery -->
+    {# Photo Gallery temporarily disabled
     <section class="about-section-container">
         <div class="section-header">
             <div class="section-kicker">Moments</div>
@@ -835,6 +821,7 @@
             <div class="gallery-image"><!-- Image placeholder: Community event --></div>
         </div>
     </section>
+    #}
 
     <!-- Closing CTA -->
     <section class="closing-cta">
