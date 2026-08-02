@@ -1002,7 +1002,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const urlIsAudio = sermon.url && AUDIO_RE.test(sermon.url);
             const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
             const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
-                                     (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
                                      (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
 
             card.innerHTML = `
