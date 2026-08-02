@@ -981,19 +981,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // HTML-escape helper for data attribute values
     function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
 
-    function getAudioSrc(sermon) {
-        const AUDIO_RE = /\.(mp3|m4a|ogg|wav|aac)(\?|$)/i;
-        const directAudio = sermon.audio_file_url || sermon.audio_file || '';
-        if (directAudio) return directAudio;
-        return sermon.url && AUDIO_RE.test(sermon.url) ? sermon.url : null;
-    }
-
-    function hasStreamingLinks(sermon) {
-        return (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
-               (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
-               (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
-    }
-
     function renderCardView() {
         const container = document.getElementById('sermonResults');
         document.getElementById('sermonTable').style.display = 'none';
@@ -1057,24 +1044,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <i class="fab fa-apple"></i> Apple
                                 </a>
                             ` : ''}
-                            ${audioSrc && !hasLinks ? `
+                            ${audioSrc && !hasStreamingLinks ? `
                                 <button class="btn-play-mp3"
                                     data-play-audio="${esc(audioSrc)}"
                                     data-play-title="${esc(sermon.title)}"
                                     data-play-img="${esc(sermon.thumbnail || '')}"
                                     data-play-subtitle="${esc(sermon.speaker || '')}">
-                                    <i class="fas fa-play"></i> Play MP3
+                                    <i class="fas fa-play"></i> Play
                                 </button>
                                 <a href="${esc(audioSrc)}" download class="btn-download-mp3" title="Download sermon audio">
                                     <i class="fas fa-download"></i> Download
                                 </a>
                             ` : ''}
-                            ${!hasLinks && !audioSrc && sermon.url ? `
+                            ${!hasStreamingLinks && !audioSrc && sermon.url ? `
                                 <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play">
                                     <i class="fas fa-play"></i> Listen
                                 </a>
                             ` : ''}
-                            ${!sermon.url && !audioSrc ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
+                            ${!sermon.url && !hasMP3 ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
                         </div>
                     `}
                 </div>
@@ -1097,8 +1084,13 @@ document.addEventListener('DOMContentLoaded', function() {
         filteredSermons.forEach(sermon => {
             const tr = document.createElement('tr');
             const isUpcoming = sermon._nextUpcoming === true;
-            const audioSrc = getAudioSrc(sermon);
-            const hasLinks = hasStreamingLinks(sermon);
+            const AUDIO_RE = /\.(mp3|m4a|ogg|wav|aac)(\?|$)/i;
+            const hasAudio = !!sermon.audio_file_url;
+            const urlIsAudio = sermon.url && AUDIO_RE.test(sermon.url);
+            const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
+            const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
+                                     (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
+                                     (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
 
             tr.innerHTML = `
                 <td>${formatDate(sermon.date)}</td>
@@ -1126,19 +1118,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fab fa-apple"></i> Apple
                             </a>
                         ` : ''}
-                        ${audioSrc && !hasLinks ? `
+                        ${audioSrc && !hasStreamingLinks ? `
                             <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;"
                                 data-play-audio="${esc(audioSrc)}"
                                 data-play-title="${esc(sermon.title)}"
                                 data-play-img="${esc(sermon.thumbnail || '')}"
                                 data-play-subtitle="${esc(sermon.speaker || '')}">
-                                <i class="fas fa-play"></i> Play MP3
+                                <i class="fas fa-play"></i> Play
                             </button>
                             <a href="${esc(audioSrc)}" download class="btn-download-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;" title="Download sermon audio">
                                 <i class="fas fa-download"></i> Download
                             </a>
                         ` : ''}
-                        ${!hasLinks && !audioSrc && sermon.url ? `
+                        ${!hasStreamingLinks && !audioSrc && sermon.url ? `
                              <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Listen">
                                 <i class="fas fa-play"></i> Listen
                             </a>
@@ -1459,10 +1451,7 @@ window.sermonData = function() {
                 const linksCell = document.createElement('td');
                 linksCell.className = 'sermon-links';
 
-                const audioSrc = getAudioSrc(sermon);
-                const hasLinks = hasStreamingLinks(sermon);
-
-                if (hasLinks) {
+                if (sermon.spotify_url || sermon.youtube_url) {
                     const dropdown = document.createElement('div');
                     dropdown.className = 'sermon-play-dropdown';
 
@@ -1501,24 +1490,6 @@ window.sermonData = function() {
 
                     dropdown.appendChild(menu);
                     linksCell.appendChild(dropdown);
-                } else if (audioSrc) {
-                    const playButton = document.createElement('button');
-                    playButton.className = 'btn-play-mp3';
-                    playButton.type = 'button';
-                    playButton.innerHTML = '<i class="fas fa-play"></i> Play MP3';
-                    playButton.dataset.playAudio = audioSrc;
-                    playButton.dataset.playTitle = sermon.title || 'Untitled';
-                    playButton.dataset.playImg = sermon.thumbnail || '';
-                    playButton.dataset.playSubtitle = sermon.speaker || '';
-                    linksCell.appendChild(playButton);
-
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = audioSrc;
-                    downloadLink.download = '';
-                    downloadLink.className = 'btn-download-mp3';
-                    downloadLink.title = 'Download sermon audio';
-                    downloadLink.innerHTML = '<i class="fas fa-download"></i> Download';
-                    linksCell.appendChild(downloadLink);
                 } else {
                     const span = document.createElement('span');
                     span.style.color = 'rgba(255,255,255,0.5)';

@@ -1485,7 +1485,6 @@ def api_sermons():
                 'podcast-thumbnail_url': s.podcast_thumbnail_url or '',
                 'episode': s.episode_number,
                 'audio_file': s.audio_file_url,
-                'audio_file_url': s.audio_file_url or '',
                 'video_file': s.video_file_url,
             }
             if s.series:
