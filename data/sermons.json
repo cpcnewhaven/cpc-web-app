@@ -3,8 +3,8 @@
   "description": "Weekly sermons from our Sunday worship services",
   "_year_counts": {
     "2026": {
-      "count": 23,
-      "note": "23 sermons from 2026"
+      "count": 25,
+      "note": "25 sermons from 2026"
     },
     "2025": {
       "count": 116,
@@ -43,7 +43,7 @@
       "note": "11 sermons from 2002"
     }
   },
-  "_total_sermons": 588,
+  "_total_sermons": 590,
   "_organized_by": "year (oldest to newest)",
   "_note": "Scroll through 'sermons_by_year' to see sermons organized by year. The 'sermons' array at the end is for API compatibility.",
   "sermons_by_year": {
@@ -12072,6 +12072,50 @@
     ],
     "2026": [
       {
+        "id": "26-08-03",
+        "title": "The Darkness of Christ | The Sunday Sermon | Psalm 88: 1-18 | Rev. Craig Luekens",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Psalm 88: 1-18",
+        "date": "2026-08-03",
+        "apple_podcasts_url": "",
+        "spotify_url": "https://open.spotify.com/episode/1dmAIRmuJMsrJ1FWRJzUUi?si=h8Sfe5qxSuWwbWE0Qs0NjA",
+        "link": "https://open.spotify.com/episode/1dmAIRmuJMsrJ1FWRJzUUi?si=h8Sfe5qxSuWwbWE0Qs0NjA",
+        "podcast_thumbnail_url": "",
+        "youtube_url": "",
+        "source": "anchor",
+        "original_id": "77a0acad-f995-49e0-85ac-f975fe46c021",
+        "series": "The Sunday Sermon",
+        "episode_title": "The Darkness of Christ | The Sunday Sermon | Psalm 88: 1-18 | Rev. Craig Luekens",
+        "guest_speaker": "",
+        "sermon_type": "sermon",
+        "tags": [
+          "The Sunday Sermon"
+        ],
+        "search_keywords": "the darkness of christ | the sunday sermon | psalm 88: 1-18 | rev. craig luekens"
+      },
+      {
+        "id": "26-07-27",
+        "title": "Crying Out in Christ | The Sunday Sermon | Psalm 55:1-23 | Rev. Craig Luekens",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Psalm 55:1-23",
+        "date": "2026-07-27",
+        "apple_podcasts_url": "",
+        "spotify_url": "https://open.spotify.com/episode/4ITJ9Q04dbHKrGunYdRtiF?si=lYqyK08WRUeRL5v4VXFHhA",
+        "link": "https://open.spotify.com/episode/4ITJ9Q04dbHKrGunYdRtiF?si=lYqyK08WRUeRL5v4VXFHhA",
+        "podcast_thumbnail_url": "",
+        "youtube_url": "",
+        "source": "anchor",
+        "original_id": "61316367-4a3d-4ac8-a69e-378e63331a43",
+        "series": "The Sunday Sermon",
+        "episode_title": "Crying Out in Christ | The Sunday Sermon | Psalm 55:1-23 | Rev. Craig Luekens",
+        "guest_speaker": "",
+        "sermon_type": "sermon",
+        "tags": [
+          "The Sunday Sermon"
+        ],
+        "search_keywords": "crying out in christ | the sunday sermon | psalm 55:1-23 | rev. craig luekens"
+      },
+      {
         "id": "26-03-17",
         "title": "God or Money: Choose One | Luke 16: 1-31 | Rev. Craig Luekens",
         "author": "Rev. Craig Luekens",
@@ -12583,6 +12627,50 @@
     ]
   },
   "sermons": [
+    {
+      "id": "26-08-03",
+      "title": "The Darkness of Christ | The Sunday Sermon | Psalm 88: 1-18 | Rev. Craig Luekens",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Psalm 88: 1-18",
+      "date": "2026-08-03",
+      "apple_podcasts_url": "",
+      "spotify_url": "https://open.spotify.com/episode/1dmAIRmuJMsrJ1FWRJzUUi?si=h8Sfe5qxSuWwbWE0Qs0NjA",
+      "link": "https://open.spotify.com/episode/1dmAIRmuJMsrJ1FWRJzUUi?si=h8Sfe5qxSuWwbWE0Qs0NjA",
+      "podcast_thumbnail_url": "",
+      "youtube_url": "",
+      "source": "anchor",
+      "original_id": "77a0acad-f995-49e0-85ac-f975fe46c021",
+      "series": "The Sunday Sermon",
+      "episode_title": "The Darkness of Christ | The Sunday Sermon | Psalm 88: 1-18 | Rev. Craig Luekens",
+      "guest_speaker": "",
+      "sermon_type": "sermon",
+      "tags": [
+        "The Sunday Sermon"
+      ],
+      "search_keywords": "the darkness of christ | the sunday sermon | psalm 88: 1-18 | rev. craig luekens"
+    },
+    {
+      "id": "26-07-27",
+      "title": "Crying Out in Christ | The Sunday Sermon | Psalm 55:1-23 | Rev. Craig Luekens",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Psalm 55:1-23",
+      "date": "2026-07-27",
+      "apple_podcasts_url": "",
+      "spotify_url": "https://open.spotify.com/episode/4ITJ9Q04dbHKrGunYdRtiF?si=lYqyK08WRUeRL5v4VXFHhA",
+      "link": "https://open.spotify.com/episode/4ITJ9Q04dbHKrGunYdRtiF?si=lYqyK08WRUeRL5v4VXFHhA",
+      "podcast_thumbnail_url": "",
+      "youtube_url": "",
+      "source": "anchor",
+      "original_id": "61316367-4a3d-4ac8-a69e-378e63331a43",
+      "series": "The Sunday Sermon",
+      "episode_title": "Crying Out in Christ | The Sunday Sermon | Psalm 55:1-23 | Rev. Craig Luekens",
+      "guest_speaker": "",
+      "sermon_type": "sermon",
+      "tags": [
+        "The Sunday Sermon"
+      ],
+      "search_keywords": "crying out in christ | the sunday sermon | psalm 55:1-23 | rev. craig luekens"
+    },
     {
       "id": "26-03-17",
       "title": "God or Money: Choose One | Luke 16: 1-31 | Rev. Craig Luekens",
