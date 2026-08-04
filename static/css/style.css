@@ -32,6 +32,8 @@
     --cpc-blue-dark: #003d7a;
     --cpc-blue-light: #e8f2ff;
     --cpc-blue-medium: #0066cc;
+    --accent-gold: #c99a3a;
+    --accent-gold-light: rgba(201, 154, 58, 0.16);
 
     /* Glass Effects - More refined */
     --glass-bg: rgba(0, 60, 130, 0.22);
@@ -89,8 +91,8 @@
     --sidebar-title-color: #c3daf7;
 
     /* About page redesign tokens */
-    --accent-warm: #e3bd7d;
-    --accent-warm-light: rgba(227, 189, 125, 0.15);
+    --accent-warm: var(--accent-gold);
+    --accent-warm-light: var(--accent-gold-light);
     --quote-card-bg: linear-gradient(135deg, #fbf7ee, #f4ede0);
     --quote-card-border: #ece2cc;
     --quote-card-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
@@ -104,6 +106,8 @@ body.theme-white {
     --cpc-blue-dark: #003d7a;
     --cpc-blue-light: #e8f2ff;
     --cpc-blue-medium: #0066cc;
+    --accent-gold: #c99a3a;
+    --accent-gold-light: rgba(201, 154, 58, 0.16);
 
     /* Glass Effects - White theme */
     --glass-bg: rgba(255, 255, 255, 0.85);
@@ -139,8 +143,8 @@ body.theme-white {
     --sidebar-title-color: #0d355f;
 
     /* About page redesign tokens - white theme */
-    --accent-warm: #d4a574;
-    --accent-warm-light: rgba(212, 165, 116, 0.15);
+    --accent-warm: var(--accent-gold);
+    --accent-warm-light: var(--accent-gold-light);
     --quote-card-bg: linear-gradient(135deg, #fef9f5, #f9f0e8);
     --quote-card-border: #e8dcc8;
     --quote-card-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
@@ -150,6 +154,17 @@ body.theme-white {
 
 body.theme-white {
     background: var(--bg-gradient);
+    color: var(--text-primary);
+}
+
+/* Brand selection highlight: CPC gold instead of browser pink */
+::selection {
+    background: var(--accent-gold-light);
+    color: var(--text-primary);
+}
+
+::-moz-selection {
+    background: var(--accent-gold-light);
     color: var(--text-primary);
 }
 
@@ -272,12 +287,46 @@ body.theme-white .footer-ticker {
     border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
+body.theme-white .footer-ticker .ticker-item {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* White theme footer should remain a dark footer with light copy */
+body.theme-white footer {
+    background: rgba(0, 20, 60, 0.9) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+body.theme-white footer p,
+body.theme-white footer span,
+body.theme-white footer a,
+body.theme-white footer i {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+body.theme-white footer a:hover {
+    color: #ffffff !important;
+}
+
+body.theme-white footer [style*="color:var(--surface-text)"] {
+    color: #ffffff !important;
+}
+
+body.theme-white footer [style*="color:var(--surface-muted)"] {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+
 body.theme-white .ticker-item {
     color: var(--text-primary) !important;
 }
 
 body.theme-white .footer-meta {
     color: var(--text-primary) !important;
+}
+
+body.theme-white .footer-status-bar,
+body.theme-white .footer-status-bar-inner {
+    color: rgba(255, 255, 255, 0.88) !important;
 }
 
 @keyframes cpcpulse {
@@ -513,6 +562,11 @@ body.theme-white .pull-quote .quote-text {
 body.theme-white .section-dark .pull-quote .quote-sub,
 body.theme-white .pull-quote .quote-sub {
     color: #555 !important;
+}
+
+body.theme-white .mark-card h3 {
+    color: var(--cpc-blue-dark) !important;
+    opacity: 1 !important;
 }
 
 /* Events list */
@@ -1182,9 +1236,10 @@ body.ticker-hidden {
 }
 
 .footer-status-bar-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 10px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 14px;
     min-height: 34px;
     display: flex;
     align-items: center;
@@ -1197,6 +1252,11 @@ body.ticker-hidden {
 @media (max-width: 767px) {
     .footer-status-bar {
         padding-bottom: env(safe-area-inset-bottom);
+    }
+    .footer-status-bar-inner {
+        padding: 0 10px;
+        gap: 8px;
+        font-size: 11px;
     }
 }
 

@@ -889,15 +889,18 @@ def pastors_book():
 
 @app.route('/media')
 def media():
-    return render_template('media.html')
+    site_content = get_site_content()
+    return render_template('media.html', site_content=site_content)
 
 @app.route('/gallery')
 def gallery():
-    return redirect(url_for('media', view='gallery'))
+    site_content = get_site_content()
+    return render_template('gallery.html', site_content=site_content)
 
 @app.route('/yearbook')
 def yearbook():
-    return redirect(url_for('media', view='yearbook'))
+    site_content = get_site_content()
+    return render_template('yearbook.html', site_content=site_content)
 
 
 @app.route('/newsletter')
@@ -933,9 +936,11 @@ def sitemap():
         ('/sermons', '0.9', 'weekly'),
         ('/teaching-series', '0.8', 'weekly'),
         ('/podcasts', '0.8', 'weekly'),
+        ('/media', '0.8', 'monthly'),
         ('/community', '0.8', 'weekly'),
         ('/events', '0.8', 'weekly'),
         ('/gallery', '0.7', 'monthly'),
+        ('/yearbook', '0.7', 'monthly'),
         ('/lifegroups', '0.7', 'monthly'),
         ('/resources', '0.7', 'monthly'),
         ('/about', '0.7', 'monthly'),

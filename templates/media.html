@@ -1,962 +1,517 @@
 {% extends "base.html" %}
 
-{% block title %}Media - CPC New Haven{% endblock %}
-{% block meta_description %}Browse the CPC New Haven photo gallery and digital yearbook — moments of faith, fellowship, and celebration.{% endblock %}
-{% block og_title %}Media Gallery & Yearbook — CPC New Haven{% endblock %}
-{% block og_description %}Browse the CPC New Haven photo gallery and digital yearbook — moments of faith, fellowship, and celebration.{% endblock %}
-{% block og_image %}https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg{% endblock %}
+{% block title %}Media Hub - CPC New Haven{% endblock %}
+{% block meta_description %}Browse sermons, podcasts, teaching series, photo archives, and pastor teaching resources from CPC New Haven.{% endblock %}
+{% block og_title %}Media Hub - CPC New Haven{% endblock %}
+{% block og_description %}Browse sermons, podcasts, teaching series, photo archives, and pastor teaching resources from CPC New Haven.{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/media{% endblock %}
 
 {% block head %}
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 .media-page {
-    min-height: calc(100vh - 200px);
-    padding: 0;
-    margin: 0;
+    padding: 0 0 3rem;
 }
 
 .media-hero {
-    padding: 2.5rem 1rem;
-    text-align: center;
-    margin-bottom: 0.75rem;
-    background: linear-gradient(135deg, rgba(0, 40, 100, 0.72), rgba(0, 30, 80, 0.80)),
-                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    padding: 2.5rem 1.5rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background:
+        linear-gradient(135deg, rgba(0, 42, 94, 0.88), rgba(0, 74, 145, 0.66)),
+        url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+}
+
+.media-page .compact-hero {
+    text-align: left;
+    margin-bottom: 1.1rem;
+}
+
+.media-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto -10% -45% auto;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(155, 199, 255, 0.28), rgba(155, 199, 255, 0));
+    pointer-events: none;
+}
+
+.media-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 1rem;
 }
 
 .media-hero h1 {
-    font-size: 2rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.4rem 0;
-    font-weight: 700;
     font-family: 'Manrope', sans-serif;
+    font-size: clamp(2.35rem, 4.15vw, 4.15rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    font-weight: 800;
+    margin: 0 0 1rem 0;
+    color: #ffffff !important;
+    max-width: 12ch;
 }
 
 .media-hero p {
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 0.95rem;
-    margin: 0 0 0.75rem 0;
+    max-width: 62ch;
+    font-family: 'Barlow', sans-serif;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 1.1rem;
+    line-height: 1.65;
+    margin: 0 0 1.25rem 0;
+    font-weight: 400;
 }
 
-.hero-stats {
+.media-actions {
     display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
-.stat {
+.media-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.82rem 1.05rem;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.media-btn:hover {
+    transform: translateY(-1px);
+}
+
+.media-btn.primary {
+    background: #fff;
+    color: #0b3f78;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.16);
+}
+
+.media-btn.secondary {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.11);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.media-panel {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.15rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    backdrop-filter: blur(18px);
+}
+
+.media-panel h2 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.media-panel-card {
+    padding: 1rem;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.media-panel-card .label {
     color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    margin-bottom: 0.35rem;
 }
 
-.media-nav {
-    margin-bottom: 0.75rem;
+.media-panel-card h3 {
+    margin: 0 0 0.45rem 0;
+    font-family: 'Manrope', sans-serif;
+    color: #fff;
+    font-size: 1.08rem;
+    font-weight: 700;
 }
 
-.media-nav .container {
-    max-width: 100%;
-    padding: 0 0.75rem;
+.media-panel-card p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 0.94rem;
+    line-height: 1.5;
 }
 
-.media-tabs {
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+    align-items: stretch;
+}
+
+.media-card {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto auto auto 1fr;
+    gap: 0.6rem;
+    min-height: 0;
+    padding: 0.95rem;
+    border-radius: 18px;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(0, 82, 163, 0.08);
+    box-shadow: 0 14px 34px rgba(4, 27, 55, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.media-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 42px rgba(4, 27, 55, 0.14);
+    border-color: rgba(0, 82, 163, 0.18);
+}
+
+.media-card-thumb {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 0.15rem;
+    background: linear-gradient(135deg, rgba(0, 82, 163, 0.14), rgba(0, 112, 255, 0.08));
+    border: 1px solid rgba(0, 82, 163, 0.08);
+    flex-shrink: 0;
+}
+
+.media-card-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--thumb-image, none);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.95;
+}
+
+.media-card-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(0, 41, 87, 0.14));
+}
+
+.media-card-icon-overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
-    gap: 0.5rem;
+    align-items: center;
     justify-content: center;
+    z-index: 1;
+    color: rgba(255, 255, 255, 0.96);
+    font-size: 1.9rem;
+    text-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-.media-tab {
+.media-card-icon {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(0, 82, 163, 0.14), rgba(0, 112, 255, 0.08));
+    color: #0052a3;
+    font-size: 1rem;
+    margin-bottom: 0.9rem;
+}
+
+.media-card h3 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: #0f355f;
+}
+
+.media-card p {
+    margin: 0;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.95rem;
+    color: rgba(31, 41, 55, 0.82);
+    line-height: 1.6;
+}
+
+.media-card .media-card-link {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.45rem 0.9rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-}
-
-.media-tab.active,
-.media-tab:hover {
-    background: rgba(0, 122, 255, 0.35);
-    border-color: rgba(0, 122, 255, 0.6);
-    color: #fff;
-}
-
-.media-section {
-    display: none;
-}
-
-.media-section.active {
-    display: block;
-}
-
-.year-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0.75rem 0;
-}
-
-.year-tab {
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-}
-
-.year-tab:hover,
-.year-tab.active {
-    background: rgba(0, 122, 255, 0.35);
-    border-color: rgba(0, 122, 255, 0.6);
-    color: #fff;
-}
-
-/* Yearbook Specific Styling */
-.gallery-grid.yearbook {
-    display: block;
-    padding: 1rem 0;
-}
-
-.yearbook-year {
-    margin-bottom: 2rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 1rem;
-}
-
-.yearbook-year-title {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 2.5rem;
-    color: var(--primary-light, #60a5fa);
-    margin-bottom: 1.5rem;
+    color: #0052a3;
     font-weight: 700;
-}
-
-.yearbook-month {
-    margin-bottom: 2rem;
-    margin-left: 1rem;
-}
-
-.yearbook-month-title {
     font-family: 'Manrope', sans-serif;
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+    margin-top: auto;
+}
+
+.media-section-heading {
+    margin: 2rem 0 1rem;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.media-section-heading h2 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
     font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    color: var(--surface-text);
 }
 
-.yearbook-month-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.2), transparent);
-}
-
-.yearbook-photos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-}
-
-/* Polaroid/Yearbook Card styling for items in yearbook view */
-.gallery-item.yearbook {
-    background: #fff;
-    padding: 0.75rem 0.75rem 2rem 0.75rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.2);
-    transform: rotate(var(--rotation, -1deg));
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-}
-
-.gallery-item.yearbook:nth-child(2n) { --rotation: 1deg; }
-.gallery-item.yearbook:nth-child(3n) { --rotation: -1.5deg; }
-.gallery-item.yearbook:nth-child(4n) { --rotation: 0.5deg; }
-
-.gallery-item.yearbook:hover {
-    transform: rotate(0) translateY(-10px) scale(1.05);
-    z-index: 10;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.gallery-item.yearbook .photo-container {
-    height: 200px;
-    margin-bottom: 0.5rem;
-    border: 1px solid rgba(0,0,0,0.1);
-}
-
-.gallery-item.yearbook .photo-info h3 {
-    color: #1a202c;
+.media-section-heading p {
+    margin: 0;
     font-family: 'Barlow', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin: 0.5rem 0 0.25rem 0;
+    font-size: 1rem;
+    color: var(--surface-muted);
 }
 
-.gallery-item.yearbook .photo-tags {
-    color: #4a5568;
-    font-size: 0.7rem;
-    font-weight: 500;
+body.theme-white .media-page .compact-hero h1,
+body.theme-white .media-page .compact-hero p {
+    color: #ffffff !important;
 }
 
-/* Hide specific elements in yearbook mode for that clean look */
-.gallery-item.yearbook .photo-overlay {
-    opacity: 0 !important;
-    display: none;
+body.theme-white .media-page .media-card h3 {
+    color: #0f355f !important;
 }
 
-/* Tag filter pills */
-.tag-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
-}
-.tag-pill {
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.8);
-    font-size: 0.78rem;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    white-space: nowrap;
-}
-.tag-pill:hover, .tag-pill.active {
-    background: rgba(0,122,255,0.35);
-    border-color: rgba(0,122,255,0.6);
-    color: #fff;
+body.theme-white .media-page .media-card p {
+    color: rgba(31, 41, 55, 0.82) !important;
 }
 
-/* Skeleton loading cards */
-.skeleton-card {
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-.skeleton-img {
-    width: 100%;
-    height: 180px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
-}
-.skeleton-text {
-    height: 12px;
-    margin: 10px 12px 6px;
-    border-radius: 6px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
-}
-.skeleton-text.short { width: 60%; }
-@keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+body.theme-white .media-page .media-card .media-card-link {
+    color: #0052a3 !important;
 }
 
-/* Lightbox */
-#media-lightbox {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(0,0,0,0.92);
-    backdrop-filter: blur(8px);
-    align-items: center;
-    justify-content: center;
+@media (max-width: 900px) {
+    .media-hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .media-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
-#media-lightbox.open { display: flex; }
-#media-lightbox .lb-img-wrap {
-    max-width: min(90vw, 1100px);
-    max-height: 88vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-}
-#media-lightbox img {
-    max-width: 100%;
-    max-height: 78vh;
-    object-fit: contain;
-    border-radius: 10px;
-    box-shadow: 0 16px 60px rgba(0,0,0,0.6);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-#media-lightbox img.loaded { opacity: 1; }
-#lb-caption { color: rgba(255,255,255,0.85); font-size: 0.9rem; font-weight: 500; letter-spacing: 0.3px; text-align: center; }
-#lb-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center; }
-#lb-tags span { padding: 2px 8px; background: rgba(34,139,230,0.2); border: 1px solid rgba(34,139,230,0.4); border-radius: 4px; font-size: 0.72rem; color: #74c0fc; }
-#lb-dots { display: flex; gap: 6px; justify-content: center; margin-top: 2px; }
-#lb-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.2s; padding: 0; }
-#lb-dots button.active { background: rgba(255,255,255,0.95); transform: scale(1.3); }
-.lb-arrow {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.12);
-    border: none;
-    color: white;
-    font-size: 2.2rem;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-}
-.lb-arrow:hover { background: rgba(255,255,255,0.25); }
-#lb-prev { left: 16px; }
-#lb-next { right: 16px; }
-#lb-close {
-    position: fixed;
-    top: 16px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.7);
-    font-size: 2.5rem;
-    cursor: pointer;
-    z-index: 10000;
-    line-height: 1;
-    transition: color 0.2s;
-}
-#lb-close:hover { color: white; }
+
 @media (max-width: 640px) {
-    .lb-arrow { width: 38px; height: 38px; font-size: 1.6rem; }
-    #lb-prev { left: 6px; }
-    #lb-next { right: 6px; }
-    #media-lightbox .lb-img-wrap { max-width: 96vw; }
+    .media-hero {
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+
+    .media-card {
+        padding: 0.85rem;
+    }
+
+    .media-section-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .media-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
+.media-card--sermons .media-card-thumb {
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg');
+}
+
+.media-card--podcasts .media-card-thumb {
+    --thumb-image: linear-gradient(135deg, rgba(0, 82, 163, 0.9), rgba(64, 145, 255, 0.6));
+}
+
+.media-card--teaching .media-card-thumb {
+    --thumb-image: linear-gradient(135deg, rgba(41, 79, 145, 0.9), rgba(135, 170, 255, 0.55));
+}
+
+.media-card--pdfs .media-card-thumb {
+    --thumb-image: linear-gradient(135deg, rgba(18, 52, 105, 0.94), rgba(64, 113, 187, 0.55));
+}
+
+.media-card--gallery .media-card-thumb {
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg');
+}
+
+.media-card--yearbook .media-card-thumb {
+    --thumb-image: linear-gradient(135deg, rgba(13, 63, 116, 0.92), rgba(89, 147, 218, 0.5));
+}
+
+.media-card--live .media-card-thumb {
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg');
+}
+
+.media-card--resources .media-card-thumb {
+    --thumb-image: linear-gradient(135deg, rgba(50, 95, 165, 0.9), rgba(160, 190, 245, 0.55));
+}
+
+.media-card--search .media-card-thumb {
+    --thumb-image: linear-gradient(135deg, rgba(26, 61, 117, 0.92), rgba(86, 126, 202, 0.54));
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="media-page compact-page">
     <div class="compact-content">
-        <div class="media-hero compact-hero">
-            <h1>Media Center</h1>
-            <p>Explore our photo gallery and digital yearbook - moments of faith, fellowship, and celebration</p>
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number" id="total-photos">0</span>
-                    <span class="stat-label">Photos</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" id="total-events">0</span>
-                    <span class="stat-label">Events</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" id="total-years">0</span>
-                    <span class="stat-label">Years</span>
-                </div>
-            </div>
-        </div>
-
-        <section class="media-nav">
-            <div class="container">
-        <div class="media-tabs">
-            <button class="media-tab active" data-tab="gallery">
-                <i class="fas fa-images"></i>
-                <span>Gallery</span>
-            </button>
-            <button class="media-tab" data-tab="videos">
-                <i class="fas fa-video"></i>
-                <span>Videos</span>
-            </button>
-            <button class="media-tab" data-tab="yearbook">
-                <i class="fas fa-book"></i>
-                <span>Yearbook</span>
-            </button>
-        </div>
-    </div>
-</section>
-
-<!-- Lightbox -->
-<div id="media-lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" onclick="if(event.target===this)lbClose()">
-    <button id="lb-close" onclick="lbClose()" aria-label="Close">&times;</button>
-    <button class="lb-arrow" id="lb-prev" onclick="lbNav(-1)" aria-label="Previous">&#8249;</button>
-    <div class="lb-img-wrap">
-        <img id="lb-img" alt="" onload="this.classList.add('loaded')">
-        <div id="lb-caption"></div>
-        <div id="lb-tags"></div>
-        <div id="lb-dots"></div>
-    </div>
-    <button class="lb-arrow" id="lb-next" onclick="lbNav(1)" aria-label="Next">&#8250;</button>
-</div>
-
-<!-- Gallery Section -->
-<section id="gallery-section" class="media-section active">
-    <div class="container">
-        <!-- Tag filter pills (populated by JS) -->
-        <div class="tag-filters" id="tag-filters"></div>
-
-        <!-- Filter Controls -->
-        <div class="gallery-controls">
-            <div class="search-box">
-                <input type="text" id="gallery-search"
-                    placeholder="Search photos...">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="sort-controls">
-                <select id="sort-select">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="alphabetical">Alphabetical</option>
-                    <option value="event">By Event</option>
-                </select>
-            </div>
-            <div class="view-controls">
-                <button class="view-btn active" data-view="grid">
-                    <i class="fas fa-th"></i>
-                </button>
-                <button class="view-btn" data-view="masonry">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button class="view-btn" data-view="timeline">
-                    <i class="fas fa-list"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Gallery Grid -->
-        <div id="gallery-container" class="gallery-grid">
-            <!-- Gallery images will be populated by JavaScript -->
-        </div>
-
-        <!-- Skeleton loading (shown while API loads) -->
-        <div id="loading-indicator" class="gallery-grid">
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text short"></div></div>
-        </div>
-
-        <!-- Empty State -->
-        <div id="empty-state" class="empty-state" style="display: none;">
-            <i class="fas fa-images"></i>
-            <h3>No photos found</h3>
-            <p>Try adjusting your search or filter criteria</p>
-        </div>
-    </div>
-</section>
-
-<!-- Videos Section -->
-<section id="videos-section" class="media-section">
-    <div class="container">
-        <div style="display: grid; gap: 2rem;">
-            <!-- Video Card -->
-            <div style="background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden;">
-                <h3 style="font-size: 1.15rem; color: rgba(255, 255, 255, 0.95); margin: 0 0 0.5rem 0; font-weight: 600;">2025 Summer Mission Trip Recap</h3>
-                <p style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin: 0 0 1rem 0;">Recap of CPC New Haven's 2025 Summer Mission Trip to partner with New City Fellowship, a local church in Atlantic City, NJ.</p>
-                <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 6px;">
-                    <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 6px;" src="https://www.youtube.com/embed/nN_0zTD-OyU?si=ZQVr6iNG5U8J8O5J" title="2025 Summer Mission Trip Recap" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Yearbook Section -->
-<section id="yearbook-section" class="media-section">
-    <div class="container">
-        <!-- Year Navigation -->
-        <div class="year-navigation">
-            <div class="container">
-                <div class="year-tabs" id="year-tabs">
-                    <!-- Year tabs will be populated by JavaScript -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Yearbook Content -->
-        <div id="yearbook-container" class="yearbook-container">
-            <!-- Yearbook content will be populated by JavaScript -->
-        </div>
-    </div>
-</section>
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let allPhotos = [];
-    let filteredPhotos = [];
-    let currentFilter = 'all';
-    let currentView = 'grid';
-    let activeTag = 'all';
-
-    // ── Lightbox state ──────────────────────────────────────────────────────
-    let lbPhotos = [];
-    let lbIdx = 0;
-
-    window.lbOpen = function(idx) {
-        lbPhotos = [...filteredPhotos];
-        lbIdx = idx;
-        lbRender();
-        document.getElementById('media-lightbox').classList.add('open');
-        document.body.style.overflow = 'hidden';
-    };
-    window.lbClose = function() {
-        document.getElementById('media-lightbox').classList.remove('open');
-        document.body.style.overflow = '';
-    };
-    window.lbNav = function(dir) {
-        lbIdx = (lbIdx + dir + lbPhotos.length) % lbPhotos.length;
-        lbRender();
-    };
-
-    function lbRender() {
-        const p = lbPhotos[lbIdx];
-        if (!p) return;
-        const img = document.getElementById('lb-img');
-        img.classList.remove('loaded');
-        img.src = p.url;
-        img.alt = p.name || '';
-        document.getElementById('lb-caption').textContent = p.name || '';
-        // tags
-        const tagsEl = document.getElementById('lb-tags');
-        tagsEl.innerHTML = (p.tags || []).map(t =>
-            `<span>${t}</span>`
-        ).join('');
-        // dots
-        const dotsEl = document.getElementById('lb-dots');
-        dotsEl.innerHTML = lbPhotos.map((_, i) =>
-            `<button class="${i === lbIdx ? 'active' : ''}" onclick="lbIdx=${i};lbRender()" aria-label="Photo ${i+1}"></button>`
-        ).join('');
-        // hide arrows if only 1
-        const show = lbPhotos.length > 1 ? '' : 'none';
-        document.getElementById('lb-prev').style.display = show;
-        document.getElementById('lb-next').style.display = show;
-    }
-
-    document.addEventListener('keydown', function(e) {
-        const lb = document.getElementById('media-lightbox');
-        if (!lb.classList.contains('open')) return;
-        if (e.key === 'Escape') lbClose();
-        if (e.key === 'ArrowLeft') lbNav(-1);
-        if (e.key === 'ArrowRight') lbNav(1);
-    });
-
-    // ── Stat counter animation ──────────────────────────────────────────────
-    function animateCount(el, target) {
-        const dur = 800, start = performance.now();
-        function tick(now) {
-            const p = Math.min((now - start) / dur, 1);
-            el.textContent = Math.round(p * target);
-            if (p < 1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-    }
-
-    // Check URL parameters for view/tab
-    const urlParams = new URLSearchParams(window.location.search);
-    const viewParam = urlParams.get('view') || urlParams.get('tab');
-    if (viewParam === 'yearbook' || viewParam === 'gallery') {
-        currentTab = viewParam;
-        currentView = viewParam === 'yearbook' ? 'yearbook' : 'grid';
-    } else {
-        currentTab = 'yearbook';
-        currentView = 'yearbook';
-    }
-
-    // Load gallery images
-    loadGallery();
-
-    function loadGallery() {
-        // Show skeleton, hide real container
-        document.getElementById('loading-indicator').style.display = '';
-        document.getElementById('gallery-container').style.display = 'none';
-
-        fetch('/api/gallery')
-            .then(response => response.json())
-            .then(data => {
-                allPhotos = data.images || [];
-                filteredPhotos = [...allPhotos];
-                // Hide skeleton, show real container
-                document.getElementById('loading-indicator').style.display = 'none';
-                document.getElementById('gallery-container').style.display = '';
-                updateStats();
-                buildTagFilters();
-                buildYearTabs();
-                switchTab(currentTab);
-                renderGallery();
-                setupEventListeners();
-            })
-            .catch(error => {
-                console.error('Error loading gallery:', error);
-                document.getElementById('loading-indicator').style.display = 'none';
-                document.getElementById('gallery-container').style.display = '';
-                showError('Failed to load gallery images');
-            });
-    }
-
-    function updateStats() {
-        const totalPhotos = allPhotos.length;
-        const eventPhotos = allPhotos.filter(photo => photo.event).length;
-        const years = new Set(allPhotos.map(photo => new Date(photo.created).getFullYear())).size;
-        animateCount(document.getElementById('total-photos'), totalPhotos);
-        animateCount(document.getElementById('total-events'), eventPhotos);
-        animateCount(document.getElementById('total-years'), years);
-    }
-
-    function buildTagFilters() {
-        const container = document.getElementById('tag-filters');
-        if (!container) return;
-        // Collect all unique tags, sort by frequency
-        const freq = {};
-        allPhotos.forEach(p => (p.tags || []).forEach(t => { freq[t] = (freq[t] || 0) + 1; }));
-        const tags = Object.entries(freq).sort((a, b) => b[1] - a[1]).map(e => e[0]);
-
-        const all = document.createElement('button');
-        all.className = 'tag-pill active';
-        all.textContent = 'All';
-        all.onclick = () => setTag('all', all);
-        container.appendChild(all);
-
-        tags.forEach(tag => {
-            const btn = document.createElement('button');
-            btn.className = 'tag-pill';
-            btn.textContent = tag;
-            btn.onclick = () => setTag(tag, btn);
-            container.appendChild(btn);
-        });
-    }
-
-    function setTag(tag, btn) {
-        activeTag = tag;
-        document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        filterPhotos();
-    }
-
-    function renderGallery() {
-        const container = currentTab === 'yearbook'
-            ? document.getElementById('yearbook-container')
-            : document.getElementById('gallery-container');
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const emptyState = document.getElementById('empty-state');
-
-        if (loadingIndicator) {
-            loadingIndicator.style.display = 'none';
-        }
-
-        if (filteredPhotos.length === 0) {
-            if (emptyState) {
-                emptyState.style.display = 'block';
-            }
-            if (container) {
-                container.innerHTML = '';
-            }
-            return;
-        }
-
-        if (emptyState) {
-            emptyState.style.display = 'none';
-        }
-
-        if (currentView === 'yearbook') {
-            renderYearbookView(container);
-        } else {
-            renderGridView(container);
-        }
-    }
-
-    function renderGridView(container) {
-        container.className = `gallery-grid ${currentView}`;
-        container.innerHTML = '';
-
-        filteredPhotos.forEach((photo, index) => {
-            const photoElement = createPhotoElement(photo, index);
-            container.appendChild(photoElement);
-        });
-
-        // Initialize masonry if needed
-        if (currentView === 'masonry') {
-            initializeMasonry();
-        }
-    }
-
-    function renderYearbookView(container) {
-        container.className = 'gallery-grid yearbook';
-        container.innerHTML = '';
-
-        const yearPhotos = currentYear
-            ? filteredPhotos.filter(photo => getPhotoYear(photo) === currentYear)
-            : filteredPhotos;
-
-        // Group photos by year and month
-        const groupedPhotos = groupPhotosByYearMonth(yearPhotos);
-
-        Object.keys(groupedPhotos).sort().reverse().forEach(year => {
-            const yearSection = document.createElement('div');
-            yearSection.className = 'yearbook-year';
-            yearSection.innerHTML = `<h2 class="yearbook-year-title">${year}</h2>`;
-
-            const monthsContainer = document.createElement('div');
-            monthsContainer.className = 'yearbook-months';
-
-            Object.keys(groupedPhotos[year]).sort().reverse().forEach(month => {
-                const monthSection = document.createElement('div');
-                monthSection.className = 'yearbook-month';
-                monthSection.innerHTML = `
-                    <h3 class="yearbook-month-title">${month}</h3>
-                    <div class="yearbook-photos"></div>
-                `;
-
-                const photosContainer = monthSection.querySelector('.yearbook-photos');
-                groupedPhotos[year][month].forEach((photo, index) => {
-                    const photoElement = createPhotoElement(photo, index, 'yearbook');
-                    photosContainer.appendChild(photoElement);
-                });
-
-                monthsContainer.appendChild(monthSection);
-            });
-
-            yearSection.appendChild(monthsContainer);
-            container.appendChild(yearSection);
-        });
-    }
-
-    function groupPhotosByYearMonth(photos) {
-        const grouped = {};
-        
-        photos.forEach(photo => {
-            const date = new Date(photo.created);
-            const year = date.getFullYear();
-            const month = date.toLocaleString('default', { month: 'long' });
-            
-            if (!grouped[year]) {
-                grouped[year] = {};
-            }
-            if (!grouped[year][month]) {
-                grouped[year][month] = [];
-            }
-            
-            grouped[year][month].push(photo);
-        });
-
-        return grouped;
-    }
-
-    function getPhotoYear(photo) {
-        const date = new Date(photo.created);
-        return Number.isFinite(date.getFullYear()) ? date.getFullYear() : null;
-    }
-
-    function buildYearTabs() {
-        const yearTabs = document.getElementById('year-tabs');
-        if (!yearTabs) return;
-
-        const years = Array.from(new Set(allPhotos
-            .map(getPhotoYear)
-            .filter(year => year)))
-            .sort((a, b) => b - a);
-
-        if (years.length === 0) {
-            yearTabs.innerHTML = '';
-            return;
-        }
-
-        currentYear = currentYear || years[0];
-        yearTabs.innerHTML = years.map(year => `
-            <button class="year-tab${year === currentYear ? ' active' : ''}" data-year="${year}">
-                ${year}
-            </button>
-        `).join('');
-
-        yearTabs.querySelectorAll('.year-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                yearTabs.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentYear = parseInt(tab.dataset.year, 10);
-                if (currentTab === 'yearbook') {
-                    currentView = 'yearbook';
-                    renderGallery();
-                }
-            });
-        });
-    }
-
-    function createPhotoElement(photo, index, type = 'gallery') {
-        const photoDiv = document.createElement('div');
-        photoDiv.className = `gallery-item ${type}`;
-        photoDiv.dataset.index = index;
-        photoDiv.dataset.photoId = photo.id;
-
-        const tags = photo.tags || [];
-        const tagString = tags.join(', ');
-        const safeTitle = photo.name || 'Photo';
-
-        const photoIndex = filteredPhotos.indexOf(photo);
-        photoDiv.innerHTML = `
-            <div class="photo-container" onclick="lbOpen(${photoIndex})" role="button" aria-label="View ${safeTitle}" style="cursor:pointer;">
-                <img src="${photo.url}" alt="${safeTitle}" loading="lazy">
-                <div class="photo-overlay">
-                    <div class="photo-info">
-                        <h3>${photo.name || 'Untitled'}</h3>
-                        ${tagString ? `<p class="photo-tags">${tagString}</p>` : ''}
-                        ${photo.event ? '<span class="event-badge">Event</span>' : ''}
+        <section class="media-hero compact-hero">
+            <div class="media-hero-grid">
+                <div>
+                    <div class="eyebrow">
+                        <i class="fas fa-layer-group" aria-hidden="true"></i>
+                        Media hub
+                    </div>
+                    <h1>Everything we publish, archive, and record in one place.</h1>
+                    <p>
+                        Use this page as the umbrella for sermons, podcasts, teaching series, pastor-led study
+                        materials, and our visual archives. It is the quickest place to jump into the media spaces
+                        that already exist on the site.
+                    </p>
+                    <div class="media-actions">
+                        <a href="{{ url_for('sermons') }}" class="media-btn primary">
+                            <i class="fas fa-microphone"></i>
+                            Sermons
+                        </a>
+                        <a href="{{ url_for('podcasts') }}" class="media-btn secondary">
+                            <i class="fas fa-podcast"></i>
+                            Podcasts
+                        </a>
+                        <a href="{{ url_for('gallery') }}" class="media-btn secondary">
+                            <i class="fas fa-images"></i>
+                            Gallery
+                        </a>
                     </div>
                 </div>
+
+                <aside class="media-panel">
+                    <h2>Featured now</h2>
+                    <div class="media-panel-card">
+                        <div class="label">Current teaching series</div>
+                        <h3>{{ site_content.get('current_teaching_series_title', 'Luke') }}</h3>
+                        <p>{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</p>
+                    </div>
+                    <div class="media-panel-card">
+                        <div class="label">Best place to start</div>
+                        <h3>Watch live on Sundays</h3>
+                        <p>Join us online or catch up with the latest sermon after service.</p>
+                    </div>
+                </aside>
             </div>
-        `;
+        </section>
 
-        return photoDiv;
-    }
+        <div class="media-section-heading">
+            <div>
+                <h2>Media destinations</h2>
+                <p>Each tile below takes you to a dedicated part of the media ecosystem.</p>
+            </div>
+        </div>
 
-    function setupEventListeners() {
-        // Tab switching
-        document.querySelectorAll('.media-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabName = this.dataset.tab;
-                switchTab(tabName);
-            });
-        });
+        <section class="media-grid" aria-label="Media links">
+            <a href="{{ url_for('sermons') }}" class="media-card media-card--sermons">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-microphone"></i></span></div>
+                <h3>Sermons</h3>
+                <p>Browse the preaching archive, jump to the latest message, and search through Sunday sermons.</p>
+                <span class="media-card-link">Open sermons <i class="fas fa-arrow-right"></i></span>
+            </a>
 
-        // Search
-        document.getElementById('gallery-search').addEventListener('input', function() {
-            filterPhotos();
-        });
+            <a href="{{ url_for('podcasts') }}" class="media-card media-card--podcasts">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-podcast"></i></span></div>
+                <h3>Podcasts</h3>
+                <p>Listen to sermon audio and other podcast series in one listening-friendly destination.</p>
+                <span class="media-card-link">Open podcasts <i class="fas fa-arrow-right"></i></span>
+            </a>
 
-        // Sort
-        document.getElementById('sort-select').addEventListener('change', function() {
-            sortPhotos();
-        });
+            <a href="{{ url_for('teaching_series') }}" class="media-card media-card--teaching">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-chalkboard-teacher"></i></span></div>
+                <h3>Teaching Series</h3>
+                <p>Find sermon series and Sunday school series, with a focus on the teaching journeys we are in now.</p>
+                <span class="media-card-link">Open teaching series <i class="fas fa-arrow-right"></i></span>
+            </a>
 
-        // View controls
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (this.dataset.view) {
-                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentView = this.dataset.view;
-                    renderGallery();
-                }
-            });
-        });
-    }
+            <a href="{{ url_for('pastor_teaching') }}" class="media-card media-card--pdfs">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-file-pdf"></i></span></div>
+                <h3>Pastor Teaching PDFs</h3>
+                <p>Access downloadable handouts, lesson notes, and PDF resources for pastor-led teaching.</p>
+                <span class="media-card-link">Open PDFs <i class="fas fa-arrow-right"></i></span>
+            </a>
 
-    function switchTab(tabName) {
-        currentTab = tabName;
-        
-        // Update tab buttons
-        document.querySelectorAll('.media-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        
-        // Show/hide sections
-        document.querySelectorAll('.media-section').forEach(section => {
-            section.classList.remove('active');
-        });
-        document.getElementById(`${tabName}-section`).classList.add('active');
-        
-        // Update view based on tab
-        if (tabName === 'yearbook') {
-            currentView = 'yearbook';
-            renderGallery();
-        } else {
-            currentView = 'grid';
-            renderGallery();
-        }
-    }
+            <a href="{{ url_for('gallery') }}" class="media-card media-card--gallery">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-images"></i></span></div>
+                <h3>Photo Gallery</h3>
+                <p>Browse the photo archive for worship, fellowship, and event photography.</p>
+                <span class="media-card-link">Open gallery <i class="fas fa-arrow-right"></i></span>
+            </a>
 
-    function filterPhotos() {
-        const searchTerm = document.getElementById('gallery-search').value.toLowerCase();
+            <a href="{{ url_for('yearbook') }}" class="media-card media-card--yearbook">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-book"></i></span></div>
+                <h3>Digital Yearbook</h3>
+                <p>Explore the church story chronologically with a yearbook-style archive of memories.</p>
+                <span class="media-card-link">Open yearbook <i class="fas fa-arrow-right"></i></span>
+            </a>
+            <a href="{{ url_for('live') }}" class="media-card media-card--live">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-play"></i></span></div>
+                <h3>Watch Live</h3>
+                <p>Go straight to the live stream and service information for Sunday worship.</p>
+                <span class="media-card-link">Open live stream <i class="fas fa-arrow-right"></i></span>
+            </a>
 
-        filteredPhotos = allPhotos.filter(photo => {
-            const matchesSearch = !searchTerm ||
-                (photo.name || '').toLowerCase().includes(searchTerm) ||
-                (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+            <a href="{{ url_for('resources') }}" class="media-card media-card--resources">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-book-open"></i></span></div>
+                <h3>Teaching Resources</h3>
+                <p>Browse broader teaching and study materials beyond the media archive.</p>
+                <span class="media-card-link">Open resources <i class="fas fa-arrow-right"></i></span>
+            </a>
 
-            const matchesFilter = currentFilter === 'all' ||
-                (currentFilter === 'events' && photo.event) ||
-                (photo.tags && photo.tags.some(tag => tag.toLowerCase().includes(currentFilter)));
-
-            const matchesTag = activeTag === 'all' ||
-                (photo.tags && photo.tags.includes(activeTag));
-
-            return matchesSearch && matchesFilter && matchesTag;
-        });
-
-        buildYearTabs();
-        renderGallery();
-    }
-
-    function sortPhotos() {
-        const sortBy = document.getElementById('sort-select').value;
-        
-        filteredPhotos.sort((a, b) => {
-            switch (sortBy) {
-                case 'newest':
-                    return new Date(b.created) - new Date(a.created);
-                case 'oldest':
-                    return new Date(a.created) - new Date(b.created);
-                case 'alphabetical':
-                    return (a.name || '').localeCompare(b.name || '');
-                case 'event':
-                    return (b.event ? 1 : 0) - (a.event ? 1 : 0);
-                default:
-                    return 0;
-            }
-        });
-
-        renderGallery();
-    }
-
-    function initializeMasonry() {
-        // Simple masonry implementation
-        const container = document.getElementById('gallery-container');
-        const items = container.querySelectorAll('.gallery-item');
-        
-        // Reset positioning
-        items.forEach(item => {
-            item.style.position = 'static';
-            item.style.top = 'auto';
-            item.style.left = 'auto';
-        });
-
-        // Simple column layout
-        const columns = 3;
-        const columnHeights = new Array(columns).fill(0);
-        
-        items.forEach(item => {
-            const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
-            item.style.position = 'absolute';
-            item.style.left = `${(shortestColumn * 100) / columns}%`;
-            item.style.top = `${columnHeights[shortestColumn]}px`;
-            columnHeights[shortestColumn] += item.offsetHeight + 20;
-        });
-
-        container.style.height = `${Math.max(...columnHeights)}px`;
-    }
-
-    function showError(message) {
-        const container = document.getElementById('gallery-container');
-        container.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i><p>${message}</p></div>`;
-    }
-});
-</script>
+            <a href="{{ url_for('search') }}" class="media-card media-card--search">
+                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-magnifying-glass"></i></span></div>
+                <h3>Search the archive</h3>
+                <p>Search sermons, podcasts, gallery items, and announcements from one site-wide search page.</p>
+                <span class="media-card-link">Open search <i class="fas fa-arrow-right"></i></span>
+            </a>
+        </section>
+    </div>
+</div>
 {% endblock %}

@@ -136,25 +136,9 @@
             </li>
             <li><a href="{{ url_for('about') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">About</a></li>
-            <li class="relative nav-dropdown">
-                <a href="#"
-                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm dropdown-toggle flex items-center gap-1">Media
-                    <i class="fas fa-chevron-down text-xs"></i></a>
-                <ul class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg py-2 min-w-[200px] hidden backdrop-blur-lg"
-                    style="background: rgba(0, 50, 120, 0.95); border: 1px solid rgba(0, 50, 120, 0.4);">
-                    <li><a href="{{ url_for('sermons') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Sermons</a></li>
-                    <li><a href="{{ url_for('podcasts') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Podcasts</a></li>
-                    <li><a href="{{ url_for('teaching_series') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Teaching Series</a>
-                    </li>
-                    <li><a href="{{ url_for('pastor_teaching') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Pastor Teaching
-                            (PDFs)</a></li>
-                    <li><a href="{{ url_for('media') }}"
-                            class="block px-4 py-2 text-white hover:bg-white hover:bg-opacity-10">Photo Gallery</a></li>
-                </ul>
+            <li>
+                <a href="{{ url_for('media') }}"
+                    class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Media</a>
             </li>
             <li>
                 <a href="{{ url_for('community') }}"
@@ -436,6 +420,7 @@
                 <a href="https://www.facebook.com/caboruschurch" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                 <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://www.youtube.com/@caboruschurch" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://open.spotify.com/show/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Spotify"><i class="fa-brands fa-spotify"></i></a>
             </div>
         </div>
     </aside>
@@ -548,7 +533,7 @@
                 <a href="{{ url_for('highlights') }}" class="mobile-more-link"><span>New Content</span></a>
                 <a href="{{ url_for('community') }}" class="mobile-more-link"><span>Community</span></a>
                 <a href="{{ url_for('lifegroups') }}" class="mobile-more-link"><span>LifeGroups</span></a>
-                <a href="{{ url_for('media') }}" class="mobile-more-link"><span>Gallery</span></a>
+                <a href="{{ url_for('media') }}" class="mobile-more-link"><span>Media Hub</span></a>
                 <a href="{{ url_for('teaching_series') }}" class="mobile-more-link"><span>Teaching Series</span></a>
                 <a href="{{ url_for('pastor_teaching') }}" class="mobile-more-link"><span>Pastor Teaching</span></a>
                 <a href="{{ url_for('resources') }}" class="mobile-more-link"><span>Teaching Resources</span></a>
@@ -573,15 +558,83 @@
             <span id="footerClock"></span>
             <span class="sep">•</span>
             <span id="footerDate"></span>
+            <span class="sep">•</span>
+            <span id="footerTemp"></span>
         </div>
     </div>
     <style>
-    .site-footer-grid { display: grid; grid-template-columns: 1.5fr 1.5fr; gap: 3rem; }
-    @media (max-width: 680px) { .site-footer-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+    .site-footer-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 2.5rem;
+        align-items: start;
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+    .site-footer-grid > div:first-child {
+        justify-self: end;
+        text-align: right;
+    }
+    .site-footer-grid > div:first-child > div {
+        justify-content: flex-end;
+    }
+    .site-footer-right {
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+        min-width: 0;
+    }
+    .site-footer-right-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.75rem;
+        min-width: 0;
+    }
+    .site-footer-bottom {
+        max-width: 760px;
+        margin: 1.25rem auto 0;
+        padding: 1rem 1rem 0;
+        border-top: 1px solid var(--surface-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        font-size: 0.75rem;
+        color: var(--surface-muted);
+    }
+    @media (max-width: 680px) {
+        .site-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 1.35rem;
+            max-width: 100%;
+            padding: 0 0.25rem;
+        }
+        .site-footer-grid > div:first-child {
+            justify-self: stretch;
+            text-align: left;
+        }
+        .site-footer-grid > div:first-child > div {
+            justify-content: flex-start;
+        }
+        .site-footer-right {
+            gap: 1.15rem;
+        }
+        .site-footer-right-columns {
+            gap: 1.15rem;
+        }
+        .site-footer-bottom {
+            padding: 0.95rem 0.25rem 0;
+            justify-content: center;
+            text-align: center;
+        }
+    }
     </style>
     <!-- Site Footer -->
-    <footer style="background: rgba(0,20,60,0.85); backdrop-filter: blur(12px); border-top: 1px solid var(--surface-border); padding: 2.5rem 1.5rem 1.5rem; margin-top: 2rem; color: var(--surface-muted); font-size: 0.85rem;">
-        <div class="site-footer-grid" style="max-width: 1100px; margin: 0 auto;">
+    <footer style="background: rgba(0,20,60,0.85); backdrop-filter: blur(12px); border-top: 1px solid var(--surface-border); padding: 2.5rem 1.5rem 4.5rem; margin-top: 2rem; color: var(--surface-muted); font-size: 0.85rem;">
+        <div class="site-footer-grid">
 
             <!-- Brand + address -->
             <div>
@@ -600,8 +653,9 @@
             </div>
 
             <!-- Worship + Quick links (combined) -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="site-footer-right">
                 <!-- Worship -->
+                <div class="site-footer-right-columns">
                 <div>
                     <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
                     {% if active_schedule == 'summer' %}
@@ -643,13 +697,14 @@
                     <p style="margin:0 0 0.3rem;"><a href="{{ url_for(endpoint) }}" style="color:var(--surface-muted); text-decoration:none;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'">{{ label }}</a></p>
                     {% endfor %}
                 </div>
+                </div>
             </div>
         </div>
 
         <!-- Bottom bar -->
-        <div style="max-width:1100px; margin:1.5rem auto 0; padding-top:1rem; border-top:1px solid var(--surface-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.75rem; color:var(--surface-muted);">
+        <div class="site-footer-bottom">
             <span>&copy; {{ now.year if now else '2025' }} Christ Presbyterian Church, New Haven CT</span>
-            <span>Frontend build v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
+            <span><a href="https://github.com/cpcnewhaven/cpc-web-app/commits/main" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">See site commits on GitHub</a></span>
             <span>135 Whitney Ave &bull; (203) 777-6960 &bull; cpcnewhaven.org</span>
         </div>
     </footer>
@@ -816,10 +871,14 @@
                 const d = document.getElementById('liveDate');
                 const ft = document.getElementById('footerClock');
                 const fd = document.getElementById('footerDate');
+                const ftemp = document.getElementById('footerTemp');
                 if (t) t.textContent = time;
                 if (d) d.textContent = date;
                 if (ft) ft.textContent = time;
                 if (fd) fd.textContent = date;
+                if (ftemp && window.__cpcWeather && typeof window.__cpcWeather.temp === 'number') {
+                    ftemp.textContent = 'New Haven ' + window.__cpcWeather.temp + '°F';
+                }
             }
             updateClock();
             setInterval(updateClock, 1000 * 30);
@@ -918,6 +977,7 @@
             const elNow = document.getElementById('weatherNow');
             const elHiLo = document.getElementById('weatherHiLo');
             const elDesc = document.getElementById('weatherDesc');
+            const footerTemp = document.getElementById('footerTemp');
             if (!elNow || !elHiLo || !elDesc) return;
             const url = 'https://api.open-meteo.com/v1/forecast?latitude=41.31&longitude=-72.92&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=America%2FNew_York&temperature_unit=fahrenheit';
             function codeToDesc(c) {
@@ -950,14 +1010,17 @@
                     const c = (d.current && d.current.weather_code) || 0;
                     const hi = Math.round((d.daily && d.daily.temperature_2m_max && d.daily.temperature_2m_max[0]) || t);
                     const lo = Math.round((d.daily && d.daily.temperature_2m_min && d.daily.temperature_2m_min[0]) || t);
+                    window.__cpcWeather = { temp: t, hi: hi, lo: lo, desc: codeToDesc(c) };
                     elNow.textContent = codeToIcon(c) + ' ' + t + '°F';
                     elHiLo.textContent = 'H ' + hi + '° / L ' + lo + '°';
                     elDesc.textContent = codeToDesc(c);
+                    if (footerTemp) footerTemp.textContent = 'New Haven ' + t + '°F';
                 } catch (e) {
                     // Fallback
                     elNow.textContent = '🌡️ —';
                     elHiLo.textContent = '';
                     elDesc.textContent = 'Weather unavailable';
+                    if (footerTemp) footerTemp.textContent = 'New Haven —';
                 }
             }
             loadWeather();
