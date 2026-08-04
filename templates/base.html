@@ -100,7 +100,7 @@
     {% block head %}{% endblock %}
 </head>
 
-<body class="theme-blue">
+<body class="theme-white">
     <!-- Top yellow bar for weather, parking, and other alerts (admin: check "Show in top bar" on an announcement) -->
     <div id="topAlertBar" class="top-alert-bar" style="display: none;" role="alert">
         <div class="top-alert-bar-inner">
@@ -443,15 +443,6 @@
     <!-- Fixed Right Dashboard (Desktop) -->
     <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''"
         x-show="$store.dash.showRightSidebar">
-        <div class="dashboard-section" id="luke-chapter-section">
-            <div class="dashboard-title" style="border-left: none;">Current Teaching Series</div>
-            <div class="dashboard-note" id="luke-chapter-content">
-                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Luke') }}</div>
-                <div class="study-date" style="margin-top: 0.25rem;">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
-                <a href="{{ url_for('teaching_series') }}?q={{ site_content.get('current_teaching_series_title', 'Luke') | urlencode }}"
-                    class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">View Series →</a>
-            </div>
-        </div>
         <div class="dashboard-section">
             <div class="dashboard-title">Now</div>
             <div class="dashboard-note">
@@ -489,6 +480,15 @@
                     <span>{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</span>
                 </a>
                 <a href="{{ url_for('sundays') }}" class="cta" style="display:inline-block; margin-top:0.65rem; color:var(--surface-accent);">Learn More About Sundays →</a>
+            </div>
+        </div>
+        <div class="dashboard-section" id="luke-chapter-section">
+            <div class="dashboard-title">Current Teaching Series</div>
+            <div class="dashboard-note" id="luke-chapter-content">
+                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Luke') }}</div>
+                <div class="study-date" style="margin-top: 0.25rem;">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
+                <a href="{{ url_for('teaching_series') }}?q={{ site_content.get('current_teaching_series_title', 'Luke') | urlencode }}"
+                    class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">View Series →</a>
             </div>
         </div>
     </aside>
@@ -719,7 +719,7 @@
     <script>
         // Apply theme immediately on page load (before Alpine initializes)
         (function () {
-            const savedTheme = localStorage.getItem('dash_theme') || 'blue';
+            const savedTheme = localStorage.getItem('dash_theme') || 'white';
             // Default: left sidebar ON, right panel ON for all pages
             const leftSidebarStored = localStorage.getItem('dash_showLeftSidebar');
             const rightSidebarStored = localStorage.getItem('dash_showRightSidebar');
@@ -766,7 +766,7 @@
                 leftSidebarMax: JSON.parse(localStorage.getItem('dash_leftSidebarMax') || 'false'),
                 rightSidebarMax: JSON.parse(localStorage.getItem('dash_rightSidebarMax') || 'false'),
                 userName: localStorage.getItem('dash_userName') || '',
-                theme: localStorage.getItem('dash_theme') || 'blue',
+                theme: localStorage.getItem('dash_theme') || 'white',
                 save() {
                     localStorage.setItem('dash_compact', JSON.stringify(this.compact));
                     localStorage.setItem('dash_showQuickLinks', JSON.stringify(this.showQuickLinks));
