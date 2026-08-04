@@ -267,7 +267,7 @@
     }
 
     .pillar-card {
-        padding: 22px 0 18px;
+        padding: 18px 0 16px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         background: transparent;
         border-radius: 0;
@@ -520,8 +520,8 @@
     @media (min-width: 861px) {
         .pillar-card {
             display: grid;
-            grid-template-columns: 180px minmax(0, 1fr);
-            gap: 24px;
+            grid-template-columns: 150px minmax(0, 1fr);
+            gap: 16px;
             align-items: start;
         }
 
@@ -532,8 +532,23 @@
 
     body.theme-white .lg-hero::before {
         background-image:
-            linear-gradient(180deg, rgba(245, 247, 250, 0.24) 0%, rgba(232, 236, 241, 0.6) 60%, rgba(221, 226, 232, 0.92) 100%),
+            linear-gradient(180deg, rgba(6, 31, 68, 0.42) 0%, rgba(6, 31, 68, 0.6) 58%, rgba(6, 31, 68, 0.88) 100%),
             url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg');
+    }
+
+    body.theme-white .lg-hero::after {
+        background:
+            radial-gradient(circle at top left, rgba(155, 199, 255, 0.16), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.12), transparent 28%);
+    }
+
+    body.theme-white .lg-hero .hero-fade {
+        background: linear-gradient(180deg, rgba(6, 31, 68, 0) 0%, rgba(6, 31, 68, 0.22) 36%, rgba(6, 31, 68, 0.78) 100%);
+    }
+
+    body.theme-white .lg-hero h1 {
+        color: #fff !important;
+        text-shadow: 0 10px 34px rgba(0, 0, 0, 0.52);
     }
 
     body.theme-white .lg-kicker,
@@ -545,16 +560,30 @@
     body.theme-white .lg-nav,
     body.theme-white .lg-section,
     body.theme-white .cta-section {
-        background: rgba(255, 255, 255, 0.72);
+        background: rgba(255, 255, 255, 0.88);
         border-color: rgba(0, 50, 120, 0.12);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
+    body.theme-white .lg-page,
     body.theme-white .section-title,
     body.theme-white .vision-copy,
     body.theme-white .pillar-card h3,
     body.theme-white .group-card h3,
     body.theme-white .cta-section h2 {
-        color: #1b2738;
+        color: #1b2738 !important;
+    }
+
+    body.theme-white .lg-nav a {
+        color: #1b2738 !important;
+        background: rgba(0, 82, 163, 0.04);
+        border-color: rgba(0, 82, 163, 0.08);
+    }
+
+    body.theme-white .lg-nav a:hover,
+    body.theme-white .lg-nav a.active {
+        background: rgba(0, 82, 163, 0.1) !important;
+        border-color: rgba(0, 82, 163, 0.18) !important;
     }
 
     body.theme-white .section-subtitle,
@@ -565,20 +594,89 @@
     body.theme-white .groups-section-intro,
     body.theme-white .cta-section p,
     body.theme-white .detail-item {
-        color: rgba(27, 39, 56, 0.72);
+        color: rgba(27, 39, 56, 0.82) !important;
     }
 
     body.theme-white .vision-side,
     body.theme-white .pillar-card,
     body.theme-white .group-card {
-        background: rgba(0, 82, 163, 0.05);
-        border-color: rgba(0, 82, 163, 0.12);
+        background: rgba(255, 255, 255, 0.96) !important;
+        border-color: rgba(0, 82, 163, 0.12) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    body.theme-white .pillar-card {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    body.theme-white .pillar-card h3 {
+        margin-left: 2px;
+    }
+
+    body.theme-white .meta-pill {
+        background: rgba(0, 82, 163, 0.08) !important;
+        border-color: rgba(0, 82, 163, 0.12) !important;
+        color: #1b2738 !important;
+    }
+
+    body.theme-white .meta-pill.day-pill {
+        background: rgba(0, 82, 163, 0.14) !important;
+        border-color: rgba(0, 82, 163, 0.18) !important;
+        color: #0a52a3 !important;
+    }
+
+    body.theme-white .meta-pill.host-pill {
+        color: rgba(27, 39, 56, 0.78) !important;
+    }
+
+    body.theme-white .meta-pill.host-pill::before {
+        color: rgba(27, 39, 56, 0.52) !important;
+    }
+
+    body.theme-white .group-location,
+    body.theme-white .group-notes {
+        color: rgba(27, 39, 56, 0.86) !important;
+    }
+
+    body.theme-white .area-card {
+        padding-top: 18px !important;
+    }
+
+    body.theme-white .area-card .group-meta {
+        margin-bottom: 8px;
+        gap: 6px;
+    }
+
+    body.theme-white .area-card .meta-pill.host-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.38rem 0.68rem;
+        background: rgba(0, 82, 163, 0.08) !important;
+        border: 1px solid rgba(0, 82, 163, 0.12) !important;
+        border-radius: 999px;
+        font-style: normal !important;
+    }
+
+    body.theme-white .area-card .meta-pill.host-pill::before {
+        content: 'Contact';
+        margin-right: 0;
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    body.theme-white .area-card .meta-pill.host-pill a {
+        color: #1b2738 !important;
+        font-style: italic;
+        white-space: nowrap;
     }
 
     body.theme-white .btn-secondary {
-        color: #1b2738;
-        background: rgba(0, 82, 163, 0.06);
-        border-color: rgba(0, 82, 163, 0.14);
+        color: #1b2738 !important;
+        background: rgba(0, 82, 163, 0.06) !important;
+        border-color: rgba(0, 82, 163, 0.16) !important;
     }
 </style>
 {% endblock %}
@@ -679,7 +777,6 @@
                     </article>
                     {% endfor %}
                 {% else %}
-                    <p style="color: var(--surface-muted); font-style: italic; text-align: center; padding: 2rem;">No active groups at this time. Check back soon!</p>
                 {% endif %}
             </div>
         </section>
@@ -692,16 +789,15 @@
             </div>
 
             <div class="groups-grid">
-                <article class="group-card">
+                <article class="group-card area-card">
                     <h3>Hamden / North Haven</h3>
                     <div class="group-meta">
                         <span class="meta-pill day-pill">Thursdays</span>
                         <span class="meta-pill host-pill"><a href="mailto:akebabian@gmail.com">Alicia Kebabian</a></span>
                     </div>
-                    <div class="group-location">Hamden / North Haven</div>
                 </article>
 
-                <article class="group-card">
+                <article class="group-card area-card">
                     <h3>Downtown New Haven</h3>
                     <div class="group-meta">
                         <span class="meta-pill day-pill">Wednesday</span>
@@ -709,7 +805,7 @@
                     </div>
                 </article>
 
-                <article class="group-card">
+                <article class="group-card area-card">
                     <h3>Downtown New Haven</h3>
                     <div class="group-meta">
                         <span class="meta-pill day-pill">Thursday</span>
@@ -717,28 +813,28 @@
                     </div>
                 </article>
 
-                <article class="group-card">
+                <article class="group-card area-card">
                     <h3>East Rock</h3>
                     <div class="group-meta">
                         <span class="meta-pill host-pill"><a href="mailto:kaijessee@gmail.com">Kaitlyn Jessee</a></span>
                     </div>
                 </article>
 
-                <article class="group-card">
+                <article class="group-card area-card">
                     <h3>Trumbull</h3>
                     <div class="group-meta">
                         <span class="meta-pill host-pill"><a href="mailto:mrsprofdoc@icloud.com">Stacy Roney</a></span>
                     </div>
                 </article>
 
-                <article class="group-card">
+                <article class="group-card area-card">
                     <h3>Shoreline Saturday</h3>
                     <div class="group-meta">
                         <span class="meta-pill host-pill"><a href="mailto:mhbogue@yahoo.com">Cliff Bogue</a></span>
                     </div>
                 </article>
 
-                <article class="group-card">
+                <article class="group-card area-card">
                     <h3>West Side</h3>
                     <div class="group-meta">
                         <span class="meta-pill host-pill"><a href="mailto:mirandajrdn8@gmail.com">Miranda Healy</a></span>

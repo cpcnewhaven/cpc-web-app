@@ -2168,6 +2168,21 @@ body.has-top-alert .scroll-progress-bar {
     box-shadow: var(--shadow-medium);
 }
 
+.btn-glass {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
 .hero-actions {
     display: flex;
     flex-wrap: wrap;
@@ -2217,6 +2232,19 @@ body.theme-white .hero-actions .btn-secondary {
 }
 
 body.theme-white .hero-actions .btn-secondary:hover {
+    background: var(--cpc-blue) !important;
+    color: white !important;
+    border-color: var(--cpc-blue) !important;
+}
+
+body.theme-white .btn-glass {
+    background: rgba(255, 255, 255, 0.86) !important;
+    color: var(--cpc-blue) !important;
+    border: 1px solid rgba(0, 82, 163, 0.18) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-white .btn-glass:hover {
     background: var(--cpc-blue) !important;
     color: white !important;
     border-color: var(--cpc-blue) !important;
