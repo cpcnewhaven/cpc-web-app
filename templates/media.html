@@ -361,11 +361,15 @@ body.theme-white .media-page .media-card .media-card-link {
 }
 
 .media-card--podcasts .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(0, 82, 163, 0.9), rgba(64, 145, 255, 0.6));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg');
 }
 
 .media-card--teaching .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(41, 79, 145, 0.9), rgba(135, 170, 255, 0.55));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_ACTION_A.jpg');
+}
+
+.media-card--teaching .media-card-thumb::before {
+    background-position: 32% center;
 }
 
 .media-card--pdfs .media-card-thumb {
@@ -373,11 +377,11 @@ body.theme-white .media-page .media-card .media-card-link {
 }
 
 .media-card--gallery .media-card-thumb {
-    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg');
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/MENBIKE.jpg');
 }
 
 .media-card--yearbook .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(13, 63, 116, 0.92), rgba(89, 147, 218, 0.5));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_COMMUNITY_A.jpg');
 }
 
 .media-card--live .media-card-thumb {
@@ -496,13 +500,6 @@ body.theme-white .media-page .media-card .media-card-link {
                 <h3>Watch Live</h3>
                 <p>Go straight to the live stream and service information for Sunday worship.</p>
                 <span class="media-card-link">Open live stream <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <a href="{{ url_for('resources') }}" class="media-card media-card--resources">
-                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-book-open"></i></span></div>
-                <h3>Teaching Resources</h3>
-                <p>Browse broader teaching and study materials beyond the media archive.</p>
-                <span class="media-card-link">Open resources <i class="fas fa-arrow-right"></i></span>
             </a>
 
             <a href="{{ url_for('search') }}" class="media-card media-card--search">
