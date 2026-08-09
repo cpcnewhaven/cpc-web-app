@@ -2132,6 +2132,7 @@ def api_search():
         'series_id': request.args.get('series_id', '').strip(),
         'guest': request.args.get('guest', '').strip(),
         'season': request.args.get('season', '').strip(),
+        'sort': request.args.get('sort', 'newest').strip() or 'newest',
     }
 
     event_filters = {
@@ -2297,13 +2298,28 @@ def api_search():
                 except (ValueError, AttributeError):
                     pass
 
+            podcast_sort = podcast_filters['sort']
+            if podcast_sort == 'oldest':
+                q = q.order_by(PodcastEpisode.date_added.asc().nullslast(), PodcastEpisode.title.asc())
+            elif podcast_sort == 'title_asc':
+                q = q.order_by(PodcastEpisode.title.asc(), PodcastEpisode.date_added.desc().nullslast())
+            elif podcast_sort == 'title_desc':
+                q = q.order_by(PodcastEpisode.title.desc(), PodcastEpisode.date_added.desc().nullslast())
+            else:
+                q = q.order_by(PodcastEpisode.date_added.desc().nullslast(), PodcastEpisode.title.asc())
+
             episodes = q.all()
             for ep in episodes:
                 results['results'].append({
                     'type': 'podcast',
+                    'id': ep.id,
                     'title': ep.title,
                     'description': getattr(ep, 'scripture', None) or '',
+                    'scripture': getattr(ep, 'scripture', None),
                     'guest': getattr(ep, 'guest', None),
+                    'series': ep.series.title if getattr(ep, 'series', None) else None,
+                    'series_id': ep.series_id,
+                    'season': getattr(ep, 'season', None),
                     'date': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
                     'url': ep.link or getattr(ep, 'listen_url', None)
                 })
@@ -2454,8 +2470,19 @@ def api_search():
                     'url': url_for('teaching_series') + f"?q={ts.title}"
                 })
 
-        # Sort by date descending
-        results['results'].sort(key=lambda x: x.get('date', '') or '', reverse=True)
+        if content_type == 'podcasts':
+            podcast_sort = podcast_filters['sort']
+            if podcast_sort == 'oldest':
+                results['results'].sort(key=lambda x: (x.get('date') or '', x.get('title') or ''))
+            elif podcast_sort == 'title_asc':
+                results['results'].sort(key=lambda x: ((x.get('title') or '').lower(), x.get('date') or ''), reverse=False)
+            elif podcast_sort == 'title_desc':
+                results['results'].sort(key=lambda x: ((x.get('title') or '').lower(), x.get('date') or ''), reverse=True)
+            else:
+                results['results'].sort(key=lambda x: (x.get('date', '') or '', x.get('title') or ''), reverse=True)
+        else:
+            # Sort by date descending
+            results['results'].sort(key=lambda x: x.get('date', '') or '', reverse=True)
         results['total'] = len(results['results'])
 
         # Pagination
