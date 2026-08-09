@@ -314,6 +314,13 @@ body.theme-white .media-page .compact-hero p {
     color: #ffffff !important;
 }
 
+body.theme-white .media-page .media-panel h2,
+body.theme-white .media-page .media-panel-card .label,
+body.theme-white .media-page .media-panel-card h3,
+body.theme-white .media-page .media-panel-card p {
+    color: #ffffff !important;
+}
+
 body.theme-white .media-page .media-card h3 {
     color: #0f355f !important;
 }
@@ -361,35 +368,31 @@ body.theme-white .media-page .media-card .media-card-link {
 }
 
 .media-card--podcasts .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(0, 82, 163, 0.9), rgba(64, 145, 255, 0.6));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_A.jpg');
 }
 
 .media-card--teaching .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(41, 79, 145, 0.9), rgba(135, 170, 255, 0.55));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_ACTION_A.jpg');
 }
 
 .media-card--pdfs .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(18, 52, 105, 0.94), rgba(64, 113, 187, 0.55));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/%5BFEATURED%20IMG%5D%5BLIVE%20PAGE%5D%5BCRAIG%5D-1.jpg');
 }
 
 .media-card--gallery .media-card-thumb {
-    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg');
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/MENBIKE.jpg');
 }
 
 .media-card--yearbook .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(13, 63, 116, 0.92), rgba(89, 147, 218, 0.5));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_COMMUNITY_A.jpg');
 }
 
 .media-card--live .media-card-thumb {
     --thumb-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg');
 }
 
-.media-card--resources .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(50, 95, 165, 0.9), rgba(160, 190, 245, 0.55));
-}
-
 .media-card--search .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(26, 61, 117, 0.92), rgba(86, 126, 202, 0.54));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC-ARCHIVE-PHOTOS-14.jpeg');
 }
 </style>
 {% endblock %}
@@ -496,13 +499,6 @@ body.theme-white .media-page .media-card .media-card-link {
                 <h3>Watch Live</h3>
                 <p>Go straight to the live stream and service information for Sunday worship.</p>
                 <span class="media-card-link">Open live stream <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <a href="{{ url_for('resources') }}" class="media-card media-card--resources">
-                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-book-open"></i></span></div>
-                <h3>Teaching Resources</h3>
-                <p>Browse broader teaching and study materials beyond the media archive.</p>
-                <span class="media-card-link">Open resources <i class="fas fa-arrow-right"></i></span>
             </a>
 
             <a href="{{ url_for('search') }}" class="media-card media-card--search">

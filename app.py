@@ -1583,9 +1583,9 @@ def api_gallery():
     try:
         images = GalleryImage.query.filter(_not_expired(GalleryImage))\
             .order_by(GalleryImage.created.desc()).all()
-        
-        return jsonify({
-            'images': [
+
+        if images:
+            payload = [
                 {
                     'id': img.id,
                     'name': img.name or 'Untitled',
@@ -1600,9 +1600,21 @@ def api_gallery():
                     'location': img.location or '',
                     'photographer': img.photographer or ''
                 } for img in images
-            ],
-            'total': len(images),
-            'source': 'database'
+            ]
+            return jsonify({
+                'images': payload,
+                'total': len(payload),
+                'source': 'database'
+            })
+
+        gallery_path = os.path.join(app.root_path, 'data', 'gallery.json')
+        with open(gallery_path, 'r', encoding='utf-8') as f:
+            payload = json.load(f)
+
+        return jsonify({
+            'images': payload if isinstance(payload, list) else [],
+            'total': len(payload) if isinstance(payload, list) else 0,
+            'source': 'json-fallback'
         })
     except Exception as e:
         print(f"Error loading gallery: {e}")
