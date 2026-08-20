@@ -19,6 +19,24 @@
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 1rem;
+    text-align: center;
+}
+
+.compact-hero.sermons-hero h1 {
+    color: rgba(255, 255, 255, 0.98) !important;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.compact-hero.sermons-hero p {
+    color: rgba(255, 255, 255, 0.86) !important;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Alpine.js x-cloak - hide elements until Alpine processes them */
@@ -170,9 +188,9 @@
 /* Sermons Grid - Optimized for Maximum Space */
 .sermons-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    padding: 1rem 0;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    padding: 0.85rem 0;
     max-width: 100%;
     min-height: 400px;
     width: 100%;
@@ -186,18 +204,21 @@
 }
 
 .sermon-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 1.25rem;
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(0, 82, 163, 0.12);
+    border-radius: 18px;
+    padding: 1rem 1.1rem;
+    transition: all 0.25s ease;
     display: flex;
-    flex-direction: column;
-    min-height: 200px;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    min-height: 0;
     position: relative;
     z-index: 1;
+    box-shadow: 0 10px 28px rgba(16, 44, 84, 0.08);
 }
 
 .sermon-card:hover {
@@ -205,19 +226,20 @@
 }
 
 .sermon-card:hover {
-    transform: translateY(-4px);
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(0, 82, 163, 0.18);
+    box-shadow: 0 16px 34px rgba(16, 44, 84, 0.14);
 }
 
 .sermon-thumbnail {
-    width: 100%;
+    width: 124px;
+    flex: 0 0 124px;
     aspect-ratio: 1 / 1;
-    border-radius: 8px;
+    border-radius: 14px;
     overflow: hidden;
-    margin-bottom: 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 0;
+    background: rgba(0, 82, 163, 0.06);
 }
 
 .sermon-thumbnail img {
@@ -230,13 +252,14 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .sermon-title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 0.75rem;
+    color: #1a2a3f;
+    margin-bottom: 0.45rem;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -246,35 +269,35 @@
 
 .sermon-meta {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: #5b6b7a;
     margin-bottom: 0.5rem;
 }
 
 .sermon-scripture {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #52606e;
     font-style: italic;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .sermon-links {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    margin-top: auto;
+    margin-top: 0.2rem;
 }
 
 .sermon-links a {
-    padding: 0.5rem 0.9rem;
-    border-radius: 8px;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
     text-decoration: none;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 82, 163, 0.16);
+    box-shadow: 0 4px 12px rgba(16, 44, 84, 0.06);
     position: relative;
     overflow: hidden;
 }
@@ -296,58 +319,58 @@
 
 /* Play button - for Spotify-linked sermons */
 .btn-play {
-    background: rgba(29, 185, 84, 0.45);
-    color: rgba(255, 255, 255, 0.98);
-    border-color: rgba(29, 185, 84, 0.55);
+    background: rgba(29, 185, 84, 0.13);
+    color: #126d2f;
+    border-color: rgba(29, 185, 84, 0.25);
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
 }
 
 .btn-play:hover {
-    background: rgba(29, 185, 84, 0.6);
-    border-color: rgba(29, 185, 84, 0.7);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.35);
+    background: rgba(29, 185, 84, 0.22);
+    border-color: rgba(29, 185, 84, 0.32);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.12);
 }
 
 .btn-spotify {
-    background: rgba(29, 185, 84, 0.3);
-    color: rgba(255, 255, 255, 0.95);
-    border-color: rgba(29, 185, 84, 0.4);
+    background: rgba(29, 185, 84, 0.12);
+    color: #126d2f;
+    border-color: rgba(29, 185, 84, 0.22);
 }
 
 .btn-spotify:hover {
-    background: rgba(29, 185, 84, 0.5);
-    border-color: rgba(29, 185, 84, 0.6);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3);
+    background: rgba(29, 185, 84, 0.18);
+    border-color: rgba(29, 185, 84, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(29, 185, 84, 0.1);
 }
 
 .btn-youtube {
-    background: rgba(255, 0, 0, 0.3);
-    color: rgba(255, 255, 255, 0.95);
-    border-color: rgba(255, 0, 0, 0.4);
+    background: rgba(255, 0, 0, 0.08);
+    color: #b10000;
+    border-color: rgba(255, 0, 0, 0.16);
 }
 
 .btn-youtube:hover {
-    background: rgba(255, 0, 0, 0.5);
-    border-color: rgba(255, 0, 0, 0.6);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+    background: rgba(255, 0, 0, 0.14);
+    border-color: rgba(255, 0, 0, 0.24);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(255, 0, 0, 0.08);
 }
 
 .btn-apple {
-    background: rgba(0, 0, 0, 0.3);
-    color: rgba(255, 255, 255, 0.95);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a2a3f;
+    border-color: rgba(26, 42, 63, 0.12);
 }
 
 .btn-apple:hover {
-    background: rgba(0, 0, 0, 0.5);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(26, 42, 63, 0.18);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(16, 44, 84, 0.08);
 }
 
 
@@ -663,7 +686,18 @@
 @media (max-width: 768px) {
     .sermons-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.85rem;
+    }
+
+    .sermon-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sermon-thumbnail {
+        width: 100%;
+        flex: 0 0 auto;
+        aspect-ratio: 16 / 9;
     }
     
     .sermon-controls {
@@ -701,8 +735,8 @@
 {% block content %}
 <!-- Compact Hero -->
 <div class="compact-hero sermons-hero">
-    <h1>Sunday Sermons</h1>
-    <p>Weekly messages from our Sunday worship services • 25 Years of Archive</p>
+    <h1 style="color: rgba(255, 255, 255, 0.98) !important; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);">Sunday Sermons</h1>
+    <p style="color: rgba(255, 255, 255, 0.86) !important; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);">Weekly messages from our Sunday worship services • 25 Years of Archive</p>
 </div>
 
 <!-- Sermons Section -->
@@ -981,6 +1015,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // HTML-escape helper for data attribute values
     function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
 
+    const SERMON_THUMBNAIL_FALLBACK = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg';
+
+    function resolveSermonThumbnail(sermon) {
+        const raw = sermon && sermon.thumbnail ? String(sermon.thumbnail).trim() : '';
+        if (!raw) return SERMON_THUMBNAIL_FALLBACK;
+        if (/example\.com\/thumbnail/i.test(raw)) return SERMON_THUMBNAIL_FALLBACK;
+        return transformImage(raw) || SERMON_THUMBNAIL_FALLBACK;
+    }
+
     function renderCardView() {
         const container = document.getElementById('sermonResults');
         document.getElementById('sermonTable').style.display = 'none';
@@ -1003,20 +1046,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
             const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
                                      (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
+            const thumbnailSrc = resolveSermonThumbnail(sermon);
 
             card.innerHTML = `
-                ${sermon.thumbnail ? `
+                ${thumbnailSrc ? `
                     <div class="sermon-thumbnail">
-                        <img src="${transformImage(sermon.thumbnail)}" alt="${sermon.title}" loading="lazy">
+                        <img src="${thumbnailSrc}" alt="${sermon.title}" loading="lazy" onerror="this.onerror=null;this.src='${SERMON_THUMBNAIL_FALLBACK}'">
                     </div>
                 ` : ''}
                 <div class="sermon-content">
-                    <h3 class="sermon-title">${sermon.title}</h3>
-                    <p class="sermon-meta">
+                    <h3 class="sermon-title" style="color: #1a2a3f !important;">${sermon.title}</h3>
+                    <p class="sermon-meta" style="color: #5b6b7a !important;">
                         <span class="sermon-author">${sermon.speaker || 'Unknown'}</span> •
                         <span class="sermon-date">${formatDate(sermon.date)}</span>
                     </p>
-                    ${sermon.scripture ? `<p class="sermon-scripture">${sermon.scripture}</p>` : ''}
+                    ${sermon.scripture ? `<p class="sermon-scripture" style="color: #52606e !important;">${sermon.scripture}</p>` : ''}
                     ${isUpcoming ? `
                         <span class="sermon-links">
                             <a href="live" class="upcoming-badge">
@@ -1048,7 +1092,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <button class="btn-play-mp3"
                                     data-play-audio="${esc(audioSrc)}"
                                     data-play-title="${esc(sermon.title)}"
-                                    data-play-img="${esc(sermon.thumbnail || '')}"
+                                    data-play-img="${esc(thumbnailSrc)}"
                                     data-play-subtitle="${esc(sermon.speaker || '')}">
                                     <i class="fas fa-play"></i> Play
                                 </button>
@@ -1122,7 +1166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;"
                                 data-play-audio="${esc(audioSrc)}"
                                 data-play-title="${esc(sermon.title)}"
-                                data-play-img="${esc(sermon.thumbnail || '')}"
+                                data-play-img="${esc(thumbnailSrc)}"
                                 data-play-subtitle="${esc(sermon.speaker || '')}">
                                 <i class="fas fa-play"></i> Play
                             </button>
