@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}CPC New Haven - Everyone is truly welcomed{% endblock %}
-{% block meta_description %}Christ Presbyterian Church in New Haven, CT — a gospel-centered church where everyone is truly welcomed. Sunday worship at 10:30am.{% endblock %}
-{% block og_title %}CPC New Haven — Everyone is truly welcomed{% endblock %}
-{% block og_description %}A gospel-centered church in New Haven, CT. Sunday worship at 10:30am — 135 Whitney Avenue. Come as you are.{% endblock %}
+{% block title %}CPC New Haven | Christ Presbyterian Church in New Haven{% endblock %}
+{% block meta_description %}Christ Presbyterian Church in New Haven, CT - a welcoming church family centered on Jesus. Sunday worship at 10:30am.{% endblock %}
+{% block og_title %}CPC New Haven | Christ Presbyterian Church in New Haven{% endblock %}
+{% block og_description %}Christ Presbyterian Church in New Haven, CT. Sunday worship at 10:30am at 135 Whitney Avenue. We would love to see you.{% endblock %}
 {% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg{% endblock %}
 {% block og_url %}https://cpcnewhaven.org{% endblock %}
 {% block canonical %}https://cpcnewhaven.org{% endblock %}
@@ -259,15 +259,74 @@
         margin-bottom: 0.5rem;
     }
 
+    .highlights-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.45rem;
+        max-width: 48rem;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
+
+    .highlights-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #0b5fa8;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+    }
+
+    .highlights-kicker::before {
+        content: "";
+        width: 0.8rem;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #5ac8fa, #0052a3);
+        box-shadow: 0 0 0 4px rgba(90, 200, 250, 0.08);
+    }
+
+    .highlights-title {
+        position: relative;
+        display: inline-block;
+        margin: 0;
+    }
+
+    .highlights-subheading {
+        max-width: 34rem;
+        margin: 0;
+        color: rgba(29, 29, 31, 0.68);
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
     /* Latest card styles consistent with dark theme */
 
     @media (max-width: 768px) {
         .hero-banner {
-            min-height: 70vh;
+            min-height: 76vh;
         }
 
         .hero-banner .banner-slide {
             background-position: center 30%;
+        }
+
+        .hero-banner .splash-content {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .hero-banner .hero-copy {
+            text-align: center;
+        }
+
+        .hero-banner .hero-sidecard {
+            width: 100%;
         }
 
         .splash-buttons {
@@ -311,8 +370,7 @@
     <div class="splash-content mx-auto max-w-3xl px-4 md:px-6 py-16 md:py-20 text-center relative">
         <h1>Christ Presbyterian Church</h1>
         <h2>New Haven, CT</h2>
-        <p>Everyone is truly welcomed into God's presence because there is no limit to God's grace as accomplished for
-            us by Christ.</p>
+        <p>We are a church family in New Haven, welcoming neighbors, seekers, and longtime believers to grow in God's grace together through Jesus Christ.</p>
         <div class="splash-buttons mt-4 md:mt-6">
             <a href="{{ url_for('live') }}" class="btn btn-primary">Watch Live</a>
             <a href="{{ url_for('plan_a_visit') }}" class="btn btn-secondary">Plan a Visit</a>
@@ -325,9 +383,10 @@
 <!-- New Content Section (announcements / latest from admin) -->
 <section class="highlights-section section-dark new-content-section" style="padding: 4rem 0; position: relative;">
     <div class="container" style="position: relative; z-index: 1;">
-        <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
-            <h2 class="section-heading" style="margin-bottom: 0.5rem;">Highlights</h2>
-            <p class="section-subheading">Announcements and the latest from CPC</p>
+        <div class="section-header highlights-header" style="text-align: center; margin-bottom: 2.5rem;">
+            <span class="highlights-kicker">What&apos;s happening now</span>
+            <h2 class="section-heading highlights-title">Highlights</h2>
+            <p class="section-subheading highlights-subheading">Announcements, events, and updates from CPC</p>
         </div>
         <div id="highlights" class="highlights-grid">
             <div class="highlights-status" style="grid-column: 1/-1; text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">Loading highlights...</div>
@@ -346,14 +405,14 @@
 <!-- What you need -->
 <section class="section-band section-dark" style="padding: 3rem 0;">
     <div class="container">
-        <h2 class="section-heading mb-6">Latest sermon, upcoming Sunday, and resources from our pastors</h2>
+        <h2 class="section-heading mb-6">Latest sermon, Sunday details, and resources from our pastors</h2>
 
         <div class="latest-grid" id="latestGrid">
             <div class="latest-card" id="card-sermon">
                 <h3>Latest Sermon</h3>
                 <div class="latest-title" id="latestSermonTitle">—</div>
                 <div class="latest-meta" id="latestSermonMeta"></div>
-                <a href="{{ url_for('sermons') }}" class="cta" id="latestSermonLink">Listen / Watch →</a>
+                <a href="{{ url_for('sermons') }}" class="cta" id="latestSermonLink">Listen or watch →</a>
             </div>
             <div class="latest-card" id="card-sunday">
                 <h3>Upcoming Sunday</h3>
@@ -374,7 +433,7 @@
                 <h3>Prayer Request</h3>
                 <div class="latest-title">Share your prayers with CPC</div>
                 <div class="latest-meta">Submit a prayer request and let our community pray with you.</div>
-                <a href="{{ url_for('contact') }}" class="cta">Prayer Request →</a>
+                <a href="{{ url_for('contact') }}" class="cta">Share a prayer request →</a>
             </div>
         </div>
     </div>
@@ -384,7 +443,7 @@
 <section id="service-info" class="service-info section-dark -mt-4">
     <div class="container">
         <div class="service-times">
-            <h2 class="section-heading border-l-4 border-blue-400 pl-3">Sunday Service Information</h2>
+            <h2 class="section-heading border-l-4 border-blue-400 pl-3">Sunday Schedule</h2>
             <div class="service-schedule leading-relaxed">
                 {% if active_schedule == 'summer' %}
                   {% set _p = site_content.get('service_summer_prayer_time','') %}
@@ -431,9 +490,8 @@
 <section class="section-band section-dark">
     <div class="container">
         <div class="text-center mb-6">
-            <h2 class="section-heading mb-2">New Here? Start with These</h2>
-            <p class="section-subheading max-w-2xl mx-auto">Plan your first visit, learn what we believe, and meet
-                people who can help you feel at home.</p>
+            <h2 class="section-heading mb-2">New here? Start here.</h2>
+            <p class="section-subheading max-w-2xl mx-auto">Plan your first visit, learn what we believe, and meet people who can help you feel at home.</p>
         </div>
         <div class="grid md:grid-cols-3 gap-4">
             <div class="dark-card p-6">
@@ -443,12 +501,12 @@
             </div>
             <div class="dark-card p-6">
                 <h3 class="text-lg font-semibold mb-2">What We Believe</h3>
-                <p class="dark-card-text mb-4">Our faith, confessional standards, and what we teach from Scripture.</p>
+                <p class="dark-card-text mb-4">Our beliefs, confessional standards, and how they shape our life together.</p>
                 <a href="{{ url_for('what_we_believe') }}" class="btn btn-secondary">What We Believe</a>
             </div>
             <div class="dark-card p-6">
                 <h3 class="text-lg font-semibold mb-2">Meet the Team</h3>
-                <p class="dark-card-text mb-4">Connect with our pastors and staff.</p>
+                <p class="dark-card-text mb-4">Meet our pastors and staff.</p>
                 <a href="{{ url_for('contact') }}" class="btn btn-secondary">Contact Us</a>
             </div>
         </div>

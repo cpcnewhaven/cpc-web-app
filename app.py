@@ -5627,11 +5627,13 @@ if __name__ == '__main__':
         else:
             port = find_available_port()
             os.environ['FLASK_APP_PORT'] = str(port)
+        debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
+        host = os.getenv('FLASK_RUN_HOST', '127.0.0.1')
         print(f"Starting Flask app on port {port}")
         print(f"Main site: http://localhost:{port}")
         print(f"Admin panel: http://localhost:{port}/admin")
         print("Press Ctrl+C to stop the server")
-        app.run(debug=True, port=port, host='0.0.0.0')
+        app.run(debug=debug_mode, port=port, host=host, use_reloader=debug_mode)
     except RuntimeError as e:
         print(f"Error: {e}")
         print("Please free up a port or try running the app again.")

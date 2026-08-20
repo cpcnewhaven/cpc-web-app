@@ -1,8 +1,19 @@
 # CPC New Haven - Flask Web Application
 
-Current release marker: `v1.0.1` (see [VERSION](/Users/agworkywork/cpc-web-app/VERSION:1), [AGENT_MEMORY.md](/Users/agworkywork/cpc-web-app/AGENT_MEMORY.md:1), and [RELEASE_v1.0.1.md](/Users/agworkywork/cpc-web-app/RELEASE_v1.0.1.md:1)).
+Current release marker: `v1.0.1` (see [VERSION](VERSION), [AGENT_MEMORY.md](AGENT_MEMORY.md), and [RELEASE_v1.0.1.md](RELEASE_v1.0.1.md)).
 
 A modern Flask web application for Christ Presbyterian Church New Haven, featuring dynamic content management, sermon archives, podcast integration, and responsive design.
+
+## Admin Editing Guide
+
+If you are using the site as a church staff member or helper and do **not** want the technical details, start here:
+
+- Read the plain-language guide: [docs/admin/ADMIN_USER_GUIDE.md](docs/admin/ADMIN_USER_GUIDE.md)
+- Use the admin area to manage announcements, events, sermons, podcasts, gallery images, teaching series, and page content
+- Changes you save in admin usually appear on the live site right away
+- If you are not sure what a button does, check the guide first or ask Chris before deleting anything
+
+This README still includes the technical setup for developers, but the user guide above is the better place to start for day-to-day editing.
 
 ## Features
 
@@ -336,6 +347,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 For questions or support, please contact the development team or create an issue in the repository.
+
+For admin editing help, start with the non-developer guide:
+
+- [Admin User Guide](docs/admin/ADMIN_USER_GUIDE.md)
 
 ---
 
