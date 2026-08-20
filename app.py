@@ -771,8 +771,56 @@ def sermons():
 
 @app.route('/podcasts')
 def podcasts():
-    series = PodcastSeries.query.all()
-    return render_template('podcasts.html', series=series)
+    series = PodcastSeries.query.order_by(PodcastSeries.title.asc()).all()
+    fallback_artwork = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg'
+    podcast_series = []
+
+    for s in series:
+        episodes = db.session.query(
+            PodcastEpisode.id,
+            PodcastEpisode.number,
+            PodcastEpisode.title,
+            PodcastEpisode.link,
+            PodcastEpisode.listen_url,
+            PodcastEpisode.handout_url,
+            PodcastEpisode.guest,
+            PodcastEpisode.date_added,
+            PodcastEpisode.season,
+            PodcastEpisode.scripture,
+            PodcastEpisode.podcast_thumbnail_url,
+        ).filter_by(series_id=s.id)\
+            .order_by(PodcastEpisode.date_added.desc(), PodcastEpisode.number.desc()).all()
+
+        episode_items = []
+        for ep in episodes:
+            episode = ep._mapping
+            episode_items.append({
+                'id': episode['id'],
+                'number': episode['number'],
+                'title': episode['title'],
+                'link': episode['link'],
+                'listen_url': episode['listen_url'],
+                'handout_url': episode['handout_url'],
+                'guest': episode['guest'],
+                'date_added': episode['date_added'].isoformat() if episode['date_added'] else None,
+                'season': episode['season'],
+                'scripture': episode['scripture'],
+                'podcast_thumbnail_url': episode['podcast_thumbnail_url'],
+            })
+
+        artwork = next((episode.podcast_thumbnail_url for episode in episodes if episode.podcast_thumbnail_url), fallback_artwork)
+        latest_episode = episode_items[0] if episode_items else None
+        podcast_series.append({
+            'id': s.id,
+            'title': s.title,
+            'description': s.description or '',
+            'episode_count': len(episode_items),
+            'artwork': artwork,
+            'latest_episode': latest_episode,
+            'episodes': episode_items,
+        })
+
+    return render_template('podcasts.html', series=series, podcast_series=podcast_series, podcast_fallback_artwork=fallback_artwork)
 
 @app.route('/events')
 def events():

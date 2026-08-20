@@ -326,7 +326,15 @@ body.theme-white .footer-meta {
 
 body.theme-white .footer-status-bar,
 body.theme-white .footer-status-bar-inner {
-    color: rgba(255, 255, 255, 0.88) !important;
+    color: rgba(255, 255, 255, 0.96) !important;
+}
+
+body.theme-white .footer-status-bar {
+    background: #0a52a3 !important;
+    border-top-color: rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 -4px 18px rgba(10, 26, 52, 0.18) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 @keyframes cpcpulse {
@@ -1235,10 +1243,9 @@ body.ticker-hidden {
     right: 0;
     bottom: 0;
     min-height: 34px;
-    background: rgba(10, 15, 25, 0.72);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0a52a3;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 -4px 18px rgba(10, 26, 52, 0.18);
     z-index: 997;
 }
 
@@ -1252,7 +1259,7 @@ body.ticker-hidden {
     align-items: center;
     justify-content: flex-end;
     gap: 10px;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.96);
     font-size: 12px;
 }
 
