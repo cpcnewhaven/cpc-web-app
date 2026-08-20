@@ -394,20 +394,6 @@
             <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Give
         </a>
 
-        <button type="button" class="dash-theme-toggle"
-            @click="$store.dash.theme = $store.dash.theme === 'white' ? 'blue' : 'white'; $store.dash.save(); $store.dash.applyTheme()"
-            :aria-pressed="$store.dash.theme === 'blue' ? 'true' : 'false'">
-            <span class="dash-theme-toggle__copy">
-                <span class="dash-theme-toggle__label">Dark mode</span>
-                <span class="dash-theme-toggle__meta" x-text="$store.dash.theme === 'blue' ? 'On' : 'Off'"></span>
-            </span>
-            <span class="dash-theme-toggle__switch" :class="$store.dash.theme === 'blue' ? 'is-on' : ''">
-                <span class="dash-theme-toggle__thumb">
-                    <i class="fa-solid" :class="$store.dash.theme === 'blue' ? 'fa-moon' : 'fa-sun'"></i>
-                </span>
-            </span>
-        </button>
-
         <div class="dash-spacer"></div>
 
         <div class="dash-follow">
@@ -551,11 +537,28 @@
     <!-- Bottom status bar (always visible) -->
     <div class="footer-status-bar">
         <div class="footer-status-bar-inner">
-            <span id="footerClock"></span>
-            <span class="sep">•</span>
-            <span id="footerDate"></span>
-            <span class="sep">•</span>
-            <span id="footerTemp"></span>
+            <div class="footer-status-bar-left">
+                <button type="button" class="dash-theme-toggle dash-theme-toggle--footer"
+                    @click="$store.dash.theme = $store.dash.theme === 'white' ? 'blue' : 'white'; $store.dash.save(); $store.dash.applyTheme()"
+                    :aria-pressed="$store.dash.theme === 'blue' ? 'true' : 'false'">
+                    <span class="dash-theme-toggle__copy">
+                        <span class="dash-theme-toggle__label">Dark mode</span>
+                        <span class="dash-theme-toggle__meta" x-text="$store.dash.theme === 'blue' ? 'On' : 'Off'"></span>
+                    </span>
+                    <span class="dash-theme-toggle__switch" :class="$store.dash.theme === 'blue' ? 'is-on' : ''">
+                        <span class="dash-theme-toggle__thumb">
+                            <i class="fa-solid" :class="$store.dash.theme === 'blue' ? 'fa-moon' : 'fa-sun'"></i>
+                        </span>
+                    </span>
+                </button>
+            </div>
+            <div class="footer-status-bar-right">
+                <span id="footerClock"></span>
+                <span class="sep">•</span>
+                <span id="footerDate"></span>
+                <span class="sep">•</span>
+                <span id="footerTemp"></span>
+            </div>
         </div>
     </div>
     <style>
