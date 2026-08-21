@@ -6133,3 +6133,205 @@ body.theme-white .dash-live.is-sunday:hover {
 
 body.theme-white .dash-live__dot { background: rgba(0, 100, 200, 0.7); }
 body.theme-white .dash-live.is-sunday .dash-live__dot { background: rgba(200, 50, 70, 0.75); }
+
+/* ===========================================================================
+   BLUE THEME OVERRIDES
+   Keep shared pages readable when the CPC blue theme is active.
+   =========================================================================== */
+body.theme-blue {
+    background: linear-gradient(180deg, #0b4f92 0%, #083f79 55%, #072f5c 100%);
+    color: #f6f9ff;
+}
+
+body.theme-blue h1,
+body.theme-blue h2,
+body.theme-blue h3,
+body.theme-blue h4,
+body.theme-blue h5,
+body.theme-blue h6 {
+    color: #f6f9ff;
+}
+
+body.theme-blue p,
+body.theme-blue li,
+body.theme-blue label,
+body.theme-blue small {
+    color: rgba(255, 255, 255, 0.84);
+}
+
+body.theme-blue a {
+    color: #d7e9ff;
+}
+
+body.theme-blue a:hover {
+    color: #ffffff;
+}
+
+body.theme-blue .glass-card,
+body.theme-blue .latest-card,
+body.theme-blue .highlight-card,
+body.theme-blue .dark-card,
+body.theme-blue .time-slot,
+body.theme-blue .series-card,
+body.theme-blue .podcast-series-card,
+body.theme-blue .podcast-episode,
+body.theme-blue #episodes li,
+body.theme-blue .episode-search-panel,
+body.theme-blue .preview-episode {
+    background: rgba(246, 249, 253, 0.97) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 18px 36px rgba(0, 16, 36, 0.18) !important;
+}
+
+body.theme-blue .glass-card:hover,
+body.theme-blue .latest-card:hover,
+body.theme-blue .highlight-card:hover,
+body.theme-blue .dark-card:hover,
+body.theme-blue .time-slot:hover,
+body.theme-blue .series-card:hover,
+body.theme-blue .podcast-series-card:hover,
+body.theme-blue .podcast-episode:hover,
+body.theme-blue #episodes li:hover,
+body.theme-blue .preview-episode:hover {
+    background: rgba(255, 255, 255, 0.995) !important;
+    box-shadow: 0 22px 42px rgba(0, 16, 36, 0.24) !important;
+}
+
+body.theme-blue .glass-card h1,
+body.theme-blue .glass-card h2,
+body.theme-blue .glass-card h3,
+body.theme-blue .glass-card h4,
+body.theme-blue .latest-card h1,
+body.theme-blue .latest-card h2,
+body.theme-blue .latest-card h3,
+body.theme-blue .highlight-card h1,
+body.theme-blue .highlight-card h2,
+body.theme-blue .highlight-card h3,
+body.theme-blue .dark-card h1,
+body.theme-blue .dark-card h2,
+body.theme-blue .dark-card h3,
+body.theme-blue .time-slot h1,
+body.theme-blue .time-slot h2,
+body.theme-blue .time-slot h3,
+body.theme-blue .series-card h1,
+body.theme-blue .series-card h2,
+body.theme-blue .series-card h3,
+body.theme-blue .podcast-card-title,
+body.theme-blue .episode-title,
+body.theme-blue .preview-episode-info h4 {
+    color: #1a2a3f !important;
+}
+
+body.theme-blue .glass-card p,
+body.theme-blue .latest-card p,
+body.theme-blue .highlight-card p,
+body.theme-blue .dark-card p,
+body.theme-blue .time-slot p,
+body.theme-blue .series-card p,
+body.theme-blue .podcast-card-description,
+body.theme-blue .podcast-card-meta,
+body.theme-blue .preview-episode-meta,
+body.theme-blue .episode-meta,
+body.theme-blue .episode-details,
+body.theme-blue .episode-results-summary,
+body.theme-blue .loading-message,
+body.theme-blue .error-message {
+    color: #445265 !important;
+}
+
+body.theme-blue .page-hero h1,
+body.theme-blue .page-hero h2,
+body.theme-blue .page-hero h3,
+body.theme-blue .compact-hero h1,
+body.theme-blue .compact-hero p,
+body.theme-blue .podcasts-hero h1,
+body.theme-blue .podcasts-hero p,
+body.theme-blue .section-heading,
+body.theme-blue .section-subheading,
+body.theme-blue .rss-episodes-section h2,
+body.theme-blue .episodes-header h2 {
+    color: #f6f9ff !important;
+}
+
+body.theme-blue .podcast-tabs {
+    border-bottom-color: rgba(255, 255, 255, 0.16);
+}
+
+body.theme-blue .podcast-tab {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    color: rgba(255, 255, 255, 0.84) !important;
+    box-shadow: 0 10px 22px rgba(0, 16, 36, 0.08);
+}
+
+body.theme-blue .podcast-tab:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+body.theme-blue .podcast-tab.active {
+    background: #eef4fb !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #0d4b91 !important;
+}
+
+body.theme-blue .podcast-episode-count,
+body.theme-blue .episode-filter-chip {
+    background: rgba(0, 82, 163, 0.1) !important;
+    border-color: rgba(0, 82, 163, 0.18) !important;
+    color: #0d4b91 !important;
+}
+
+body.theme-blue .podcast-btn,
+body.theme-blue .back-btn,
+body.theme-blue .episode-clear-btn,
+body.theme-blue #prevEpisodeBtn,
+body.theme-blue #nextEpisodeBtn,
+body.theme-blue .btn-play-mp3,
+body.theme-blue .btn-secondary {
+    background: rgba(0, 82, 163, 0.08) !important;
+    border-color: rgba(0, 82, 163, 0.18) !important;
+    color: #0d4b91 !important;
+}
+
+body.theme-blue .podcast-btn:hover,
+body.theme-blue .back-btn:hover,
+body.theme-blue .episode-clear-btn:hover,
+body.theme-blue #prevEpisodeBtn:hover,
+body.theme-blue #nextEpisodeBtn:hover,
+body.theme-blue .btn-play-mp3:hover,
+body.theme-blue .btn-secondary:hover {
+    background: rgba(0, 82, 163, 0.14) !important;
+    color: #083e79 !important;
+}
+
+body.theme-blue .podcast-btn-primary,
+body.theme-blue .btn-primary {
+    background: var(--cpc-blue) !important;
+    border-color: var(--cpc-blue) !important;
+    color: #fff !important;
+}
+
+body.theme-blue .podcast-btn-primary:hover,
+body.theme-blue .btn-primary:hover {
+    background: var(--cpc-blue-dark) !important;
+    border-color: var(--cpc-blue-dark) !important;
+    color: #fff !important;
+}
+
+body.theme-blue .episode-filter-input,
+body.theme-blue .episode-filter-select,
+body.theme-blue .episode-search-input,
+body.theme-blue .search-bar input,
+body.theme-blue .sort-select,
+body.theme-blue .date-range-inputs input {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border-color: rgba(0, 82, 163, 0.16) !important;
+    color: #1a2a3f !important;
+}
+
+body.theme-blue .episode-search-input::placeholder,
+body.theme-blue .search-bar input::placeholder {
+    color: #7b8896 !important;
+}

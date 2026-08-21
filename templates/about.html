@@ -25,7 +25,8 @@
         max-width: 1120px;
         min-height: 440px;
         display: flex;
-        align-items: flex-end;
+        align-items: center;
+        justify-content: center;
         position: relative;
         overflow: hidden;
         border-radius: 18px;
@@ -38,8 +39,9 @@
     }
 
     .about-hero-content {
-        max-width: 680px;
+        max-width: 760px;
         padding: clamp(2rem, 6vw, 4.5rem);
+        text-align: center;
     }
 
     .about-hero-eyebrow {
@@ -65,8 +67,12 @@
         color: rgba(255, 255, 255, .84);
         font-size: clamp(1rem, 2vw, 1.22rem);
         line-height: 1.65;
-        max-width: 590px;
-        margin: 0;
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .about-hero-ctas {
+        justify-content: center;
     }
 
     /* Pull Quote Card */
