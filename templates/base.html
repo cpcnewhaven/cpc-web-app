@@ -508,11 +508,21 @@
                     Close
                 </button>
             </div>
+            <button type="button" class="dash-theme-toggle mobile-menu-theme-toggle"
+                onclick="window.__cpcToggleTheme && window.__cpcToggleTheme(event)"
+                aria-label="Toggle dark mode" aria-pressed="false">
+                <span class="dash-theme-toggle__copy">
+                    <span class="dash-theme-toggle__label">Dark mode</span>
+                    <span class="dash-theme-toggle__meta">Off</span>
+                </span>
+                <span class="dash-theme-toggle__switch">
+                    <span class="dash-theme-toggle__thumb"><i class="fa-solid fa-sun" aria-hidden="true"></i></span>
+                </span>
+            </button>
             <div class="mobile-more-links">
                 <a href="{{ url_for('give') }}" class="mobile-more-link"><span>Give</span></a>
                 <a href="{{ url_for('sundays') }}" class="mobile-more-link"><span>Sundays</span></a>
                 <a href="{{ url_for('live') }}" class="mobile-more-link"><span>Live Stream</span></a>
-                <a href="{{ url_for('podcasts') }}" class="mobile-more-link"><span>Podcasts</span></a>
                 <a href="{{ url_for('search') }}" class="mobile-more-link"><span>Search</span></a>
                 {# <a href="{{ url_for('suggest_event') }}" class="mobile-more-link"><span>Suggest an Event</span></a> #}
                 <a href="{{ url_for('contact') }}" class="mobile-more-link"><span>Contact</span></a>
@@ -520,10 +530,7 @@
                 <a href="{{ url_for('highlights') }}" class="mobile-more-link"><span>New Content</span></a>
                 <a href="{{ url_for('community') }}" class="mobile-more-link"><span>Community</span></a>
                 <a href="{{ url_for('lifegroups') }}" class="mobile-more-link"><span>LifeGroups</span></a>
-                <a href="{{ url_for('media') }}" class="mobile-more-link"><span>Media Hub</span></a>
-                <a href="{{ url_for('teaching_series') }}" class="mobile-more-link"><span>Teaching Series</span></a>
-                <a href="{{ url_for('pastor_teaching') }}" class="mobile-more-link"><span>Pastor Teaching</span></a>
-                <a href="{{ url_for('resources') }}" class="mobile-more-link"><span>Teaching Resources</span></a>
+                <a href="{{ url_for('media') }}" class="mobile-more-link"><span>Media Gallery</span></a>
                 <a href="{{ url_for('archive') }}" class="mobile-more-link"><span>Archive</span></a>
             </div>
         </div>
@@ -545,7 +552,6 @@
             <div class="footer-status-bar-left">
                 <button type="button" class="dash-theme-toggle dash-theme-toggle--footer"
                     onclick="window.__cpcToggleTheme && window.__cpcToggleTheme(event)"
-                    @click="$store.dash.theme = $store.dash.theme === 'white' ? 'blue' : 'white'; $store.dash.save(); $store.dash.applyTheme()"
                     :aria-pressed="$store.dash.theme === 'blue' ? 'true' : 'false'">
                     <span class="dash-theme-toggle__copy">
                         <span class="dash-theme-toggle__label">Dark mode</span>
@@ -863,6 +869,30 @@
             });
             Alpine.store('dash').applyLayout();
         });
+
+        window.__cpcToggleTheme = (event) => {
+            if (event) event.preventDefault();
+            const nextTheme = document.body.classList.contains('theme-blue') ? 'white' : 'blue';
+            const dash = window.Alpine && Alpine.store && Alpine.store('dash');
+            if (dash) {
+                dash.theme = nextTheme;
+                dash.save();
+                dash.applyTheme();
+            } else {
+                document.documentElement.setAttribute('data-theme', nextTheme);
+                document.body.classList.toggle('theme-white', nextTheme === 'white');
+                document.body.classList.toggle('theme-blue', nextTheme === 'blue');
+                localStorage.setItem('dash_theme', nextTheme);
+            }
+            document.querySelectorAll('.dash-theme-toggle').forEach((toggle) => {
+                toggle.setAttribute('aria-pressed', nextTheme === 'blue' ? 'true' : 'false');
+                toggle.querySelector('.dash-theme-toggle__meta')?.replaceChildren(document.createTextNode(nextTheme === 'blue' ? 'On' : 'Off'));
+                toggle.querySelector('.dash-theme-toggle__switch')?.classList.toggle('is-on', nextTheme === 'blue');
+                const icon = toggle.querySelector('.dash-theme-toggle__thumb i');
+                icon?.classList.toggle('fa-moon', nextTheme === 'blue');
+                icon?.classList.toggle('fa-sun', nextTheme !== 'blue');
+            });
+        };
 
         const initThemeToggles = () => {
             if (typeof window.Alpine !== 'undefined') {
