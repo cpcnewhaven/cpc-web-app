@@ -196,6 +196,9 @@
     width: 100%;
     position: relative;
     z-index: 1;
+    grid-auto-rows: min-content;
+    align-content: start;
+    align-items: start;
 }
 
 /* Override Alpine.js display: none when element should be visible */
@@ -216,6 +219,8 @@
     align-items: flex-start;
     gap: 1.1rem;
     min-height: 0;
+    height: auto;
+    align-self: start;
     position: relative;
     z-index: 1;
     box-shadow: 0 12px 30px rgba(16, 44, 84, 0.1);
