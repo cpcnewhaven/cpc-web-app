@@ -5825,8 +5825,8 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 .dash-search__input::placeholder { color: rgba(255, 255, 255, .5); }
 .dash-search__input:focus {
     background: rgba(255, 255, 255, .12);
-    border-color: var(--surface-accent, #9bc7ff);
-    box-shadow: 0 0 12px rgba(155, 199, 255, .2);
+    border-color: var(--surface-accent, #0066cc);
+    box-shadow: 0 0 12px rgba(0, 102, 204, .2);
 }
 
 /* ---- 2. Live hero card ---- */
@@ -5858,7 +5858,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
     text-transform: uppercase; color: rgba(255, 255, 255, .9);
 }
 .dash-live__dot {
-    width: 8px; height: 8px; border-radius: 50%; background: rgba(155, 199, 255, 0.9);
+    width: 8px; height: 8px; border-radius: 50%; background: rgba(0, 102, 204, 0.9);
     animation: cpcpulse 1.6s ease-in-out infinite;
 }
 
@@ -5885,7 +5885,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
     transition: padding-left .15s ease;
 }
 .dash-row--last { border-bottom: none; }
-.dash-row__icon  { width: 18px; text-align: center; font-size: 13px; color: var(--surface-accent, #9bc7ff); }
+.dash-row__icon  { width: 18px; text-align: center; font-size: 13px; color: var(--surface-accent, #0066cc); }
 .dash-row__label { color: #fff; font: 600 14px/1 'Barlow', sans-serif; }
 .dash-row__chev  { margin-left: auto; font-size: 11px; color: rgba(255, 255, 255, .35); }
 .dash-row:hover  { padding-left: 6px; }
@@ -5900,10 +5900,10 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 .dash-item__chip {
     flex: none; width: 34px; height: 34px; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(155, 199, 255, .16); color: var(--surface-accent, #9bc7ff);
+    background: rgba(0, 102, 204, .16); color: var(--surface-accent, #0066cc);
     font-size: 13px; transition: background .15s ease;
 }
-.dash-item:hover .dash-item__chip { background: rgba(155, 199, 255, .28); }
+.dash-item:hover .dash-item__chip { background: rgba(0, 102, 204, .28); }
 .dash-item__text  { display: flex; flex-direction: column; }
 .dash-item__title { color: #fff; font: 600 13.5px/1.1 'Barlow', sans-serif; }
 .dash-item__sub   { margin-top: 3px; color: rgba(255, 255, 255, .6); font: 400 11.5px/1 'Barlow', sans-serif; }
