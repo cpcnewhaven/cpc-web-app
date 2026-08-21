@@ -5912,12 +5912,17 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 .dash-give {
     display: flex; align-items: center; justify-content: center; gap: 9px;
     padding: 14px 16px; border-radius: 11px; text-decoration: none;
-    background: rgba(255, 255, 255, .9); color: #0a2a52;
+    background: rgba(92, 172, 255, .18); color: #eaf5ff;
+    border: 1px solid rgba(155, 208, 255, .42);
     font: 700 14px/1 'Barlow', sans-serif;
-    transition: background .15s ease, transform .15s ease;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
     margin-top: 18px;
 }
-.dash-give:hover { background: #fff; transform: translateY(-1px); }
+.dash-give:hover {
+    background: rgba(92, 172, 255, .3);
+    border-color: rgba(155, 208, 255, .75);
+    transform: translateY(-1px);
+}
 
 .dash-theme-toggle {
     width: 100%;
@@ -6327,11 +6332,16 @@ body.theme-blue .back-btn,
 body.theme-blue .episode-clear-btn,
 body.theme-blue #prevEpisodeBtn,
 body.theme-blue #nextEpisodeBtn,
-body.theme-blue .btn-play-mp3,
-body.theme-blue .btn-secondary {
+body.theme-blue .btn-play-mp3 {
     background: rgba(0, 82, 163, 0.08) !important;
     border-color: rgba(0, 82, 163, 0.18) !important;
     color: #0d4b91 !important;
+}
+
+body.theme-blue .btn-secondary {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.42) !important;
+    color: #ffffff !important;
 }
 
 body.theme-blue .podcast-btn:hover,
@@ -6339,10 +6349,15 @@ body.theme-blue .back-btn:hover,
 body.theme-blue .episode-clear-btn:hover,
 body.theme-blue #prevEpisodeBtn:hover,
 body.theme-blue #nextEpisodeBtn:hover,
-body.theme-blue .btn-play-mp3:hover,
-body.theme-blue .btn-secondary:hover {
+body.theme-blue .btn-play-mp3:hover {
     background: rgba(0, 82, 163, 0.14) !important;
     color: #083e79 !important;
+}
+
+body.theme-blue .btn-secondary:hover {
+    background: rgba(155, 208, 255, 0.18) !important;
+    border-color: #9bd0ff !important;
+    color: #ffffff !important;
 }
 
 body.theme-blue .podcast-btn-primary,
@@ -6357,6 +6372,84 @@ body.theme-blue .btn-primary:hover {
     background: var(--cpc-blue-dark) !important;
     border-color: var(--cpc-blue-dark) !important;
     color: #fff !important;
+}
+
+/* Events calendar menu: one compact action with platform-specific choices. */
+.events-page .evt-calendar-menu {
+    position: relative !important;
+    display: inline-block !important;
+}
+
+.events-page .evt-calendar-menu summary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    min-height: 42px !important;
+    padding: 0.56rem 0.9rem !important;
+    border: 1px solid rgba(155, 208, 255, 0.72) !important;
+    border-radius: 9px !important;
+    background: rgba(155, 208, 255, 0.14) !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    list-style: none !important;
+}
+
+.events-page .evt-calendar-menu summary::-webkit-details-marker {
+    display: none !important;
+}
+
+.events-page .evt-calendar-menu[open] summary {
+    background: rgba(155, 208, 255, 0.22) !important;
+    border-color: #9bd0ff !important;
+}
+
+.events-page .evt-card:has(.evt-calendar-menu[open]) {
+    position: relative;
+    z-index: 10;
+}
+
+.events-page .evt-calendar-menu__panel {
+    position: absolute !important;
+    z-index: 20 !important;
+    top: calc(100% + 0.5rem) !important;
+    left: 0 !important;
+    width: 232px !important;
+    padding: 0.35rem !important;
+    border: 1px solid rgba(155, 208, 255, 0.48) !important;
+    border-radius: 10px !important;
+    background: #073566 !important;
+    box-shadow: 0 12px 28px rgba(0, 19, 48, 0.38) !important;
+}
+
+.events-page .evt-calendar-menu__panel a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+    padding: 0.68rem 0.7rem !important;
+    border-radius: 7px !important;
+    color: #ffffff !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    text-decoration: none !important;
+}
+
+.events-page .evt-calendar-menu__panel a:hover {
+    background: rgba(155, 208, 255, 0.16) !important;
+}
+
+.events-page .evt-desc a {
+    color: #b9ddff;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+.events-page .evt-desc a:hover {
+    color: #ffffff;
 }
 
 body.theme-blue .episode-filter-input,

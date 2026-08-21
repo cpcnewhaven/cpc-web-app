@@ -10,12 +10,23 @@
 <style>
     .belief-page {
         color: var(--surface-text);
+        --belief-accent: #9bd0ff;
+        --belief-accent-soft: rgba(155, 208, 255, 0.16);
+        --belief-panel: rgba(255, 255, 255, 0.055);
+        --belief-panel-border: rgba(255, 255, 255, 0.14);
+    }
+
+    body.theme-white .belief-page {
+        --belief-accent: #0052a3;
+        --belief-accent-soft: rgba(0, 82, 163, 0.1);
+        --belief-panel: rgba(255, 255, 255, 0.78);
+        --belief-panel-border: rgba(0, 50, 120, 0.14);
     }
 
     .belief-hero {
         max-width: 980px;
         margin: 0 auto;
-        padding: 96px 24px 40px;
+        padding: 76px 24px 32px;
         text-align: center;
     }
 
@@ -25,7 +36,7 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--surface-accent);
+        color: var(--belief-accent);
         margin-bottom: 14px;
     }
 
@@ -43,13 +54,13 @@
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         line-height: 1.8;
         color: var(--surface-muted);
-        max-width: 760px;
-        margin: 0 auto 28px;
+        max-width: 720px;
+        margin: 0 auto 24px;
     }
 
     .belief-hero-cta {
         display: inline-flex;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
         justify-content: center;
     }
@@ -65,22 +76,18 @@
         flex-wrap: wrap;
         gap: 10px;
         justify-content: center;
-        margin: 0 auto 28px;
-        padding: 14px;
-        background: var(--surface-bg);
-        border: 1px solid var(--surface-border);
-        border-radius: 18px;
-        backdrop-filter: blur(14px);
-        box-shadow: var(--surface-shadow);
-        max-width: 980px;
+        margin: 0 auto 24px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--belief-panel-border);
+        max-width: 920px;
     }
 
     .belief-nav a {
         color: var(--surface-text);
         text-decoration: none;
         font-size: 0.92rem;
-        padding: 0.58rem 0.9rem;
-        border-radius: 999px;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px 8px 0 0;
         background: transparent;
         border: 1px solid transparent;
         transition: all 0.2s ease;
@@ -88,19 +95,18 @@
 
     .belief-nav a:hover,
     .belief-nav a.active {
-        background: var(--surface-accent-soft);
-        border-color: rgba(255, 255, 255, 0.12);
+        background: var(--belief-accent-soft);
+        border-color: transparent;
+        color: var(--surface-text);
     }
 
     .belief-section {
         max-width: 980px;
-        margin: 0 auto 24px;
-        padding: 28px 28px 30px;
-        background: var(--surface-bg);
-        border: 1px solid var(--surface-border);
-        border-radius: 22px;
-        box-shadow: var(--surface-shadow);
-        backdrop-filter: blur(14px);
+        margin: 0 auto 16px;
+        padding: 26px 28px 28px;
+        background: var(--belief-panel);
+        border: 1px solid var(--belief-panel-border);
+        border-radius: 16px;
         scroll-margin-top: 96px;
     }
 
@@ -114,7 +120,7 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--surface-accent);
+        color: var(--belief-accent);
         margin-bottom: 10px;
     }
 
@@ -163,11 +169,11 @@
 
     .belief-lede {
         max-width: 860px;
-        margin: 0 auto 40px;
-        padding: 24px 26px;
-        border-left: 3px solid var(--surface-accent);
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 16px;
+        margin: 0 auto 28px;
+        padding: 20px 24px;
+        border-left: 3px solid var(--belief-accent);
+        background: var(--belief-panel);
+        border-radius: 0 14px 14px 0;
         color: var(--surface-text);
         font-family: 'Libre Baskerville', serif;
         font-size: 1.08rem;
@@ -177,15 +183,15 @@
     .belief-grid {
         display: grid;
         grid-template-columns: 1.05fr 0.95fr;
-        gap: 20px;
+        gap: 24px;
         align-items: start;
     }
 
     .belief-side {
-        padding: 20px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 18px 20px;
+        border-radius: 12px;
+        background: var(--belief-accent-soft);
+        border: 1px solid var(--belief-panel-border);
     }
 
     .belief-side h3 {
@@ -212,10 +218,10 @@
     }
 
     .lesson-list li {
-        padding: 0.85rem 0.95rem;
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0.8rem 0.9rem;
+        border-radius: 10px;
+        background: var(--belief-panel);
+        border: 1px solid var(--belief-panel-border);
         color: var(--surface-text);
         line-height: 1.55;
     }
@@ -270,7 +276,7 @@
     <section class="belief-hero">
         <div class="belief-kicker">Our faith</div>
         <h1>What We Believe</h1>
-        <p>Christ Presbyterian Church holds to the historic Christian faith as taught in Scripture and summarized in the Reformed confessions. We want the page to read less like a stack of notes and more like a clear guide to the convictions that shape our life together.</p>
+        <p>Christ Presbyterian Church holds to the historic Christian faith taught in Scripture and summarized in the Reformed confessions. These convictions shape our worship, life together, and witness in New Haven.</p>
         <div class="belief-hero-cta">
             <a href="{{ url_for('about') }}" class="btn btn-glass btn-lg">About CPC</a>
             <a href="#beliefs" class="btn btn-primary btn-lg">Read the Beliefs</a>
@@ -280,9 +286,8 @@
     <div class="belief-wrap">
         <nav class="belief-nav" aria-label="What We Believe sections">
             <a href="{{ url_for('about') }}">About CPC</a>
-            <a href="{{ url_for('what_we_believe') }}" class="active">What We Believe</a>
-            <a href="#beliefs">Beliefs</a>
-            <a href="#class">Class</a>
+            <a href="#beliefs" class="active">Our Beliefs</a>
+            <a href="#class">Beliefs Class</a>
         </nav>
 
         <div class="belief-lede">

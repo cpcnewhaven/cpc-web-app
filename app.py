@@ -2084,24 +2084,44 @@ def _fetch_events_json():
 
 @app.route("/api/events/<eid>.ics")
 def api_event_ics(eid):
-    # Build a single .ics download from cached list
     data = _fetch_events_json()
     ev = next((e for e in data.get("events", []) if e["id"] == eid), None)
     if not ev:
         return Response("Not found", status=404)
-    cal = Calendar()
-    evt = Event()
-    evt.name = ev["title"]
+
     tzname = app.config.get("SITE_TIMEZONE", "America/New_York")
     local = pytz.timezone(tzname)
-    if ev["start"]:
-        evt.begin = datetime.fromisoformat(ev["start"]).astimezone(local)
-    if ev["end"]:
-        evt.end = datetime.fromisoformat(ev["end"]).astimezone(local)
-    evt.description = ev.get("description") or ""
-    evt.location = ev.get("location") or ""
-    cal.events.add(evt)
-    return Response(str(cal), mimetype="text/calendar",
+
+    def as_local(value):
+        parsed = datetime.fromisoformat(value)
+        return local.localize(parsed) if parsed.tzinfo is None else parsed.astimezone(local)
+
+    def escape_ics(value):
+        return str(value or "").replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\r\n", "\\n").replace("\n", "\\n")
+
+    start = as_local(ev["start"])
+    end = as_local(ev["end"]) if ev.get("end") else start + timedelta(hours=1)
+    stamp = datetime.now(pytz.utc).strftime("%Y%m%dT%H%M%SZ")
+    start_value = start.strftime("%Y%m%dT%H%M%S")
+    end_value = end.strftime("%Y%m%dT%H%M%S")
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Christ Presbyterian Church//Events//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        f"UID:{escape_ics(eid)}@cpcnewhaven.org",
+        f"DTSTAMP:{stamp}",
+        f"DTSTART;TZID={tzname}:{start_value}",
+        f"DTEND;TZID={tzname}:{end_value}",
+        f"SUMMARY:{escape_ics(ev['title'])}",
+        f"DESCRIPTION:{escape_ics(ev.get('description'))}",
+        f"LOCATION:{escape_ics(ev.get('location'))}",
+        "END:VEVENT",
+        "END:VCALENDAR",
+        "",
+    ]
+    return Response("\r\n".join(lines), mimetype="text/calendar",
                     headers={"Content-Disposition": f"attachment; filename={eid}.ics"})
 
 @app.route("/api/external-data")

@@ -96,6 +96,7 @@ async function searchEvents() {
       category: ev.category || 'General',
       location: ev.location || '',
       url: ev.url || '',
+      end: ev.end || '',
       imageUrl: ev.imageUrl || ev.image_url || ''
     }));
 
@@ -155,7 +156,7 @@ function createEventListContainer() {
   const root = document.getElementById('events-app');
   const list = document.createElement('div');
   list.id = 'evt-list';
-  list.style.cssText = 'max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 0.5rem; margin-top: 0.75rem;';
+  list.style.cssText = 'margin-top: 0.75rem;';
   root.appendChild(list);
   return list;
 }
@@ -201,6 +202,32 @@ function renderEventResults(events, container) {
     const opts = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
     return s.toLocaleString(undefined, opts);
   }
+  function googleCalendarUrl(ev) {
+    const start = parseDate(ev.date);
+    if (!start) return null;
+
+    const end = parseDate(ev.end) || new Date(start.getTime() + 60 * 60 * 1000);
+    const formatDate = (date) => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+    const details = [ev.description, ev.url ? `More information: ${ev.url}` : ''].filter(Boolean).join('\n\n');
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: ev.title,
+      dates: `${formatDate(start)}/${formatDate(end)}`,
+      details,
+      location: ev.location || ''
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  }
+  function formatEventDescription(description, eventId) {
+    const text = String(description || '');
+    const escaped = text.replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[char]));
+    const linkLabel = eventId === 'event_010' ? 'Sign up for Mercy Day' : 'Open link';
+    return escaped.replace(/https?:\/\/[^\s<]+/g, (url) => (
+      `<a href="${url}" target="_blank" rel="noopener">${linkLabel}</a>`
+    ));
+  }
   function gmap(loc) { return loc ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}` : null; }
 
   // Group by month
@@ -223,21 +250,21 @@ function renderEventResults(events, container) {
 
     for (const ev of group.items) {
       const card = document.createElement('article');
-      card.className = 'evt-card';
-      const mapUrl = gmap(ev.category);
+      const startDate = parseDate(ev.date);
+      const hasImage = Boolean(ev.imageUrl);
+      card.className = `evt-card ${hasImage ? 'evt-card--with-image' : 'evt-card--no-image'}`;
       const icsUrl = ev.id ? `/api/events/${ev.id}.ics` : null;
+      const googleUrl = googleCalendarUrl(ev);
       const isOngoing = ev.source === 'ongoing';
+      const dateTile = startDate ? `
+        <div class="evt-card__date" aria-label="${dateRange(ev)}">
+          <span class="evt-card__date-month">${startDate.toLocaleString(undefined, { month: 'short' })}</span>
+          <strong class="evt-card__date-day">${startDate.getDate()}</strong>
+        </div>` : '';
 
       card.innerHTML = `
-        ${(ev.imageUrl || ev.placeholderImage !== false) ? `
-        <div style="margin: -1rem -1rem 0.85rem; overflow: hidden; border-radius: calc(var(--radius-lg) - 1px); aspect-ratio: 16 / 9; background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(0,0,0,0.12)); border-bottom: 1px solid rgba(255,255,255,0.08);">
-          ${ev.imageUrl
-            ? `<img src="${ev.imageUrl}" alt="${ev.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;">`
-            : `<div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; color: rgba(255,255,255,0.82); text-align: center; padding: 1rem;">
-                <span style="font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Event Photo</span>
-                <span style="font-size: 0.8rem; color: rgba(255,255,255,0.62); max-width: 18rem;">Add an image in the event editor to replace this placeholder.</span>
-              </div>`}
-        </div>` : ''}
+        ${hasImage ? `<div class="evt-card__media"><img src="${ev.imageUrl}" alt="${ev.title}"></div>` : dateTile}
+        <div class="evt-card__body">
         <div class="evt-head">
           <span class="evt-cat">${displayTag(ev.category)}</span>
           ${isOngoing ? '<span class="evt-cat" style="margin-left: 0.5rem; background: rgba(255, 196, 87, 0.16); color: #ffd98a;">Ongoing</span>' : ''}
@@ -246,9 +273,17 @@ function renderEventResults(events, container) {
         <div class="evt-meta">
           <span class="evt-when">${dateRange(ev)}</span>
         </div>
-        ${ev.description ? `<p class="evt-desc">${ev.description.slice(0, 240)}${ev.description.length > 240 ? '…' : ''}</p>` : ''}
-        <div class="evt-actions">
-          ${ev.url ? `<a class="btn" target="_blank" rel="noopener" href="${ev.url}">Details</a>` : ''}
+        ${ev.description ? `<p class="evt-desc">${formatEventDescription(ev.description, ev.id)}</p>` : ''}
+        <div class="evt-actions evt-actions--calendar">
+          <details class="evt-calendar-menu">
+            <summary><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add to Calendar <i class="fas fa-chevron-down" aria-hidden="true"></i></summary>
+            <div class="evt-calendar-menu__panel">
+              ${googleUrl ? `<a target="_blank" rel="noopener" href="${googleUrl}"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Google Calendar</a>` : ''}
+              ${icsUrl ? `<a href="${icsUrl}"><i class="fas fa-calendar-check" aria-hidden="true"></i> Apple Calendar / Outlook</a>` : ''}
+              ${ev.url ? `<a target="_blank" rel="noopener" href="${ev.url}"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> Event details</a>` : ''}
+            </div>
+          </details>
+        </div>
         </div>
       `;
       container.appendChild(card);
