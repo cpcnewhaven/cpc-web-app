@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="{{ site_content.get('appearance_primary_color', '#0052a3') }}">
+    <meta name="theme-color" content="#0052a3">
     <title>{% block title %}CPC New Haven{% endblock %}</title>
 
     <!-- SEO & Social sharing -->
@@ -54,10 +54,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         :root {
-            --cpc-blue: {{ site_content.get('appearance_primary_color', '#0052a3') }};
-            --cpc-blue-dark: {{ site_content.get('appearance_primary_dark', '#003d7a') }};
-            --cpc-blue-light: {{ site_content.get('appearance_primary_light', '#e8f2ff') }};
-            --cpc-blue-medium: {{ site_content.get('appearance_primary_medium', '#0066cc') }};
+            --cpc-blue: #0052a3;
+            --cpc-blue-dark: #003d7a;
+            --cpc-blue-light: #e8f2ff;
+            --cpc-blue-medium: #0066cc;
             --bg-gradient: linear-gradient(135deg,
                 {{ site_content.get('appearance_bg_start', '#004080') }} 0%,
                 {{ site_content.get('appearance_bg_mid', '#003366') }} 50%,
@@ -75,10 +75,10 @@
         }
 
         body.theme-white {
-            --cpc-blue: {{ site_content.get('appearance_primary_color', '#0052a3') }};
-            --cpc-blue-dark: {{ site_content.get('appearance_primary_dark', '#003d7a') }};
-            --cpc-blue-light: {{ site_content.get('appearance_primary_light', '#e8f2ff') }};
-            --cpc-blue-medium: {{ site_content.get('appearance_primary_medium', '#0066cc') }};
+            --cpc-blue: #0052a3;
+            --cpc-blue-dark: #003d7a;
+            --cpc-blue-light: #e8f2ff;
+            --cpc-blue-medium: #0066cc;
             --bg-gradient: linear-gradient(135deg,
                 {{ site_content.get('appearance_white_bg_start', '#f5f7fa') }} 0%,
                 {{ site_content.get('appearance_white_bg_mid', '#e8ecf1') }} 50%,
@@ -95,7 +95,7 @@
     </style>
 
     <!-- Alpine.js for reactive components -->
-    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js" defer></script>
 
     {% block head %}{% endblock %}
 </head>
@@ -539,6 +539,7 @@
         <div class="footer-status-bar-inner">
             <div class="footer-status-bar-left">
                 <button type="button" class="dash-theme-toggle dash-theme-toggle--footer"
+                    onclick="window.__cpcToggleTheme && window.__cpcToggleTheme(event)"
                     @click="$store.dash.theme = $store.dash.theme === 'white' ? 'blue' : 'white'; $store.dash.save(); $store.dash.applyTheme()"
                     :aria-pressed="$store.dash.theme === 'blue' ? 'true' : 'false'">
                     <span class="dash-theme-toggle__copy">
@@ -857,6 +858,51 @@
             });
             Alpine.store('dash').applyLayout();
         });
+
+        const initThemeToggles = () => {
+            if (typeof window.Alpine !== 'undefined') {
+                return;
+            }
+
+            const applyTheme = (theme) => {
+                document.documentElement.setAttribute('data-theme', theme);
+                document.body.classList.toggle('theme-white', theme === 'white');
+                document.body.classList.toggle('theme-blue', theme !== 'white');
+                localStorage.setItem('dash_theme', theme);
+            };
+
+            document.querySelectorAll('.dash-theme-toggle').forEach((toggle) => {
+                const meta = toggle.querySelector('.dash-theme-toggle__meta');
+                const switchEl = toggle.querySelector('.dash-theme-toggle__switch');
+                const icon = toggle.querySelector('.dash-theme-toggle__thumb i');
+
+                const syncToggle = () => {
+                    const theme = localStorage.getItem('dash_theme') || (document.body.classList.contains('theme-blue') ? 'blue' : 'white');
+                    const isBlue = theme === 'blue';
+                    toggle.setAttribute('aria-pressed', isBlue ? 'true' : 'false');
+                    if (meta) meta.textContent = isBlue ? 'On' : 'Off';
+                    if (switchEl) switchEl.classList.toggle('is-on', isBlue);
+                    if (icon) {
+                        icon.classList.toggle('fa-moon', isBlue);
+                        icon.classList.toggle('fa-sun', !isBlue);
+                    }
+                };
+
+                syncToggle();
+
+                toggle.addEventListener('click', () => {
+                    const nextTheme = document.body.classList.contains('theme-blue') ? 'white' : 'blue';
+                    applyTheme(nextTheme);
+                    syncToggle();
+                });
+            });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggles);
+        } else {
+            initThemeToggles();
+        }
     </script>
 
     <!-- Live Clock -->

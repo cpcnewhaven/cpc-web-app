@@ -424,6 +424,7 @@
         aspect-ratio: 16 / 9;
         margin-bottom: 1rem;
         border-radius: 16px;
+        overflow: hidden;
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
@@ -435,6 +436,16 @@
         font-size: 0.82rem;
         text-align: center;
         padding: 1.25rem;
+    }
+
+    .story-milestone-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 34%;
+        transform: scale(1.12);
+        transform-origin: center;
+        display: block;
     }
 
     .story-milestone-image i {
@@ -909,6 +920,9 @@ document.addEventListener('DOMContentLoaded', function() {
             year: '1991',
             title: 'The Beginning',
             imageLabel: 'Church planting conversation, 1991',
+            imageUrl: 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC-ARCHIVE-PHOTOS-16.jpeg',
+            imagePosition: 'center center',
+            imageScale: '1.1',
             text: 'It all began in the summer of 1991 when three young families and a graduate student at Yale scheduled a ferry ride from Bridgeport, CT to Port Jefferson, NY. Their purpose was to meet up with several church planters and pastors from the Presbyterian Church in America to discuss a possible church plant in New Haven.'
         },
         {
@@ -921,12 +935,18 @@ document.addEventListener('DOMContentLoaded', function() {
             year: '1992',
             title: 'First Worship Service',
             imageLabel: 'First worship service, October 1992',
+            imageUrl: 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC-ARCHIVE-PHOTOS-14.jpeg',
+            imagePosition: 'center 28%',
+            imageScale: '1.18',
             text: 'On October 11, 1992, the first worship service was held at Amity Regional Junior High in Orange, CT. The sermon text that morning was Matthew 28, with Christ\'s promise, "I will build my church." Twenty-eight people were in attendance that day, and CPC New Haven began its life as a congregation.'
         },
         {
             year: '2017',
             title: 'Mission Anabaino',
             imageLabel: 'Mission Anabaino church planting network',
+            imageUrl: 'https://storage.googleapis.com/cpc-public-website/63.jpg',
+            imagePosition: 'center center',
+            imageScale: '1.08',
             text: 'Mission Anabaino is a church planting network that encourages collaboration, learning, and new church plants. CPC New Haven is one of its anchor churches.'
         }
     ];
@@ -936,9 +956,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <article class="story-milestone">
             <div class="story-milestone-year">${m.year}</div>
             <div class="story-milestone-content">
-                <div class="story-milestone-image" aria-hidden="true">
-                    <i class="fa-solid fa-image"></i>
-                    <span>Image placeholder: ${m.imageLabel}</span>
+                <div class="story-milestone-image" ${m.imageUrl ? '' : 'aria-hidden="true"'}>
+                    ${m.imageUrl
+                        ? `<img src="${m.imageUrl}" alt="${m.imageLabel}" style="width:100%;height:100%;object-fit:cover;object-position:${m.imagePosition || 'center 34%'};transform:scale(${m.imageScale || '1.12'});transform-origin:center;display:block;">`
+                        : `<i class="fa-solid fa-image"></i><span>Image placeholder: ${m.imageLabel}</span>`}
                 </div>
                 <h3>${m.title}</h3>
                 <p>${m.text}</p>

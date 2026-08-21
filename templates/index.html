@@ -193,6 +193,30 @@
         transform: scale(1.2);
     }
 
+    .hero-banner .splash-buttons .btn-primary {
+        background: var(--cpc-blue) !important;
+        border: 2px solid var(--cpc-blue) !important;
+        color: #fff !important;
+    }
+
+    .hero-banner .splash-buttons .btn-primary:hover {
+        background: var(--cpc-blue-dark) !important;
+        border-color: var(--cpc-blue-dark) !important;
+        color: #fff !important;
+    }
+
+    .hero-banner .splash-buttons .btn-secondary {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 2px solid rgba(255, 255, 255, 0.75) !important;
+        color: #fff !important;
+    }
+
+    .hero-banner .splash-buttons .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.18) !important;
+        border-color: #fff !important;
+        color: #fff !important;
+    }
+
     /* Latest & Greatest grid */
     .latest-grid {
         display: grid;
@@ -615,11 +639,11 @@
         var allActive = [];
 
         function getTypeBadgeColor(type) {
-            var c = { 'event': 'rgba(0, 122, 255, 0.15)', 'announcement': 'rgba(255, 215, 0, 0.15)', 'ongoing': 'rgba(52, 199, 89, 0.15)', 'upcoming': 'rgba(255, 149, 0, 0.15)' };
+            var c = { 'event': 'rgba(0, 122, 255, 0.15)', 'announcement': 'rgba(255, 196, 0, 0.28)', 'ongoing': 'rgba(52, 199, 89, 0.15)', 'upcoming': 'rgba(255, 149, 0, 0.15)' };
             return c[type] || 'rgba(255, 255, 255, 0.1)';
         }
         function getTypeBadgeTextColor(type) {
-            var c = { 'event': '#007AFF', 'announcement': '#FFD700', 'ongoing': '#34C759', 'upcoming': '#FF9500' };
+            var c = { 'event': '#007AFF', 'announcement': '#8A5A00', 'ongoing': '#34C759', 'upcoming': '#FF9500' };
             return c[type] || '#FFFFFF';
         }
         function stripHtml(html) {
