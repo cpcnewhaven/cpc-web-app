@@ -1,0 +1,79 @@
+{% extends 'admin/model/list.html' %}
+
+{% block list_header %}
+<div class="content-list-header">
+  <div class="new-entry-widget">
+    <div><span class="new-entry-eyebrow">{{ admin_view.name }}</span><strong>Create something new</strong></div>
+    <div class="new-entry-widget-actions">
+      {% if admin_view.endpoint == 'sermon' %}<button type="button" class="future-toggle" id="futureToggle">Show future sermons</button>{% endif %}
+      <a class="content-new-entry" href="{{ url_for(admin_view.endpoint ~ '.create_view', url=request.path) }}">New {{ 'sermon' if admin_view.endpoint == 'sermon' else ('podcast' if admin_view.endpoint == 'podcastepisode' else 'series') }}</a>
+    </div>
+  </div>
+  {{ super() }}
+</div>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<style>
+  .content-list-header, .advanced-toggle-section { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+  .new-entry-widget { width:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.25rem; margin-bottom:1rem; border:1px solid rgba(120,180,220,.18); border-radius:12px; background:#102b42; }
+  .new-entry-widget strong { display:block; color:#f1f7fb; font-size:1rem; }
+  .new-entry-widget-actions { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; }
+  .future-toggle { min-height:48px; padding:.75rem 1rem; border:1px solid rgba(130,200,240,.35); border-radius:.7rem; background:transparent; color:#bfe6f8; font-weight:800; font-size:.7rem; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; }
+  .future-toggle.active { background:#294461; color:#fff; }
+  .new-entry-eyebrow { display:block; margin-bottom:.2rem; color:#75c9f5; font-size:.65rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .content-new-entry { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:.75rem 1.35rem; border-radius:.7rem; background:#3fa6eb; color:#06203a !important; font-weight:800; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none !important; box-shadow:0 8px 20px rgba(63,166,235,.2); }
+  .content-new-entry:hover { background:#66bbf3; transform:translateY(-1px); }
+  .admin-list { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; border:1px solid rgba(120,180,220,.16); border-radius:12px; overflow:hidden; }
+  .admin-list thead th { background:#294461 !important; color:#d9e9f5 !important; }
+  .admin-list tbody tr:nth-child(odd) td { background:#103247 !important; }
+  .admin-list tbody tr:nth-child(even) td { background:#0d2a3d !important; }
+  .admin-list th, .admin-list td { overflow:hidden; text-overflow:ellipsis; }
+  @media (max-width: 1200px) {
+    .admin-list th:nth-child(n+6), .admin-list td:nth-child(n+6) { display:none; }
+    .admin-list { font-size:.82rem; }
+  }
+  @media (max-width: 760px) {
+    .new-entry-widget { align-items:stretch; flex-direction:column; }
+    .new-entry-widget-actions { width:100%; }
+    .new-entry-widget-actions .content-new-entry, .new-entry-widget-actions .future-toggle { flex:1; }
+    .admin-list { display:block; border:0; overflow:visible; }
+    .admin-list thead { display:none; }
+    .admin-list tbody, .admin-list tr { display:block; width:100%; }
+    .admin-list tbody tr { display:grid; grid-template-columns:2.3rem 2.3rem minmax(0, 1fr); margin-bottom:.65rem; border:1px solid rgba(120,180,220,.18); border-radius:10px; overflow:hidden; }
+    .admin-list td { display:block !important; min-width:0; padding:.65rem .45rem !important; border:0 !important; border-right:1px solid rgba(120,180,220,.12) !important; }
+    .admin-list td:nth-child(3) { grid-column:3; grid-row:1 / span 2; display:flex !important; align-items:center; font-weight:700; }
+    .admin-list td:nth-child(4), .admin-list td:nth-child(5), .admin-list td:nth-child(6) { grid-column:3; }
+    .admin-list td:nth-child(n+7) { display:none !important; }
+    .admin-list th, .admin-list td { overflow:visible; text-overflow:clip; }
+    .admin-list td:nth-child(1), .admin-list td:nth-child(2) { grid-row:1 / span 2; }
+    .content-list-header { gap:.5rem; }
+  }
+</style>
+{% if admin_view.endpoint == 'sermon' %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const button = document.getElementById('futureToggle');
+  const table = document.querySelector('.admin-list');
+  if (!button || !table) return;
+  const today = new Date(); today.setHours(23, 59, 59, 999);
+  function setFutureVisibility(showFuture) {
+    table.querySelectorAll('tbody tr').forEach(function (row) {
+      const match = row.textContent.match(/\b(20\d{2})-(\d{2})-(\d{2})\b/);
+      if (!match) return;
+      const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+      row.style.display = !showFuture && date > today ? 'none' : '';
+    });
+  }
+  setFutureVisibility(false);
+  button.addEventListener('click', function () {
+    const showing = button.classList.contains('active');
+    setFutureVisibility(showing);
+    button.classList.toggle('active', !showing);
+    button.textContent = showing ? 'Hide future sermons' : 'Show future sermons';
+  });
+});
+</script>
+{% endif %}
+{% endblock %}

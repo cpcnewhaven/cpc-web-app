@@ -203,5 +203,6 @@
   .announcement-direct-editor textarea { min-height: 170px; }
   .announcement-direct-editor .form-group { width: 100%; }
   .announcement-direct-editor form > div:last-child { display: flex !important; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.14); }
+  @media (max-width:600px) { .announcement-direct-editor { padding: 0 .75rem !important; } .announcement-direct-editor form > div:last-child { flex-direction:column; } .announcement-direct-editor form > div:last-child button, .announcement-direct-editor form > div:last-child a { width:100%; justify-content:center; text-align:center; } }
 </style>
 {% endblock %}

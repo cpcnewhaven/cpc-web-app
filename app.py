@@ -3588,7 +3588,7 @@ class AnnouncementView(AuthenticatedModelView):
     create_template = 'admin/announcement_create.html'
     edit_template = 'admin/model/edit_bento.html'
     # Default display: only 4 columns. Users can toggle "Advanced" to see all.
-    column_list = ('id', 'title', 'active', 'date_entered', 'speaker', 'type', 'category', 'show_in_banner', 'superfeatured', 'revision', 'updated_at', 'updated_by', 'event_date', 'event_start_time', 'event_end_time', 'expires_at')
+    column_list = ('id', 'title', 'active', 'date_entered', 'category')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
     column_filters = ('type', 'active', 'tag', 'superfeatured', 'show_in_banner', 'category', 'speaker')
     column_sortable_list = ('title', 'type', 'active', 'superfeatured', 'date_entered', 'speaker')
@@ -4102,9 +4102,10 @@ class PaperView(AuthenticatedModelView):
             return False
     
 class SermonView(AuthenticatedModelView):
+    list_template = 'admin/content_list.html'
     create_template = 'admin/sermon_create.html'
     edit_template = 'admin/model/edit_bento.html'
-    column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'featured', 'active', 'expires_at')
+    column_list = ('title', 'series', 'speaker_user', 'date', 'active')
     column_searchable_list = ('title', 'scripture')
     column_filters = ('series', 'speaker_user.full_name', 'date', 'active')
     column_sortable_list = ('date', 'title', 'episode_number')
@@ -4380,9 +4381,10 @@ class SermonView(AuthenticatedModelView):
             return False
 
 class PodcastEpisodeView(AuthenticatedModelView):
+    list_template = 'admin/content_list.html'
     create_template = 'admin/sermon_create.html'
     edit_template = 'admin/model/edit_bento.html'
-    column_list = ('number', 'title', 'series', 'guest', 'date_added', 'source', 'expires_at', 'scripture')
+    column_list = ('number', 'title', 'series', 'guest', 'date_added')
     column_searchable_list = ('title', 'guest', 'scripture')
     column_filters = ('series', 'guest', 'season', 'source')
     column_sortable_list = ('number', 'title', 'date_added')
@@ -4922,6 +4924,7 @@ class TeachingSeriesView(AuthenticatedModelView):
     """Admin for pastor teaching series (e.g. Total Christ). Hidden from menu; use Overview page."""
     create_template = 'admin/teaching_series_create.html'
     edit_template = 'admin/teaching_series_edit.html'
+    list_template = 'admin/content_list.html'
     inline_models = [(TeachingSeriesSession, {
         'form_overrides': {
             'session_date': DatePickerField,

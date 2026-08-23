@@ -1,4 +1,4 @@
-{% extends 'admin/master.html' %}
+{% extends 'admin/model/create.html' %}
 
 {% block header_text %}
 <h3>Create New Teaching Series</h3>
@@ -51,14 +51,17 @@
 
     /* Wizard section card */
     #sessions-wizard {
-        background: rgba(0, 113, 227, 0.12);
-        backdrop-filter: blur(8px);
-        border: 2px solid rgba(0, 113, 227, 0.4);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        background: #102b42;
+        border: 1px solid rgba(120,180,220,.2);
+        border-radius: 10px;
+        padding: .8rem 1rem;
+        margin-bottom: 1rem;
     }
+
+    .sessions-toolbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+    .sessions-toolbar strong { color:#dbe6ff; text-transform:uppercase; letter-spacing:.12em; font-size:.75rem; }
+    #add-session-prominent-btn { display:inline-flex; align-items:center; gap:.45rem; padding:.65rem 1rem; border:0; border-radius:.6rem; background:#3fa6eb; color:#06203a; font-weight:800; text-transform:uppercase; letter-spacing:.06em; cursor:pointer; }
+    #sessions-wizard h4, #sessions-wizard p { display:none; }
 
     #sessions-wizard h4 {
         margin-top: 0;
@@ -139,30 +142,11 @@
         var topContainer = document.createElement('div');
         topContainer.id = 'sessions-top-container';
 
-        // Inject the wizard card + the big ADD SESSION button
+        // Inject a compact session control above the inline fields.
         var wizardHTML =
             '<div id="sessions-wizard">' +
-            '<h4><i class="fas fa-layer-group"></i> Step 1: Set Up Your Classes</h4>' +
-            '<p>' +
-            'A teaching series is made up of individual classes or sessions. Start by adding as many sessions as you need. ' +
-            'You can upload a different PDF for each session below.' +
-            '</p>' +
-            '<div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">' +
-            '<div class="input-group" style="max-width:280px; margin-bottom: 0;">' +
-            '<span class="input-group-addon" style="background:rgba(255,255,255,0.1); border:none; color:rgba(255,255,255,0.7);">Count:</span>' +
-            '<input type="number" id="wizard-session-count" class="form-control" min="1" max="50" value="1">' +
-            '<span class="input-group-btn">' +
-            '<button class="btn btn-primary" id="wizard-generate-btn" type="button" ' +
-            'style="background:#0071e3; border:none; font-weight:700; height: 34px;">' +
-            '<i class="fas fa-magic"></i> Generate Multiple' +
-            '</button>' +
-            '</span>' +
-            '</div>' +
-            '<div style="color: rgba(255,255,255,0.5); font-weight: 600;">— OR —</div>' +
-            '<button type="button" id="add-session-prominent-btn" style="margin: 0;">' +
-            '<i class="fas fa-plus-circle"></i> Add Single Session' +
-            '</button>' +
-            '</div>' +
+            '<div class="sessions-toolbar"><strong>Sessions</strong>' +
+            '<button type="button" id="add-session-prominent-btn"><i class="fas fa-plus"></i> Add session</button></div>' +
             '</div>';
 
         topContainer.innerHTML = wizardHTML;
@@ -182,21 +166,6 @@
             hiddenAddBtn.click();
             setTimeout(renameSessionLabels, 80);
             // Scroll to the bottom of the newly added session
-            setTimeout(function () {
-                var fields = inlineContainer.querySelectorAll('.inline-field');
-                if (fields.length) {
-                    fields[fields.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 150);
-        });
-
-        // Wire up the Generate button in the wizard
-        document.getElementById('wizard-generate-btn').addEventListener('click', function () {
-            var count = parseInt(document.getElementById('wizard-session-count').value, 10) || 1;
-            for (var i = 0; i < count; i++) {
-                hiddenAddBtn.click();
-            }
-            setTimeout(renameSessionLabels, 80);
             setTimeout(function () {
                 var fields = inlineContainer.querySelectorAll('.inline-field');
                 if (fields.length) {

@@ -72,6 +72,6 @@
   .sermon-actions { display:flex; justify-content:flex-end; gap:.7rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.14); }
   .sermon-actions a, .sermon-actions button { border:0; border-radius:.55rem; padding:.8rem 1.15rem; color:#fff; background:rgba(255,255,255,.08); font-weight:700; text-decoration:none; }
   .sermon-actions .primary { background:#3fa6eb; color:#06203a; }
-  @media (max-width: 700px) { .scripture-fields { grid-template-columns:1fr; } .scripture-fields .sermon-field:first-child { grid-column:auto; } }
+  @media (max-width: 700px) { .sermon-editor { padding: 0 .25rem 4rem; } .scripture-fields { grid-template-columns:1fr; } .scripture-fields .sermon-field:first-child { grid-column:auto; } .sermon-actions { flex-direction:column-reverse; } .sermon-actions a, .sermon-actions button { width:100%; text-align:center; } }
 </style>
 {% endblock %}

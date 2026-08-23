@@ -38,7 +38,35 @@
 </script>
 {% endblock %}
 
+{% block tail %}
+{{ super() }}
+<style>
+  .advanced-toggle-section { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+  .new-entry-widget { width:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.25rem; margin-bottom:1rem; border:1px solid rgba(120,180,220,.18); border-radius:12px; background:#102b42; }
+  .new-entry-widget strong { display:block; color:#f1f7fb; font-size:1rem; }
+  .new-entry-eyebrow { display:block; margin-bottom:.2rem; color:#75c9f5; font-size:.65rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .content-new-entry { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:.75rem 1.35rem; border-radius:.7rem; background:#3fa6eb; color:#06203a !important; font-weight:800; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none !important; }
+  .content-new-entry:hover { background:#66bbf3; transform:translateY(-1px); }
+  .admin-list { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; border:1px solid rgba(120,180,220,.16); border-radius:12px; overflow:hidden; }
+  .admin-list thead th { background:#294461 !important; color:#d9e9f5 !important; }
+  .admin-list tbody tr:nth-child(odd) td { background:#103247 !important; }
+  .admin-list tbody tr:nth-child(even) td { background:#0d2a3d !important; }
+  .admin-list th, .admin-list td { overflow:hidden; text-overflow:ellipsis; }
+  @media (max-width:1200px) { .admin-list th:nth-child(n+7), .admin-list td:nth-child(n+7) { display:none; } }
+  @media (max-width:760px) {
+    .new-entry-widget { align-items:stretch; flex-direction:column; }
+    .new-entry-widget .content-new-entry, .new-entry-widget .future-toggle { width:100%; }
+    .admin-list th:nth-child(n+5), .admin-list td:nth-child(n+5) { display:none; }
+    .admin-list th, .admin-list td { padding:.55rem .4rem !important; }
+  }
+</style>
+{% endblock %}
+
 {% block list_header %}
+<div class="new-entry-widget">
+  <div><span class="new-entry-eyebrow">Announcements</span><strong>Create something new</strong></div>
+  <a class="content-new-entry" href="{{ url_for('announcement.create_view', url='/admin/announcement/') }}">New announcement</a>
+</div>
 <div class="advanced-toggle-section">
   {{ super() }}
   <button class="advanced-toggle-btn" id="advancedToggle">Show Advanced Fields</button>

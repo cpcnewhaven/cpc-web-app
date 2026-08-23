@@ -682,9 +682,11 @@
         </nav>
 
         <div class="mt-auto px-6 space-y-4">
+            {% if not request.path.startswith('/admin/announcement/') and not request.path.startswith('/admin/sermon/') and not request.path.startswith('/admin/podcastepisode/') %}
             <button type="button" id="sidebarCreateBtn" class="w-full py-4 bg-surface-container-highest hover:bg-surface-bright text-primary font-bold rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
                 New Entry
             </button>
+            {% endif %}
             <div class="pt-6 border-t border-outline-variant/20 space-y-1">
                 <a class="flex items-center py-2 text-on-surface-variant hover:text-primary transition-colors font-manrope text-xs font-semibold uppercase tracking-widest" href="/admin/user/">
                     Users
@@ -695,6 +697,8 @@
             </div>
         </div>
     </aside>
+
+    <div id="mobileNavBackdrop" class="mobile-nav-backdrop" onclick="toggleMobileNav(false)"></div>
 
     <!-- Main Canvas -->
     <main class="flex-1 ml-64 min-h-screen relative flex flex-col bg-background">
@@ -760,6 +764,9 @@
         <!-- TopAppBar (Floating Glass) -->
         <header class="fixed top-0 right-0 left-64 z-50 bg-surface-container/80 backdrop-blur-xl flex items-center justify-between px-12 h-20 shadow-[0_20px_40px_rgba(0,0,0,0.4)] border-b border-outline-variant/10">
             <div class="flex items-center gap-4">
+                <button type="button" class="mobile-menu-button" aria-label="Open admin menu" onclick="toggleMobileNav(true)">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
                 <div>
                     <h1 class="font-manrope text-xl font-extrabold text-primary tracking-tight">
                         {% if admin_view.name %}
@@ -783,7 +790,7 @@
                         <span class="material-symbols-outlined text-xl">settings</span>
                     </button>
                 </div>
-                {% if not request.path.startswith('/admin/announcement/create') %}
+                {% if ('create' in request.path or 'edit' in request.path) and not request.path.startswith('/admin/announcement/create') %}
                 <div class="h-10 w-px bg-outline-variant/30"></div>
                 <div class="flex items-center gap-4">
                     <a href="{{ return_url or '/admin/dashboard' }}" class="px-6 py-2.5 rounded-xl border border-outline-variant/50 text-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-all">Cancel</a>
@@ -794,7 +801,7 @@
         </header>
 
         <!-- Form Content Container -->
-        <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96">
+        <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if 'create' not in request.path and 'edit' not in request.path %}admin-list-page{% endif %}">
             {% block messages %}
                 {{ layout.messages() }}
             {% endblock %}
@@ -895,10 +902,32 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='js/admin-wysiwyg.js') }}"></script>
 <style>
+    @media (max-width: 760px) {
+        .admin-sidebar { display:none !important; }
+        main.ml-64 { margin-left: 0 !important; }
+        header.left-64 { left: 0 !important; padding-left: 1rem !important; padding-right: 1rem !important; }
+    }
+
     .admin-sidebar { background: #0a2035 !important; }
     .admin-sidebar nav > a { border-bottom: 1px solid rgba(255,255,255,.035); }
     .admin-sidebar nav > div { border-top: 1px solid rgba(255,255,255,.1); margin-top: .45rem; }
     .admin-sidebar nav > div > div { color: rgba(190,220,245,.78) !important; }
+
+    .mobile-menu-button, .mobile-nav-backdrop { display:none; }
+    @media (max-width: 760px) {
+        .mobile-menu-button { display:flex; align-items:center; justify-content:center; width:2.7rem; height:2.7rem; border:1px solid rgba(180,220,245,.25); border-radius:.75rem; background:#183957; color:#eaf6ff; cursor:pointer; }
+        .mobile-nav-backdrop { position:fixed; inset:0; z-index:60; background:rgba(2,12,24,.72); backdrop-filter:blur(3px); }
+        .mobile-nav-backdrop.is-open { display:block; }
+        .admin-sidebar.mobile-nav-open { display:flex !important; width: min(18rem, 86vw) !important; z-index:70 !important; box-shadow:1.5rem 0 3rem rgba(0,0,0,.4); }
+        header.left-64 { z-index:50; }
+    }
+
+    @media (min-width: 761px) { .mobile-menu-button { display:none !important; } }
+
+    .admin-list-page { padding-top: 2rem !important; }
+    @media (max-width: 760px) {
+        .admin-list-page { padding-top: 1.25rem !important; padding-left: .75rem !important; padding-right: .75rem !important; }
+    }
 
     /* Create dropdown above navbar (1000) and modals (1050) */
     .admin-create-wrap {
@@ -1025,6 +1054,15 @@
             });
         }
     })();
+
+    function toggleMobileNav(open) {
+        var sidebar = document.querySelector('.admin-sidebar');
+        var backdrop = document.getElementById('mobileNavBackdrop');
+        if (!sidebar || !backdrop) return;
+        sidebar.classList.toggle('mobile-nav-open', open);
+        backdrop.classList.toggle('is-open', open);
+        document.body.classList.toggle('mobile-nav-active', open);
+    }
 </script>
 <script>
     (function () {
