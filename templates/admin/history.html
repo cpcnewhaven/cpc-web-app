@@ -1,12 +1,12 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-    <div class="space-y-8">
+    <div class="activity-page space-y-5">
         <!-- Dashboard Header Style for the Page Title -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-surface-container rounded-3xl p-8 border border-outline-variant/10 shadow-xl overflow-hidden relative">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-xl overflow-hidden relative">
              <div class="absolute top-0 left-0 w-2 h-full bg-primary"></div>
              <div>
-                <h1 class="font-manrope text-3xl font-black text-primary tracking-tight">Activity Monitor</h1>
+                <h1 class="font-manrope text-2xl font-black text-primary tracking-tight">Activity Monitor</h1>
                 <p class="text-on-surface-variant text-xs font-bold uppercase tracking-[0.2em] mt-2 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-secondary"></span>
                     Audit Log — Live Tracking
@@ -78,11 +78,11 @@
                     <tbody class="divide-y divide-outline-variant/5">
                         {% for entry in logs %}
                         <tr class="hover:bg-surface-bright/50 transition-colors group">
-                            <td class="px-8 py-6">
+                            <td data-label="Time" class="px-8 py-6">
                                 <div class="font-manrope font-bold text-on-surface text-sm">{{ entry.timestamp.strftime('%b %d, %Y') }}</div>
                                 <div class="text-[10px] text-on-surface-variant/50 font-medium uppercase tracking-widest mt-0.5">{{ entry.timestamp.strftime('%I:%M %p') }}</div>
                             </td>
-                            <td class="px-8 py-6">
+                            <td data-label="User" class="px-8 py-6">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background transition-all">
                                         <span class="material-symbols-outlined text-lg">person</span>
@@ -90,7 +90,7 @@
                                     <span class="text-sm font-bold text-on-surface uppercase tracking-wider">{{ entry.user|title }}</span>
                                 </div>
                             </td>
-                            <td class="px-8 py-6">
+                            <td data-label="Action" class="px-8 py-6">
                                 {% if entry.action == 'created' %}
                                     <span class="px-3 py-1 rounded-full bg-secondary/10 text-secondary text-[9px] font-black uppercase tracking-widest border border-secondary/20">Created</span>
                                 {% elif entry.action == 'edited' %}
@@ -101,10 +101,10 @@
                                     <span class="px-3 py-1 rounded-full bg-surface-container-highest text-on-surface/50 text-[9px] font-black uppercase tracking-widest border border-outline-variant/10">{{ entry.action|title }}</span>
                                 {% endif %}
                             </td>
-                            <td class="px-8 py-6">
+                            <td data-label="Type" class="px-8 py-6">
                                 <span class="px-3 py-1 rounded-lg bg-surface-container-highest text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">{{ entry.entity_type }}</span>
                             </td>
-                            <td class="px-8 py-6 text-right">
+                            <td data-label="Record" class="px-8 py-6 text-right">
                                 {% set target_url = none %}
                                 {% if entry.entity_type == 'Announcement' and entry.entity_id %}{% set target_url = url_for('announcement.edit_view', id=entry.entity_id) %}
                                 {% elif entry.entity_type == 'Sermon' and entry.entity_id %}{% set target_url = url_for('sermon.edit_view', id=entry.entity_id) %}
@@ -168,4 +168,27 @@
             </div>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<style>
+  .activity-page table th { padding: .8rem 1.25rem !important; }
+  .activity-page table td { padding: 1rem 1.25rem !important; }
+  .activity-page table tbody tr { border-bottom: 1px solid rgba(120,180,220,.1); }
+  .activity-page ::selection { background:#3fa6eb; color:#06203a; }
+  .activity-page .activity-build { font-size:.65rem; opacity:.65; letter-spacing:.12em; }
+  @media (max-width:760px) {
+    .activity-page form { width:100%; }
+    .activity-page form select { min-width:0 !important; flex:1; width:100%; }
+    .activity-page table, .activity-page thead, .activity-page tbody, .activity-page tr, .activity-page td { display:block; width:100%; }
+    .activity-page thead { display:none; }
+    .activity-page tbody tr { padding:.75rem; margin-bottom:.65rem; border:1px solid rgba(120,180,220,.14); border-radius:.75rem; }
+    .activity-page tbody td { display:grid; grid-template-columns:5rem minmax(0,1fr); align-items:center; gap:.75rem; padding:.38rem .25rem !important; border:0; min-height:2.4rem; }
+    .activity-page tbody td::before { color:#8fb4cf; content:attr(data-label); font-size:.6rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .activity-page tbody td > * { justify-self:end; text-align:right; }
+    .activity-page tbody td[data-label="Record"] { padding-top:.7rem !important; }
+    .activity-page tbody td[data-label="Record"] > * { width:auto; }
+  }
+</style>
 {% endblock %}
