@@ -1,7 +1,7 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-<div style="max-width: 760px; margin: 2rem auto; padding: 0 1rem;">
+<div class="announcement-direct-editor" style="max-width: 760px; margin: 2rem auto; padding: 0 1rem;">
 
   <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
     <a href="{{ url_for('announcement.index_view') }}" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem;">
@@ -32,9 +32,9 @@
     </div>
   {% endif %}
 
-  <form method="POST" action="{{ url_for('announcement.create_view') }}" id="admin-form">
+  <form method="POST" action="{{ url_for('announcement.create_view') }}" id="admin-form" style="display:block !important; width:100% !important;">
 
-    <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+    <fieldset style="display:block !important; width:100% !important; box-sizing:border-box; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Content</legend>
 
       <div style="margin-bottom:1.25rem;">
@@ -51,7 +51,7 @@
           placeholder="Full announcement text...">{{ form_data.get('description', '') }}</textarea>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+      <div style="display:block; margin-bottom:1.25rem;">
         <div>
           <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Type</label>
           <select name="type" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
@@ -70,7 +70,7 @@
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div style="display:block;">
         <div>
           <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Tag</label>
           <input type="text" name="tag" value="{{ form_data.get('tag', '') }}"
@@ -96,7 +96,7 @@
         <input type="date" name="event_date" value="{{ form_data.get('event_date', '') }}"
           style="width:100%; max-width:220px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div style="display:block;">
         <div>
           <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Start Time</label>
           <input type="text" name="event_start_time" value="{{ form_data.get('event_start_time', '') }}"
@@ -133,7 +133,7 @@
 
     <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Expiration</legend>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div style="display:block;">
         <div class="form-group">
           <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Expiration</label>
           <select name="expiration_preset"
@@ -156,12 +156,12 @@
       <div style="display:flex; gap:2rem; flex-wrap:wrap;">
         <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
           <input type="checkbox" name="superfeatured" value="1" {% if form_data.get('superfeatured') %}checked{% endif %}
-            style="width:16px; height:16px; cursor:pointer;">
+            style="width:16px !important; max-width:16px !important; height:16px !important; cursor:pointer; flex:0 0 auto;">
           Super Featured
         </label>
         <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
           <input type="checkbox" name="show_in_banner" value="1" {% if form_data.get('show_in_banner') %}checked{% endif %}
-            style="width:16px; height:16px; cursor:pointer;">
+            style="width:16px !important; max-width:16px !important; height:16px !important; cursor:pointer; flex:0 0 auto;">
           Show in Top Bar Banner
         </label>
       </div>
@@ -184,4 +184,24 @@
 
   </form>
 </div>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<style>
+  .announcement-direct-editor { max-width: 820px !important; margin: 0 auto !important; }
+  .announcement-direct-editor form { width: 100%; }
+  .announcement-direct-editor fieldset { border: 0 !important; border-top: 1px solid rgba(255,255,255,.14) !important; border-radius: 0 !important; padding: 1.5rem 0 !important; margin-bottom: 0 !important; }
+  .announcement-direct-editor fieldset > div,
+  .announcement-direct-editor fieldset [style*="grid-template-columns"] { display: block !important; }
+  .announcement-direct-editor fieldset > div > div { width: 100%; margin-bottom: 1.1rem; }
+  .announcement-direct-editor input,
+  .announcement-direct-editor select,
+  .announcement-direct-editor textarea { width: 100% !important; max-width: none !important; box-sizing: border-box !important; }
+  .announcement-direct-editor input[type="checkbox"] { width: 16px !important; max-width: 16px !important; height: 16px; flex: 0 0 auto; }
+  .announcement-direct-editor fieldset:last-of-type label { display: flex !important; align-items: center; gap: .55rem; width: 100%; margin-bottom: .8rem; }
+  .announcement-direct-editor textarea { min-height: 170px; }
+  .announcement-direct-editor .form-group { width: 100%; }
+  .announcement-direct-editor form > div:last-child { display: flex !important; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.14); }
+</style>
 {% endblock %}

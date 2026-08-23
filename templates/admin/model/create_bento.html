@@ -47,9 +47,9 @@
 {% endmacro %}
 
 {% block body %}
-    <div class="grid grid-cols-12 gap-8" id="bento-grid-form">
-        <!-- Main Form Canvas (Sections 1 & 2) -->
-        <div class="col-span-12 lg:col-span-8 space-y-8">
+    <div class="sermon-create-layout" id="bento-grid-form" style="display:block !important; width:100%; max-width:900px; margin:0 auto;">
+        <!-- Focused single-column sermon editor -->
+        <div class="sermon-form-canvas space-y-8">
             <form action="{{ action }}" method="POST" enctype="multipart/form-data" id="admin-form" class="space-y-8">
                 {{ form.hidden_tag() if form.hidden_tag }}
                 
@@ -60,11 +60,7 @@
                 {% if admin_view.form_fieldsets %}
                     {% for name, opts in admin_view.form_fieldsets %}
                         {# Group specific fieldsets into the sidebar #}
-                        {% if name|lower in ['thumbnail', 'status & lifecycle', 'visibility & expiration', 'meta', 'status', 'metadata', 'lifecycle'] %}
-                            {% do sidebar_fieldsets.append((name, opts)) %}
-                        {% else %}
-                            {% do main_fieldsets.append((name, opts)) %}
-                        {% endif %}
+                        {% do main_fieldsets.append((name, opts)) %}
                     {% endfor %}
                 {% else %}
                     {% do main_fieldsets.append(('Details', {'fields': admin_view.form_columns or form._fields.keys()})) %}
@@ -77,7 +73,7 @@
                             <h2 class="font-manrope text-xl font-bold tracking-tight text-on-surface">{{ name }}</h2>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div class="grid grid-cols-1 {% if name == 'Scripture Reference' %}md:grid-cols-2{% endif %} gap-x-8 gap-y-6">
                             {% for field_name in opts['fields'] %}
                                 {% set field = form[field_name] %}
                                 {% if field and field.type != 'HiddenField' %}
@@ -144,42 +140,35 @@
         </div>
 
         <!-- Sidebar Actions (Sections 3 & 4) -->
-        <aside class="col-span-12 lg:col-span-4 space-y-8">
-            {% for name, opts in sidebar_fieldsets %}
-                <div class="bg-surface-container rounded-2xl p-8 shadow-xl border border-outline-variant/10">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-1.5 h-6 bg-{{ loop.cycle('secondary', 'primary-dim') }} rounded-full"></div>
-                        <h2 class="font-manrope text-lg font-bold tracking-tight text-on-surface">{{ name }}</h2>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        {% for field_name in opts['fields'] %}
-                            {% set field = form[field_name] %}
-                            {% if field %}
-                                <div class="form-group space-y-2" id="group-{{ field.id }}">
-                                    <label class="block font-label text-[11px] font-bold text-on-surface-variant uppercase tracking-wider ml-1" for="{{ field.id }}">{{ field.label.text }}</label>
-                                    {{ render_field(field) }}
-                                    {% if field.errors %}
-                                        {% for error in field.errors %}
-                                            <p class="text-error text-[10px] mt-1">{{ error }}</p>
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
-            
+        <aside class="sermon-actions space-y-4">
             {# Workflow Actions #}
-            <div class="space-y-4">
-                <button type="submit" form="admin-form" name="_continue_editing" class="w-full py-5 bg-surface-container-high hover:bg-surface-bright text-on-surface font-bold rounded-2xl text-[10px] uppercase tracking-widest transition-all shadow-xl active:scale-95 border border-outline-variant/10">
+            <div class="sermon-workflow-actions">
+                <button type="submit" form="admin-form" name="_continue_editing" class="secondary-action">
                     Save and Continue Editing
                 </button>
-                <button type="submit" form="admin-form" name="_add_another" class="w-full py-5 bg-surface-container-high hover:bg-surface-bright text-on-surface font-bold rounded-2xl text-[10px] uppercase tracking-widest transition-all shadow-xl active:scale-95 border border-outline-variant/10">
+                <button type="submit" form="admin-form" name="_add_another" class="secondary-action">
                     Save and Add Another
                 </button>
             </div>
         </aside>
     </div>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<style>
+  #bento-grid-form.sermon-create-layout { display: block !important; width: 100%; max-width: 900px; margin: 0 auto; }
+  .sermon-form-canvas { width: 100%; }
+  .sermon-form-canvas form { width: 100%; }
+  .sermon-form-canvas section { width: 100%; box-sizing: border-box; }
+  .sermon-form-canvas section { padding: 2rem; }
+  .sermon-form-canvas .form-group { min-width: 0; }
+  .sermon-form-canvas input,
+  .sermon-form-canvas select,
+  .sermon-form-canvas textarea { max-width: none; box-sizing: border-box; }
+  .sermon-actions { margin-top: 0; }
+  .sermon-workflow-actions { display: flex; justify-content: flex-end; gap: .75rem; flex-wrap: wrap; padding: 1rem 0 2rem; }
+  .sermon-workflow-actions .secondary-action { padding: .9rem 1.25rem; border-radius: .75rem; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); color: rgba(255,255,255,.82); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  @media (max-width: 700px) { .sermon-create-layout { max-width: none; } .sermon-form-canvas section { padding: 1.25rem; } }
+</style>
 {% endblock %}

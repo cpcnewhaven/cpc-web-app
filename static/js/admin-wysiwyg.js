@@ -57,6 +57,9 @@
   }
 
   ready(function () {
+    // The announcement creator is a focused, single-column workflow. Keep
+    // the generic split-screen preview for the other admin editors only.
+    if (window.location.pathname.indexOf('/admin/announcement/create') === 0) return;
     if (document.querySelector('[data-no-wysiwyg]')) return;
     var form = document.querySelector('form');
     if (!form) return;

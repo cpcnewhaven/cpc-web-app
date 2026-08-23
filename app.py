@@ -4102,7 +4102,7 @@ class PaperView(AuthenticatedModelView):
             return False
     
 class SermonView(AuthenticatedModelView):
-    create_template = 'admin/model/create_bento.html'
+    create_template = 'admin/sermon_create.html'
     edit_template = 'admin/model/edit_bento.html'
     column_list = ('id', 'title', 'series', 'episode_number', 'speaker_user', 'date', 'scripture', 'featured', 'active', 'expires_at')
     column_searchable_list = ('title', 'scripture')
@@ -4380,7 +4380,7 @@ class SermonView(AuthenticatedModelView):
             return False
 
 class PodcastEpisodeView(AuthenticatedModelView):
-    create_template = 'admin/model/create_bento.html'
+    create_template = 'admin/sermon_create.html'
     edit_template = 'admin/model/edit_bento.html'
     column_list = ('number', 'title', 'series', 'guest', 'date_added', 'source', 'expires_at', 'scripture')
     column_searchable_list = ('title', 'guest', 'scripture')

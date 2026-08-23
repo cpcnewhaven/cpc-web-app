@@ -2,12 +2,13 @@
 {% import 'admin/lib.html' as lib with context %}
 
 {% block create_form %}
+<div class="announcement-create-wrap">
 <div data-no-wysiwyg="1" style="display:none"></div>
-<p style="margin-bottom:1rem;font-size:0.9rem;">
+<p class="announcement-site-link">
     <a href="{{ url_for('announcements') }}" target="_blank" rel="noopener" style="color:var(--cpc-blue-light, #38bdf8);text-decoration:none;"><i class="fas fa-external-link-alt"></i> View on site</a>
 </p>
-<div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
-    <p style="color: rgba(255,255,255,0.85); margin: 0; font-size: 0.95rem;">
+<div class="announcement-intro">
+    <p>
         <strong style="color: var(--text-white);">📢 New Announcement</strong> — Create an announcement, event, banner alert, or other content in one place. Just select what you're making below.
     </p>
 </div>
@@ -16,6 +17,7 @@
     style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 600; margin-right: 0.5rem;" />
 {% endmacro %}
 {{ lib.render_form(form, return_url, announcement_extra_buttons(), form_opts) }}
+</div>
 {% endblock %}
 
 {% block tail %}
@@ -25,10 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var publishBtn = document.querySelector('input[name="_save_and_publish"]');
     var form = publishBtn ? publishBtn.closest('form') : document.querySelector('form');
     if (!form) return;
+    form.classList.add('announcement-form');
     var row = form.querySelector('.submit-row');
     if (row) {
         var saveBtn = row.querySelector('input[type=submit]:not([name])');
-        if (saveBtn) saveBtn.value = 'Save as a draft';
+        if (saveBtn) saveBtn.value = 'Save draft';
     }
 
     // Show/hide fields based on type selection
@@ -64,6 +67,31 @@ document.addEventListener('DOMContentLoaded', function() {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
 <style>
+    /* The create screen is a focused editor: one readable column, with the
+       optional field groups stacked below the core content. */
+    .announcement-create-wrap { max-width: 920px; margin: 0 auto; padding-bottom: 5rem; }
+    .announcement-site-link { margin: 0 0 1rem; font-size: .9rem; }
+    .announcement-intro { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
+    .announcement-intro p { color: rgba(255,255,255,.78); margin: 0; font-size: .95rem; }
+    .announcement-form { max-width: 760px; margin: 0 auto; }
+    .announcement-form .row { display: block; margin-left: 0; margin-right: 0; }
+    .announcement-form .col-md-6,
+    .announcement-form .col-md-4,
+    .announcement-form .col-md-3,
+    .announcement-form [class*="col-"] { width: 100%; max-width: none; flex: none; padding-left: 0; padding-right: 0; }
+    .announcement-form .form-group { width: 100%; margin-bottom: 1.15rem; }
+    .announcement-form .form-control,
+    .announcement-form select,
+    .announcement-form textarea { width: 100%; box-sizing: border-box; }
+    .announcement-form fieldset { margin-bottom: 1.5rem; padding: 1.25rem 1.5rem; border-color: rgba(255,255,255,.12); }
+    .announcement-form fieldset legend { padding: 0 .5rem; color: rgba(255,255,255,.62); font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; }
+    .announcement-form textarea { min-height: 170px; resize: vertical; }
+    .announcement-form .submit-row { position: sticky; bottom: 0; z-index: 5; display: flex; gap: .75rem; align-items: center; padding: 1rem 0; margin-top: 1rem; background: #081b2d; border-top: 1px solid rgba(255,255,255,.12); }
+    .announcement-form .submit-row input { margin: 0 .5rem 0 0; }
+    .announcement-form input[name="_save_and_publish"] { order: 2; background: linear-gradient(135deg,#4aaaf0,#2586d0) !important; border: 0 !important; }
+    .announcement-form .submit-row input[type="submit"]:not([name]) { order: 1; }
+    @media (max-width: 700px) { .announcement-create-wrap, .announcement-form { max-width: none; } .announcement-form fieldset { padding: 1rem; } }
+
     /* Slight overrides for dark mode admin compatibility */
     .flatpickr-calendar {
         box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
