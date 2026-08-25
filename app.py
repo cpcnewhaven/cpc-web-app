@@ -773,6 +773,8 @@ def sermons():
 def podcasts():
     series = PodcastSeries.query.order_by(PodcastSeries.title.asc()).all()
     fallback_artwork = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg'
+    beyond_artwork = 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_LAYNEBOLES.jpg'
+    classes_artwork = 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_ACTION_A.jpg'
     podcast_series = []
 
     for s in series:
@@ -820,7 +822,28 @@ def podcasts():
             'episodes': episode_items,
         })
 
-    return render_template('podcasts.html', series=series, podcast_series=podcast_series, podcast_fallback_artwork=fallback_artwork)
+    # Keep the public landing page at the same level as the church's
+    # information architecture: sermons, the sermon discussion podcast, and
+    # classes. The individual class series remain available inside Classes.
+    beyond = next((item for item in podcast_series if item['title'] == 'Beyond the Sunday Sermon'), None)
+    if beyond:
+        beyond['artwork'] = beyond_artwork
+    class_series = [item for item in podcast_series if item['title'] != 'Beyond the Sunday Sermon']
+    podcast_classes = {
+        'title': 'Classes',
+        'description': 'Educational content from our various classes, including Biblical Interpretation, Confessional Theology, and more.',
+        'artwork': classes_artwork,
+        'series': class_series,
+    }
+    return render_template(
+        'podcasts.html',
+        series=series,
+        podcast_series=podcast_series,
+        podcast_fallback_artwork=fallback_artwork,
+        podcast_background_artwork='https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg',
+        podcast_beyond=beyond,
+        podcast_classes=podcast_classes,
+    )
 
 @app.route('/events')
 def events():

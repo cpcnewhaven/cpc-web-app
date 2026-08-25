@@ -30,7 +30,7 @@
     text-align: center;
     margin-bottom: 1rem;
     background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
-                url('https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg') center/cover no-repeat;
+                url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg') center/cover no-repeat;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -86,6 +86,103 @@
     gap: 0.85rem;
     margin-bottom: 1.5rem;
     padding: 0.85rem 0;
+}
+
+.podcast-series-grid.is-top-level {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    align-items: stretch;
+    max-width: 1060px;
+    gap: 1.25rem;
+    padding: 1.25rem 0 1.5rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.podcast-series-grid.is-class-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.podcast-top-level-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-height: 100%;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 22px;
+}
+
+.podcast-top-level-card .podcast-card-artwork {
+    width: 100%;
+    height: auto;
+    flex: none;
+    aspect-ratio: 1 / 1;
+    border-radius: 0;
+}
+
+.podcast-top-level-card .podcast-card-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 242px;
+    padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.podcast-top-level-card .podcast-card-title {
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+}
+
+.podcast-top-level-card .podcast-card-description {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0.3rem 0 1.25rem;
+}
+
+.podcast-top-level-card .podcast-card-actions {
+    margin-top: 0;
+}
+
+.podcast-top-level-card .podcast-btn {
+    padding: 0.58rem 0.92rem;
+    font-size: 0.84rem;
+}
+
+.podcast-top-level-card.is-featured {
+    border-color: rgba(0, 82, 163, 0.28);
+    box-shadow: 0 18px 42px rgba(0, 58, 130, 0.16);
+}
+
+.podcast-top-level-card.is-featured .podcast-card-content {
+    background: linear-gradient(135deg, rgba(242, 248, 255, 0.98), rgba(255, 255, 255, 0.98));
+}
+
+.podcast-card-kicker {
+    color: #0d4b91;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    line-height: 1.2;
+    margin: 0 0 0.55rem;
+    text-transform: uppercase;
+}
+
+/* The global theme card rules load later; keep this landing composition intact. */
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card {
+    align-items: stretch !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    border-radius: 22px !important;
+}
+
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-artwork {
+    width: 100% !important;
+    height: auto !important;
+    flex: none !important;
+    border-radius: 0 !important;
 }
 
 .podcast-series-card {
@@ -551,6 +648,31 @@
     cursor: default;
 }
 
+/* Keep the landing cards in their editorial layout on smaller screens. */
+@media (max-width: 768px) {
+    .podcast-series-grid.is-top-level {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding-top: 0.85rem;
+    }
+
+    .podcast-series-grid.is-top-level .podcast-top-level-card {
+        flex-direction: column;
+    }
+
+    .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-artwork {
+        width: 100%;
+        height: auto;
+        flex: none;
+        aspect-ratio: 1 / 1;
+    }
+
+    .podcast-top-level-card .podcast-card-content {
+        min-height: 0;
+        padding: 1.2rem;
+    }
+}
+
 /* RSS Episodes Section */
 .rss-episodes-section {
     margin-top: 2rem;
@@ -587,6 +709,135 @@
     background: rgba(255, 255, 255, 0.96);
     border-color: rgba(0, 82, 163, 0.18);
     box-shadow: 0 16px 34px rgba(16, 44, 84, 0.14);
+}
+
+/* Featured library cards — a fixed visual system for both light and dark themes. */
+body .podcasts-page .podcast-series-grid.is-top-level {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1.25rem !important;
+    max-width: 940px;
+}
+
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card {
+    position: relative;
+    display: block !important;
+    height: 410px;
+    min-height: 410px !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1px solid rgba(16, 44, 84, 0.16) !important;
+    border-radius: 22px !important;
+    background: #172b45 !important;
+    box-shadow: 0 18px 38px rgba(16, 44, 84, 0.14) !important;
+}
+
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-artwork {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+}
+
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-artwork::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7, 19, 35, 0.03) 18%, rgba(7, 19, 35, 0.22) 46%, rgba(7, 19, 35, 0.96) 100%);
+}
+
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-artwork img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card.is-featured .podcast-card-artwork img {
+    object-position: 72% center;
+}
+
+body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-content {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex !important;
+    min-height: 0 !important;
+    padding: 4.75rem 1.4rem 1.35rem !important;
+    background: linear-gradient(180deg, transparent 0%, rgba(7, 19, 35, 0.78) 42%, rgba(7, 19, 35, 0.96) 100%);
+}
+
+body .podcasts-page .podcast-top-level-card .podcast-card-kicker,
+body .podcasts-page .podcast-top-level-card .podcast-card-title,
+body .podcasts-page .podcast-top-level-card .podcast-card-description {
+    color: #fff !important;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+body .podcasts-page .podcast-top-level-card .podcast-card-kicker {
+    color: rgba(255, 255, 255, 0.72) !important;
+    margin-bottom: 0.4rem;
+}
+
+body .podcasts-page .podcast-top-level-card .podcast-card-description {
+    color: rgba(255, 255, 255, 0.82) !important;
+    margin: 0.35rem 0 0.9rem;
+}
+
+body .podcasts-page .podcast-top-level-card .podcast-btn {
+    align-self: flex-start;
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(12px);
+}
+
+body.theme-blue .podcasts-page .podcast-top-level-card {
+    border-color: rgba(173, 208, 255, 0.3) !important;
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Latest episodes use a compact row even when only title, date, and speaker exist. */
+#episodes li {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.podcast-latest-row {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.9rem;
+    min-height: 92px;
+    padding: 0.85rem 1rem;
+}
+
+.podcast-latest-artwork {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 6px 14px rgba(16, 44, 84, 0.14);
+}
+
+.podcast-latest-copy { min-width: 0; }
+.podcast-latest-title { color: #1a2a3f; font-weight: 700; line-height: 1.25; }
+.podcast-latest-meta { color: #607287; font-size: 0.82rem; margin-top: 0.22rem; }
+.podcast-latest-detail { color: #3d4a59; font-size: 0.86rem; margin-top: 0.18rem; }
+.podcast-latest-row .btn-play-mp3 { margin: 0; white-space: nowrap; }
+
+body.theme-blue .podcasts-page #episodes li { background: rgba(19, 38, 61, 0.92) !important; }
+body.theme-blue .podcasts-page .podcast-latest-title { color: #fff !important; }
+body.theme-blue .podcasts-page .podcast-latest-meta { color: #a8c5e5 !important; }
+body.theme-blue .podcasts-page .podcast-latest-detail { color: #d6e6f8 !important; }
+
+@media (max-width: 768px) {
+    body .podcasts-page .podcast-series-grid.is-top-level { grid-template-columns: 1fr !important; }
+    body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card { height: 380px; min-height: 380px !important; }
+    .podcast-latest-row { grid-template-columns: 54px minmax(0, 1fr); gap: 0.75rem; }
+    .podcast-latest-artwork { width: 54px; height: 54px; }
+    .podcast-latest-row .btn-play-mp3 { grid-column: 2; justify-self: start; }
 }
 
 /* Ensure scrolling works */
@@ -718,7 +969,7 @@
 
         <!-- Tab 1: Podcast Series Grid (existing) -->
         <div id="tab-series" class="podcast-tab-content">
-            <div id="podcast-series-container" class="podcast-series-grid">
+            <div id="podcast-series-container" class="podcast-series-grid is-top-level">
                 <div class="loading-message">Loading podcast series...</div>
             </div>
 
@@ -795,6 +1046,9 @@
 <script>
 window.__PODCAST_SERIES__ = {{ podcast_series|tojson }};
 window.__PODCAST_FALLBACK_ARTWORK__ = {{ podcast_fallback_artwork|tojson }};
+window.__PODCAST_BACKGROUND_ARTWORK__ = {{ podcast_background_artwork|tojson }};
+window.__PODCAST_BEYOND__ = {{ podcast_beyond|tojson }};
+window.__PODCAST_CLASSES__ = {{ podcast_classes|tojson }};
 </script>
 {% endblock %}
 
@@ -819,15 +1073,45 @@ function formatPodcastDate(dateValue) {
 }
 
 const PODCAST_FALLBACK_ARTWORK = window.__PODCAST_FALLBACK_ARTWORK__ || 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg';
+const PODCAST_LATEST_ARTWORK = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png';
 const podcastSeriesData = Array.isArray(window.__PODCAST_SERIES__) ? window.__PODCAST_SERIES__ : [];
 const podcastSeriesMap = new Map(podcastSeriesData.map(series => [String(series.id), series]));
+const podcastBeyond = window.__PODCAST_BEYOND__ || null;
+const podcastClasses = window.__PODCAST_CLASSES__ || {series: []};
 
 const episodeSeriesOptions = new Map();
 let episodeSearchTimer;
 let currentEpisodePage = 1;
 let episodeSearchLoaded = false;
 
-// Load all podcast series
+function renderTopLevelCard(kicker, title, description, artwork, action, extraClass = '') {
+    return `<div class="podcast-series-card podcast-top-level-card ${extraClass}">
+        <div class="podcast-card-artwork"><img src="${escAttr(artwork || PODCAST_FALLBACK_ARTWORK)}" alt="${escAttr(title)}" loading="lazy"></div>
+        <div class="podcast-card-content">
+            <p class="podcast-card-kicker">${escHtml(kicker)}</p>
+            <div class="podcast-card-header"><div class="podcast-card-info"><h2 class="podcast-card-title">${escHtml(title)}</h2></div></div>
+            <p class="podcast-card-description">${escHtml(description)}</p>
+            <div class="podcast-card-actions">${action}</div>
+        </div>
+    </div>`;
+}
+
+function renderClassSeries() {
+    const container = document.getElementById('podcast-series-container');
+    container.className = 'podcast-series-grid is-class-list';
+    container.innerHTML = podcastClasses.series.map(series => renderSeriesCard(series)).join('');
+}
+
+function renderSeriesCard(series) {
+    const episodeCount = Number(series.episode_count || (series.episodes ? series.episodes.length : 0));
+    const seriesId = String(series.id || '');
+    const latest = series.latest_episode || (series.episodes && series.episodes[0]) || null;
+    const artwork = series.artwork || latest?.podcast_thumbnail_url || PODCAST_FALLBACK_ARTWORK;
+    const latestLabel = latest?.date_added ? `Latest episode: ${formatPodcastDate(latest.date_added)}` : 'Ready to browse';
+    return `<div class="podcast-series-card"><div class="podcast-card-artwork"><img src="${escAttr(artwork)}" alt="${escAttr(series.title)}" loading="lazy"></div><div class="podcast-card-content" style="flex:1;min-width:0;display:flex;flex-direction:column"><div class="podcast-card-header"><div class="podcast-card-info"><p class="podcast-card-subtitle">Class</p><h2 class="podcast-card-title">${escHtml(series.title)}</h2></div><span class="podcast-episode-count">${episodeCount} episode${episodeCount === 1 ? '' : 's'}</span></div><p class="podcast-card-description">${escHtml(series.description || 'No description available.')}</p><div class="podcast-card-meta"><span>${escHtml(latestLabel)}</span></div><div class="podcast-card-actions"><button onclick="showAllEpisodes(${JSON.stringify(seriesId)}, ${JSON.stringify(series.title)})" class="podcast-btn podcast-btn-primary" type="button">Browse episodes</button></div></div></div>`;
+}
+
+// Load the three public podcast classes, then reveal individual classes on demand.
 function loadPodcastSeries() {
     const container = document.getElementById('podcast-series-container');
     if (!container) return;
@@ -837,43 +1121,10 @@ function loadPodcastSeries() {
         return;
     }
 
-    container.innerHTML = podcastSeriesData.map(series => {
-        const episodeCount = Number(series.episode_count || (series.episodes ? series.episodes.length : 0));
-        const seriesId = String(series.id || '');
-        const latest = series.latest_episode || (series.episodes && series.episodes[0]) || null;
-        const artwork = series.artwork || latest?.podcast_thumbnail_url || PODCAST_FALLBACK_ARTWORK;
-        const seriesTitle = series.title || 'Untitled Series';
-        const seriesDescription = series.description || 'No description available.';
-        const latestLabel = latest?.date_added ? `Latest episode: ${formatPodcastDate(latest.date_added)}` : 'Ready to browse';
-        const latestAction = latest?.listen_url || latest?.link
-            ? `<a href="${escAttr(latest.listen_url || latest.link)}" target="_blank" rel="noopener" class="podcast-btn">Listen latest</a>`
-            : '';
-
-        return `
-            <div class="podcast-series-card">
-                <div class="podcast-card-artwork">
-                    <img src="${escAttr(artwork)}" alt="${escAttr(seriesTitle)}" loading="lazy" onerror="this.onerror=null;this.src='${escAttr(PODCAST_FALLBACK_ARTWORK)}'">
-                </div>
-                <div class="podcast-card-content" style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
-                    <div class="podcast-card-header">
-                        <div class="podcast-card-info">
-                            <p class="podcast-card-subtitle">Podcast Series</p>
-                            <h2 class="podcast-card-title">${escHtml(seriesTitle)}</h2>
-                        </div>
-                        <span class="podcast-episode-count">${episodeCount} episode${episodeCount === 1 ? '' : 's'}</span>
-                    </div>
-                    <p class="podcast-card-description">${escHtml(seriesDescription)}</p>
-                    <div class="podcast-card-meta">
-                        <span>${escHtml(latestLabel)}</span>
-                    </div>
-                    <div class="podcast-card-actions">
-                        <button onclick="showAllEpisodes(${JSON.stringify(seriesId)}, ${JSON.stringify(seriesTitle)})" class="podcast-btn podcast-btn-primary" type="button">Browse episodes</button>
-                        ${latestAction}
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
+    const beyond = podcastBeyond || {};
+    const beyondCard = renderTopLevelCard('CPC Podcast', 'Beyond the Sunday Sermon', beyond.description || 'Discussions with Pastors about the Sunday Sermon.', beyond.artwork, `<button class="podcast-btn podcast-btn-primary" type="button" onclick="showAllEpisodes(${JSON.stringify(String(beyond.id || ''))}, 'Beyond the Sunday Sermon')">Browse episodes</button>`, 'is-featured');
+    const classes = renderTopLevelCard('CPC Education', 'Classes', podcastClasses.description, podcastClasses.artwork, '<button class="podcast-btn podcast-btn-primary" type="button" onclick="renderClassSeries()">Browse classes</button>');
+    container.innerHTML = beyondCard + classes;
 }
 
 // Show all episodes for a specific series
@@ -958,35 +1209,31 @@ function renderFullEpisodes(data) {
 // Load podcast from RSS feed
 async function loadPodcast() {
     try {
-        const r = await fetch('/api/podcast/cpc', { cache: 'no-store' });
-        const data = await r.json();
         const list = document.querySelector('#episodes');
         if (!list) return;
-        
         list.innerHTML = '';
 
-        if (data.error) {
-            list.innerHTML = `<li style="color: #b54747; padding: 1rem;">${escHtml(data.error)}</li>`;
-            return;
-        }
-
-        if (!data.episodes || data.episodes.length === 0) {
+        // Keep this landing-page feed focused on the featured podcast.
+        const episodes = (podcastBeyond?.episodes || []).slice(0, 8);
+        if (!episodes.length) {
             list.innerHTML = '<li style="color: #5b6b7a; padding: 1rem;">No episodes available.</li>';
             return;
         }
 
-        for (const ep of data.episodes) {
+        for (const ep of episodes) {
             const li = document.createElement('li');
-            const audioUrl = ep.audio?.url || '';
+            const audioUrl = ep.listen_url || ep.link || '';
+            const image = ep.podcast_thumbnail_url || PODCAST_LATEST_ARTWORK;
+            const detail = ep.guest || ep.scripture || 'Beyond the Sunday Sermon';
             li.innerHTML = `
-                <div style="display:flex; align-items:flex-start; gap:0.85rem;">
-                    ${ep.image ? `<img src="${escAttr(ep.image)}" alt="" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;box-shadow:0 8px 16px rgba(16,44,84,0.12);">` : ''}
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-weight:600;color:#1a2a3f;margin-bottom:0.2rem;">${escHtml(ep.title ?? 'Untitled')}</div>
-                        <div style="font-size:0.8rem;color:#5b6b7a;margin-bottom:0.6rem;">${escHtml(ep.published ?? '')}${ep.duration ? ' · ' + escHtml(ep.duration) : ''}</div>
-                        <p style="font-size:0.9rem;color:#3d4a59;line-height:1.55;margin:0 0 0.6rem;">${escHtml((ep.summary || '').replace(/<[^>]+>/g,'').slice(0, 200))}${(ep.summary || '').length > 200 ? '…' : ''}</p>
-                        ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(ep.image || '')}" data-play-subtitle="CPC New Haven"><i class="fas fa-play"></i> Play</button>` : ''}
+                <div class="podcast-latest-row">
+                    ${image ? `<img src="${escAttr(image)}" alt="" class="podcast-latest-artwork">` : ''}
+                    <div class="podcast-latest-copy">
+                        <div class="podcast-latest-title">${escHtml(ep.title ?? 'Untitled')}</div>
+                        <div class="podcast-latest-meta">${escHtml(formatPodcastDate(ep.date_added) || '')}</div>
+                        <div class="podcast-latest-detail">${escHtml(detail)}</div>
                     </div>
+                    ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(image)}" data-play-subtitle="Beyond the Sunday Sermon"><i class="fas fa-play"></i> Play</button>` : ''}
                 </div>
             `;
             list.appendChild(li);
