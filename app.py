@@ -521,7 +521,7 @@ SUBPAGE_CONFIGS = {
     },
     'bulletin': {
         'title': 'Weekly Bulletin',
-        'url': '/sundays',
+        'url': '/plan-a-visit',
         'icon': 'newspaper',
         'color': '#d97706',
         'keys': [
@@ -532,7 +532,7 @@ SUBPAGE_CONFIGS = {
     },
     'service_times': {
         'title': 'Service Times',
-        'url': '/sundays',
+        'url': '/plan-a-visit',
         'icon': 'fas fa-clock',
         'color': '#0071e3',
         'keys': [
@@ -888,8 +888,8 @@ def lifegroups():
 
 @app.route('/sundays')
 def sundays():
-    site_content = get_site_content()
-    return render_template('sundays.html', site_content=site_content)
+    """Legacy Sundays URL; Plan a Visit is now the combined Sunday landing page."""
+    return redirect(url_for('plan_a_visit'))
 
 @app.route('/display')
 def display():
@@ -1003,7 +1003,7 @@ def sitemap():
     base = 'https://cpcnewhaven.org'
     static_pages = [
         ('/', '1.0', 'weekly'),
-        ('/sundays', '0.9', 'weekly'),
+        ('/plan-a-visit', '0.9', 'weekly'),
         ('/sermons', '0.9', 'weekly'),
         ('/teaching-series', '0.8', 'weekly'),
         ('/podcasts', '0.8', 'weekly'),

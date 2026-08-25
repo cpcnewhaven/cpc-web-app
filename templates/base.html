@@ -132,7 +132,7 @@
             <li><a href="{{ url_for('index') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Home</a></li>
             <li>
-                <a href="{{ url_for('sundays') }}"
+                <a href="{{ url_for('plan_a_visit') }}"
                     class="text-white hover:text-blue-200 font-medium px-3 py-2 rounded text-sm">Sundays</a>
             </li>
             <li>
@@ -451,7 +451,7 @@
                     <i class="fas fa-location-dot" aria-hidden="true" style="color:var(--surface-accent); margin-top:0.18rem;"></i>
                     <span>{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</span>
                 </a>
-                <a href="{{ url_for('sundays') }}" class="cta" style="display:inline-block; margin-top:0.65rem; color:var(--surface-accent);">Learn More About Sundays →</a>
+                <a href="{{ url_for('plan_a_visit') }}" class="cta" style="display:inline-block; margin-top:0.65rem; color:var(--surface-accent);">Plan Your Visit →</a>
             </div>
         </div>
         <div class="dashboard-section" id="luke-chapter-section">
@@ -489,7 +489,7 @@
         <a href="{{ url_for('live') }}" class="mobile-nav-item" data-route="live">
             <span>Live</span>
         </a>
-        <a href="{{ url_for('sundays') }}" class="mobile-nav-item" data-route="sundays">
+        <a href="{{ url_for('plan_a_visit') }}" class="mobile-nav-item" data-route="plan-a-visit">
             <span>Sundays</span>
         </a>
         <button type="button" class="mobile-nav-item mobile-nav-more" id="mobileNavMoreBtn" aria-label="More menu"
@@ -521,7 +521,7 @@
             </button>
             <div class="mobile-more-links">
                 <a href="{{ url_for('give') }}" class="mobile-more-link"><span>Give</span></a>
-                <a href="{{ url_for('sundays') }}" class="mobile-more-link"><span>Sundays</span></a>
+                <a href="{{ url_for('plan_a_visit') }}" class="mobile-more-link"><span>Sundays</span></a>
                 <a href="{{ url_for('live') }}" class="mobile-more-link"><span>Live Stream</span></a>
                 <a href="{{ url_for('search') }}" class="mobile-more-link"><span>Search</span></a>
                 {# <a href="{{ url_for('suggest_event') }}" class="mobile-more-link"><span>Suggest an Event</span></a> #}
