@@ -1122,18 +1122,24 @@ function loadPodcastSeries() {
     }
 
     const beyond = podcastBeyond || {};
-    const beyondCard = renderTopLevelCard('CPC Podcast', 'Beyond the Sunday Sermon', beyond.description || 'Discussions with Pastors about the Sunday Sermon.', beyond.artwork, `<button class="podcast-btn podcast-btn-primary" type="button" onclick="showAllEpisodes(${JSON.stringify(String(beyond.id || ''))}, 'Beyond the Sunday Sermon')">Browse episodes</button>`, 'is-featured');
+    const beyondCard = renderTopLevelCard('CPC Podcast', 'Beyond the Sunday Sermon', beyond.description || 'Discussions with Pastors about the Sunday Sermon.', beyond.artwork, '<button class="podcast-btn podcast-btn-primary" type="button" onclick="openBeyondEpisodes()">Browse episodes</button>', 'is-featured');
     const classes = renderTopLevelCard('CPC Education', 'Classes', podcastClasses.description, podcastClasses.artwork, '<button class="podcast-btn podcast-btn-primary" type="button" onclick="renderClassSeries()">Browse classes</button>');
     container.innerHTML = beyondCard + classes;
 }
 
+function openBeyondEpisodes() {
+    const beyond = podcastBeyond || podcastSeriesData.find(series => series.title === 'Beyond the Sunday Sermon');
+    showAllEpisodes(beyond?.id, beyond?.title || 'Beyond the Sunday Sermon');
+}
+
 // Show all episodes for a specific series
-function showAllEpisodes(seriesId, seriesTitle) {
+async function showAllEpisodes(seriesId, seriesTitle) {
     const seriesContainer = document.getElementById('podcast-series-container');
     const fullView = document.getElementById('full-episodes-view');
     const episodesTitle = document.getElementById('episodes-title');
     const episodesContainer = document.getElementById('full-episodes-container');
-    const series = podcastSeriesMap.get(String(seriesId));
+    const series = podcastSeriesMap.get(String(seriesId))
+        || podcastSeriesData.find(item => item.title === seriesTitle);
     
     // Hide series grid and show full episodes view
     if (seriesContainer) seriesContainer.style.display = 'none';
@@ -1148,6 +1154,19 @@ function showAllEpisodes(seriesId, seriesTitle) {
             episodes: series.episodes
         });
         return;
+    }
+
+    if (seriesTitle === 'Beyond the Sunday Sermon') {
+        try {
+            const response = await fetch('/api/podcasts/beyond-podcast', { cache: 'no-store' });
+            const data = await response.json();
+            if (response.ok && data.episodes?.length) {
+                renderFullEpisodes(data);
+                return;
+            }
+        } catch (error) {
+            console.error('Error loading Beyond the Sunday Sermon episodes:', error);
+        }
     }
 
     episodesContainer.innerHTML = '<div class="error-message">No episodes found for this series.</div>';
@@ -1213,8 +1232,18 @@ async function loadPodcast() {
         if (!list) return;
         list.innerHTML = '';
 
-        // Keep this landing-page feed focused on the featured podcast.
-        const episodes = (podcastBeyond?.episodes || []).slice(0, 8);
+        // The current feed is the public Beyond the Sunday Sermon Spotify/Anchor RSS feed.
+        let episodes = [];
+        try {
+            const response = await fetch('/api/podcast/beyond', { cache: 'no-store' });
+            const data = await response.json();
+            if (response.ok && Array.isArray(data.episodes)) episodes = data.episodes;
+        } catch (error) {
+            console.warn('Spotify feed unavailable; using the public Beyond episode archive.', error);
+        }
+
+        if (!episodes.length) episodes = podcastBeyond?.episodes || [];
+        episodes = episodes.slice(0, 8);
         if (!episodes.length) {
             list.innerHTML = '<li style="color: #5b6b7a; padding: 1rem;">No episodes available.</li>';
             return;
@@ -1222,18 +1251,21 @@ async function loadPodcast() {
 
         for (const ep of episodes) {
             const li = document.createElement('li');
-            const audioUrl = ep.listen_url || ep.link || '';
-            const image = ep.podcast_thumbnail_url || PODCAST_LATEST_ARTWORK;
-            const detail = ep.guest || ep.scripture || 'Beyond the Sunday Sermon';
+            const audioUrl = ep.audio?.url || ep.audio_url || '';
+            const listenUrl = ep.listen_url || ep.link || '';
+            const image = ep.image || ep.podcast_thumbnail_url || PODCAST_LATEST_ARTWORK;
+            const date = ep.date_added || ep.published || '';
+            const summary = String(ep.summary || '').replace(/<[^>]+>/g, '').trim();
+            const detail = ep.guest || ep.scripture || summary.slice(0, 110) || 'Beyond the Sunday Sermon';
             li.innerHTML = `
                 <div class="podcast-latest-row">
                     ${image ? `<img src="${escAttr(image)}" alt="" class="podcast-latest-artwork">` : ''}
                     <div class="podcast-latest-copy">
                         <div class="podcast-latest-title">${escHtml(ep.title ?? 'Untitled')}</div>
-                        <div class="podcast-latest-meta">${escHtml(formatPodcastDate(ep.date_added) || '')}</div>
+                        <div class="podcast-latest-meta">${escHtml(formatPodcastDate(date) || '')}</div>
                         <div class="podcast-latest-detail">${escHtml(detail)}</div>
                     </div>
-                    ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(image)}" data-play-subtitle="Beyond the Sunday Sermon"><i class="fas fa-play"></i> Play</button>` : ''}
+                    ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(image)}" data-play-subtitle="Beyond the Sunday Sermon"><i class="fas fa-play"></i> Play</button>` : listenUrl ? `<a class="podcast-btn" href="${escAttr(listenUrl)}" target="_blank" rel="noopener">Listen on Spotify</a>` : ''}
                 </div>
             `;
             list.appendChild(li);

@@ -16,7 +16,8 @@ class ProductionConfig(Config):
 
 # --- Podcast + cache config ---
 PODCAST_FEEDS = {
-    "cpc": "https://anchor.fm/s/4c59256c/podcast/rss"
+    "cpc": "https://anchor.fm/s/4c59256c/podcast/rss",
+    "beyond": "https://anchor.fm/s/4c59256c/podcast/rss",
 }
 CACHE_TYPE = "SimpleCache"
 CACHE_DEFAULT_TIMEOUT = 900  # 15 minutes

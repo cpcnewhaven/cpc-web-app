@@ -283,6 +283,28 @@
         <img src="https://storage.googleapis.com/cpc-public-website/62.jpg" alt="CPC Contact" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block;">
     </div>
 
+    <section class="contact-form-section" aria-labelledby="key-leaders-heading">
+        <h2 id="key-leaders-heading">Key Leader Contacts</h2>
+        <div class="contact-grid" style="margin-bottom: 0;">
+            {% set leaders = [
+                ('Senior Pastor', 'Craig Luekens', 'craig.luekens@cpcnewhaven.org'),
+                ('Assistant Pastor (Children, Youth & College)', 'Jerry Ornelas', 'jerry.ornelas@cpcnewhaven.org'),
+                ('Administrative Coordinator', 'Alexis Vano', 'admin@cpcnewhaven.org'),
+                ('Music Coordinator', 'Jennifer Cheng', 'jennifer.cheng@cpcnewhaven.org'),
+                ("Women's Leadership Board", 'Stacy Roney', 'mrsprofdoc@icloud.com'),
+                ('Nursery Coordinator', 'Michelle Ornelas', 'michelle.chabla@gmail.com'),
+                ('Mercy Ministries', 'Layne Boles', 'laynematt98@gmail.com')
+            ] %}
+            {% for role, name, email in leaders %}
+            <div class="contact-card">
+                <h3>{{ role }}</h3>
+                <p>{{ name }}</p>
+                <a href="mailto:{{ email }}">{{ email }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
     <!-- Contact Form -->
     <div class="contact-form-section">
         <h2>Send Us a Message</h2>
