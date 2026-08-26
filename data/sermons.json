@@ -3,8 +3,8 @@
   "description": "Weekly sermons from our Sunday worship services",
   "_year_counts": {
     "2026": {
-      "count": 25,
-      "note": "25 sermons from 2026"
+      "count": 26,
+      "note": "26 sermons from 2026"
     },
     "2025": {
       "count": 116,
@@ -43,7 +43,7 @@
       "note": "11 sermons from 2002"
     }
   },
-  "_total_sermons": 590,
+  "_total_sermons": 591,
   "_organized_by": "year (oldest to newest)",
   "_note": "Scroll through 'sermons_by_year' to see sermons organized by year. The 'sermons' array at the end is for API compatibility.",
   "sermons_by_year": {
@@ -12072,6 +12072,31 @@
     ],
     "2026": [
       {
+        "id": "26-08-25",
+        "title": "The Resurrection: Faith Before Sight | The Sunday Sermon | Luke 24:1-12 | Rev. Jerry Ornelas",
+        "author": "Rev. Jerry Ornelas",
+        "scripture": "Luke 24:1-12",
+        "date": "2026-08-25",
+        "published_at": "2026-08-25T11:45:00-04:00",
+        "duration": "36 min",
+        "apple_podcasts_url": "",
+        "spotify_url": "https://open.spotify.com/episode/0npWS5uHojZLU2Fraj42XM?si=weGuQ7z_QFuY8UEY_bi1TA",
+        "link": "https://open.spotify.com/episode/0npWS5uHojZLU2Fraj42XM?si=weGuQ7z_QFuY8UEY_bi1TA",
+        "podcast_thumbnail_url": "",
+        "youtube_url": "https://www.youtube.com/watch?v=ShMmV-565NA",
+        "source": "spotify",
+        "original_id": "0npWS5uHojZLU2Fraj42XM",
+        "series": "The Sunday Sermon",
+        "episode_title": "The Resurrection: Faith Before Sight | The Sunday Sermon | Luke 24:1-12 | Rev. Jerry Ornelas",
+        "guest_speaker": "",
+        "sermon_type": "sermon",
+        "tags": [
+          "The Sunday Sermon",
+          "Luke"
+        ],
+        "search_keywords": "the resurrection faith before sight the sunday sermon luke 24:1-12 rev. jerry ornelas"
+      },
+      {
         "id": "26-08-03",
         "title": "The Darkness of Christ | The Sunday Sermon | Psalm 88: 1-18 | Rev. Craig Luekens",
         "author": "Rev. Craig Luekens",
@@ -12627,6 +12652,31 @@
     ]
   },
   "sermons": [
+    {
+      "id": "26-08-25",
+      "title": "The Resurrection: Faith Before Sight | The Sunday Sermon | Luke 24:1-12 | Rev. Jerry Ornelas",
+      "author": "Rev. Jerry Ornelas",
+      "scripture": "Luke 24:1-12",
+      "date": "2026-08-25",
+      "published_at": "2026-08-25T11:45:00-04:00",
+      "duration": "36 min",
+      "apple_podcasts_url": "",
+      "spotify_url": "https://open.spotify.com/episode/0npWS5uHojZLU2Fraj42XM?si=weGuQ7z_QFuY8UEY_bi1TA",
+      "link": "https://open.spotify.com/episode/0npWS5uHojZLU2Fraj42XM?si=weGuQ7z_QFuY8UEY_bi1TA",
+      "podcast_thumbnail_url": "",
+      "youtube_url": "https://www.youtube.com/watch?v=ShMmV-565NA",
+      "source": "spotify",
+      "original_id": "0npWS5uHojZLU2Fraj42XM",
+      "series": "The Sunday Sermon",
+      "episode_title": "The Resurrection: Faith Before Sight | The Sunday Sermon | Luke 24:1-12 | Rev. Jerry Ornelas",
+      "guest_speaker": "",
+      "sermon_type": "sermon",
+      "tags": [
+        "The Sunday Sermon",
+        "Luke"
+      ],
+      "search_keywords": "the resurrection faith before sight the sunday sermon luke 24:1-12 rev. jerry ornelas"
+    },
     {
       "id": "26-08-03",
       "title": "The Darkness of Christ | The Sunday Sermon | Psalm 88: 1-18 | Rev. Craig Luekens",

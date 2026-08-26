@@ -1546,6 +1546,9 @@ def api_sermons():
         db_sermons = Sermon.query.filter(
             Sermon.active == True,
             Sermon.archived == False,
+            Sermon.title.isnot(None),
+            Sermon.title != '',
+            Sermon.title != 'TBA',
         ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).all()
         for s in db_sermons:
             sermon_data = {
@@ -2248,7 +2251,12 @@ def api_search():
     try:
         # Search sermons — active only, plus single next-upcoming sermon
         if content_type in ['all', 'sermons']:
-            q = Sermon.query.filter(Sermon.active == True).filter(_not_expired(Sermon))
+            q = Sermon.query.filter(
+                Sermon.active == True,
+                Sermon.title.isnot(None),
+                Sermon.title != '',
+                Sermon.title != 'TBA',
+            ).filter(_not_expired(Sermon))
 
             # Text search (only on text fields, not integer speaker)
             if query:
@@ -2295,6 +2303,7 @@ def api_search():
                     Sermon.active == False,
                     Sermon.title != None,
                     Sermon.title != '',
+                    Sermon.title != 'TBA',
                     Sermon.date >= date_type.today()
                 ).order_by(Sermon.date.asc()).first()
 
