@@ -687,6 +687,18 @@ body .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .p
     font-weight: 600;
 }
 
+.rss-episodes-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rss-episodes-header h2 { margin-bottom: 0; }
+.rss-episodes-kicker { margin: 0 0 0.3rem; color: #0d4b91; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; }
+.rss-episodes-subtitle { max-width: 290px; margin: 0; color: #607287; font-size: 0.82rem; line-height: 1.4; text-align: right; }
+
 #episodes {
     list-style: none;
     padding: 0;
@@ -822,15 +834,111 @@ body.theme-blue .podcasts-page .podcast-top-level-card {
 }
 
 .podcast-latest-copy { min-width: 0; }
-.podcast-latest-title { color: #1a2a3f; font-weight: 700; line-height: 1.25; }
-.podcast-latest-meta { color: #607287; font-size: 0.82rem; margin-top: 0.22rem; }
-.podcast-latest-detail { color: #3d4a59; font-size: 0.86rem; margin-top: 0.18rem; }
+.podcast-latest-title { color: #1a2a3f; display: -webkit-box; overflow: hidden; font-weight: 700; line-height: 1.25; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.podcast-latest-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.42rem; margin-top: 0.28rem; }
+.podcast-latest-date,
+.podcast-latest-duration { display: inline-flex; align-items: center; gap: 0.28rem; padding: 0.2rem 0.48rem; border: 1px solid rgba(13, 75, 145, 0.12); border-radius: 999px; background: rgba(13, 75, 145, 0.035); color: #47617e; font-size: 0.74rem; font-weight: 650; line-height: 1; }
+.podcast-latest-date i,
+.podcast-latest-duration i { color: #0b61c3; font-size: 0.67rem; }
+.podcast-latest-detail { display: inline-flex; align-items: center; gap: 0.34rem; overflow: hidden; color: #3d4a59; font-size: 0.86rem; margin-top: 0.28rem; text-overflow: ellipsis; white-space: nowrap; }
+.podcast-latest-detail a { color: #0b61c3; font-weight: 700; text-decoration: none; }
+.podcast-latest-detail a:hover { text-decoration: underline; }
+.latest-episodes-pagination { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-top: 1rem; }
+.latest-episodes-pagination[hidden] { display: none; }
+.latest-episodes-count { color: #607287; font-size: 0.78rem; }
+.latest-episodes-more { padding: 0.58rem 0.9rem; border: 1px solid rgba(11, 97, 195, 0.2); border-radius: 999px; background: rgba(11, 97, 195, 0.055); color: #0b61c3; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+.latest-episodes-more:hover { border-color: rgba(11, 97, 195, 0.38); background: rgba(11, 97, 195, 0.1); }
 .podcast-latest-row .btn-play-mp3 { margin: 0; white-space: nowrap; }
+
+/* One calm, legible play control across both page themes. */
+body .podcasts-page .podcast-latest-row .btn-play-mp3 {
+    color: #fff !important;
+    background: #0b61c3 !important;
+    border: 1px solid #2d7dd9 !important;
+    box-shadow: 0 7px 14px rgba(5, 53, 112, 0.2);
+}
+
+body .podcasts-page .podcast-latest-row .btn-play-mp3:hover {
+    color: #fff !important;
+    background: #084c9c !important;
+    border-color: #5c9ce7 !important;
+    transform: translateY(-1px);
+}
 
 body.theme-blue .podcasts-page #episodes li { background: rgba(19, 38, 61, 0.92) !important; }
 body.theme-blue .podcasts-page .podcast-latest-title { color: #fff !important; }
-body.theme-blue .podcasts-page .podcast-latest-meta { color: #a8c5e5 !important; }
+body.theme-blue .podcasts-page .podcast-latest-date,
+body.theme-blue .podcasts-page .podcast-latest-duration { border-color: rgba(168, 208, 255, 0.18) !important; background: rgba(168, 208, 255, 0.055) !important; color: #c9ddf3 !important; }
+body.theme-blue .podcasts-page .podcast-latest-date i,
+body.theme-blue .podcasts-page .podcast-latest-duration i { color: #a8d0ff !important; }
 body.theme-blue .podcasts-page .podcast-latest-detail { color: #d6e6f8 !important; }
+body.theme-blue .podcasts-page .podcast-latest-detail a { color: #a8d0ff !important; }
+body.theme-blue .podcasts-page .latest-episodes-count { color: #b9d0e8 !important; }
+body.theme-blue .podcasts-page .latest-episodes-more { border-color: rgba(168, 208, 255, 0.24) !important; background: rgba(168, 208, 255, 0.07) !important; color: #d9ecff !important; }
+body.theme-blue .podcasts-page .rss-episodes-kicker { color: #a8d0ff !important; }
+body.theme-blue .podcasts-page .rss-episodes-subtitle { color: #b9d0e8 !important; }
+
+/* A selected show gets its own editorial identity instead of a generic list view. */
+.podcast-show-context {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    align-items: center;
+    gap: 1.25rem;
+    margin: 0 0 1.15rem;
+    padding: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(0, 82, 163, 0.2);
+    border-radius: 20px;
+    background: linear-gradient(120deg, #ecf5ff, #f9fcff);
+    box-shadow: 0 14px 30px rgba(16, 44, 84, 0.1);
+}
+
+.podcast-show-context-artwork {
+    width: 132px;
+    height: 132px;
+    overflow: hidden;
+    border-radius: 14px;
+    box-shadow: 0 10px 22px rgba(0, 20, 50, 0.2);
+}
+
+.podcast-show-context-artwork img { width: 100%; height: 100%; object-fit: cover; }
+.podcast-show-kicker { margin: 0 0 0.35rem; color: #0d4b91; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; }
+.podcast-show-title { margin: 0; color: #14253c; font-size: clamp(1.45rem, 3vw, 2.1rem); letter-spacing: -0.035em; line-height: 1.05; }
+.podcast-show-description { max-width: 620px; margin: 0.55rem 0 0; color: #42566d; font-size: 0.94rem; line-height: 1.5; }
+.podcast-show-meta { margin: 0.7rem 0 0; color: #0d4b91; font-size: 0.82rem; font-weight: 600; }
+
+body.theme-blue .podcasts-page .podcast-show-context {
+    border-color: rgba(173, 208, 255, 0.22) !important;
+    background: linear-gradient(120deg, rgba(13, 37, 63, 0.98), rgba(23, 58, 91, 0.96)) !important;
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.24) !important;
+}
+
+body.theme-blue .podcasts-page .podcast-show-kicker,
+body.theme-blue .podcasts-page .podcast-show-meta { color: #a8d0ff !important; }
+body.theme-blue .podcasts-page .podcast-show-title { color: #fff !important; }
+body.theme-blue .podcasts-page .podcast-show-description { color: rgba(235, 245, 255, 0.78) !important; }
+
+body.theme-blue .podcasts-page .podcast-episode {
+    background: rgba(12, 34, 57, 0.94) !important;
+    border-color: rgba(173, 208, 255, 0.18) !important;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.theme-blue .podcasts-page .podcast-episode:hover {
+    background: rgba(20, 49, 78, 0.98) !important;
+    border-color: rgba(173, 208, 255, 0.34) !important;
+}
+
+body.theme-blue .podcasts-page .podcast-episode .episode-title { color: #fff !important; }
+body.theme-blue .podcasts-page .podcast-episode .episode-meta,
+body.theme-blue .podcasts-page .podcast-episode .episode-details { color: #b9d0e8 !important; }
+
+@media (max-width: 620px) {
+    .podcast-show-context { grid-template-columns: 88px minmax(0, 1fr); gap: 0.85rem; padding: 0.8rem; }
+    .podcast-show-context-artwork { width: 88px; height: 88px; border-radius: 11px; }
+    .podcast-show-title { font-size: 1.35rem; }
+    .podcast-show-description { display: none; }
+}
 
 @media (max-width: 768px) {
     body .podcasts-page .podcast-series-grid.is-top-level { grid-template-columns: 1fr !important; }
@@ -838,6 +946,8 @@ body.theme-blue .podcasts-page .podcast-latest-detail { color: #d6e6f8 !importan
     .podcast-latest-row { grid-template-columns: 54px minmax(0, 1fr); gap: 0.75rem; }
     .podcast-latest-artwork { width: 54px; height: 54px; }
     .podcast-latest-row .btn-play-mp3 { grid-column: 2; justify-self: start; }
+    .rss-episodes-header { align-items: start; flex-direction: column; gap: 0.3rem; }
+    .rss-episodes-subtitle { max-width: none; text-align: left; }
 }
 
 /* Ensure scrolling works */
@@ -986,8 +1096,18 @@ body.theme-blue .podcasts-page .podcast-latest-detail { color: #d6e6f8 !importan
 
             <!-- RSS Feed Episodes List -->
             <div class="rss-episodes-section">
-                <h2>Latest Episodes</h2>
+                <div class="rss-episodes-header">
+                    <div>
+                        <p class="rss-episodes-kicker">From CPC</p>
+                        <h2>Latest Episodes</h2>
+                    </div>
+                    <p class="rss-episodes-subtitle">Recent sermons and conversations from our church family.</p>
+                </div>
                 <ul id="episodes" class="divide-y"></ul>
+                <div id="latestEpisodesPagination" class="latest-episodes-pagination" hidden>
+                    <span id="latestEpisodesCount" class="latest-episodes-count"></span>
+                    <button id="latestEpisodesMore" class="latest-episodes-more" type="button">View more episodes</button>
+                </div>
             </div>
         </div>
 
@@ -1072,6 +1192,21 @@ function formatPodcastDate(dateValue) {
     return date.toLocaleDateString();
 }
 
+function formatPodcastDuration(durationValue) {
+    if (!durationValue) return '';
+    const value = String(durationValue).trim();
+    if (/^\d+\s*(min|mins|minutes)$/i.test(value)) return value.replace(/\s*(mins|minutes)$/i, ' min');
+    const iso = value.match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/i);
+    const clock = iso ? [iso[1] || '0', iso[2] || '0', iso[3] || '0'].join(':') : value.replace(/^PT/, '');
+    const parts = clock.match(/^(?:(\d+):)?(\d{1,2}):(\d{2})$/);
+    if (!parts) return value;
+    const hours = Number(parts[1] || 0);
+    const minutes = Number(parts[2] || 0);
+    const seconds = Number(parts[3] || 0);
+    const totalMinutes = hours * 60 + minutes + (seconds >= 30 ? 1 : 0);
+    return totalMinutes ? `${totalMinutes} min` : '< 1 min';
+}
+
 const PODCAST_FALLBACK_ARTWORK = window.__PODCAST_FALLBACK_ARTWORK__ || 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg';
 const PODCAST_LATEST_ARTWORK = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png';
 const podcastSeriesData = Array.isArray(window.__PODCAST_SERIES__) ? window.__PODCAST_SERIES__ : [];
@@ -1083,6 +1218,9 @@ const episodeSeriesOptions = new Map();
 let episodeSearchTimer;
 let currentEpisodePage = 1;
 let episodeSearchLoaded = false;
+const LATEST_EPISODES_PAGE_SIZE = 4;
+let latestPodcastEpisodes = [];
+let latestVisibleEpisodeCount = LATEST_EPISODES_PAGE_SIZE;
 
 function renderTopLevelCard(kicker, title, description, artwork, action, extraClass = '') {
     return `<div class="podcast-series-card podcast-top-level-card ${extraClass}">
@@ -1193,10 +1331,24 @@ function renderFullEpisodes(data) {
         return;
     }
     
-    let html = '';
+    const isBeyond = data.title === 'Beyond the Sunday Sermon';
+    const showArtwork = isBeyond ? (podcastBeyond?.artwork || PODCAST_LATEST_ARTWORK) : PODCAST_FALLBACK_ARTWORK;
+    const showKicker = isBeyond ? 'CPC Podcast' : 'CPC Classes';
+    const showDescription = data.description || (isBeyond
+        ? 'A conversation that carries the Sunday sermon into the week through reflection, questions, and shared life at CPC.'
+        : 'A collection of teaching episodes from CPC.');
+    let html = `<section class="podcast-show-context">
+        <div class="podcast-show-context-artwork"><img src="${escAttr(showArtwork)}" alt="${escAttr(data.title || 'Podcast artwork')}" loading="lazy"></div>
+        <div>
+            <p class="podcast-show-kicker">${escHtml(showKicker)}</p>
+            <h3 class="podcast-show-title">${escHtml(data.title || 'Episodes')}</h3>
+            <p class="podcast-show-description">${escHtml(showDescription)}</p>
+            <p class="podcast-show-meta">${episodes.length} episode${episodes.length === 1 ? '' : 's'} · Newest first</p>
+        </div>
+    </section>`;
     
     episodes.forEach(episode => {
-        const artwork = episode.podcast_thumbnail_url || PODCAST_FALLBACK_ARTWORK;
+        const artwork = episode.podcast_thumbnail_url || (isBeyond ? PODCAST_LATEST_ARTWORK : PODCAST_FALLBACK_ARTWORK);
         html += `
             <div class="podcast-episode">
                 <div class="episode-thumbnail">
@@ -1225,13 +1377,55 @@ function renderFullEpisodes(data) {
     container.innerHTML = html;
 }
 
-// Load podcast from RSS feed
+function renderLatestEpisodes() {
+    const list = document.querySelector('#episodes');
+    const pagination = document.getElementById('latestEpisodesPagination');
+    const count = document.getElementById('latestEpisodesCount');
+    const moreButton = document.getElementById('latestEpisodesMore');
+    if (!list) return;
+
+    list.innerHTML = '';
+    const visibleEpisodes = latestPodcastEpisodes.slice(0, latestVisibleEpisodeCount);
+    if (!visibleEpisodes.length) {
+        list.innerHTML = '<li style="color: #5b6b7a; padding: 1rem;">No episodes available.</li>';
+        if (pagination) pagination.hidden = true;
+        return;
+    }
+
+    visibleEpisodes.forEach(ep => {
+        const li = document.createElement('li');
+        const audioUrl = ep.audio?.url || ep.audio_url || '';
+        const listenUrl = ep.listen_url || ep.link || '';
+        const image = ep.image || ep.podcast_thumbnail_url || PODCAST_LATEST_ARTWORK;
+        const date = ep.date_added || ep.published || '';
+        const duration = formatPodcastDuration(ep.duration);
+        const detail = ep.guest ? `With ${ep.guest}` : ep.scripture || 'The Sunday Sermon';
+        li.innerHTML = `
+            <div class="podcast-latest-row">
+                ${image ? `<img src="${escAttr(image)}" alt="" class="podcast-latest-artwork">` : ''}
+                <div class="podcast-latest-copy">
+                    <div class="podcast-latest-title">${escHtml(ep.title ?? 'Untitled')}</div>
+                    <div class="podcast-latest-meta">
+                        ${date ? `<span class="podcast-latest-date"><i class="far fa-calendar" aria-hidden="true"></i>${escHtml(formatPodcastDate(date))}</span>` : ''}
+                        ${duration ? `<span class="podcast-latest-duration"><i class="far fa-clock" aria-hidden="true"></i>${escHtml(duration)}</span>` : ''}
+                    </div>
+                    <div class="podcast-latest-detail"><a href="/sermons" aria-label="Browse The Sunday Sermon">The Sunday Sermon <span aria-hidden="true">→</span></a>${detail !== 'The Sunday Sermon' ? `<span>· ${escHtml(detail)}</span>` : ''}</div>
+                </div>
+                ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(image)}" data-play-subtitle="Beyond the Sunday Sermon"><i class="fas fa-play"></i> Play</button>` : listenUrl ? `<a class="podcast-btn" href="${escAttr(listenUrl)}" target="_blank" rel="noopener">Listen on Spotify</a>` : ''}
+            </div>
+        `;
+        list.appendChild(li);
+    });
+
+    const remaining = latestPodcastEpisodes.length - visibleEpisodes.length;
+    if (pagination) pagination.hidden = remaining <= 0;
+    if (count) count.textContent = `Showing ${visibleEpisodes.length} of ${latestPodcastEpisodes.length}`;
+    if (moreButton) moreButton.textContent = `View ${Math.min(LATEST_EPISODES_PAGE_SIZE, remaining)} more episode${Math.min(LATEST_EPISODES_PAGE_SIZE, remaining) === 1 ? '' : 's'}`;
+}
+
+// Load podcast from RSS feed.
 async function loadPodcast() {
     try {
-        const list = document.querySelector('#episodes');
-        if (!list) return;
-        list.innerHTML = '';
-
         // The current feed is the public Beyond the Sunday Sermon Spotify/Anchor RSS feed.
         let episodes = [];
         try {
@@ -1242,40 +1436,13 @@ async function loadPodcast() {
             console.warn('Spotify feed unavailable; using the public Beyond episode archive.', error);
         }
 
-        if (!episodes.length) episodes = podcastBeyond?.episodes || [];
-        episodes = episodes.slice(0, 8);
-        if (!episodes.length) {
-            list.innerHTML = '<li style="color: #5b6b7a; padding: 1rem;">No episodes available.</li>';
-            return;
-        }
-
-        for (const ep of episodes) {
-            const li = document.createElement('li');
-            const audioUrl = ep.audio?.url || ep.audio_url || '';
-            const listenUrl = ep.listen_url || ep.link || '';
-            const image = ep.image || ep.podcast_thumbnail_url || PODCAST_LATEST_ARTWORK;
-            const date = ep.date_added || ep.published || '';
-            const summary = String(ep.summary || '').replace(/<[^>]+>/g, '').trim();
-            const detail = ep.guest || ep.scripture || summary.slice(0, 110) || 'Beyond the Sunday Sermon';
-            li.innerHTML = `
-                <div class="podcast-latest-row">
-                    ${image ? `<img src="${escAttr(image)}" alt="" class="podcast-latest-artwork">` : ''}
-                    <div class="podcast-latest-copy">
-                        <div class="podcast-latest-title">${escHtml(ep.title ?? 'Untitled')}</div>
-                        <div class="podcast-latest-meta">${escHtml(formatPodcastDate(date) || '')}</div>
-                        <div class="podcast-latest-detail">${escHtml(detail)}</div>
-                    </div>
-                    ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(image)}" data-play-subtitle="Beyond the Sunday Sermon"><i class="fas fa-play"></i> Play</button>` : listenUrl ? `<a class="podcast-btn" href="${escAttr(listenUrl)}" target="_blank" rel="noopener">Listen on Spotify</a>` : ''}
-                </div>
-            `;
-            list.appendChild(li);
-        }
+        latestPodcastEpisodes = episodes.length ? episodes : (podcastBeyond?.episodes || []);
+        latestVisibleEpisodeCount = LATEST_EPISODES_PAGE_SIZE;
+        renderLatestEpisodes();
     } catch (error) {
         console.error('Error loading RSS podcast:', error);
-        const list = document.querySelector('#episodes');
-        if (list) {
-            list.innerHTML = '<li style="color: #b54747; padding: 1rem;">Error loading podcast feed.</li>';
-        }
+        latestPodcastEpisodes = [];
+        renderLatestEpisodes();
     }
 }
 
@@ -1572,6 +1739,11 @@ async function initEpisodeSearchFromUrl() {
 document.addEventListener('DOMContentLoaded', function() {
     loadPodcastSeries();
     loadPodcast();
+
+    document.getElementById('latestEpisodesMore')?.addEventListener('click', () => {
+        latestVisibleEpisodeCount += LATEST_EPISODES_PAGE_SIZE;
+        renderLatestEpisodes();
+    });
 
     document.querySelectorAll('.podcast-tab').forEach(tab => {
         tab.addEventListener('click', async () => {
