@@ -202,6 +202,45 @@ body.theme-white .media-page {
     line-height: 1.5;
 }
 
+/* Keep the hero panel legible over its photograph in either site theme. */
+body .media-page .media-hero .eyebrow {
+    color: #fff !important;
+}
+
+body .media-page .media-hero h1 {
+    color: #fff !important;
+    text-shadow: 0 2px 14px rgba(0, 16, 40, 0.36);
+}
+
+body .media-page .media-hero > .media-hero-grid > div > p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 8px rgba(0, 16, 40, 0.3);
+}
+
+body .media-page .media-panel {
+    background: rgba(8, 32, 67, 0.52) !important;
+    border-color: rgba(181, 214, 255, 0.32) !important;
+    box-shadow: 0 16px 34px rgba(0, 20, 52, 0.18);
+}
+
+body .media-page .media-panel h2,
+body .media-page .media-panel-card h3 {
+    color: #fff !important;
+}
+
+body .media-page .media-panel-card {
+    background: rgba(255, 255, 255, 0.13) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body .media-page .media-panel-card .label {
+    color: #b9d8ff !important;
+}
+
+body .media-page .media-panel-card p {
+    color: rgba(255, 255, 255, 0.84) !important;
+}
+
 .media-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -386,23 +425,23 @@ body.theme-white .media-page .compact-hero p {
 }
 
 .media-card--podcasts .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(0, 82, 163, 0.9), rgba(64, 145, 255, 0.6));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_A.jpg');
 }
 
 .media-card--teaching .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(41, 79, 145, 0.9), rgba(135, 170, 255, 0.55));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_ACTION_A.jpg');
 }
 
 .media-card--pdfs .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(18, 52, 105, 0.94), rgba(64, 113, 187, 0.55));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/WEBSITE%20HERO%20-%20RESOURCES.jpg');
 }
 
 .media-card--gallery .media-card-thumb {
-    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg');
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC-ARCHIVE-PHOTOS-14.jpeg');
 }
 
 .media-card--yearbook .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(13, 63, 116, 0.92), rgba(89, 147, 218, 0.5));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC-ARCHIVE-PHOTOS-16.jpeg');
 }
 
 .media-card--live .media-card-thumb {
@@ -410,11 +449,11 @@ body.theme-white .media-page .compact-hero p {
 }
 
 .media-card--resources .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(50, 95, 165, 0.9), rgba(160, 190, 245, 0.55));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/WEBSITE%20HERO%20-%20ABOUT%20-%20OUR%20MISSION.jpg');
 }
 
 .media-card--search .media-card-thumb {
-    --thumb-image: linear-gradient(135deg, rgba(26, 61, 117, 0.92), rgba(86, 126, 202, 0.54));
+    --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/WEBSITE%20HERO%20-%20ABOUT%20-%20NEW%20HAVEN.jpg');
 }
 </style>
 {% endblock %}
@@ -435,20 +474,6 @@ body.theme-white .media-page .compact-hero p {
                         materials, and our visual archives. It is the quickest place to jump into the media spaces
                         that already exist on the site.
                     </p>
-                    <div class="media-actions">
-                        <a href="{{ url_for('sermons') }}" class="media-btn primary">
-                            <i class="fas fa-microphone"></i>
-                            Sermons
-                        </a>
-                        <a href="{{ url_for('podcasts') }}" class="media-btn secondary">
-                            <i class="fas fa-podcast"></i>
-                            Podcasts
-                        </a>
-                        <a href="{{ url_for('gallery') }}" class="media-btn secondary">
-                            <i class="fas fa-images"></i>
-                            Gallery
-                        </a>
-                    </div>
                 </div>
 
                 <aside class="media-panel">

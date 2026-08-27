@@ -123,6 +123,47 @@
 .visit-learn__link:first-child { color: #08244a; background: #fff; border-color: #fff; }
 .visit-learn__link:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,.18); transform: translateY(-2px); }
 .visit-learn__link:first-child:hover { color: #08244a; background: #f0f6ff; }
+
+/* The photo hero keeps one high-contrast reading and action system in both themes. */
+body .visit-page .visit-hero .visit-eyebrow { color: #a8d0ff !important; }
+body .visit-page .visit-hero h1 { color: #fff !important; text-shadow: 0 2px 14px rgba(0, 16, 40, 0.44); }
+body .visit-page .visit-hero p { color: rgba(255, 255, 255, 0.9) !important; text-shadow: 0 1px 8px rgba(0, 16, 40, 0.32); }
+body .visit-page .visit-hero .hero-actions .visit-button {
+    min-width: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 10px 22px rgba(0, 16, 40, 0.2);
+}
+body .visit-page .visit-hero .hero-actions .visit-button--primary {
+    background: #0b61c3 !important;
+    border-color: #2d7dd9 !important;
+    color: #fff !important;
+}
+body .visit-page .visit-hero .hero-actions .visit-button--secondary {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #fff !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+body .visit-page .visit-hero .hero-actions .visit-button--primary:hover { background: #084c9c !important; border-color: #5c9ce7 !important; }
+body .visit-page .visit-hero .hero-actions .visit-button--secondary:hover { background: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.72) !important; color: #fff !important; }
+
+/* This photographic callout uses the same contrast and action palette as the welcome hero. */
+body .visit-page .visit-learn .visit-section-kicker { color: #a8d0ff !important; }
+body .visit-page .visit-learn h2 { color: #fff !important; text-shadow: 0 2px 14px rgba(0, 16, 40, 0.44); }
+body .visit-page .visit-learn .visit-learn__copy p { color: rgba(255, 255, 255, 0.9) !important; text-shadow: 0 1px 8px rgba(0, 16, 40, 0.32); }
+body .visit-page .visit-learn .visit-learn__link {
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 22px rgba(0, 16, 40, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+body .visit-page .visit-learn .visit-learn__link:first-child { background: #0b61c3 !important; border-color: #2d7dd9 !important; color: #fff !important; }
+body .visit-page .visit-learn .visit-learn__link:hover { background: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.72) !important; color: #fff !important; transform: translateY(-2px); }
+body .visit-page .visit-learn .visit-learn__link:first-child:hover { background: #084c9c !important; border-color: #5c9ce7 !important; }
 @media (max-width: 820px) {
     .visit-hero { min-height: 390px; }
     .visit-location-grid { grid-template-columns: 1fr; }

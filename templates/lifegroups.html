@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}LifeGroups - CPC New Haven{% endblock %}
-{% block meta_description %}Join a CPC New Haven LifeGroup - small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
-{% block og_title %}LifeGroups - CPC New Haven{% endblock %}
-{% block og_description %}Join a CPC New Haven LifeGroup - small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
+{% block title %}Life Groups - CPC New Haven{% endblock %}
+{% block meta_description %}Join a CPC New Haven Life Group - small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
+{% block og_title %}Life Groups - CPC New Haven{% endblock %}
+{% block og_description %}Join a CPC New Haven Life Group - small groups for prayer, Bible teaching, fellowship, and care across Greater New Haven.{% endblock %}
 {% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/lifegroups{% endblock %}
 
@@ -99,6 +99,21 @@
         flex-wrap: wrap;
         gap: 12px;
     }
+
+    /* The photo hero uses one readable text and action system in both themes. */
+    body .lg-page .lg-hero .lg-kicker { color: #a8d0ff !important; }
+    body .lg-page .lg-hero h1 { color: #fff !important; }
+    body .lg-page .lg-hero p { color: rgba(255, 255, 255, 0.9) !important; text-shadow: 0 1px 8px rgba(0, 16, 40, 0.32); }
+    body .lg-page .lg-hero .lg-hero-actions .btn {
+        min-height: 48px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        box-shadow: 0 10px 22px rgba(0, 16, 40, 0.2);
+    }
+    body .lg-page .lg-hero .lg-hero-actions .btn-primary { background: #0b61c3 !important; border-color: #2d7dd9 !important; color: #fff !important; }
+    body .lg-page .lg-hero .lg-hero-actions .btn-secondary { background: rgba(255, 255, 255, 0.12) !important; color: #fff !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    body .lg-page .lg-hero .lg-hero-actions .btn-primary:hover { background: #084c9c !important; border-color: #5c9ce7 !important; }
+    body .lg-page .lg-hero .lg-hero-actions .btn-secondary:hover { background: rgba(255, 255, 255, 0.22) !important; border-color: rgba(255, 255, 255, 0.72) !important; color: #fff !important; }
 
     .lg-wrap {
         max-width: 1180px;
@@ -687,21 +702,21 @@
         <div class="hero-fade"></div>
         <div class="lg-hero-inner">
             <div class="lg-kicker">Church in the small</div>
-            <h1>LifeGroups</h1>
+            <h1>Life Groups</h1>
             <p>{{ lifegroup_content.get('lifegroups_tagline', 'Prayer, teaching, fellowship, and care in smaller circles of discipleship.') }}</p>
             <div class="lg-hero-actions">
                 <a href="#groups" class="btn btn-primary">Find a Group</a>
-                <a href="#vision" class="btn btn-secondary">Why LifeGroups?</a>
+                <a href="#vision" class="btn btn-secondary">Why Life Groups?</a>
             </div>
         </div>
     </section>
 
     <div class="lg-wrap">
         <div class="lg-intro">
-            <p>LifeGroups are our way of doing church in the small, where Christ's care is practiced through prayer, teaching, fellowship, and mutual support. The page is designed to feel like an invitation, not a brochure.</p>
+            <p>Life Groups are our way of doing church in the small, where Christ's care is practiced through prayer, teaching, fellowship, and mutual support. The page is designed to feel like an invitation, not a brochure.</p>
         </div>
 
-        <nav class="lg-nav" aria-label="LifeGroups sections">
+        <nav class="lg-nav" aria-label="Life Groups sections">
             <a href="#vision" class="active">Vision</a>
             <a href="#pillars">Pillars</a>
             <a href="#groups">Groups</a>
@@ -712,7 +727,7 @@
         <section class="lg-section" id="pillars">
             <div class="section-header">
                 <div class="section-kicker">What this looks like</div>
-                <h2 class="section-title">What LifeGroups Embody</h2>
+                <h2 class="section-title">What Life Groups Embody</h2>
                 <p class="section-subtitle">The shape of healthy church life in a smaller setting</p>
             </div>
 
@@ -752,9 +767,9 @@
             <div class="groups-header">
                 <div>
                     <div class="section-kicker">Current groups</div>
-                    <h2 class="section-title">{{ lifegroup_content.get('lifegroups_groups_heading', 'Current LifeGroups') }}</h2>
+                    <h2 class="section-title">{{ lifegroup_content.get('lifegroups_groups_heading', 'Current Life Groups') }}</h2>
                 </div>
-                <p class="groups-section-intro">{{ lifegroup_content.get('lifegroups_groups_intro', 'Join a LifeGroup near you. All groups meet regularly for Bible study, prayer, and fellowship. Whether you\'re new to faith or have been walking with Jesus for years, there\'s a place for you.') }}</p>
+                <p class="groups-section-intro">{{ lifegroup_content.get('lifegroups_groups_intro', 'Join a Life Group near you. All groups meet regularly for Bible study, prayer, and fellowship. Whether you\'re new to faith or have been walking with Jesus for years, there\'s a place for you.') }}</p>
             </div>
 
             <div class="groups-grid">
@@ -784,7 +799,7 @@
         <section class="lg-section" id="areas">
             <div class="section-header">
                 <div class="section-kicker">By geography</div>
-                <h2 class="section-title">LifeGroups by Area</h2>
+                <h2 class="section-title">Life Groups by Area</h2>
                 <p class="section-subtitle">A few established groups across Greater New Haven and beyond</p>
             </div>
 
@@ -845,7 +860,7 @@
 
         <section class="cta-section" id="join">
             <h2>{{ lifegroup_content.get('lifegroups_cta_heading', 'Ready to Join?') }}</h2>
-            <p>{{ lifegroup_content.get('lifegroups_cta_text', 'Whether you\'re looking to deepen your faith, build genuine community, or experience Christ in a more intimate setting, there\'s a LifeGroup for you. Don\'t hesitate to reach out - our leaders are excited to welcome you.') }}</p>
+            <p>{{ lifegroup_content.get('lifegroups_cta_text', 'Whether you\'re looking to deepen your faith, build genuine community, or experience Christ in a more intimate setting, there\'s a Life Group for you. Don\'t hesitate to reach out - our leaders are excited to welcome you.') }}</p>
             <div class="cta-buttons">
                 {% set cta_email = lifegroup_content.get('lifegroups_cta_email', 'admin@cpcnewhaven.org') %}
                 {% set cta_phone = lifegroup_content.get('lifegroups_cta_phone', '203-777-6960') %}
