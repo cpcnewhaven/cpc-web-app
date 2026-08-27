@@ -376,6 +376,314 @@
             max-width: 260px;
         }
     }
+    /* Homepage highlights: every update has the same clear, clickable rhythm. */
+    .home-highlights .highlights-grid {
+        align-items: stretch;
+    }
+
+    .home-highlights .highlight-card {
+        min-height: 232px;
+        background: rgba(255, 255, 255, 0.96) !important;
+        border: 1px solid rgba(19, 62, 110, 0.12) !important;
+        box-shadow: 0 14px 30px rgba(4, 27, 55, 0.1) !important;
+    }
+
+    .home-highlights .highlight-card__link {
+        display: grid;
+        grid-template-rows: 48px minmax(0, 1fr);
+        min-height: 230px;
+        height: 100%;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .home-highlights .highlight-card__media {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #0b478d, #2379c7);
+    }
+
+    .home-highlights .highlight-card__media::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(2, 23, 57, 0.1), rgba(2, 23, 57, 0.5));
+    }
+
+    .home-highlights .highlight-card__media img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+    .home-highlights .highlight-card__fallback-icon {
+        position: absolute;
+        z-index: 1;
+        right: 1rem;
+        top: 50%;
+        display: grid;
+        width: 2.5rem;
+        height: 2.5rem;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        border-radius: 50%;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(8px);
+        transform: translateY(-50%);
+    }
+
+    .home-highlights .highlight-card__content {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        padding: 0.95rem 1.2rem 1rem;
+    }
+
+    .home-highlights .highlight-card__badge {
+        align-self: flex-start;
+        padding: 0.28rem 0.58rem;
+        border-radius: 999px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .home-highlights .highlight-card__title {
+        margin: 0.62rem 0 0.35rem;
+        color: #142d4d !important;
+        font: 750 1.12rem/1.25 'Manrope', sans-serif;
+    }
+
+    .home-highlights .highlight-card__description {
+        display: -webkit-box;
+        margin: 0;
+        overflow: hidden;
+        color: #526278 !important;
+        font-size: 0.92rem;
+        line-height: 1.5;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .home-highlights .highlight-card__time {
+        margin: 0.45rem 0 0;
+        color: #5c6f88 !important;
+        font-size: 0.82rem;
+    }
+
+    .home-highlights .highlight-card__date {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.38rem;
+        align-self: flex-start;
+        margin: 0.48rem 0 0;
+        color: #315b8c !important;
+        font-size: 0.82rem;
+        font-weight: 750;
+    }
+
+    .home-highlights .highlight-events-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.68rem 1rem;
+        border-radius: 999px;
+        color: #fff !important;
+        background: #0b61c3;
+        box-shadow: 0 7px 16px rgba(5, 81, 166, 0.18);
+        font: 750 0.9rem/1 'Manrope', sans-serif;
+        text-decoration: none;
+    }
+
+    .home-highlights .highlight-events-button:hover {
+        color: #fff !important;
+        background: #084c9b;
+        transform: translateY(-1px);
+    }
+
+    .home-highlights .highlight-card__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        align-self: flex-start;
+        margin-top: 0.78rem;
+        padding: 0.52rem 0.76rem;
+        border-radius: 999px;
+        color: #fff;
+        background: #0b61c3;
+        font: 750 0.88rem/1 'Manrope', sans-serif;
+        box-shadow: 0 7px 16px rgba(5, 81, 166, 0.18);
+    }
+
+    .home-highlights .highlight-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(9, 100, 196, 0.34) !important;
+        box-shadow: 0 20px 38px rgba(4, 27, 55, 0.16) !important;
+    }
+
+    .home-highlights .highlight-card:hover .highlight-card__cta i {
+        transform: translateX(3px);
+    }
+
+    .home-highlights .highlight-card__cta i { transition: transform 0.18s ease; }
+
+    /* Homepage utility cards: intentionally distinct surfaces in each theme. */
+    .home-utility-section .latest-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 174px;
+        padding: 1.35rem;
+        border-radius: 18px;
+    }
+
+    .home-utility-section .latest-card__description {
+        display: -webkit-box;
+        overflow: hidden;
+        margin-bottom: 0.85rem !important;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .home-utility-section .latest-card a.cta {
+        align-self: flex-start;
+        margin-top: auto;
+        padding: 0.45rem 0.68rem;
+        border-radius: 999px;
+        font-weight: 750;
+    }
+
+    .home-schedule-section .time-slot {
+        min-height: 118px;
+        padding: 1.25rem 1.35rem;
+        border-radius: 16px;
+    }
+
+    body.theme-white .home-utility-section .latest-card {
+        background: rgba(255, 255, 255, 0.94) !important;
+        border-color: rgba(20, 58, 105, 0.12) !important;
+        box-shadow: 0 12px 26px rgba(19, 47, 83, 0.09) !important;
+    }
+
+    body.theme-white .home-utility-section .latest-card h3 { color: #61718a !important; }
+    body.theme-white .home-utility-section .latest-card .latest-title { color: #142d4d !important; }
+    body.theme-white .home-utility-section .latest-card .latest-meta,
+    body.theme-white .home-utility-section .latest-card__description { color: #526278 !important; }
+    body.theme-white .home-utility-section .latest-card a.cta {
+        color: #075fbc !important;
+        background: rgba(7, 95, 188, 0.08);
+    }
+
+    body.theme-white .home-schedule-section .time-slot {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border-color: rgba(20, 58, 105, 0.12) !important;
+        box-shadow: 0 10px 22px rgba(19, 47, 83, 0.07) !important;
+    }
+
+    body.theme-white .home-schedule-section .time-slot.featured {
+        background: linear-gradient(135deg, #edf5ff, #dbeaff) !important;
+        border-color: rgba(7, 95, 188, 0.25) !important;
+    }
+
+    body.theme-blue .home-utility-section .latest-card {
+        background: #062d5f !important;
+        border-color: rgba(156, 204, 255, 0.24) !important;
+        box-shadow: 0 18px 36px rgba(0, 14, 42, 0.3) !important;
+    }
+
+    body.theme-blue .home-utility-section .latest-card h3 { color: #a8d0ff !important; }
+    body.theme-blue .home-utility-section .latest-card .latest-title { color: #fff !important; }
+    body.theme-blue .home-utility-section .latest-card .latest-meta,
+    body.theme-blue .home-utility-section .latest-card__description { color: rgba(233, 244, 255, 0.8) !important; }
+    body.theme-blue .home-utility-section .latest-card a.cta {
+        color: #fff !important;
+        background: rgba(47, 139, 236, 0.42);
+    }
+
+    body.theme-blue .home-schedule-section .time-slot {
+        background: rgba(7, 39, 84, 0.88) !important;
+        border-color: rgba(156, 204, 255, 0.22) !important;
+        box-shadow: 0 14px 28px rgba(0, 13, 40, 0.22) !important;
+    }
+
+    body.theme-blue .home-schedule-section .time-slot.featured {
+        background: linear-gradient(135deg, rgba(12, 71, 142, 0.94), rgba(16, 103, 190, 0.88)) !important;
+        border-color: rgba(167, 214, 255, 0.42) !important;
+    }
+
+    body.theme-blue .home-schedule-section .time-slot h3 { color: #fff !important; }
+    body.theme-blue .home-schedule-section .time-slot p { color: rgba(235, 246, 255, 0.78) !important; }
+
+    .home-utility-section #card-sermon .latest-title {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .home-welcome-section .dark-card {
+        display: flex;
+        min-height: 208px;
+        flex-direction: column;
+        border-radius: 18px;
+    }
+
+    .home-welcome-section .dark-card .btn {
+        align-self: flex-start;
+        margin-top: auto;
+    }
+
+    body.theme-white .home-welcome-section .dark-card {
+        background: rgba(255, 255, 255, 0.94) !important;
+        border-color: rgba(20, 58, 105, 0.12) !important;
+        box-shadow: 0 12px 26px rgba(19, 47, 83, 0.09) !important;
+    }
+
+    body.theme-white .home-welcome-section .dark-card h3 { color: #142d4d !important; }
+    body.theme-white .home-welcome-section .dark-card p { color: #526278 !important; }
+    body.theme-white .home-welcome-section .dark-card .btn-secondary {
+        color: #075fbc !important;
+        border-color: rgba(7, 95, 188, 0.35) !important;
+        background: rgba(7, 95, 188, 0.06) !important;
+    }
+
+    body.theme-blue .home-welcome-section .dark-card {
+        background: #062d5f !important;
+        border-color: rgba(156, 204, 255, 0.24) !important;
+        box-shadow: 0 18px 36px rgba(0, 14, 42, 0.3) !important;
+    }
+
+    body.theme-blue .home-welcome-section .dark-card h3 { color: #fff !important; }
+    body.theme-blue .home-welcome-section .dark-card p { color: rgba(233, 244, 255, 0.8) !important; }
+    body.theme-blue .home-welcome-section .dark-card .btn-primary {
+        color: #fff !important;
+        background: #1675d1 !important;
+        border-color: #1675d1 !important;
+    }
+    body.theme-blue .home-welcome-section .dark-card .btn-secondary {
+        color: #fff !important;
+        border-color: rgba(192, 223, 255, 0.58) !important;
+        background: rgba(47, 139, 236, 0.26) !important;
+    }
+
+    body.theme-blue .home-highlights .highlight-card {
+        background: rgba(8, 32, 67, 0.9) !important;
+        border-color: rgba(177, 213, 255, 0.2) !important;
+        box-shadow: 0 16px 32px rgba(0, 12, 33, 0.24) !important;
+    }
+
+    body.theme-blue .home-highlights .highlight-card__title { color: #fff !important; }
+    body.theme-blue .home-highlights .highlight-card__description { color: rgba(235, 244, 255, 0.78) !important; }
+    body.theme-blue .home-highlights .highlight-card__time,
+    body.theme-blue .home-highlights .highlight-card__date { color: #b6d4f7 !important; }
+    body.theme-blue .home-highlights .highlight-card__cta { color: #fff; background: #1575d1; }
+
+    @media (max-width: 640px) {
+        .home-highlights .highlight-card,
+        .home-highlights .highlight-card__link { min-height: 220px; }
+    }
 </style>
 {% endblock %}
 
@@ -409,7 +717,7 @@
 </section>
 
 <!-- New Content Section (announcements / latest from admin) -->
-<section class="highlights-section section-dark new-content-section" style="padding: 4rem 0; position: relative;">
+<section class="highlights-section section-dark new-content-section home-highlights" style="padding: 4rem 0; position: relative;">
     <div class="container" style="position: relative; z-index: 1;">
         <div class="section-header highlights-header" style="text-align: center; margin-bottom: 2.5rem;">
             <span class="highlights-kicker">What&apos;s happening now</span>
@@ -425,13 +733,13 @@
             style="text-align: center; margin-top: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
             <button type="button" id="show-all-highlights-btn" class="btn btn-secondary" style="display: none;">Show
                 all highlights</button>
-            <a href="{{ url_for('highlights') }}" class="glass-icon-button"><i class="fas fa-arrow-right"></i></a>
+            <a href="{{ url_for('events') }}" class="highlight-events-button">View all events <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
     </div>
 </section>
 
 <!-- What you need -->
-<section class="section-band section-dark" style="padding: 3rem 0;">
+<section class="section-band section-dark home-utility-section" style="padding: 3rem 0;">
     <div class="container">
         <h2 class="section-heading mb-6">Latest sermon, Sunday details, and resources from our pastors</h2>
 
@@ -468,7 +776,7 @@
 </section>
 
 <!-- Service Info -->
-<section id="service-info" class="service-info section-dark -mt-4">
+<section id="service-info" class="service-info section-dark home-schedule-section -mt-4">
     <div class="container">
         <div class="service-times">
             <h2 class="section-heading border-l-4 border-blue-400 pl-3">Sunday Schedule</h2>
@@ -515,7 +823,7 @@
 </section>
 
 <!-- Welcome / New Here -->
-<section class="section-band section-dark">
+<section class="section-band section-dark home-welcome-section">
     <div class="container">
         <div class="text-center mb-6">
             <h2 class="section-heading mb-2">New here? Start here.</h2>
@@ -617,16 +925,19 @@
             el.textContent = nextSunday.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
         })();
 
-        // Fetch sermons -> latest = first episode
-        fetch('/api/sermons').then(function (r) { return r.json(); }).then(function (data) {
-            var episodes = (data && data.episodes) || [];
-            var latest = episodes[0];
+        // The homepage needs one dependable, fast current sermon rather than the full archive feed.
+        fetch('/api/latest-sermon').then(function (r) { return r.json(); }).then(function (data) {
+            var latest = data && data.episode;
             var el = document.getElementById('latestSermonTitle');
             var meta = document.getElementById('latestSermonMeta');
             var link = document.getElementById('latestSermonLink');
             if (el && latest) {
-                el.textContent = latest.title || 'Latest sermon';
-                meta.textContent = (latest.author ? latest.author + ' · ' : '') + (latest.date ? formatEventDate(latest.date) : '');
+                var title = (latest.title || 'Latest sermon').split('|')[0].trim();
+                var series = (latest.series && latest.series.title) ||
+                    ((latest.title || '').indexOf('The Sunday Sermon') !== -1 ? 'The Sunday Sermon' : '');
+                var details = [series, latest.speaker || latest.author, latest.date ? formatEventDate(latest.date) : ''].filter(Boolean);
+                el.textContent = title;
+                meta.textContent = details.join(' · ');
                 var url = latest.youtube_url || latest.spotify_url || latest.link || latest.apple_podcasts_url;
                 if (link && url) {
                     link.href = url;
@@ -653,22 +964,38 @@
         }
         function stripHtml(html) {
             var tmp = document.createElement('div');
-            tmp.innerHTML = html || '';
+            tmp.innerHTML = (html || '')
+                .replace(/<br\s*\/?>(\r?\n)?/gi, ' ')
+                .replace(/<\/(p|div|li|h[1-6])>/gi, ' ');
             return tmp.textContent || tmp.innerText || '';
+        }
+        function formatHighlightDate(iso) {
+            if (!iso) return '';
+            return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric'
+            });
         }
         function buildCard(h) {
             var card = document.createElement('div');
             card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
-            
-            // Link wrapper
             var detailUrl = '/announcement/' + h.id;
-            
-            var imgHtml = h.featuredImage ? '<div style="position:relative;height:200px;overflow:hidden;"><img src="' + h.featuredImage + '" alt="" style="width:100%;height:100%;object-fit:cover;"><div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);"></div></div>' : '';
-            var timeHtml = (h.eventStartTime || h.eventEndTime) ? '<div class="highlight-card__time" style="margin-top:0.75rem;font-size:0.85rem;color:rgba(255,255,255,0.8);"><i class="fas fa-clock"></i> ' + (h.eventStartTime || '') + (h.eventEndTime ? ' - ' + h.eventEndTime : '') + '</div>' : '';
-
-            var contentHtml = '<div style="padding:1.25rem;"><span style="display:inline-block;padding:4px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;text-transform:uppercase;background:' + getTypeBadgeColor(h.type) + ';color:' + getTypeBadgeTextColor(h.type) + ';">' + (h.type || 'Announcement') + '</span><h3 class="highlight-card__title" style="color:rgba(255,255,255,0.98);font-size:1.1rem;margin:0.5rem 0 0.35rem;">' + (h.title || '') + '</h3><p class="highlight-card__description" style="color:rgba(255,255,255,0.75);font-size:0.9rem;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + stripHtml(h.description) + '</p>' + timeHtml + '</div>';
-            
-            card.innerHTML = '<a href="' + detailUrl + '" style="text-decoration:none;display:block;height:100%;">' + imgHtml + contentHtml + '</a>';
+            var type = (h.type || 'Announcement').toLowerCase();
+            var icon = type === 'event' ? 'fa-calendar-days' : type === 'ongoing' ? 'fa-heart' : type === 'upcoming' ? 'fa-clock' : 'fa-bullhorn';
+            var mediaHtml = h.featuredImage
+                ? '<div class="highlight-card__media"><img src="' + h.featuredImage + '" alt=""></div>'
+                : '<div class="highlight-card__media"><span class="highlight-card__fallback-icon"><i class="fas ' + icon + '"></i></span></div>';
+            var timeHtml = (h.eventStartTime || h.eventEndTime)
+                ? '<div class="highlight-card__time"><i class="fas fa-clock"></i> ' + (h.eventStartTime || '') + (h.eventEndTime ? ' - ' + h.eventEndTime : '') + '</div>'
+                : '';
+            var dateHtml = h.eventDate
+                ? '<div class="highlight-card__date"><i class="fas fa-calendar-day"></i> ' + formatHighlightDate(h.eventDate) + '</div>'
+                : '';
+            var description = stripHtml(h.description).trim();
+            if (!description || description === '-' || description === '–' || description === '—') {
+                description = 'Open this update for details.';
+            }
+            var contentHtml = '<div class="highlight-card__content"><span class="highlight-card__badge" style="background:' + getTypeBadgeColor(type) + ';color:' + getTypeBadgeTextColor(type) + ';">' + (h.type || 'Announcement') + '</span><h3 class="highlight-card__title">' + (h.title || 'CPC update') + '</h3><p class="highlight-card__description">' + description + '</p>' + dateHtml + timeHtml + '<span class="highlight-card__cta">View details <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>';
+            card.innerHTML = '<a class="highlight-card__link" href="' + detailUrl + '" aria-label="View details: ' + (h.title || 'CPC update') + '">' + mediaHtml + contentHtml + '</a>';
             return card;
         }
 

@@ -1396,6 +1396,7 @@ def api_announcements():
                 'showInBanner': getattr(a, 'show_in_banner', False),
                 'featuredImage': a.featured_image,
                 'imageDisplayType': a.image_display_type,
+                'eventDate': a.event_date.strftime('%Y-%m-%d') if a.event_date else None,
                 'eventStartTime': getattr(a, 'event_start_time', None),
                 'eventEndTime': getattr(a, 'event_end_time', None),
             } for a in announcements
@@ -1479,6 +1480,7 @@ def api_highlights():
                 'superfeatured': a.superfeatured,
                 'featuredImage': a.featured_image,
                 'imageDisplayType': a.image_display_type,
+                'eventDate': a.event_date.strftime('%Y-%m-%d') if a.event_date else None,
                 'eventStartTime': getattr(a, 'event_start_time', None),
                 'eventEndTime': getattr(a, 'event_end_time', None),
             } for a in announcements
@@ -1537,11 +1539,26 @@ def api_papers_latest():
         })
     return jsonify({})
 
+@app.route('/api/latest-sermon')
+@cache.cached(timeout=120)
+def api_latest_sermon():
+    """Return the newest maintained sermon without waiting on the archive query."""
+    try:
+        sermons_path = os.path.join(app.root_path, 'data', 'sermons.json')
+        with open(sermons_path, 'r', encoding='utf-8') as sermons_file:
+            sermons = json.load(sermons_file).get('sermons', [])
+        latest = max(sermons, key=lambda sermon: sermon.get('date') or '', default=None)
+        return jsonify({'episode': latest, 'source': 'local-collection'})
+    except (OSError, ValueError, AttributeError) as e:
+        print(f"Error loading latest sermon: {e}")
+        return jsonify({'episode': None, 'source': 'unavailable'}), 503
+
 @app.route('/api/sermons')
 @cache.cached(timeout=120)
 def api_sermons():
-    """Sunday Sermons API: Sourced from database only."""
+    """Sunday Sermons API: database-first with a local collection fallback."""
     episodes = []
+    db_sermons = []
     try:
         db_sermons = Sermon.query.filter(
             Sermon.active == True,
@@ -1578,13 +1595,24 @@ def api_sermons():
             episodes.append(sermon_data)
     except Exception as e:
         print(f"Error loading DB sermons: {e}")
+
+    # The database is the primary source, but keep the homepage useful when a
+    # local preview cannot reach it or the imported collection is temporarily empty.
+    if not episodes:
+        try:
+            sermons_path = os.path.join(app.root_path, 'data', 'sermons.json')
+            with open(sermons_path, 'r', encoding='utf-8') as sermons_file:
+                saved_sermons = json.load(sermons_file).get('sermons', [])
+            episodes = sorted(saved_sermons, key=lambda sermon: sermon.get('date') or '', reverse=True)
+        except (OSError, ValueError, AttributeError) as e:
+            print(f"Error loading sermon fallback: {e}")
         
     return jsonify({
         'title': 'Sunday Sermons',
         'description': 'Weekly sermons from our Sunday worship services',
         'episodes': episodes,
         'total': len(episodes),
-        'source': 'database'
+        'source': 'database' if db_sermons else 'local-fallback'
     })
 
 def _get_podcast_episodes(series_title):
