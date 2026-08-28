@@ -15,9 +15,9 @@
     }
 
     .detail-card {
-        background: rgba(255, 255, 255, 0.05);
+        background: linear-gradient(145deg, rgba(12, 47, 88, 0.98), rgba(5, 28, 62, 0.98));
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(172, 210, 255, 0.28);
         border-radius: 16px;
         overflow: hidden;
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
@@ -109,6 +109,19 @@
     .detail-body a:hover {
         color: #7dd8ff;
     }
+
+    /* The announcement detail stays readable regardless of the site theme. */
+    body .announcement-detail .detail-card {
+        background: linear-gradient(145deg, rgba(12, 47, 88, 0.98), rgba(5, 28, 62, 0.98)) !important;
+        border-color: rgba(172, 210, 255, 0.28) !important;
+        box-shadow: 0 20px 46px rgba(4, 27, 55, 0.22) !important;
+    }
+
+    body .announcement-detail .detail-title { color: #fff !important; }
+    body .announcement-detail .detail-meta { color: rgba(226, 239, 255, 0.78) !important; border-color: rgba(201, 225, 255, 0.18) !important; }
+    body .announcement-detail .detail-body { color: rgba(244, 249, 255, 0.9) !important; }
+    body .announcement-detail .back-link { color: #0b61c3 !important; font-weight: 700; }
+    body .announcement-detail .back-link:hover { color: #063f82 !important; }
 
     .back-link {
         display: inline-flex;

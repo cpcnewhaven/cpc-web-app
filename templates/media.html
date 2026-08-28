@@ -455,6 +455,25 @@ body.theme-white .media-page .compact-hero p {
 .media-card--search .media-card-thumb {
     --thumb-image: url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/WEBSITE%20HERO%20-%20ABOUT%20-%20NEW%20HAVEN.jpg');
 }
+
+/* The global card-heading rule uses white text, so explicitly restore the
+   Media Hub's navy editorial type when the page is on a light surface. */
+body.theme-white .media-page .media-card h3 {
+    color: #0f355f !important;
+}
+
+body.theme-white .media-page .media-card p {
+    color: rgba(31, 41, 55, 0.82) !important;
+}
+
+body.theme-white .media-page .media-card .media-card-link {
+    color: #0052a3 !important;
+}
+
+body.theme-white .media-page .media-card:hover h3,
+body.theme-white .media-page .media-card:focus-visible h3 {
+    color: #003d7a !important;
+}
 </style>
 {% endblock %}
 

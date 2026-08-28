@@ -117,7 +117,7 @@ async function searchEvents() {
     events.sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
-      return dateB - dateA;
+      return dateA - dateB;
     });
 
     if (events && events.length > 0) {

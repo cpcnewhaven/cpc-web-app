@@ -1,5 +1,15 @@
 [
   {
+    "id": "welcome-sunday-2026",
+    "title": "Welcome Sunday — Start of the New Academic Year",
+    "description": "Join us as we begin the 2026–27 academic calendar year together in worship, welcome, and community.",
+    "type": "event",
+    "category": "worship",
+    "active": true,
+    "start": "2026-09-13T10:30:00-04:00",
+    "location": "Christ Presbyterian Church"
+  },
+  {
     "id": "event_001",
     "title": "Women's Fellowship and Service Event",
     "description": "Please join us for breakfast and a time to connect and re-connect as we love one another and love others through service. Breakfast will be served and then we'll be making a meal for about 40 folks. We'll also be putting together cookie packages for our covenant children who are away at school. Feel free to just show up and bring a friend, however if you'd like to bake cookies or help with the breakfast, you can use the sign up sheet in the foyer or contact Diane Miller (auntie.diane@comcast.net)",

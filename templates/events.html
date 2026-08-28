@@ -28,6 +28,20 @@
     padding: 0;
 }
 
+.welcome-sunday-card {
+    margin: 0 0 1rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
+}
+.welcome-sunday-card h2 { margin: .25rem 0 .5rem; color: var(--page-text); font-size: clamp(1.5rem, 3vw, 2.2rem); }
+.welcome-sunday-card p:not(.events-eyebrow) { color: var(--page-muted); line-height: 1.6; }
+.welcome-sunday-card__action { display: inline-flex; gap: .5rem; align-items: center; margin-top: 1rem; color: var(--page-accent); font-weight: 700; text-decoration: none; }
+.welcome-sunday-card { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; border-color: rgba(0,120,212,.35); background: linear-gradient(135deg, rgba(0,120,212,.12), var(--page-surface)); }
+.welcome-sunday-card__date { color: var(--page-text) !important; font-size: 1.15rem; font-weight: 800; }
+@media (max-width: 640px) { .welcome-sunday-card { display: block; } }
+
 /* Compact Hero */
 .events-hero {
     grid-column: 1 / -1;
@@ -524,11 +538,21 @@ body.theme-white .events-hero p { color: var(--page-muted); }
         <!-- Compact Hero -->
         <div class="events-hero">
             <h1>Events & Activities</h1>
-            <p>Join us for fellowship, learning, and community events</p>
+            <p>Join us for fellowship, learning, worship, and community events</p>
         </div>
 
+        <section class="welcome-sunday-card" aria-labelledby="welcome-sunday-title">
+            <div>
+                <p class="events-eyebrow">Academic year 2026–27 begins</p>
+                <h2 id="welcome-sunday-title">Welcome Sunday</h2>
+                <p class="welcome-sunday-card__date"><time datetime="2026-09-13">September 13, 2026</time></p>
+                <p>Join us as we begin a new academic calendar year together in worship, welcome, and community.</p>
+            </div>
+            <a class="welcome-sunday-card__action" href="#upcoming-events">See upcoming events <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+        </section>
+
         <!-- Events Content -->
-        <section class="events-section">
+        <section class="events-section" id="upcoming-events">
             <h2 class="section-title">Upcoming Events</h2>
 
             <!-- Phase 3: Filter Bar -->
