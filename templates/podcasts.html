@@ -812,6 +812,90 @@ body.theme-blue .podcasts-page .podcast-top-level-card {
     box-shadow: 0 20px 42px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* Class browsing uses the same calm, editorial card language as the rest of the site. */
+body .podcasts-page .podcast-series-grid.is-class-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
+    max-width: 760px;
+    margin: 0 auto 1.5rem;
+    padding: 1.25rem 0 1.5rem;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-series-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    min-height: 174px;
+    gap: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1px solid rgba(154, 194, 238, 0.22) !important;
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, #173a65, #0d2748) !important;
+    box-shadow: 0 14px 30px rgba(7, 25, 49, 0.18) !important;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-artwork {
+    position: relative;
+    width: 156px !important;
+    height: 100% !important;
+    min-height: 174px;
+    flex: 0 0 156px !important;
+    border-radius: 0 !important;
+    background: #0a203d;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-artwork::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(5, 19, 37, 0.05), rgba(5, 19, 37, 0.44));
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-artwork img {
+    height: 100%;
+    object-fit: cover;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-content {
+    padding: 1.1rem 1.15rem !important;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-subtitle {
+    color: #a9d1ff !important;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-title {
+    color: #fff !important;
+    white-space: normal;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-description {
+    color: rgba(236, 245, 255, 0.82) !important;
+    margin-bottom: 0.75rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-meta {
+    color: #a9c5e2 !important;
+    margin-bottom: 0.75rem;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-episode-count {
+    color: #d9ecff !important;
+    background: rgba(111, 178, 255, 0.14) !important;
+    border-color: rgba(169, 209, 255, 0.28) !important;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-btn-primary {
+    color: #fff !important;
+    background: #1670ca !important;
+    border-color: #2787e8 !important;
+}
+
 /* Latest episodes use a compact row even when only title, date, and speaker exist. */
 #episodes li {
     padding: 0 !important;
@@ -974,6 +1058,33 @@ body.theme-blue .podcasts-page .podcast-episode .episode-details { color: #b9d0e
 }
 
 @media (max-width: 768px) {
+    body .podcasts-page .podcast-series-grid.is-class-list {
+        grid-template-columns: 1fr !important;
+        gap: 0.9rem;
+        padding: 0.9rem 0 1.25rem;
+    }
+
+    body .podcasts-page .podcast-series-grid.is-class-list .podcast-series-card {
+        min-height: 150px;
+    }
+
+    body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-artwork {
+        width: 108px !important;
+        min-height: 150px;
+        flex-basis: 108px !important;
+    }
+
+    body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-content {
+        padding: 0.95rem !important;
+    }
+
+    body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+    }
+
     .podcast-series-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0.65rem;
