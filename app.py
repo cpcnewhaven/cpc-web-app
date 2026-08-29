@@ -828,7 +828,12 @@ def podcasts():
     beyond = next((item for item in podcast_series if item['title'] == 'Beyond the Sunday Sermon'), None)
     if beyond:
         beyond['artwork'] = beyond_artwork
-    class_series = [item for item in podcast_series if item['title'] != 'Beyond the Sunday Sermon']
+    # Podcast shows and teaching classes are intentionally separate collections.
+    # They share the same storage table, but should not be presented as the same
+    # kind of content to visitors.
+    podcast_show_titles = {'Beyond the Sunday Sermon', "Smokin' Theologians"}
+    podcast_shows = [item for item in podcast_series if item['title'] in podcast_show_titles]
+    class_series = [item for item in podcast_series if item['title'] not in podcast_show_titles]
     podcast_classes = {
         'title': 'Classes',
         'description': 'Educational content from our various classes, including Biblical Interpretation, Confessional Theology, and more.',
@@ -842,6 +847,7 @@ def podcasts():
         podcast_fallback_artwork=fallback_artwork,
         podcast_background_artwork='https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg',
         podcast_beyond=beyond,
+        podcast_shows=podcast_shows,
         podcast_classes=podcast_classes,
     )
 
