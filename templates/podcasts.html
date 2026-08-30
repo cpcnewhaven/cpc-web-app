@@ -841,6 +841,7 @@ body .podcasts-page .podcast-series-grid.is-class-list {
 .class-series-toolbar-controls { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: end; }
 .class-series-select { min-width: 122px; padding: 0.48rem 0.62rem; border: 1px solid rgba(13, 75, 145, 0.18); border-radius: 9px; color: #27445f; background: #fff; font: inherit; font-size: 0.78rem; }
 .class-series-back { padding: 0.48rem 0.68rem; border: 1px solid rgba(13, 75, 145, 0.18); border-radius: 9px; color: #0d4b91; background: transparent; font: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.class-series-back:hover { border-color: rgba(13, 75, 145, 0.42); background: rgba(13, 75, 145, 0.07); }
 
 body .podcasts-page .podcast-series-grid.is-class-list .podcast-series-card {
     display: flex !important;
@@ -867,15 +868,18 @@ body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-artwork {
 }
 
 body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-artwork::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(5, 19, 37, 0.05), rgba(5, 19, 37, 0.44));
+    display: none;
 }
 
 body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-artwork img {
+    width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
+}
+
+body .podcasts-page .podcast-series-grid.is-class-list .podcast-series-card:hover .podcast-card-artwork img {
+    transform: none;
 }
 
 body .podcasts-page .podcast-series-grid.is-class-list .podcast-card-content {
@@ -928,6 +932,7 @@ body.theme-blue .podcasts-page .class-series-toolbar-kicker { color: #a9d1ff; }
 body.theme-blue .podcasts-page .class-series-toolbar h2 { color: #fff; }
 body.theme-blue .podcasts-page .class-series-select { color: #ecf6ff; border-color: rgba(169, 209, 255, 0.26); background: #15365e; }
 body.theme-blue .podcasts-page .class-series-back { color: #cfe6ff; border-color: rgba(169, 209, 255, 0.28); }
+body.theme-blue .podcasts-page .class-series-back:hover { background: rgba(169, 209, 255, 0.12); }
 
 /* Latest episodes use a compact row even when only title, date, and speaker exist. */
 #episodes li {
@@ -1448,7 +1453,7 @@ function renderSeriesLibrary({ kicker, title, series, itemLabel }) {
                 <option value="latest">Latest activity</option>
                 <option value="title">Title A–Z</option>
             </select>
-            <button id="classSeriesBack" class="class-series-back" type="button">← Shows</button>
+            <button id="classSeriesBack" class="class-series-back" type="button">← Back to Podcasts</button>
         </div>`;
     container.before(toolbar);
 

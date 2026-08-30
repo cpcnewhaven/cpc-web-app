@@ -1,7 +1,7 @@
 {% extends 'admin/master.html' %}
 {% import 'admin/lib.html' as lib with context %}
 
-{% block create_form %}
+{% macro announcement_form() %}
 <div class="announcement-create-wrap">
 <div data-no-wysiwyg="1" style="display:none"></div>
 <p class="announcement-site-link">
@@ -18,7 +18,11 @@
 {% endmacro %}
 {{ lib.render_form(form, return_url, announcement_extra_buttons(), form_opts) }}
 </div>
-{% endblock %}
+{% endmacro %}
+
+{% block create_form %}{{ announcement_form() }}{% endblock %}
+{% block edit_form %}{{ announcement_form() }}{% endblock %}
+{% block body %}{{ announcement_form() }}{% endblock %}
 
 {% block tail %}
 {{ super() }}

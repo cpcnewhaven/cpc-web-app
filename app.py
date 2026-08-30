@@ -775,6 +775,13 @@ def podcasts():
     fallback_artwork = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg'
     beyond_artwork = 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_LAYNEBOLES.jpg'
     classes_artwork = 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_ACTION_A.jpg'
+    series_artwork = {
+        'Walking with Jesus Through Sinai': 'https://storage.googleapis.com/cpc-public-website/web-assets/podcast-thumbnails/WALKING%20LOGO.jpg',
+        'What We Believe': 'https://cpcnewhaven.org/assets/podcast-thumbnails/wwb.jpg',
+        'What We Believe: Knowing and Loving Our Doctrines': 'https://cpcnewhaven.org/assets/podcast-thumbnails/wwb.jpg',
+        'Confessional Theology': 'https://files.cpcnewhaven.org/podcast-thumbnails/confessional-theology.png',
+        'Biblical Interpretation': 'https://files.cpcnewhaven.org/podcast-thumbnails/biblical-interp.jpg',
+    }
     podcast_series = []
 
     for s in series:
@@ -810,7 +817,10 @@ def podcasts():
                 'podcast_thumbnail_url': episode['podcast_thumbnail_url'],
             })
 
-        artwork = next((episode.podcast_thumbnail_url for episode in episodes if episode.podcast_thumbnail_url), fallback_artwork)
+        artwork = series_artwork.get(
+            s.title,
+            next((episode.podcast_thumbnail_url for episode in episodes if episode.podcast_thumbnail_url), fallback_artwork),
+        )
         latest_episode = episode_items[0] if episode_items else None
         podcast_series.append({
             'id': s.id,
@@ -832,8 +842,20 @@ def podcasts():
     # They share the same storage table, but should not be presented as the same
     # kind of content to visitors.
     podcast_show_titles = {'Beyond the Sunday Sermon', "Smokin' Theologians"}
+    # These live in the wider media archive, but are not part of the curated
+    # Podcasts landing-page library.
+    podcast_hidden_titles = {
+        'The Sunday Sermon',
+        'The Gospel according to Luke',
+        'The Book of Exodus',
+    }
+    podcast_hidden_titles = {title.casefold() for title in podcast_hidden_titles}
     podcast_shows = [item for item in podcast_series if item['title'] in podcast_show_titles]
-    class_series = [item for item in podcast_series if item['title'] not in podcast_show_titles]
+    class_series = [
+        item for item in podcast_series
+        if item['title'].casefold() not in podcast_hidden_titles
+        and item['title'] not in podcast_show_titles
+    ]
     podcast_classes = {
         'title': 'Classes',
         'description': 'Educational content from our various classes, including Biblical Interpretation, Confessional Theology, and more.',

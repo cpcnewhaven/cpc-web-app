@@ -46,6 +46,10 @@
 {% endmacro %}
 
 {% block body %}
+    {% if admin_view.name == 'announcement' %}
+        {% import 'admin/announcement_create.html' as announcement with context %}
+        {{ announcement.announcement_form() }}
+    {% else %}
     <div class="grid grid-cols-12 gap-8" id="bento-grid-form">
         <!-- Main Form Canvas (Sections 1 & 2) -->
         <div class="col-span-12 lg:col-span-8 space-y-8">
@@ -184,4 +188,5 @@
             </div>
         </aside>
     </div>
+    {% endif %}
 {% endblock %}

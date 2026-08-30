@@ -258,7 +258,7 @@
             id="mobilePrimaryMenu" class="absolute top-full left-0 right-0 rounded-lg shadow-lg mt-2 p-4 backdrop-blur-lg"
             style="background: rgba(0, 50, 120, 0.97); border: 1px solid rgba(120, 190, 255, 0.35);">
             <p class="text-xs font-semibold text-blue-100 mb-2 uppercase tracking-wider">Browse CPC</p>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="mobile-menu-browse-grid grid grid-cols-2 gap-2">
                 <a href="{{ url_for('index') }}" class="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/15">Home</a>
                 <a href="{{ url_for('plan_a_visit') }}" class="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/15">Sundays</a>
                 <a href="{{ url_for('live') }}" class="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/15">Live</a>
@@ -269,7 +269,7 @@
                 <a href="{{ url_for('resources') }}" class="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/15">Resources</a>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-3 mt-3">
+            <div class="mobile-menu-section-grid grid grid-cols-2 gap-4 border-t border-white/20 pt-3 mt-3">
                 <div>
                     <p class="text-xs font-semibold text-blue-100 mb-1 uppercase tracking-wider">Watch &amp; Listen</p>
                     <a href="{{ url_for('sermons') }}" class="block py-1 text-sm font-medium text-white hover:text-blue-200">Sermons</a>
@@ -284,10 +284,11 @@
                 </div>
             </div>
 
-            <div class="flex flex-wrap gap-x-4 gap-y-2 border-t border-white/20 pt-3 mt-3 text-sm">
-                <a href="{{ url_for('search') }}" class="font-medium text-white hover:text-blue-200"><i class="fas fa-magnifying-glass mr-1.5" aria-hidden="true"></i>Search</a>
-                <a href="{{ url_for('archive') }}" class="font-medium text-white hover:text-blue-200">Archive</a>
-                <a href="{{ url_for('contact') }}" class="font-medium text-white hover:text-blue-200">Contact</a>
+            <div class="mobile-menu-actions grid grid-cols-2 sm:grid-cols-4 gap-2 border-t border-white/20 pt-3 mt-3 text-sm">
+                <a href="{{ url_for('search') }}" class="mobile-menu-action font-medium text-white hover:text-blue-200"><i class="fas fa-magnifying-glass mr-1.5" aria-hidden="true"></i>Search</a>
+                <a href="{{ url_for('archive') }}" class="mobile-menu-action font-medium text-white hover:text-blue-200">Archive</a>
+                <a href="{{ url_for('contact') }}" class="mobile-menu-action font-medium text-white hover:text-blue-200">Contact</a>
+                <a href="/admin/" class="mobile-menu-action font-medium text-white hover:text-blue-200">Admin</a>
             </div>
         </div>
     </nav>
@@ -437,32 +438,6 @@
             {% block content %}{% endblock %}
         </div>
     </main>
-
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav md:hidden">
-        <a href="{{ url_for('index') }}" class="mobile-nav-item" data-route="index">
-            <span>Home</span>
-        </a>
-        <a href="{{ url_for('sermons') }}" class="mobile-nav-item" data-route="sermons">
-            <span>Sermons</span>
-        </a>
-        <a href="{{ url_for('give') }}" class="mobile-nav-item" data-route="give">
-            <span>Give</span>
-        </a>
-        <a href="{{ url_for('events') }}" class="mobile-nav-item" data-route="events">
-            <span>Events</span>
-        </a>
-        <a href="{{ url_for('live') }}" class="mobile-nav-item" data-route="live">
-            <span>Live</span>
-        </a>
-        <a href="{{ url_for('plan_a_visit') }}" class="mobile-nav-item" data-route="plan-a-visit">
-            <span>Sundays</span>
-        </a>
-        <button type="button" class="mobile-nav-item mobile-nav-more" id="mobileNavMoreBtn" aria-label="More menu"
-            data-route="more">
-            <span>More</span>
-        </button>
-    </nav>
 
     <!-- Mobile More Menu (slide-up sheet) -->
     <div id="mobileMoreMenu" class="mobile-more-menu" aria-hidden="true" role="dialog" aria-label="More menu">
