@@ -447,7 +447,7 @@ def jerry_ornelas():
     return render_template('staff_profile.html', pastor={
         'name': 'Jerry Ornelas',
         'title': 'Assistant Pastor',
-        'image': 'https://storage.googleapis.com/cpc-public-website/62.jpg',
+        'image': 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/Jerry_OG.png',
         'image_position': '28% center',
         'bio': [
             "Jerry was born in Pasadena, California. At nine years of age he and his family moved to Savannah Georgia where he spent the majority of his formative years. Being a high school football player offered him the opportunity to play at the college level at Trinity International in Deerfield, Illinois. After several injuries the Lord providentially took away the desire to play football and replaced it with a desire for ministry.",
