@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ pastor.name }} | CPC New Haven{% endblock %}
+{% block meta_description %}{{ pastor.name }}, {{ pastor.title }} at Christ Presbyterian Church in New Haven.{% endblock %}
+{% block og_title %}{{ pastor.name }} | CPC New Haven{% endblock %}
+{% block og_description %}{{ pastor.title }} at Christ Presbyterian Church in New Haven.{% endblock %}
+{% block og_image %}{{ pastor.image }}{% endblock %}
+{% block canonical %}https://cpcnewhaven.org{{ request.path }}{% endblock %}
+
+{% block head %}
+<style>
+    .staff-profile {
+        min-height: 100%;
+        padding: clamp(2.5rem, 7vw, 5.5rem) 1.25rem;
+        background: var(--bg-gradient);
+    }
+
+    .staff-profile__shell {
+        display: grid;
+        grid-template-columns: minmax(240px, 0.78fr) minmax(0, 1.22fr);
+        gap: clamp(2rem, 5vw, 4.75rem);
+        max-width: 1060px;
+        margin: 0 auto;
+        align-items: start;
+    }
+
+    .staff-profile__portrait {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow: 0 20px 52px rgba(0, 15, 45, 0.25);
+    }
+
+    .staff-profile__eyebrow {
+        margin: 0 0 0.7rem;
+        color: #a9d0ff;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+    }
+
+    .staff-profile h1 {
+        margin: 0;
+        color: #fff;
+        font-family: 'Manrope', var(--font-primary);
+        font-size: clamp(2.25rem, 5vw, 4rem);
+        line-height: 1.08;
+    }
+
+    .staff-profile__role {
+        margin: 0.75rem 0 2rem;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+    }
+
+    .staff-profile__bio p {
+        margin: 0 0 1.25rem;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 1.02rem;
+        line-height: 1.82;
+    }
+
+    .staff-profile__back {
+        display: inline-block;
+        margin-top: 0.8rem;
+        color: #fff;
+        font-size: 0.94rem;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .staff-profile__back:hover { text-decoration: underline; }
+
+    body.theme-white .staff-profile__portrait { border-color: rgba(0, 50, 120, 0.16); }
+    body.theme-white .staff-profile__eyebrow { color: #276798; }
+    body.theme-white .staff-profile h1,
+    body.theme-white .staff-profile__back { color: #1a2a3f; }
+    body.theme-white .staff-profile__role,
+    body.theme-white .staff-profile__bio p { color: #526577; }
+
+    @media (max-width: 720px) {
+        .staff-profile__shell { grid-template-columns: 1fr; gap: 2rem; }
+        .staff-profile__portrait { max-width: 420px; aspect-ratio: 4 / 3; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="staff-profile">
+    <div class="staff-profile__shell">
+        <img class="staff-profile__portrait" src="{{ pastor.image }}" alt="{{ pastor.name }}"{% if pastor.image_position %} style="object-position: {{ pastor.image_position }};"{% endif %}>
+        <article>
+            <p class="staff-profile__eyebrow">CPC New Haven</p>
+            <h1>{{ pastor.name }}</h1>
+            <p class="staff-profile__role">{{ pastor.title }}</p>
+            <div class="staff-profile__bio">
+                {% for paragraph in pastor.bio %}<p>{{ paragraph }}</p>{% endfor %}
+            </div>
+            <a class="staff-profile__back" href="{{ url_for('about') }}#staff">← Back to our staff</a>
+        </article>
+    </div>
+</main>
+{% endblock %}

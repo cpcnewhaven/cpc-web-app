@@ -428,6 +428,34 @@ def about():
     about_content = {r.key: r.value for r in rows}
     return render_template('about.html', about_content=about_content)
 
+@app.route('/staff/craig-luekens')
+def craig_luekens():
+    return render_template('staff_profile.html', pastor={
+        'name': 'Craig Luekens',
+        'title': 'Senior Pastor',
+        'image': 'https://storage.googleapis.com/cpc-public-website/69.jpg',
+        'bio': [
+            "Craig was born and raised in Indianapolis, IN, and was brought up in the Jewish faith through high school. In college - at Indiana University - he began asking deeper, more existential questions about purpose, meaning, and the existence of God. At the start of Sophomore year he committed his life to Christ. Having become convinced of the truth of Scripture, the Spirit convicted him that Jesus alone demands and deserves everything. In hopes of pursuing an academic career, he attended Yale Divinity School, completing a MDiv in 2008. God drew him to Christ Presbyterian Church and eventually to the ministry through CPC, where he also began work with Athletes in Action at Yale, a sports ministry for undergrad student-athletes. Craig was ordained as a Teaching Elder in the PCA in 2012 and completed a ThM in 2014 at Gordon Conwell Theological Seminary in Biblical Theology.",
+            "Having begun his role as Senior Pastor in 2023, his primary responsibilities include preaching, teaching, pastoral counseling, and moderating the Session/WLB (Shepherd Leaders) and Servant Leadership Boards.",
+            "Craig has three kids - Charlotte (b. 2009); Julian (b. 2011); and Eli (b.2014) - from a previous marriage. He and Allison were married in 2021.",
+            "Craig was a semi-professional cyclist before pursuing the ministry and always seeks more ways to merge his two loves as much as he can - discussing a good book on a good ride."
+        ]
+    })
+
+@app.route('/staff/jerry-ornelas')
+def jerry_ornelas():
+    return render_template('staff_profile.html', pastor={
+        'name': 'Jerry Ornelas',
+        'title': 'Assistant Pastor',
+        'image': 'https://storage.googleapis.com/cpc-public-website/62.jpg',
+        'image_position': '28% center',
+        'bio': [
+            "Jerry was born in Pasadena, California. At nine years of age he and his family moved to Savannah Georgia where he spent the majority of his formative years. Being a high school football player offered him the opportunity to play at the college level at Trinity International in Deerfield, Illinois. After several injuries the Lord providentially took away the desire to play football and replaced it with a desire for ministry.",
+            "After years of wrestling with whether or not he should pursue vocational ministry the Lord sent him to Reformed Theological Seminary in Jackson, Mississippi to pursue a Masters of Divinity. During his four years of training he spent the summer of 2018 interning at Christ Presbyterian Church. This eventually, in God's providence, turned into a call to serve as an Assistant Pastor as well as starting a college ministry at Southern Connecticut State University.",
+            "Some of his passions are: traveling, spending time in nature such as hiking, kayaking and camping. Reading fiction and non-fiction, theology, philosophy, apologetics and science books are a joy and a delight to him. Using these various genres, along with sports and nature are tools he uses to disciple and point people to Jesus Christ."
+        ]
+    })
+
 WHAT_WE_BELIEVE_LESSONS = [
     'Lesson 1: Intro – Why Theology?',
     'Lesson 2: How Could the Finite ever Know the Infinite?',

@@ -315,6 +315,75 @@
         margin-top: 2px;
     }
 
+    .pastors-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px;
+        max-width: 760px;
+        margin: 0 auto 52px;
+    }
+
+    .pastor-card {
+        display: block;
+        overflow: hidden;
+        color: inherit;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 16px 34px rgba(0, 15, 45, 0.18);
+        transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .pastor-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.13);
+        box-shadow: 0 22px 40px rgba(0, 15, 45, 0.26);
+    }
+
+    .pastor-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .pastor-card-content {
+        padding: 18px 20px 20px;
+    }
+
+    .pastor-card-name {
+        color: #fff;
+        font-family: 'Manrope', var(--font-primary);
+        font-size: 1.35rem;
+        font-weight: 750;
+    }
+
+    .pastor-card-role {
+        margin-top: 4px;
+        color: #a9d0ff;
+        font-size: 0.95rem;
+    }
+
+    .pastor-card-link {
+        display: inline-block;
+        margin-top: 14px;
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .staff-roster-title {
+        margin: 0 0 22px;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
     /* Photo Gallery */
     .about-gallery {
         display: grid;
@@ -563,6 +632,19 @@
             gap: 24px;
         }
 
+        .pastors-grid {
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .pastor-card-content {
+            padding: 15px 16px 17px;
+        }
+
+        .pastor-card-name {
+            font-size: 1.1rem;
+        }
+
         .leadership-section-spacious {
             padding-top: 72px;
             padding-bottom: 80px;
@@ -672,6 +754,26 @@
 
     body.theme-white .person-role {
         color: #7a8a9a;
+    }
+
+    body.theme-white .pastor-card {
+        background: rgba(255, 255, 255, 0.82);
+        border-color: rgba(0, 50, 120, 0.14);
+        box-shadow: 0 14px 32px rgba(0, 35, 82, 0.1);
+    }
+
+    body.theme-white .pastor-card:hover {
+        background: #fff;
+    }
+
+    body.theme-white .pastor-card-name,
+    body.theme-white .pastor-card-link {
+        color: #1a2a3f;
+    }
+
+    body.theme-white .pastor-card-role,
+    body.theme-white .staff-roster-title {
+        color: #51708f;
     }
 
     body.theme-white .closing-cta h2 {
@@ -867,13 +969,30 @@
     </section>
 
     <!-- Leadership: Staff -->
-    <section class="about-section-container leadership-section-spacious">
+    <section class="about-section-container leadership-section-spacious" id="staff">
         <div class="leadership-group leadership-group-spacious">
             <h3>Our Staff Team</h3>
+            <div class="pastors-grid">
+                <a class="pastor-card" href="{{ url_for('craig_luekens') }}" aria-label="Read Craig Luekens's profile">
+                    <img src="https://storage.googleapis.com/cpc-public-website/69.jpg" alt="Craig Luekens">
+                    <div class="pastor-card-content">
+                        <div class="pastor-card-name">Craig Luekens</div>
+                        <div class="pastor-card-role">Senior Pastor</div>
+                        <span class="pastor-card-link">Meet Craig →</span>
+                    </div>
+                </a>
+                <a class="pastor-card" href="{{ url_for('jerry_ornelas') }}" aria-label="Read Jerry Ornelas's profile">
+                    <img src="https://storage.googleapis.com/cpc-public-website/62.jpg" alt="Jerry Ornelas" style="object-position: 28% center;">
+                    <div class="pastor-card-content">
+                        <div class="pastor-card-name">Jerry Ornelas</div>
+                        <div class="pastor-card-role">Assistant Pastor</div>
+                        <span class="pastor-card-link">Meet Jerry →</span>
+                    </div>
+                </a>
+            </div>
+            <div class="staff-roster-title">Staff</div>
             <div class="leadership-grid">
                 {% set staff = [
-                    ('Craig Luekens', 'Senior Pastor'),
-                    ('Jerry Ornelas', 'Assistant Pastor'),
                     ('Alexis Vano', 'Administrative Coordinator'),
                     ('Alex Gonzalez', 'AV Director'),
                     ('Christopher Battista', 'Audio and Tech Support'),
