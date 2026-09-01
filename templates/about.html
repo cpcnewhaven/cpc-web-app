@@ -345,6 +345,7 @@
         display: block;
         width: 100%;
         aspect-ratio: 4 / 3;
+        filter: grayscale(100%);
         object-fit: cover;
         object-position: center;
     }
@@ -507,7 +508,59 @@
     /* Story Timeline */
     .story-timeline {
         max-width: 860px;
+        margin: 28px auto 0;
+    }
+
+    .story-disclosure {
+        max-width: 860px;
         margin: 0 auto;
+    }
+
+    .story-disclosure summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 17px 20px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+        cursor: pointer;
+        font-family: 'Manrope', var(--font-primary);
+        font-size: 1rem;
+        font-weight: 700;
+        list-style: none;
+        transition: background 180ms ease, border-color 180ms ease;
+    }
+
+    .story-disclosure summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .story-disclosure summary:hover,
+    .story-disclosure[open] summary {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(155, 199, 255, 0.45);
+    }
+
+    .story-disclosure__action {
+        color: #a9d0ff;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+
+    .story-disclosure__action::after {
+        content: '↓';
+        display: inline-block;
+        margin-left: 0.5rem;
+        transition: transform 180ms ease;
+    }
+
+    .story-disclosure[open] .story-disclosure__action::after {
+        transform: rotate(180deg);
     }
 
     .story-milestone {
@@ -653,6 +706,10 @@
         .story-milestone {
             grid-template-columns: 1fr;
             gap: 0.75rem;
+        }
+
+        .story-disclosure summary {
+            padding: 15px 16px;
         }
 
         .story-milestone-year {
@@ -840,6 +897,22 @@
         color: rgba(0, 82, 163, 0.55);
     }
 
+    body.theme-white .story-disclosure summary {
+        background: rgba(255, 255, 255, 0.76);
+        border-color: rgba(0, 50, 120, 0.14);
+        color: #20303f;
+    }
+
+    body.theme-white .story-disclosure summary:hover,
+    body.theme-white .story-disclosure[open] summary {
+        background: #fff;
+        border-color: rgba(0, 82, 163, 0.32);
+    }
+
+    body.theme-white .story-disclosure__action {
+        color: #276798;
+    }
+
     body.theme-white .about-page #what-we-believe p {
         color: #5b6b7a !important;
     }
@@ -959,13 +1032,19 @@
     </section>
 
     <!-- Our Story Timeline -->
-    <section class="about-section-container" style="padding: 90px 24px 100px;">
+    <section class="about-section-container" style="padding: 64px 24px 72px;">
         <div class="section-header">
             <div class="section-kicker">Our heritage</div>
             <h2 class="section-title">Our Story</h2>
             <p class="section-subtitle">From a small Bible study to a church family in New Haven</p>
         </div>
-        <div id="story-timeline" class="story-timeline"></div>
+        <details class="story-disclosure">
+            <summary>
+                <span>Explore CPC's story</span>
+                <span class="story-disclosure__action">View timeline</span>
+            </summary>
+            <div id="story-timeline" class="story-timeline"></div>
+        </details>
     </section>
 
     <!-- Leadership: Staff -->
