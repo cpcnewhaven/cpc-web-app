@@ -163,9 +163,9 @@ Set `FEEDBACK_INVITE_TOKEN` to a long, private value in the environment, then se
 
 `https://cpcnewhaven.org/preview/<that-token>`
 
-The link starts a browser session with a bottom-right floating feedback button available across the site. Testers do not need an account or a separate app. Feedback records the page, reaction type, note, and optional contact details. Authenticated admins can review it under **Admin → More → Feedback** or download `/admin/export/feedback` as CSV. Leave `FEEDBACK_INVITE_TOKEN` unset to keep feedback mode off.
+The link starts a browser session with a lower-left floating feedback button available across the site. Testers do not need an account or a separate app. Feedback records the page, reaction type, note, and optional contact details. Authenticated admins can review it under **Admin → More → Feedback** or download `/admin/export/feedback` as CSV. Leave `FEEDBACK_INVITE_TOKEN` unset to keep feedback mode off.
 
-The feedback button and panel are styled in `static/css/feedback.css`. Keep the launcher fixed to the bottom right, above the mobile bottom nav and audio player, and keep the panel anchored above the launcher so it does not cover the control that opened it.
+The feedback button and panel are styled in `static/css/feedback.css`. Keep the launcher fixed to the lower left, above the mobile bottom nav and audio player. The idle state should stay subtle and nearly transparent; hover, focus, and the open panel state should make it clear that feedback mode is active.
 
 **Other options:**
 
