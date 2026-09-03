@@ -10,7 +10,7 @@
 <style>
 .resources-page {
     min-height: calc(100vh - 200px);
-    padding: 0;
+    padding: 1.25rem 0 3rem;
     margin: 0;
     --page-surface: var(--surface-bg);
     --page-surface-hover: var(--surface-bg-hover);
@@ -40,13 +40,13 @@
 
 .resources-hero h1 {
     font-size: 1.75rem;
-    color: var(--page-text);
+    color: #fff;
     margin: 0 0 0.25rem 0;
     font-weight: 600;
 }
 
 .resources-hero p {
-    color: var(--page-muted);
+    color: rgba(255, 255, 255, 0.82);
     font-size: 0.9rem;
     margin: 0;
 }
@@ -115,9 +115,115 @@
 
 .resources-section {
     background: var(--page-surface);
+    border: 1px solid var(--page-border);
     border-radius: var(--radius-lg);
     padding: 1rem;
+    box-shadow: var(--surface-shadow);
 }
+
+/* Pastor's book picks */
+.book-picks-disclosure {
+    margin-bottom: 1rem;
+    border: 1px solid var(--page-border);
+    border-radius: var(--radius-lg);
+    background: var(--page-surface);
+    overflow: hidden;
+}
+
+.book-picks-disclosure summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    color: var(--page-text);
+    cursor: pointer;
+    font-weight: 700;
+    list-style: none;
+}
+
+.book-picks-disclosure summary::-webkit-details-marker { display: none; }
+
+.book-picks-disclosure__meta {
+    display: block;
+    margin-top: 0.18rem;
+    color: var(--page-muted);
+    font-size: 0.86rem;
+    font-weight: 400;
+}
+
+.book-picks-disclosure__action {
+    flex: 0 0 auto;
+    color: var(--page-accent);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.book-picks-disclosure__action::after { content: ' ↓'; }
+.book-picks-disclosure[open] .book-picks-disclosure__action::after { content: ' ↑'; }
+
+.featured-book-pick {
+    display: flex;
+    align-items: stretch;
+    border-top: 1px solid var(--page-border);
+}
+
+.featured-book-pick__cover {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.featured-book-pick__cover img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: var(--surface-shadow);
+}
+
+.featured-book-pick__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.featured-book-pick__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--page-accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.featured-book-pick h3 {
+    margin: 0 0 0.25rem;
+    color: var(--page-text);
+    font-size: 1.5rem;
+}
+
+.featured-book-pick__author {
+    margin: 0 0 1rem;
+    color: var(--page-muted);
+    font-size: 0.95rem;
+}
+
+.featured-book-pick__description {
+    margin: 0 0 1.25rem;
+    color: var(--page-text);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.featured-book-pick .btn { align-self: flex-start; }
 
 .section-header {
     margin-bottom: 0.75rem;
@@ -141,7 +247,7 @@
 /* Resource Categories Grid */
 .resource-categories {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
     margin-top: 0.75rem;
 }
@@ -151,7 +257,7 @@
     backdrop-filter: blur(10px);
     border: 1px solid var(--page-border);
     border-radius: var(--radius-lg);
-    padding: 0.75rem;
+    padding: 0.9rem;
     transition: all 0.3s ease;
 }
 
@@ -164,7 +270,7 @@
 .resource-category h3 {
     font-size: 1rem;
     color: var(--page-text);
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 0.55rem 0;
     font-weight: 600;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--page-border);
@@ -177,12 +283,12 @@
 }
 
 .resource-category li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
 }
 
 .resource-category a {
     display: block;
-    padding: 0.5rem;
+    padding: 0.42rem 0.5rem;
     color: var(--page-text);
     text-decoration: none;
     font-size: 0.85rem;
@@ -227,8 +333,34 @@
     text-decoration: underline;
 }
 
+body.theme-white .resources-page {
+    --page-surface: #ffffff;
+    --page-surface-hover: #f1f6fd;
+    --page-border: rgba(27, 69, 113, 0.16);
+    --page-text: #1d2e42;
+    --page-muted: #627487;
+    --page-accent: #075db8;
+    background: linear-gradient(180deg, #f6f8fb 0%, #edf3fa 100%);
+}
+
+body.theme-white .resources-section,
+body.theme-white .page-submenu,
+body.theme-white .book-picks-disclosure {
+    box-shadow: 0 12px 30px rgba(16, 50, 85, 0.08);
+}
+
+body.theme-white .featured-book-pick__cover {
+    background: #edf3fa;
+}
+
+body.theme-white .submenu-list a:hover,
+body.theme-white .submenu-list a.active,
+body.theme-white .resource-category:hover {
+    border-color: rgba(7, 93, 184, 0.28);
+}
+
 /* Responsive */
-@media (max-width: 1024px) {
+@media (max-width: 720px) {
     .resource-categories {
         grid-template-columns: 1fr;
     }
@@ -240,6 +372,15 @@
     .submenu-list a {
         width: 100%;
     }
+}
+
+@media (max-width: 640px) {
+    .resources-page { padding-top: 0.75rem; }
+    .book-picks-disclosure summary { padding: 0.9rem 1rem; }
+    .featured-book-pick { flex-direction: column; }
+    .featured-book-pick__cover { width: 100%; }
+    .featured-book-pick__cover img { max-width: 180px; }
+    .featured-book-pick__content { padding: 1.15rem; }
 }
 </style>
 {% endblock %}
@@ -267,29 +408,33 @@
 
         <!-- Content Area -->
         <div class="resources-content-area">
-            <div style="margin-bottom: 1.5rem; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--surface-shadow);">
-                <img src="https://storage.googleapis.com/cpc-public-website/67.jpg" alt="CPC Resources" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block;">
-            </div>
-            
             <section class="resources-section">
                 {% if site_content.get('pastors_book_active', 'True') == 'True' %}
-                <!-- Featured Pastor's Book Pick -->
-                <div class="featured-book-pick" style="margin-bottom: 2rem; background: var(--page-surface); backdrop-filter: blur(20px); border: 1px solid var(--page-border); border-radius: var(--radius-lg); overflow: hidden; display: flex; align-items: stretch;">
-                    <div style="width: 180px; flex-shrink: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; padding: 1rem;">
+                <details class="book-picks-disclosure">
+                    <summary>
+                        <span>
+                            Pastor's Book Picks
+                            <span class="book-picks-disclosure__meta">{{ site_content.get('pastors_book_title', 'Life Together') }} by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</span>
+                        </span>
+                        <span class="book-picks-disclosure__action">Show all</span>
+                    </summary>
+                    <div class="featured-book-pick">
+                    <div class="featured-book-pick__cover">
                         <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}"
                              alt="Book Cover" loading="lazy"
-                             style="width: 100%; height: auto; border-radius: 4px; box-shadow: var(--surface-shadow);">
+                             >
                     </div>
-                    <div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-                        <span style="font-size: 0.7rem; font-weight: 700; color: var(--page-accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block;">{{ site_content.get('pastors_book_label', "Pastor's Book Pick") }}</span>
-                        <h3 style="font-size: 1.5rem; margin: 0 0 0.25rem 0; color: var(--page-text);">{{ site_content.get('pastors_book_title', 'Life Together') }}</h3>
-                        <p style="font-size: 0.95rem; color: var(--page-muted); margin: 0 0 1rem 0;">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</p>
-                        <p style="font-size: 0.9rem; color: var(--page-text); line-height: 1.5; margin-bottom: 1.25rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    <div class="featured-book-pick__content">
+                        <span class="featured-book-pick__label">{{ site_content.get('pastors_book_label', "Pastor's Book Pick") }}</span>
+                        <h3>{{ site_content.get('pastors_book_title', 'Life Together') }}</h3>
+                        <p class="featured-book-pick__author">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</p>
+                        <p class="featured-book-pick__description">
                             {{ site_content.get('pastors_book_description', '') | striptags }}
                         </p>
-                        <a href="{{ url_for('pastors_book') }}" class="btn btn-primary" style="align-self: flex-start; padding: 0.5rem 1.25rem; font-size: 0.85rem;">Read Recommendation →</a>
+                        <a href="{{ url_for('pastors_book') }}" class="btn btn-primary">Read Recommendation →</a>
                     </div>
-                </div>
+                    </div>
+                </details>
                 {% endif %}
 
                 <div class="section-header">

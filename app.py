@@ -31,6 +31,7 @@ import pytz
 from dotenv import load_dotenv
 import zipfile
 import io
+import hmac
 
 # Optional integration with Google Cloud Storage for media
 try:
@@ -187,7 +188,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent, LifeGroup
+from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent, LifeGroup, SiteFeedback
 
 def ensure_db_columns():
     """Add any missing columns to existing tables (SQLite and PostgreSQL).
@@ -264,6 +265,11 @@ def ensure_db_columns():
             ('slug', 'VARCHAR(100)', 'VARCHAR(100)'),
             ('external_url', 'VARCHAR(500)', 'VARCHAR(500)'),
             ('sort_order', 'INTEGER DEFAULT 0', 'INTEGER DEFAULT 0'),
+        ],
+        'site_feedback': [
+            ('review_note', 'TEXT', 'TEXT'),
+            ('reviewed_at', 'DATETIME', 'TIMESTAMP'),
+            ('reviewed_by', 'VARCHAR(80)', 'VARCHAR(80)'),
         ],
     }
 
@@ -353,6 +359,53 @@ def internal_error(exc):
         "<!DOCTYPE html><html><head><title>Error</title></head><body>"
         "<h1>Internal Server Error</h1><p>Check server logs for details.</p></body></html>"
     ), 500, {"Content-Type": "text/html; charset=utf-8"}
+
+
+# ---------------------------------------------------------------------------
+# Invite-only browsing feedback mode
+# ---------------------------------------------------------------------------
+@app.route('/preview/<token>')
+def feedback_preview(token):
+    """Start a tester session without exposing feedback controls to everyone."""
+    invite_token = os.getenv('FEEDBACK_INVITE_TOKEN', '').strip()
+    if not invite_token or not hmac.compare_digest(token, invite_token):
+        return not_found(None)
+    session['feedback_mode'] = True
+    session['feedback_started_at'] = datetime.utcnow().isoformat()
+    return redirect(url_for('index'))
+
+
+@app.route('/api/feedback', methods=['POST'])
+def submit_site_feedback():
+    """Accept short feedback from an active tester session."""
+    if not session.get('feedback_mode'):
+        return jsonify({'error': 'Feedback mode is not active.'}), 403
+
+    payload = request.get_json(silent=True) or {}
+    kind = str(payload.get('kind', 'note')).strip().lower()
+    allowed_kinds = {'love', 'confusing', 'broken', 'idea', 'note'}
+    if kind not in allowed_kinds:
+        kind = 'note'
+    message = str(payload.get('message', '')).strip()
+    if not message or len(message) > 4000:
+        return jsonify({'error': 'Please add a short note (up to 4,000 characters).'}), 400
+
+    page_url = str(payload.get('page_url', request.referrer or '/')).strip()[:1000]
+    if not page_url.startswith('/') and not page_url.startswith('https://cpcnewhaven.org'):
+        page_url = '/'
+    entry = SiteFeedback(
+        kind=kind,
+        message=message,
+        page_url=page_url,
+        page_title=str(payload.get('page_title', '')).strip()[:300],
+        name=str(payload.get('name', '')).strip()[:100] or None,
+        email=str(payload.get('email', '')).strip()[:254] or None,
+        user_agent=request.headers.get('User-Agent', '')[:500],
+    )
+    db.session.add(entry)
+    db.session.commit()
+    return jsonify({'ok': True, 'id': entry.id})
+
 
 # ---------------------------------------------------------------------------
 # Admin status: last content change — uses audit log so it matches Activity History
@@ -3000,12 +3053,19 @@ def inject_current_user_metadata():
             app_version = f.read().strip()
     except Exception:
         pass
+
+    try:
+        new_feedback_count = SiteFeedback.query.filter_by(status='new').count()
+    except Exception:
+        new_feedback_count = 0
         
     return {
         'current_user_last_login': user.last_login_at if user else None,
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
+        'feedback_mode': bool(session.get('feedback_mode')),
+        'new_feedback_count': new_feedback_count,
     }
 
 
@@ -3033,6 +3093,22 @@ def require_auth(f):
             return redirect(url_for('admin_login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
+
+
+@app.route('/admin/export/feedback')
+@require_auth
+def export_site_feedback():
+    """Download feedback as a spreadsheet-friendly CSV."""
+    import csv
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['id', 'created_at', 'kind', 'message', 'page_title', 'page_url', 'name', 'email', 'status'])
+    for item in SiteFeedback.query.order_by(SiteFeedback.created_at.desc()).all():
+        writer.writerow([item.id, item.created_at.isoformat() if item.created_at else '', item.kind,
+                         item.message, item.page_title or '', item.page_url, item.name or '', item.email or '', item.status])
+    return Response(output.getvalue(), mimetype='text/csv', headers={
+        'Content-Disposition': 'attachment; filename=cpc-site-feedback.csv'
+    })
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -5740,6 +5816,72 @@ class ProtectedAdminIndexView(_AdminIndexView):
 admin = Admin(app, name='CPC Admin', template_mode='bootstrap3',
               index_view=ProtectedAdminIndexView())
 
+
+class SiteFeedbackView(AuthenticatedModelView):
+    """Read-only inbox for feedback collected from invited testers."""
+    can_create = False
+    can_edit = True
+    can_delete = True
+    column_list = ('created_at', 'kind', 'message', 'page_title', 'page_url', 'name', 'email', 'status')
+    column_searchable_list = ('message', 'page_title', 'name', 'email')
+    column_default_sort = ('created_at', True)
+    form_columns = ('status',)
+    column_filters = ('kind', 'status', 'created_at')
+
+
+class FeedbackReviewView(BaseView):
+    """A triage board for turning raw feedback into a short action list."""
+
+    @expose('/', methods=('GET', 'POST'))
+    def index(self):
+        if not is_authenticated():
+            return redirect(url_for('admin_login', next=request.url))
+
+        if request.method == 'POST':
+            item = SiteFeedback.query.get(request.form.get('feedback_id', type=int))
+            if item:
+                item.status = request.form.get('status', 'new')
+                if item.status not in {'new', 'selected', 'in-progress', 'dismissed'}:
+                    item.status = 'new'
+                item.review_note = request.form.get('review_note', '').strip()[:4000] or None
+                item.reviewed_at = datetime.utcnow()
+                item.reviewed_by = session.get('username')
+                db.session.commit()
+            return redirect(request.referrer or url_for('feedback_review.index'))
+
+        query = SiteFeedback.query
+        status = request.args.get('status', 'all')
+        kind = request.args.get('kind', 'all')
+        reviewer = request.args.get('reviewer', '').strip()
+        page_filter = request.args.get('page', '').strip()
+        sort = request.args.get('sort', 'newest')
+        if status != 'all':
+            query = query.filter(SiteFeedback.status == status)
+        if kind != 'all':
+            query = query.filter(SiteFeedback.kind == kind)
+        if reviewer:
+            query = query.filter(SiteFeedback.name.ilike(f'%{reviewer}%'))
+        if page_filter:
+            query = query.filter((SiteFeedback.page_title.ilike(f'%{page_filter}%')) |
+                                 (SiteFeedback.page_url.ilike(f'%{page_filter}%')))
+        if sort == 'oldest':
+            query = query.order_by(SiteFeedback.created_at.asc())
+        elif sort == 'selected':
+            query = query.order_by(SiteFeedback.status.desc(), SiteFeedback.created_at.desc())
+        else:
+            query = query.order_by(SiteFeedback.created_at.desc())
+
+        all_items = SiteFeedback.query.all()
+        counts = {
+            'total': len(all_items),
+            'new': sum(i.status == 'new' for i in all_items),
+            'selected': sum(i.status == 'selected' for i in all_items),
+            'in-progress': sum(i.status == 'in-progress' for i in all_items),
+        }
+        return self.render('admin/feedback_review.html', feedback=query.all(), counts=counts,
+                           selected_status=status, selected_kind=kind, reviewer=reviewer,
+                           page_filter=page_filter, sort=sort)
+
 # ---------------------------------------------------------------------------
 # Initialize database, verify connection, run migrations, seed admin users
 # ---------------------------------------------------------------------------
@@ -5803,6 +5945,8 @@ with app.app_context():
     admin.add_view(TeachingSeriesView(TeachingSeries, db.session, name='Teaching Series', endpoint='teachingseries', category='More'))
     admin.add_view(TeachingSeriesSessionView(TeachingSeriesSession, db.session, name='Teaching Sessions', endpoint='teachingsession', category='More'))
     admin.add_view(LifeGroupView(LifeGroup, db.session, name='Life Groups', endpoint='lifegroups_admin', category='More'))
+    admin.add_view(SiteFeedbackView(SiteFeedback, db.session, name='Feedback', endpoint='sitefeedback', category='More'))
+    admin.add_view(FeedbackReviewView(name='Review feedback', endpoint='feedback_review', category='More'))
     admin.add_view(PageEditorsView(name='Page Editors', endpoint='page_editors'))
 
 if __name__ == '__main__':

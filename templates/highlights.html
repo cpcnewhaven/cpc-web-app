@@ -156,6 +156,53 @@
         background: rgba(255, 255, 255, 0.05);
         border-radius: 8px;
     }
+
+    /* White theme: retain a clear editorial card hierarchy instead of inheriting
+       the pale text and translucent surfaces designed for the blue theme. */
+    body.theme-white .highlights-page {
+        background: linear-gradient(180deg, #f7f9fc 0%, #edf3fa 100%);
+        padding: 1.25rem 0 3rem;
+    }
+
+    body.theme-white .highlights-hero h1 { color: #1d2e42; }
+    body.theme-white .highlights-hero p { color: #627487; }
+
+    body.theme-white .filter-section {
+        background: #fff;
+        border-color: rgba(27, 69, 113, 0.14);
+        box-shadow: 0 12px 30px rgba(16, 50, 85, 0.08);
+    }
+
+    body.theme-white .filter-btn {
+        background: #f7f9fc;
+        border-color: rgba(27, 69, 113, 0.14);
+        color: #456178;
+    }
+
+    body.theme-white .filter-btn.active,
+    body.theme-white .filter-btn:hover {
+        background: #075db8;
+        border-color: #075db8;
+        color: #fff;
+    }
+
+    body.theme-white .highlight-card {
+        background: #fff;
+        border-color: rgba(27, 69, 113, 0.14);
+        box-shadow: 0 10px 26px rgba(16, 50, 85, 0.08);
+    }
+
+    body.theme-white .highlight-card:hover {
+        background: #fff;
+        border-color: rgba(7, 93, 184, 0.32);
+        box-shadow: 0 14px 30px rgba(16, 50, 85, 0.12);
+    }
+
+    body.theme-white .highlight-card h2 { color: #1d2e42 !important; }
+    body.theme-white .highlight-description { color: #586c80; }
+    body.theme-white .highlight-badge { background: #dbeafe; color: #1d5e99; }
+    body.theme-white .highlight-badge.featured { background: #fff0bf; color: #805b00; }
+    body.theme-white .empty-state { background: #fff; color: #627487; }
 </style>
 {% endblock %}
 

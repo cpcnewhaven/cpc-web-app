@@ -16,6 +16,28 @@ class GlobalIDCounter(db.Model):
     next_id = db.Column(db.Integer, nullable=False, default=1)
 
 
+class SiteFeedback(db.Model):
+    """Anonymous, invite-only feedback submitted while browsing the site."""
+    __tablename__ = 'site_feedback'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    kind = db.Column(db.String(40), nullable=False, default='note')
+    message = db.Column(db.Text, nullable=False)
+    page_url = db.Column(db.String(1000), nullable=False)
+    page_title = db.Column(db.String(300))
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(254))
+    user_agent = db.Column(db.String(500))
+    status = db.Column(db.String(30), nullable=False, default='new')
+    review_note = db.Column(db.Text)
+    reviewed_at = db.Column(db.DateTime)
+    reviewed_by = db.Column(db.String(80))
+
+    def __repr__(self):
+        return f'<SiteFeedback {self.id} {self.kind}>'
+
+
 class BibleBook(db.Model):
     __tablename__ = 'bible_books'
     id = db.Column(db.Integer, primary_key=True)

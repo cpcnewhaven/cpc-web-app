@@ -1,0 +1,59 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<div class="feedback-review-shell">
+  <div class="feedback-review-header">
+    <div>
+      <p class="eyebrow">CPC site testing</p>
+      <h1>Feedback review</h1>
+      <p class="lede">Sort the raw reactions into a short list of changes worth making.</p>
+    </div>
+    <a class="export-link" href="{{ url_for('export_site_feedback') }}">Download CSV ↓</a>
+  </div>
+
+  <div class="feedback-stats">
+    <div><strong>{{ counts.total }}</strong><span>Total notes</span></div>
+    <div><strong>{{ counts.new }}</strong><span>To review</span></div>
+    <div><strong>{{ counts.selected }}</strong><span>Keep</span></div>
+    <div><strong>{{ counts['in-progress'] }}</strong><span>In progress</span></div>
+  </div>
+
+  <form class="feedback-filters" id="feedbackReviewFilters" method="get">
+    <label>Status<select name="status"><option value="all" {{ 'selected' if selected_status == 'all' }}>All statuses</option><option value="new" {{ 'selected' if selected_status == 'new' }}>To review</option><option value="selected" {{ 'selected' if selected_status == 'selected' }}>Keep</option><option value="in-progress" {{ 'selected' if selected_status == 'in-progress' }}>In progress</option><option value="dismissed" {{ 'selected' if selected_status == 'dismissed' }}>Dismissed</option></select></label>
+    <label>Reaction<select name="kind"><option value="all" {{ 'selected' if selected_kind == 'all' }}>All reactions</option><option value="love" {{ 'selected' if selected_kind == 'love' }}>❤️ Like this</option><option value="confusing" {{ 'selected' if selected_kind == 'confusing' }}>🤔 Confusing</option><option value="broken" {{ 'selected' if selected_kind == 'broken' }}>🛠 Broken</option><option value="idea" {{ 'selected' if selected_kind == 'idea' }}>💡 Idea</option><option value="note" {{ 'selected' if selected_kind == 'note' }}>Note</option></select></label>
+    <label>Reviewer name<input name="reviewer" value="{{ reviewer }}" placeholder="Search a name"></label>
+    <label>Page or title<input name="page" value="{{ page_filter }}" placeholder="e.g. Events"></label>
+    <label>Sort<select name="sort"><option value="newest" {{ 'selected' if sort == 'newest' }}>Newest first</option><option value="oldest" {{ 'selected' if sort == 'oldest' }}>Oldest first</option><option value="selected" {{ 'selected' if sort == 'selected' }}>Keep first</option></select></label>
+    <button type="submit">Filter</button>
+    <a class="clear-link" href="{{ url_for('feedback_review.index') }}">Clear</a>
+  </form>
+
+  {% if feedback %}
+  <div class="feedback-cards">
+    {% for item in feedback %}
+    <article class="feedback-card status-{{ item.status }}">
+      <div class="feedback-card-top">
+        <span class="feedback-kind kind-{{ item.kind }}">{{ {'love':'❤️ Like this','confusing':'🤔 Confusing','broken':'🛠 Broken','idea':'💡 Idea','note':'Note'}.get(item.kind, item.kind) }}</span>
+        <time datetime="{{ item.created_at.isoformat() if item.created_at else '' }}">{{ item.created_at.strftime('%b %d, %Y · %-I:%M %p') if item.created_at else 'Unknown time' }}</time>
+      </div>
+      <p class="feedback-message">{{ item.message }}</p>
+      <div class="feedback-context">
+        <span><b>Reviewer</b> {{ item.name or 'Anonymous' }}{% if item.email %} · <a href="mailto:{{ item.email }}">{{ item.email }}</a>{% endif %}</span>
+        <span><b>Page</b> <a href="{{ item.page_url }}" target="_blank" rel="noopener">{{ item.page_title or item.page_url }}</a></span>
+      </div>
+      <form class="feedback-review-form" method="post">
+        <input type="hidden" name="feedback_id" value="{{ item.id }}">
+        <label>Decision<select name="status"><option value="new" {{ 'selected' if item.status == 'new' }}>To review</option><option value="selected" {{ 'selected' if item.status == 'selected' }}>✓ Keep / cream of the crop</option><option value="in-progress" {{ 'selected' if item.status == 'in-progress' }}>In progress</option><option value="dismissed" {{ 'selected' if item.status == 'dismissed' }}>Dismiss</option></select></label>
+        <label class="review-note">Your note<textarea name="review_note" maxlength="4000" placeholder="Why keep it? What change will it become?">{{ item.review_note or '' }}</textarea></label>
+        <button type="submit">Save decision</button>
+      </form>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-feedback"><div>✦</div><h2>No feedback matches these filters</h2><p>Try clearing the filters or invite your first testers.</p></div>
+  {% endif %}
+</div>
+<style>
+.feedback-review-shell{max-width:1180px;min-height:calc(100vh - 130px);margin:0 auto;padding:26px 20px 60px;background:#f7fbff!important;color:#17385e!important;font-family:Manrope,system-ui,sans-serif}.feedback-review-header{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}.eyebrow{margin:0 0 5px;color:#0874c9!important;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.feedback-review-header h1{margin:0;color:#17385e!important;font:700 32px 'Libre Baskerville',Georgia,serif}.lede{margin:8px 0 0;color:#61758c!important}.export-link{white-space:nowrap;padding:10px 14px;border:1px solid #cbdceb;border-radius:8px;color:#075fb9!important;background:#f4f9ff!important;text-decoration:none;font-weight:700;font-size:13px}.feedback-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}.feedback-stats div{padding:15px 17px;background:#f5f9fd!important;border:1px solid #dce8f3;border-radius:10px}.feedback-stats strong{display:block;color:#17385e!important;font-size:25px}.feedback-stats span{color:#63788d!important;font-size:12px}.feedback-filters{display:grid;grid-template-columns:repeat(5,1fr) auto auto;gap:10px;align-items:end;padding:15px;margin-bottom:20px;background:#edf5fc!important;border-radius:12px}.feedback-filters label,.feedback-review-form label{display:grid;gap:5px;color:#49657e!important;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.feedback-filters input,.feedback-filters select,.feedback-review-form select,.feedback-review-form textarea{width:100%;box-sizing:border-box;padding:9px;border:1px solid #cadbea!important;border-radius:7px;background:#fff!important;color:#17385e!important;font:500 13px Manrope,system-ui,sans-serif;text-transform:none;letter-spacing:normal}.feedback-filters button,.feedback-review-form button{padding:10px 15px;border:0;border-radius:7px;background:#075fb9!important;color:#fff!important;font-weight:800;cursor:pointer}.clear-link{padding:10px 2px;color:#075fb9!important;font-size:13px}.feedback-cards{display:grid;gap:13px}.feedback-card{padding:18px 20px;border:1px solid #dce7f1;border-left:5px solid #a9c8e5;border-radius:11px;background:#fff!important;box-shadow:0 4px 15px #174a7320}.feedback-card.status-selected{border-left-color:#299b67}.feedback-card.status-in-progress{border-left-color:#e2a52e}.feedback-card.status-dismissed{opacity:.72}.feedback-card-top,.feedback-context{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.feedback-kind{font-size:12px;font-weight:800}.kind-broken{color:#b42318!important}.kind-idea{color:#976500!important}.feedback-card time,.feedback-context{color:#6c8093!important;font-size:12px}.feedback-message{margin:13px 0;font-size:17px;line-height:1.45;color:#1b344d!important}.feedback-context{padding:10px 0;border-top:1px solid #edf2f7;border-bottom:1px solid #edf2f7}.feedback-context b{color:#395872!important;margin-right:4px}.feedback-context a{color:#075fb9!important}.feedback-review-form{display:grid;grid-template-columns:190px 1fr auto;gap:10px;align-items:end;margin-top:12px}.review-note textarea{height:39px;resize:vertical}.empty-feedback{text-align:center;padding:70px 20px;color:#71869a!important}.empty-feedback div{font-size:35px;color:#0874c9!important}.empty-feedback h2{color:#17385e!important}#feedbackReviewFilters input{background:#fff!important;color:#17385e!important;border-color:#cadbea!important}@media(max-width:850px){.feedback-filters{grid-template-columns:repeat(2,1fr)}.feedback-review-form{grid-template-columns:1fr}.feedback-review-form button{justify-self:start}}@media(max-width:600px){.feedback-review-header{align-items:start;flex-direction:column}.feedback-stats{grid-template-columns:repeat(2,1fr)}.feedback-filters{grid-template-columns:1fr}.feedback-review-header h1{font-size:25px}}
+</style>
+{% endblock %}

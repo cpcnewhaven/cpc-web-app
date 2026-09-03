@@ -335,7 +335,7 @@
             <a href="{{ url_for('highlights') }}" class="dash-item">
                 <span class="dash-item__chip"><i class="fas fa-bullhorn" aria-hidden="true"></i></span>
                 <span class="dash-item__text">
-                    <span class="dash-item__title">Announcements</span>
+                    <span class="dash-item__title">Highlights</span>
                     <span class="dash-item__sub">News from CPC</span>
                 </span>
             </a>
@@ -1275,6 +1275,33 @@
         <button id="cpc-player-close" aria-label="Close player">×</button>
     </div>
     <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+
+    {% if feedback_mode %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
+    <button class="cpc-feedback-tab" id="cpcFeedbackOpen" type="button" aria-controls="cpcFeedbackPanel" aria-expanded="false">
+        <span aria-hidden="true">✦</span> Tell us what you think
+    </button>
+    <section class="cpc-feedback-panel" id="cpcFeedbackPanel" aria-labelledby="cpcFeedbackTitle" hidden>
+        <button class="cpc-feedback-close" id="cpcFeedbackClose" type="button" aria-label="Close feedback">×</button>
+        <p class="cpc-feedback-kicker">You’re helping shape CPC’s site</p>
+        <h2 id="cpcFeedbackTitle">What stood out?</h2>
+        <p class="cpc-feedback-prompt">A quick reaction is useful. A sentence is even better.</p>
+        <div class="cpc-feedback-choices" role="group" aria-label="Feedback type">
+            <button type="button" data-kind="love">❤️ I like this</button>
+            <button type="button" data-kind="confusing">🤔 This is confusing</button>
+            <button type="button" data-kind="broken">🛠 Something’s broken</button>
+            <button type="button" data-kind="idea">💡 I have an idea</button>
+        </div>
+        <textarea id="cpcFeedbackMessage" maxlength="4000" placeholder="What should we know?" aria-label="Your feedback"></textarea>
+        <div class="cpc-feedback-details">
+            <input id="cpcFeedbackName" maxlength="100" placeholder="Name (optional)" aria-label="Name (optional)">
+            <input id="cpcFeedbackEmail" type="email" maxlength="254" placeholder="Email (optional)" aria-label="Email (optional)">
+        </div>
+        <button class="cpc-feedback-submit" id="cpcFeedbackSubmit" type="button">Send feedback <span>→</span></button>
+        <p class="cpc-feedback-status" id="cpcFeedbackStatus" role="status"></p>
+    </section>
+    <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
+    {% endif %}
 
 </body>
 

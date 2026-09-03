@@ -670,6 +670,10 @@
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/history' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/history/">
                 Activity Monitor
             </a>
+            <a class="flex items-center justify-between px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/feedback' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="{{ url_for('feedback_review.index') }}">
+                <span>Feedback</span>
+                {% if new_feedback_count %}<span class="admin-feedback-badge">{{ new_feedback_count }}</span>{% endif %}
+            </a>
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/releases' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/releases/">
                 Releases
             </a>
@@ -783,6 +787,11 @@
 
             <div class="flex items-center gap-6">
                 <div class="flex items-center gap-3">
+                    <a href="{{ url_for('feedback_review.index') }}" class="admin-feedback-top-button" aria-label="Review feedback{% if new_feedback_count %}; {{ new_feedback_count }} new{% endif %}" title="Review feedback{% if new_feedback_count %} ({{ new_feedback_count }} new){% endif %}">
+                        <span class="material-symbols-outlined text-xl">rate_review</span>
+                        <span class="admin-feedback-top-label">Feedback</span>
+                        {% if new_feedback_count %}<span class="admin-feedback-top-count">{{ new_feedback_count }}</span>{% endif %}
+                    </a>
                     <button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface hover:text-primary transition-colors group">
                         <span class="material-symbols-outlined text-xl">notifications</span>
                     </button>
@@ -902,6 +911,7 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='js/admin-wysiwyg.js') }}"></script>
 <style>
+    .admin-feedback-top-button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid rgba(105,218,255,.32);border-radius:999px;background:#102645;color:#dbe6ff;text-decoration:none;font:700 11px Inter,sans-serif;letter-spacing:.04em;transition:all .2s}.admin-feedback-top-button:hover{color:#69daff;border-color:#69daff;background:#152c4e}.admin-feedback-top-count,.admin-feedback-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ffb020;color:#071a31;font:800 11px Inter,sans-serif}.admin-feedback-badge{height:18px;min-width:18px;background:#ffb020;color:#071a31}.admin-feedback-top-label{display:inline}@media(max-width:800px){.admin-feedback-top-label{display:none}.admin-feedback-top-button{padding:9px}}
     @media (max-width: 760px) {
         .admin-sidebar { display:none !important; }
         main.ml-64 { margin-left: 0 !important; }

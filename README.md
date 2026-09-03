@@ -137,6 +137,14 @@ export LOCAL_DATABASE_URL="sqlite:///cpc_newhaven.db"   # optional
 python sync_db.py
 ```
 
+### Invite-only site feedback mode
+
+Set `FEEDBACK_INVITE_TOKEN` to a long, private value in the environment, then send testers:
+
+`https://cpcnewhaven.org/preview/<that-token>`
+
+The link starts a browser session with a small feedback button available across the site. Testers do not need an account or a separate app. Feedback records the page, reaction type, note, and optional contact details. Authenticated admins can review it under **Admin → More → Feedback** or download `/admin/export/feedback` as CSV. Leave `FEEDBACK_INVITE_TOKEN` unset to keep feedback mode off.
+
 **Other options:**
 
 - `python sync_db.py --dry-run` — show what would be copied, no writes
