@@ -37,6 +37,26 @@ This README still includes the technical setup for developers, but the user guid
 - **Admin Interface**: Flask-Admin
 - **Deployment**: Ready for Heroku, Docker, or traditional hosting
 
+## Brand Book and Theme Settings
+
+The public site has two supported theme settings. Both are first-class brand states and every public-facing component should be checked in both modes before handoff.
+
+- `theme-white`: the default light setting. The body carries `body.theme-white`, the background uses a pale blue-gray gradient, surfaces are white or near-white, and text should use dark ink colors such as `#1d2e42`, `#243b53`, or the light-theme `--surface-text`.
+- `theme-blue`: the dark blue glass setting. The body carries `body.theme-blue`, the page background uses a deep CPC blue gradient, global text is light, and framed content may either use glass surfaces or intentional pale editorial cards with dark text when that improves scanning.
+
+Theme state is stored in `localStorage` under `dash_theme` and is applied by `templates/base.html`. The footer and mobile controls call `window.__cpcToggleTheme`, which toggles only between `white` and `blue`.
+
+The design-system reference lives in `CLAUDE.md` under **Frontend Design System**. Keep that file and this README aligned when theme behavior changes. The canonical public palette is:
+
+```css
+--cpc-blue: #0052a3;
+--cpc-blue-dark: #003d7a;
+--cpc-blue-medium: #0066cc;
+--cpc-blue-light: #e8f2ff;
+```
+
+For the Highlights feature specifically, cards must visibly follow the active theme. In `theme-white`, cards sit on the light page with white surfaces, blue chips, and dark headings/body copy. In `theme-blue`, cards use dark glass surfaces, light headings/body copy, and muted blue or gold chips that remain readable on the card.
+
 ## Quick Start
 
 ### 1. Clone and Setup

@@ -203,19 +203,42 @@
     body.theme-white .highlight-card .highlight-description * {
         color: #586c80 !important;
     }
-    /* The site theme toggle uses theme-blue for the current blue-shell view,
-       while these cards remain pale; keep their content readable there too. */
+    /* Blue theme: cards should belong to the dark shell, not look like
+       light-mode cards dropped onto a dark page. */
     body.theme-blue .highlight-card {
-        background: #edf3fa;
-        border-color: rgba(27, 69, 113, 0.18);
+        background: rgba(5, 38, 76, 0.62) !important;
+        border-color: rgba(205, 228, 255, 0.18) !important;
+        box-shadow: 0 18px 36px rgba(0, 13, 32, 0.26) !important;
     }
+
+    body.theme-blue .highlight-card:hover {
+        background: rgba(7, 47, 92, 0.74) !important;
+        border-color: rgba(205, 228, 255, 0.32) !important;
+    }
+
     body.theme-blue .highlight-card h2,
     body.theme-blue .highlight-card .highlight-description,
     body.theme-blue .highlight-card .highlight-description * {
-        color: #243b53 !important;
+        color: rgba(246, 249, 255, 0.92) !important;
     }
-    body.theme-white .highlight-badge { background: #dbeafe; color: #1d5e99; }
-    body.theme-white .highlight-badge.featured { background: #fff0bf; color: #805b00; }
+
+    body.theme-blue .highlight-card h2 {
+        color: #f8fbff !important;
+    }
+
+    body.theme-blue .highlight-badge {
+        background: rgba(155, 208, 255, 0.16) !important;
+        border: 1px solid rgba(155, 208, 255, 0.26);
+        color: #cfe7ff !important;
+    }
+
+    body.theme-blue .highlight-badge.featured {
+        background: rgba(255, 215, 0, 0.16) !important;
+        border-color: rgba(255, 215, 0, 0.3);
+        color: #ffe58a !important;
+    }
+    body.theme-white .highlight-badge { background: #dbeafe !important; color: #1d5e99 !important; }
+    body.theme-white .highlight-badge.featured { background: #fff0bf !important; color: #805b00 !important; }
     body.theme-white .empty-state { background: #fff; color: #627487; }
 </style>
 {% endblock %}
