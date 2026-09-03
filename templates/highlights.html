@@ -203,6 +203,17 @@
     body.theme-white .highlight-card .highlight-description * {
         color: #586c80 !important;
     }
+    /* The site theme toggle uses theme-blue for the current blue-shell view,
+       while these cards remain pale; keep their content readable there too. */
+    body.theme-blue .highlight-card {
+        background: #edf3fa;
+        border-color: rgba(27, 69, 113, 0.18);
+    }
+    body.theme-blue .highlight-card h2,
+    body.theme-blue .highlight-card .highlight-description,
+    body.theme-blue .highlight-card .highlight-description * {
+        color: #243b53 !important;
+    }
     body.theme-white .highlight-badge { background: #dbeafe; color: #1d5e99; }
     body.theme-white .highlight-badge.featured { background: #fff0bf; color: #805b00; }
     body.theme-white .empty-state { background: #fff; color: #627487; }
