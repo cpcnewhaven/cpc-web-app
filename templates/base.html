@@ -1276,7 +1276,6 @@
     </div>
     <script src="{{ url_for('static', filename='js/player.js') }}"></script>
 
-    {% if feedback_mode %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
     <button class="cpc-feedback-tab" id="cpcFeedbackOpen" type="button" aria-controls="cpcFeedbackPanel" aria-expanded="false">
         <span aria-hidden="true">✦</span> Feedback
@@ -1326,7 +1325,7 @@
         </fieldset>
         <textarea id="cpcFeedbackMessage" maxlength="4000" placeholder="What should we know?" aria-label="Your feedback"></textarea>
         <div class="cpc-feedback-details">
-            <input id="cpcFeedbackName" maxlength="100" placeholder="Name (optional)" aria-label="Name (optional)">
+            <input id="cpcFeedbackName" maxlength="100" placeholder="Name (required)" aria-label="Name (required)" required>
             <input id="cpcFeedbackEmail" type="email" maxlength="254" placeholder="Email (optional)" aria-label="Email (optional)">
         </div>
         <button class="cpc-feedback-submit" id="cpcFeedbackSubmit" type="button">Send feedback <span>→</span></button>
@@ -1338,7 +1337,6 @@
         </div>
     </section>
     <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
-    {% endif %}
 
 </body>
 

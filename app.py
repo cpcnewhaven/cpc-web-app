@@ -386,6 +386,9 @@ def submit_site_feedback():
     message = str(payload.get('message', '')).strip()
     if not message or len(message) > 4000:
         return jsonify({'error': 'Please add a short note (up to 4,000 characters).'}), 400
+    name = str(payload.get('name', '')).strip()
+    if not name or len(name) > 100:
+        return jsonify({'error': 'Please add your name (up to 100 characters).'}), 400
 
     page_url = str(payload.get('page_url', request.referrer or '/')).strip()[:1000]
     if not page_url.startswith('/') and not page_url.startswith('https://cpcnewhaven.org'):
@@ -395,7 +398,7 @@ def submit_site_feedback():
         message=message,
         page_url=page_url,
         page_title=str(payload.get('page_title', '')).strip()[:300],
-        name=str(payload.get('name', '')).strip()[:100] or None,
+        name=name,
         email=str(payload.get('email', '')).strip()[:254] or None,
         user_agent=request.headers.get('User-Agent', '')[:500],
     )

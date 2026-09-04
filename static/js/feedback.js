@@ -10,6 +10,8 @@
   submit.addEventListener('click',async()=>{
     const text=message.value.trim();
     if(!text){status.textContent='Add a quick note so we know what you mean.';status.className='cpc-feedback-status error';message.focus();return}
+    const name=document.getElementById('cpcFeedbackName').value.trim();
+    if(!name){status.textContent='Please add your name.';status.className='cpc-feedback-status error';document.getElementById('cpcFeedbackName').focus();return}
     submit.disabled=true;status.textContent='Sending…';status.className='cpc-feedback-status';
     const devices=[...document.querySelectorAll('input[name="feedbackDevice"]:checked')].map(input=>input.value);
     const submittedMessage=devices.length ? `[Device: ${devices.join(', ')}]\n\n${text}` : text;
