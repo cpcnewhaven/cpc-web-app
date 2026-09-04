@@ -18,7 +18,7 @@
   </div>
 
   <form class="feedback-filters" id="feedbackReviewFilters" method="get">
-    <label>Status<select name="status"><option value="all" {{ 'selected' if selected_status == 'all' }}>All statuses</option><option value="new" {{ 'selected' if selected_status == 'new' }}>To review</option><option value="selected" {{ 'selected' if selected_status == 'selected' }}>Keep</option><option value="in-progress" {{ 'selected' if selected_status == 'in-progress' }}>In progress</option><option value="dismissed" {{ 'selected' if selected_status == 'dismissed' }}>Dismissed</option></select></label>
+    <label>Status<select name="status"><option value="all" {{ 'selected' if selected_status == 'all' }}>All statuses</option><option value="new" {{ 'selected' if selected_status == 'new' }}>To review</option><option value="under-review" {{ 'selected' if selected_status == 'under-review' }}>Under review</option><option value="selected" {{ 'selected' if selected_status == 'selected' }}>Keep</option><option value="in-progress" {{ 'selected' if selected_status == 'in-progress' }}>In progress</option><option value="dismissed" {{ 'selected' if selected_status == 'dismissed' }}>Dismissed</option></select></label>
     <label>Reaction<select name="kind"><option value="all" {{ 'selected' if selected_kind == 'all' }}>All reactions</option><option value="love" {{ 'selected' if selected_kind == 'love' }}>❤️ Like this</option><option value="confusing" {{ 'selected' if selected_kind == 'confusing' }}>🤔 Confusing</option><option value="broken" {{ 'selected' if selected_kind == 'broken' }}>🛠 Broken</option><option value="idea" {{ 'selected' if selected_kind == 'idea' }}>💡 Idea</option><option value="note" {{ 'selected' if selected_kind == 'note' }}>Note</option></select></label>
     <label>Reviewer name<input name="reviewer" value="{{ reviewer }}" placeholder="Search a name"></label>
     <label>Page or title<input name="page" value="{{ page_filter }}" placeholder="e.g. Events"></label>
@@ -42,7 +42,7 @@
       </div>
       <form class="feedback-review-form" method="post">
         <input type="hidden" name="feedback_id" value="{{ item.id }}">
-        <label>Decision<select name="status"><option value="new" {{ 'selected' if item.status == 'new' }}>To review</option><option value="selected" {{ 'selected' if item.status == 'selected' }}>✓ Keep / cream of the crop</option><option value="in-progress" {{ 'selected' if item.status == 'in-progress' }}>In progress</option><option value="dismissed" {{ 'selected' if item.status == 'dismissed' }}>Dismiss</option></select></label>
+        <label>Decision<select name="status"><option value="new" {{ 'selected' if item.status == 'new' }}>To review</option><option value="under-review" {{ 'selected' if item.status == 'under-review' }}>Under review</option><option value="selected" {{ 'selected' if item.status == 'selected' }}>✓ Keep / cream of the crop</option><option value="in-progress" {{ 'selected' if item.status == 'in-progress' }}>In progress</option><option value="dismissed" {{ 'selected' if item.status == 'dismissed' }}>Dismiss</option></select></label>
         <label class="review-note">Your note<textarea name="review_note" maxlength="4000" placeholder="Why keep it? What change will it become?">{{ item.review_note or '' }}</textarea></label>
         <button type="submit">Save decision</button>
       </form>

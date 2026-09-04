@@ -1292,6 +1292,38 @@
             <button type="button" data-kind="broken">🛠 Something’s broken</button>
             <button type="button" data-kind="idea">💡 I have an idea</button>
         </div>
+        <label class="cpc-feedback-location-label" for="cpcFeedbackLocation">Where are you?</label>
+        <select id="cpcFeedbackLocation" class="cpc-feedback-location">
+            <option value="">Where are you? (optional)</option>
+            <option value="/">Home</option>
+            <option value="/plan-a-visit">Sundays</option>
+            <option value="/live">Live</option>
+            <option value="/about">About</option>
+            <option value="/media">Media</option>
+            <option value="/community">Community</option>
+            <option value="/give">Give</option>
+            <option value="/resources">Resources</option>
+            <option value="/sermons">Sermons</option>
+            <option value="/podcasts">Podcasts</option>
+            <option value="/teaching-series">Teaching Series</option>
+            <option value="/events">Events</option>
+            <option value="/lifegroups">Life Groups</option>
+            <option value="/highlights">Announcements</option>
+            <option value="/search">Search</option>
+            <option value="/archive">Archive</option>
+            <option value="/contact">Contact</option>
+            <option value="nav-desktop-top">Desktop top navigation</option>
+            <option value="nav-mobile">Mobile navigation</option>
+            <option value="nav-left-sidebar">Left sidebar navigation</option>
+            <option value="nav-right-sidebar">Right sidebar navigation</option>
+            <option value="nav-footer">Footer navigation</option>
+        </select>
+        <fieldset class="cpc-feedback-device">
+            <legend>Is this a desktop or mobile issue?</legend>
+            <label><input type="checkbox" name="feedbackDevice" value="Desktop"> Desktop</label>
+            <label><input type="checkbox" name="feedbackDevice" value="Mobile"> Mobile</label>
+            <label><input type="checkbox" name="feedbackDevice" value="Both"> Both</label>
+        </fieldset>
         <textarea id="cpcFeedbackMessage" maxlength="4000" placeholder="What should we know?" aria-label="Your feedback"></textarea>
         <div class="cpc-feedback-details">
             <input id="cpcFeedbackName" maxlength="100" placeholder="Name (optional)" aria-label="Name (optional)">
@@ -1299,6 +1331,11 @@
         </div>
         <button class="cpc-feedback-submit" id="cpcFeedbackSubmit" type="button">Send feedback <span>→</span></button>
         <p class="cpc-feedback-status" id="cpcFeedbackStatus" role="status"></p>
+        <div class="cpc-feedback-track">
+            <strong>Track your feedback</strong>
+            <div><input id="cpcFeedbackTrackCode" placeholder="Enter code, e.g. CPC-12" aria-label="Feedback tracking code"><button id="cpcFeedbackTrack" type="button">Check status</button></div>
+            <p id="cpcFeedbackTrackStatus" class="cpc-feedback-status" role="status"></p>
+        </div>
     </section>
     <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
     {% endif %}

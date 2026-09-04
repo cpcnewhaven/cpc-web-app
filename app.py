@@ -378,9 +378,6 @@ def feedback_preview(token):
 @app.route('/api/feedback', methods=['POST'])
 def submit_site_feedback():
     """Accept short feedback from an active tester session."""
-    if not session.get('feedback_mode'):
-        return jsonify({'error': 'Feedback mode is not active.'}), 403
-
     payload = request.get_json(silent=True) or {}
     kind = str(payload.get('kind', 'note')).strip().lower()
     allowed_kinds = {'love', 'confusing', 'broken', 'idea', 'note'}
@@ -404,7 +401,21 @@ def submit_site_feedback():
     )
     db.session.add(entry)
     db.session.commit()
-    return jsonify({'ok': True, 'id': entry.id})
+    return jsonify({'ok': True, 'id': entry.id, 'tracking_code': f'CPC-{entry.id}'})
+
+
+@app.route('/api/feedback/<tracking_code>')
+def track_site_feedback(tracking_code):
+    """Return the public status for a feedback note using its tracking code."""
+    match = re.fullmatch(r'CPC-(\d+)', tracking_code.strip().upper())
+    if not match:
+        return jsonify({'error': 'Feedback code not found.'}), 404
+    item = db.session.get(SiteFeedback, int(match.group(1)))
+    if not item:
+        return jsonify({'error': 'Feedback code not found.'}), 404
+    return jsonify({'ok': True, 'tracking_code': f'CPC-{item.id}',
+                    'status': item.status, 'review_note': item.review_note,
+                    'created_at': item.created_at.strftime('%b %d, %Y')})
 
 
 # ---------------------------------------------------------------------------
@@ -3064,7 +3075,9 @@ def inject_current_user_metadata():
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
-        'feedback_mode': bool(session.get('feedback_mode')),
+        # The site is currently a work in progress; collect feedback from all
+        # visitors instead of requiring an invite-only preview session.
+        'feedback_mode': True,
         'new_feedback_count': new_feedback_count,
     }
 
@@ -5841,7 +5854,7 @@ class FeedbackReviewView(BaseView):
             item = SiteFeedback.query.get(request.form.get('feedback_id', type=int))
             if item:
                 item.status = request.form.get('status', 'new')
-                if item.status not in {'new', 'selected', 'in-progress', 'dismissed'}:
+                if item.status not in {'new', 'under-review', 'selected', 'in-progress', 'dismissed'}:
                     item.status = 'new'
                 item.review_note = request.form.get('review_note', '').strip()[:4000] or None
                 item.reviewed_at = datetime.utcnow()

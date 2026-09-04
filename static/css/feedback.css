@@ -47,12 +47,20 @@
     z-index: 1210;
     width: min(365px, calc(100vw - 28px));
     padding: 25px;
-    background: #fff;
-    color: #17385e;
-    border: 1px solid #d7e4f3;
+    background: #f4f8fc;
+    color: #122b49;
+    border: 1px solid #b8cce0;
     border-radius: 18px;
     box-shadow: 0 18px 55px rgba(23, 56, 94, 0.35);
     font-family: Manrope, system-ui, sans-serif;
+}
+
+.cpc-feedback-panel,
+.cpc-feedback-panel h2,
+.cpc-feedback-panel p,
+.cpc-feedback-panel label,
+.cpc-feedback-panel legend {
+    color: #122b49 !important;
 }
 
 .cpc-feedback-panel[hidden] {
@@ -100,12 +108,58 @@
 
 .cpc-feedback-choices button,
 .cpc-feedback-details input,
-.cpc-feedback-panel textarea {
-    border: 1px solid #d7e4f3;
+.cpc-feedback-panel textarea,
+.cpc-feedback-location {
+    border: 1px solid #9eb7d0;
     border-radius: 10px;
     background: #f7faff;
-    color: #17385e;
+    color: #122b49;
     font: 600 13px Manrope, system-ui, sans-serif;
+}
+
+.cpc-feedback-device {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 13px 0 0;
+    padding: 0;
+    border: 0;
+    color: #294663;
+    font-size: 12px;
+}
+
+.cpc-feedback-device legend {
+    width: 100%;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.cpc-feedback-device label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+}
+
+.cpc-feedback-device input {
+    accent-color: #0052a3;
+}
+
+.cpc-feedback-location-label {
+    display: block;
+    margin-top: 13px;
+    margin-bottom: 5px;
+    color: #294663;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.cpc-feedback-location {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .cpc-feedback-choices button {
@@ -176,6 +230,12 @@
 .cpc-feedback-status.error {
     color: #b42318;
 }
+
+.cpc-feedback-track { margin-top: 18px; padding-top: 14px; border-top: 1px solid #c5d5e4; }
+.cpc-feedback-track strong { display: block; margin-bottom: 7px; color: #122b49 !important; font-size: 13px; }
+.cpc-feedback-track div { display: flex; gap: 7px; }
+.cpc-feedback-track input { min-width: 0; flex: 1; padding: 9px; border: 1px solid #9eb7d0; border-radius: 8px; background: #fff; color: #122b49; }
+.cpc-feedback-track button { padding: 9px 10px; border: 0; border-radius: 8px; background: #dcecff; color: #075fb9; font-weight: 800; cursor: pointer; }
 
 @media (max-width: 768px) {
     .cpc-feedback-tab {
