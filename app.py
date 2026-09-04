@@ -5831,11 +5831,11 @@ admin = Admin(app, name='CPC Admin', template_mode='bootstrap3',
 
 
 class SiteFeedbackView(AuthenticatedModelView):
-    """Read-only inbox for feedback collected from invited testers."""
+    """Admin CRUD for public feedback, including tracking and review status."""
     can_create = False
     can_edit = True
     can_delete = True
-    column_list = ('created_at', 'kind', 'message', 'page_title', 'page_url', 'name', 'email', 'status')
+    column_list = ('id', 'created_at', 'kind', 'message', 'page_title', 'page_url', 'name', 'email', 'status', 'review_note')
     column_searchable_list = ('message', 'page_title', 'name', 'email')
     column_default_sort = ('created_at', True)
     form_columns = ('status',)
@@ -5888,6 +5888,7 @@ class FeedbackReviewView(BaseView):
         counts = {
             'total': len(all_items),
             'new': sum(i.status == 'new' for i in all_items),
+            'under-review': sum(i.status == 'under-review' for i in all_items),
             'selected': sum(i.status == 'selected' for i in all_items),
             'in-progress': sum(i.status == 'in-progress' for i in all_items),
         }

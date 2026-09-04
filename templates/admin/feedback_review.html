@@ -13,6 +13,7 @@
   <div class="feedback-stats">
     <div><strong>{{ counts.total }}</strong><span>Total notes</span></div>
     <div><strong>{{ counts.new }}</strong><span>To review</span></div>
+    <div><strong>{{ counts['under-review'] }}</strong><span>Under review</span></div>
     <div><strong>{{ counts.selected }}</strong><span>Keep</span></div>
     <div><strong>{{ counts['in-progress'] }}</strong><span>In progress</span></div>
   </div>
@@ -32,13 +33,13 @@
     {% for item in feedback %}
     <article class="feedback-card status-{{ item.status }}">
       <div class="feedback-card-top">
-        <span class="feedback-kind kind-{{ item.kind }}">{{ {'love':'❤️ Like this','confusing':'🤔 Confusing','broken':'🛠 Broken','idea':'💡 Idea','note':'Note'}.get(item.kind, item.kind) }}</span>
+        <span class="feedback-kind kind-{{ item.kind }}">{{ {'love':'❤️ Like this','confusing':'🤔 Confusing','broken':'🛠 Broken','idea':'💡 Idea','note':'Note'}.get(item.kind, item.kind) }} · CPC-{{ item.id }}</span>
         <time datetime="{{ item.created_at.isoformat() if item.created_at else '' }}">{{ item.created_at.strftime('%b %d, %Y · %-I:%M %p') if item.created_at else 'Unknown time' }}</time>
       </div>
       <p class="feedback-message">{{ item.message }}</p>
       <div class="feedback-context">
         <span><b>Reviewer</b> {{ item.name or 'Anonymous' }}{% if item.email %} · <a href="mailto:{{ item.email }}">{{ item.email }}</a>{% endif %}</span>
-        <span><b>Page</b> <a href="{{ item.page_url }}" target="_blank" rel="noopener">{{ item.page_title or item.page_url }}</a></span>
+        <span><b>Page / area</b> <a href="{{ item.page_url if item.page_url.startswith('/') else '#' }}" target="_blank" rel="noopener">{{ item.page_title or item.page_url }}</a></span>
       </div>
       <form class="feedback-review-form" method="post">
         <input type="hidden" name="feedback_id" value="{{ item.id }}">
