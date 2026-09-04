@@ -789,6 +789,204 @@
         box-shadow: var(--surface-shadow);
     }
 
+    /* Compact CPC treatment: series cards use the same quiet blue language as Media. */
+    .teaching-series-page .compact-hero {
+        min-height: 178px;
+        padding: clamp(1.25rem, 3vw, 2rem);
+        border-radius: 16px;
+    }
+
+    .teaching-series-page .search-controls {
+        padding: .85rem 1rem;
+        border-radius: 14px;
+    }
+
+    .teaching-series-page .search-bar {
+        margin-bottom: .55rem;
+    }
+
+    .teaching-series-page .search-bar input {
+        padding-top: .65rem;
+        padding-bottom: .65rem;
+        font-size: .92rem;
+    }
+
+    .teaching-series-page .controls-row {
+        gap: .65rem;
+    }
+
+    .teaching-series-page .sort-select {
+        padding: .5rem .75rem;
+        font-size: .82rem;
+    }
+
+    .teaching-series-page .results-count {
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .teaching-series-page .series-category {
+        padding: 1rem;
+        border-radius: 16px;
+    }
+
+    .teaching-series-page .category-header {
+        margin-bottom: .75rem;
+        padding-bottom: .7rem;
+    }
+
+    .teaching-series-page .category-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .teaching-series-page .series-grid,
+    .teaching-series-page .series-list {
+        gap: .65rem;
+    }
+
+    .teaching-series-page .series-card,
+    .teaching-series-page .series-card.list-view {
+        display: block;
+        overflow: hidden;
+        padding: 0;
+        border-radius: 12px;
+        background: rgba(248, 251, 255, .97);
+    }
+
+    .teaching-series-page .series-header {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+        padding: .85rem 1rem;
+        margin: 0;
+        color: #fff;
+        background: linear-gradient(105deg, #075fae 0%, #0b4f92 58%, #083f79 100%);
+    }
+
+    .teaching-series-page .series-header h3,
+    body.theme-blue .teaching-series-page .series-card .series-header h3 {
+        margin: 0 0 .28rem;
+        color: #fff !important;
+        font-size: 1rem;
+        font-weight: 750;
+    }
+
+    .teaching-series-page .series-header .series-meta {
+        gap: .55rem;
+        margin: 0;
+        color: rgba(255, 255, 255, .78);
+        font-size: .72rem;
+    }
+
+    .teaching-series-page .series-count {
+        margin-left: auto;
+        padding: .25rem .55rem;
+        color: #fff;
+        background: rgba(255, 255, 255, .16);
+        font-size: .74rem;
+    }
+
+    .teaching-series-page .series-card > :not(.series-header) {
+        margin-right: 1rem;
+        margin-left: 1rem;
+    }
+
+    .teaching-series-page .series-description {
+        margin-top: .75rem;
+        margin-bottom: .6rem;
+        font-size: .84rem;
+    }
+
+    .teaching-series-page .series-authors,
+    .teaching-series-page .series-scriptures {
+        gap: .35rem;
+        margin-top: .7rem;
+        margin-bottom: 0;
+    }
+
+    .teaching-series-page .speaker-tag,
+    .teaching-series-page .scripture-tag {
+        padding: .2rem .5rem;
+        border-radius: 999px;
+        color: #31506f;
+        background: #e8f2ff;
+        font-size: .72rem;
+    }
+
+    .teaching-series-page .series-sermons {
+        margin-top: .65rem;
+        margin-bottom: .4rem;
+    }
+
+    .teaching-series-page .series-sermons.collapsed {
+        max-height: 170px;
+    }
+
+    .teaching-series-page .series-sermons.collapsed::after {
+        background: linear-gradient(to bottom, transparent, rgba(248, 251, 255, .98));
+    }
+
+    .teaching-series-page .series-sermon-item {
+        padding: .55rem 0;
+        gap: .65rem;
+    }
+
+    .teaching-series-page .sermon-info a {
+        font-size: .85rem;
+        font-weight: 700;
+    }
+
+    .teaching-series-page .sermon-meta {
+        gap: .45rem;
+        font-size: .7rem;
+    }
+
+    .teaching-series-page .sermon-play-btn {
+        padding: .3rem .55rem;
+        border-radius: 6px;
+        font-size: .68rem;
+    }
+
+    .teaching-series-page .expand-btn {
+        width: calc(100% - 2rem);
+        padding: .5rem;
+        margin: .45rem 1rem 1rem;
+        color: #075fae;
+        background: #edf5ff;
+        border-color: #c5ddf4;
+        font-size: .78rem;
+        font-weight: 750;
+    }
+
+    .teaching-series-page .belief-bridge {
+        padding: 1.35rem;
+        border-radius: 16px;
+    }
+
+    .teaching-series-page .belief-bridge h2 {
+        font-size: clamp(1.35rem, 3vw, 1.85rem);
+    }
+
+    /* Adult Sunday Studies course hub */
+    .teaching-series-page .main-container { display: none; }
+    .adult-studies { display: grid; gap: 1rem; }
+    .adult-studies__intro, .adult-study-feature, .adult-study-card { border: 1px solid var(--series-border); box-shadow: var(--surface-shadow); }
+    .adult-studies__intro { padding: 1rem 1.2rem; border-radius: 14px; color: var(--series-muted); background: var(--series-surface); font-size: .95rem; line-height: 1.6; }
+    .adult-study-feature { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(230px, .8fr); gap: 1.25rem; padding: clamp(1.2rem, 3vw, 1.8rem); border-radius: 16px; background: linear-gradient(135deg, rgba(0, 82, 163, .18), var(--series-surface)); }
+    .adult-study-feature__eyebrow, .adult-study-card__eyebrow { margin: 0 0 .45rem; color: var(--series-accent); font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .adult-study-feature h2 { margin: 0 0 .55rem; color: var(--series-text); font: 750 clamp(1.45rem, 3vw, 2rem)/1.15 Manrope, sans-serif; letter-spacing: -.035em; }
+    .adult-study-feature p, .adult-study-card p { margin: 0; color: var(--series-muted); line-height: 1.6; }
+    .adult-study-feature__marks { display: grid; align-content: center; gap: .45rem; padding: 1rem; border: 1px solid var(--series-border); border-radius: 12px; background: var(--series-surface-hover); color: var(--series-text); font-size: .82rem; font-weight: 700; }
+    .adult-study-feature__marks span::before { content: '•'; margin-right: .45rem; color: var(--series-accent); }
+    .adult-studies__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; }
+    .adult-studies__archive-label { display: flex; align-items: center; gap: .7rem; margin: .35rem 0 -.1rem; color: var(--series-muted); font-size: .76rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .adult-studies__archive-label::after { content: ''; height: 1px; flex: 1; background: var(--series-border); }
+    .adult-study-card { display: flex; flex-direction: column; gap: .6rem; min-height: 190px; padding: 1rem; border-radius: 14px; background: var(--series-surface); }
+    .adult-study-card h3 { margin: 0; color: var(--series-text); font: 750 1.04rem/1.25 Manrope, sans-serif; }
+    .adult-study-card p { font-size: .86rem; }
+    .adult-study-link { display: inline-flex; align-items: center; width: fit-content; min-height: 38px; margin-top: auto; padding: .45rem .7rem; border: 1px solid var(--series-border); border-radius: 8px; color: var(--series-accent); background: var(--series-surface-hover); font-size: .82rem; font-weight: 800; text-decoration: none; }
+    .adult-study-link:hover { border-color: var(--series-accent); color: var(--series-text); }
+
     .series-header h3,
     .sermon-info a { color: var(--series-text); }
     .series-meta,
@@ -885,6 +1083,9 @@
         .filter-sidebar { grid-template-columns: 1fr; }
         .category-header { align-items: flex-start; gap: .75rem; }
         .series-header { gap: .75rem; }
+        .teaching-series-page .compact-hero { min-height: 150px; }
+        .teaching-series-page .series-header { align-items: flex-start; }
+        .adult-study-feature { grid-template-columns: 1fr; }
     }
 </style>
 {% endblock %}
@@ -894,8 +1095,28 @@
 <section class="teaching-series-page compact-page">
     <!-- Compact Hero -->
     <div class="compact-hero" style="grid-column: 1 / -1; margin-bottom: 0.5rem;">
-        <h1>Teaching Series</h1>
-        <p>Explore sermon series, Sunday School teaching, speakers, and Scripture from the life of CPC New Haven.</p>
+        <h1>Adult Sunday Studies</h1>
+        <p>Explore CPC’s Sunday courses, with class materials and recordings gathered in one place.</p>
+    </div>
+
+    <div class="adult-studies">
+        <div class="adult-studies__intro">Adult Sunday Studies meet around Scripture, doctrine, and life together. Choose a course to explore its full class material, handouts, and recordings.</div>
+        <article class="adult-study-feature">
+            <div>
+                <p class="adult-study-feature__eyebrow">Featured course · Fall 2025</p>
+                <h2>Total Christ: The Full Vision for His Church</h2>
+                <p>An exploration of the comprehensive work of Christ in salvation through the Five Marks: gospel-centered, missional, confessional, sacramental, and communal.</p>
+                <a class="adult-study-link" href="https://cpcnewhaven.org/sunday-studies/total-christ.html">Explore Total Christ →</a>
+            </div>
+            <div class="adult-study-feature__marks" aria-label="Five Marks"><span>Gospel-centered</span><span>Missional</span><span>Confessional</span><span>Sacramental</span><span>Communal</span></div>
+        </article>
+        <div class="adult-studies__archive-label">Previous courses</div>
+        <div class="adult-studies__grid">
+            <article class="adult-study-card"><p class="adult-study-card__eyebrow">Ten Commandments</p><h3>Walking with Jesus Through Sinai</h3><p>Seeking moral clarity in an age of chaos through the Ten Commandments and a flourishing life before God.</p><a class="adult-study-link" href="https://cpcnewhaven.org/sunday-studies/walking-through-sinai.html">Open course →</a></article>
+            <article class="adult-study-card"><p class="adult-study-card__eyebrow">Doctrine</p><h3>What We Believe</h3><p>A comprehensive exploration of Christian doctrine and Reformed theology, from the nature of God to contemporary questions.</p><a class="adult-study-link" href="https://cpcnewhaven.org/sunday-studies/what-we-believe.html">Open course →</a></article>
+            <article class="adult-study-card"><p class="adult-study-card__eyebrow">The church’s confession</p><h3>Confessional Theology</h3><p>Study historical confessions and their relevance for Christian faith, formation, and life together.</p><a class="adult-study-link" href="https://cpcnewhaven.org/sunday-studies/confessional-theology.html">Open course →</a></article>
+            <article class="adult-study-card"><p class="adult-study-card__eyebrow">Scripture</p><h3>Biblical Interpretation</h3><p>Learn principles and methods for understanding and applying Scripture in its proper context.</p><a class="adult-study-link" href="https://cpcnewhaven.org/sunday-studies/biblical-interpretation.html">Open course →</a></article>
+        </div>
     </div>
 
     <div class="main-container compact-content">
