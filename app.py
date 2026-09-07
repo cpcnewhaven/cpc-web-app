@@ -3112,9 +3112,9 @@ def inject_current_user_metadata():
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
-        # Keep feedback convenient during local development, but invite-only
-        # in production so the public launcher is not exposed to every visitor.
-        'feedback_mode': (not _is_production) or bool(session.get('feedback_mode')),
+        # Public feedback is available to every visitor in every environment.
+        # This is deliberately unrelated to a client IP or preview session.
+        'feedback_mode': True,
         'new_feedback_count': new_feedback_count,
     }
 
