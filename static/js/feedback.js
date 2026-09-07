@@ -4,7 +4,7 @@
   const message=document.getElementById('cpcFeedbackMessage'), status=document.getElementById('cpcFeedbackStatus'), locationSelect=document.getElementById('cpcFeedbackLocation'), trackCode=document.getElementById('cpcFeedbackTrackCode'), trackStatus=document.getElementById('cpcFeedbackTrackStatus');
   if(!open || !panel || !close || !submit || !track || !message) return;
   let kind='note';
-  function show(){panel.hidden=false;open.hidden=true;open.setAttribute('aria-expanded','true');message.focus()}
+  function show(){panel.hidden=false;open.hidden=true;open.setAttribute('aria-expanded','true');panel.focus({preventScroll:true})}
   function hide(){panel.hidden=true;open.hidden=false;open.setAttribute('aria-expanded','false')}
   open.addEventListener('click',show); close.addEventListener('click',hide);
   panel.querySelectorAll('[data-kind]').forEach(btn=>btn.addEventListener('click',()=>{kind=btn.dataset.kind;panel.querySelectorAll('[data-kind]').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');message.focus()}));
