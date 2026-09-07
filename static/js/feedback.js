@@ -2,6 +2,7 @@
   const open=document.getElementById('cpcFeedbackOpen'), panel=document.getElementById('cpcFeedbackPanel');
   const close=document.getElementById('cpcFeedbackClose'), submit=document.getElementById('cpcFeedbackSubmit'), track=document.getElementById('cpcFeedbackTrack');
   const message=document.getElementById('cpcFeedbackMessage'), status=document.getElementById('cpcFeedbackStatus'), locationSelect=document.getElementById('cpcFeedbackLocation'), trackCode=document.getElementById('cpcFeedbackTrackCode'), trackStatus=document.getElementById('cpcFeedbackTrackStatus');
+  if(!open || !panel || !close || !submit || !track || !message) return;
   let kind='note';
   function show(){panel.hidden=false;open.hidden=true;open.setAttribute('aria-expanded','true');message.focus()}
   function hide(){panel.hidden=true;open.hidden=false;open.setAttribute('aria-expanded','false')}

@@ -1276,6 +1276,7 @@
     </div>
     <script src="{{ url_for('static', filename='js/player.js') }}"></script>
 
+    {% if feedback_mode %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
     <button class="cpc-feedback-tab" id="cpcFeedbackOpen" type="button" aria-controls="cpcFeedbackPanel" aria-expanded="false">
         <span aria-hidden="true">✦</span> Feedback
@@ -1337,6 +1338,7 @@
         </div>
     </section>
     <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
+    {% endif %}
 
 </body>
 

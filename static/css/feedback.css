@@ -6,15 +6,15 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 2px solid #ffffff;
     border-radius: 999px;
     padding: 12px 17px;
-    background: rgba(0, 82, 163, 0.14);
-    color: rgba(255, 255, 255, 0.52);
+    background: #0052a3;
+    color: #ffffff;
     font: 700 14px Manrope, system-ui, sans-serif;
-    box-shadow: 0 10px 26px rgba(0, 31, 76, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 31, 76, 0.34), 0 0 0 1px rgba(0, 82, 163, 0.22);
     cursor: pointer;
-    opacity: 0.42;
+    opacity: 1;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, opacity 0.18s ease;
@@ -25,19 +25,24 @@
     width: 7px;
     height: 7px;
     border-radius: 999px;
-    background: rgba(155, 208, 255, 0.72);
-    box-shadow: 0 0 0 4px rgba(155, 208, 255, 0.12);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
 }
 
 .cpc-feedback-tab:hover,
 .cpc-feedback-tab:focus-visible {
-    background: #0052a3;
+    background: #003f80;
     border-color: rgba(255, 255, 255, 0.32);
     color: #fff;
     opacity: 1;
     transform: translateY(-2px);
     box-shadow: 0 14px 30px rgba(0, 31, 76, 0.4);
     outline: none;
+}
+
+.cpc-feedback-tab:focus-visible {
+    outline: 3px solid #ffbf47;
+    outline-offset: 3px;
 }
 
 .cpc-feedback-panel {

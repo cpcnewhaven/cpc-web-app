@@ -174,6 +174,19 @@ The feedback button and panel are styled in `static/css/feedback.css`. Keep the 
 
 After running, your local DB will have the same announcements, sermons, podcasts, events, gallery, About/Community content, etc. as production.
 
+### Public announcement snapshot
+
+Create a JSON backup containing only fields already exposed on the public site:
+
+```bash
+DATABASE_URL="$LIVE_DATABASE_URL" python scripts/export_public_announcements.py
+```
+
+Local development prefers a non-empty `data/announcements_snapshot.json` without
+overwriting SQLite. Set `CPC_USE_ANNOUNCEMENT_SNAPSHOT=0` to use local database
+announcements instead. Production continues to use PostgreSQL and falls back to
+the snapshot if the homepage announcement query fails.
+
 The application will be available at:
 - Main site: http://localhost:PORT (automatically detected)
 - Admin panel: http://localhost:PORT/admin

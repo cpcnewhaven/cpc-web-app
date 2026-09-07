@@ -476,15 +476,7 @@ def redirect_admin_to_dashboard():
 @app.route('/')
 def index():
     """Homepage with highlights"""
-    # Get active superfeatured announcements first, then regular ones (exclude expired)
-    superfeatured = Announcement.query.filter_by(active=True, superfeatured=True)\
-        .filter(_not_expired(Announcement))\
-        .order_by(Announcement.date_entered.desc()).limit(3).all()
-    regular = Announcement.query.filter_by(active=True, superfeatured=False)\
-        .filter(_not_expired(Announcement))\
-        .order_by(Announcement.date_entered.desc()).limit(7).all()
-    
-    highlights = superfeatured + regular
+    highlights = _get_home_announcements()
     site_content = {r.key: r.value for r in SiteContent.query.all()}
     return render_template('index.html', highlights=highlights, site_content=site_content)
 
@@ -1496,6 +1488,42 @@ def _not_expired(model_klass):
     return db.or_(col.is_(None), col > date.today())
 
 
+def _snapshot_announcements(active_only=False):
+    """Use the public JSON snapshot in development or after a DB read failure."""
+    from announcement_snapshot import load_snapshot
+    rows = load_snapshot()
+    today = date.today()
+    rows = [a for a in rows if not a.expires_at or a.expires_at > today]
+    if active_only:
+        rows = [a for a in rows if bool(a.active)]
+    return rows
+
+
+def _prefer_announcement_snapshot():
+    default = '1' if not _is_production else '0'
+    return os.getenv('CPC_USE_ANNOUNCEMENT_SNAPSHOT', default).lower() in ('1', 'true', 'yes', 'on')
+
+
+def _get_home_announcements():
+    if _prefer_announcement_snapshot():
+        rows = _snapshot_announcements(active_only=True)
+        if rows:
+            featured = [a for a in rows if bool(a.superfeatured)][:3]
+            regular = [a for a in rows if not bool(a.superfeatured)][:7]
+            return featured + regular
+    try:
+        featured = Announcement.query.filter_by(active=True, superfeatured=True)\
+            .filter(_not_expired(Announcement))\
+            .order_by(Announcement.date_entered.desc()).limit(3).all()
+        regular = Announcement.query.filter_by(active=True, superfeatured=False)\
+            .filter(_not_expired(Announcement))\
+            .order_by(Announcement.date_entered.desc()).limit(7).all()
+        return featured + regular
+    except Exception as exc:
+        log.error("Announcement DB read failed; using snapshot: %s", exc)
+        return _snapshot_announcements(active_only=True)[:10]
+
+
 @app.route('/api/announcements')
 @cache.cached(timeout=60)
 def api_announcements():
@@ -1584,10 +1612,16 @@ def api_event_announcements():
 @cache.cached(timeout=60)
 def api_highlights():
     """API endpoint for highlights data - pulls from database"""
-    # Get all announcements from database (not just active ones, for filtering on highlights page)
-    # Limit to last 50 to avoid loading thousands of announcements
-    announcements = Announcement.query.filter(_not_expired(Announcement))\
-        .order_by(Announcement.date_entered.desc()).limit(50).all()
+    # Development prefers the public snapshot; production falls back to it
+    # only when the database read raises an error.
+    announcements = _snapshot_announcements() if _prefer_announcement_snapshot() else []
+    if not announcements:
+        try:
+            announcements = Announcement.query.filter(_not_expired(Announcement))\
+                .order_by(Announcement.date_entered.desc()).limit(50).all()
+        except Exception as exc:
+            log.error("Highlights DB read failed; using snapshot: %s", exc)
+            announcements = _snapshot_announcements()
     
     return jsonify({
         'announcements': [
@@ -3078,9 +3112,9 @@ def inject_current_user_metadata():
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
-        # The site is currently a work in progress; collect feedback from all
-        # visitors instead of requiring an invite-only preview session.
-        'feedback_mode': True,
+        # Keep feedback convenient during local development, but invite-only
+        # in production so the public launcher is not exposed to every visitor.
+        'feedback_mode': (not _is_production) or bool(session.get('feedback_mode')),
         'new_feedback_count': new_feedback_count,
     }
 
