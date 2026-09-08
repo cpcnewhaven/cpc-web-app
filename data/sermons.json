@@ -3,8 +3,8 @@
   "description": "Weekly sermons from our Sunday worship services",
   "_year_counts": {
     "2026": {
-      "count": 27,
-      "note": "27 sermons from 2026"
+      "count": 28,
+      "note": "28 sermons from 2026"
     },
     "2025": {
       "count": 116,
@@ -43,7 +43,7 @@
       "note": "11 sermons from 2002"
     }
   },
-  "_total_sermons": 592,
+  "_total_sermons": 593,
   "_organized_by": "year (oldest to newest)",
   "_note": "Scroll through 'sermons_by_year' to see sermons organized by year. The 'sermons' array at the end is for API compatibility.",
   "sermons_by_year": {
@@ -12072,6 +12072,28 @@
     ],
     "2026": [
       {
+        "id": "26-09-06",
+        "title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Luke 24: 36-53",
+        "date": "2026-09-06",
+        "published_at": "2026-09-08",
+        "duration": null,
+        "apple_podcasts_url": "",
+        "spotify_url": "https://open.spotify.com/episode/2Y7DwR7W6D5tgNl8dTkPBC?si=_uQ9CUksQoWo9fZhHr1I-g",
+        "link": "https://open.spotify.com/episode/2Y7DwR7W6D5tgNl8dTkPBC?si=_uQ9CUksQoWo9fZhHr1I-g",
+        "podcast_thumbnail_url": "",
+        "youtube_url": "",
+        "source": "spotify",
+        "original_id": "2Y7DwR7W6D5tgNl8dTkPBC",
+        "series": "The Sunday Sermon",
+        "episode_title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
+        "guest_speaker": "",
+        "sermon_type": "sermon",
+        "tags": ["The Sunday Sermon", "Luke"],
+        "search_keywords": "it is finished now go get started mission joy and the new proclamation the sunday sermon rev craig luekens luke 24: 36-53"
+      },
+      {
         "id": "26-08-30",
         "title": "Do You See Jesus? The Wonders of Word and Sacrament | The Sunday Sermon | Rev. Craig Luekens | Luke 24:13-35",
         "author": "Rev. Craig Luekens",
@@ -12677,6 +12699,28 @@
     ]
   },
   "sermons": [
+    {
+      "id": "26-09-06",
+      "title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Luke 24: 36-53",
+      "date": "2026-09-06",
+      "published_at": "2026-09-08",
+      "duration": null,
+      "apple_podcasts_url": "",
+      "spotify_url": "https://open.spotify.com/episode/2Y7DwR7W6D5tgNl8dTkPBC?si=_uQ9CUksQoWo9fZhHr1I-g",
+      "link": "https://open.spotify.com/episode/2Y7DwR7W6D5tgNl8dTkPBC?si=_uQ9CUksQoWo9fZhHr1I-g",
+      "podcast_thumbnail_url": "",
+      "youtube_url": "",
+      "source": "spotify",
+      "original_id": "2Y7DwR7W6D5tgNl8dTkPBC",
+      "series": "The Sunday Sermon",
+      "episode_title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
+      "guest_speaker": "",
+      "sermon_type": "sermon",
+      "tags": ["The Sunday Sermon", "Luke"],
+      "search_keywords": "it is finished now go get started mission joy and the new proclamation the sunday sermon rev craig luekens luke 24: 36-53"
+    },
     {
       "id": "26-08-30",
       "title": "Do You See Jesus? The Wonders of Word and Sacrament | The Sunday Sermon | Rev. Craig Luekens | Luke 24:13-35",
