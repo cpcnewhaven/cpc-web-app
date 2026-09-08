@@ -11,31 +11,31 @@
         theme: {
             extend: {
                 colors: {
-                    "primary": "#69daff",
-                    "primary-dim": "#00c0ea",
-                    "primary-fixed": "#00cffc",
-                    "primary-container": "#00cffc",
-                    "secondary": "#3fff8b",
-                    "secondary-dim": "#24f07e",
-                    "secondary-fixed": "#3fff8b",
-                    "secondary-container": "#006d35",
-                    "tertiary": "#89a5ff",
-                    "tertiary-dim": "#7999ff",
-                    "tertiary-fixed": "#95adff",
-                    "tertiary-container": "#7696fd",
-                    "surface": "#010e24",
-                    "surface-dim": "#010e24",
-                    "surface-bright": "#152c4e",
+                    "primary": "#8fb9df",
+                    "primary-dim": "#5d8fb9",
+                    "primary-fixed": "#b8d5ee",
+                    "primary-container": "#173b5d",
+                    "secondary": "#9fb8a9",
+                    "secondary-dim": "#789789",
+                    "secondary-fixed": "#c4d7cb",
+                    "secondary-container": "#24463b",
+                    "tertiary": "#b9afcf",
+                    "tertiary-dim": "#9387b0",
+                    "tertiary-fixed": "#d6cee7",
+                    "tertiary-container": "#3b3451",
+                    "surface": "#101923",
+                    "surface-dim": "#101923",
+                    "surface-bright": "#25384a",
                     "surface-container-lowest": "#000000",
-                    "surface-container-low": "#02132b",
-                    "surface-container": "#061934",
-                    "surface-container-high": "#0b203d",
-                    "surface-container-highest": "#102645",
-                    "background": "#010e24",
-                    "on-surface": "#dbe6ff",
-                    "on-surface-variant": "#9eabc8",
-                    "outline": "#687690",
-                    "outline-variant": "#3b4861",
+                    "surface-container-low": "#15212d",
+                    "surface-container": "#1b2a38",
+                    "surface-container-high": "#223445",
+                    "surface-container-highest": "#2b4054",
+                    "background": "#101923",
+                    "on-surface": "#e3eaf0",
+                    "on-surface-variant": "#acbac7",
+                    "outline": "#778898",
+                    "outline-variant": "#46596a",
                 },
                 fontFamily: {
                     "headline": ["Manrope"],
@@ -48,10 +48,10 @@
     }
 </script>
 <style>
-    body { font-family: 'Inter', sans-serif; background-color: #010e24; color: #dbe6ff; }
+    body { font-family: 'Inter', sans-serif; background-color: #101923; color: #e3eaf0; }
     .font-manrope { font-family: 'Manrope', sans-serif; }
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .admin-body { background-color: #010e24; }
+    .admin-body { background-color: #101923; }
     /* Overrides for Flask-Admin default styles that might bleed in */
     .container { width: 100% !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
     .navbar { display: none !important; } /* Hide old navbar */
@@ -59,20 +59,20 @@
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
     select,
     textarea {
-        background-color: #02132b !important;
-        color: #dbe6ff !important;
-        border-color: #3b4861 !important;
+        background-color: #15212d !important;
+        color: #e3eaf0 !important;
+        border-color: #46596a !important;
     }
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus,
     select:focus,
     textarea:focus {
-        background-color: #02132b !important;
-        border-color: #69daff !important;
+        background-color: #15212d !important;
+        border-color: #8fb9df !important;
         outline: none !important;
         box-shadow: none !important;
     }
     /* Ensure select option text is readable */
-    option { background-color: #061934; color: #dbe6ff; }
+    option { background-color: #1b2a38; color: #e3eaf0; }
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
@@ -635,7 +635,7 @@
     <!-- SideNavBar (The Anchor) -->
     <aside class="h-full w-64 fixed left-0 top-0 z-40 bg-surface flex flex-col py-6 border-r border-outline-variant/30 shadow-2xl admin-sidebar">
         <div class="px-6 mb-10">
-            <div class="text-lg font-black text-primary font-manrope uppercase tracking-tight">CPC Admin</div>
+            <a href="{{ url_for('dashboard.index') }}" class="block text-lg font-black text-primary font-manrope uppercase tracking-tight hover:text-primary-fixed transition-colors">CPC Admin</a>
         </div>
         
         <nav class="flex-1 space-y-1 overflow-y-auto px-2">
@@ -810,7 +810,7 @@
         </header>
 
         <!-- Form Content Container -->
-        <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if 'create' not in request.path and 'edit' not in request.path %}admin-list-page{% endif %}">
+        <div class="p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if 'create' not in request.path and 'edit' not in request.path %}admin-list-page{% endif %}">
             {% block messages %}
                 {{ layout.messages() }}
             {% endblock %}
@@ -918,7 +918,8 @@
         header.left-64 { left: 0 !important; padding-left: 1rem !important; padding-right: 1rem !important; }
     }
 
-    .admin-sidebar { background: #0a2035 !important; }
+    /* Keep navigation visually anchored without making content panels feel dim. */
+    .admin-sidebar { background: #05131f !important; }
     .admin-sidebar nav > a { border-bottom: 1px solid rgba(255,255,255,.035); }
     .admin-sidebar nav > div { border-top: 1px solid rgba(255,255,255,.1); margin-top: .45rem; }
     .admin-sidebar nav > div > div { color: rgba(190,220,245,.78) !important; }
@@ -934,7 +935,8 @@
 
     @media (min-width: 761px) { .mobile-menu-button { display:none !important; } }
 
-    .admin-list-page { padding-top: 2rem !important; }
+    /* The top app bar is fixed, so dashboard and list content needs its own clear space. */
+    .admin-list-page { padding-top: 7rem !important; }
     @media (max-width: 760px) {
         .admin-list-page { padding-top: 1.25rem !important; padding-left: .75rem !important; padding-right: .75rem !important; }
     }

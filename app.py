@@ -3174,7 +3174,6 @@ def admin_login():
                 db.session.commit()
                 session['authenticated'] = True
                 session['username'] = username
-                flash('Login successful!', 'success')
                 next_url = request.args.get('next', '/admin/dashboard/')
                 return redirect(next_url)
             else:

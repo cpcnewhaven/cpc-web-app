@@ -8,37 +8,37 @@
    --------------------------------------------------------------------------- */
 .admin-body,
 body.admin-body {
-  --admin-bg: #0d2137;
-  --admin-panel: #132f4c;
-  --admin-panel-strong: #1a3a5c;
-  --admin-border: #1e4976;
+  --admin-bg: #101923;
+  --admin-panel: #15212d;
+  --admin-panel-strong: #1b2a38;
+  --admin-border: #46596a;
   --admin-text: rgba(255, 255, 255, 0.96);
   --admin-text-muted: rgba(255, 255, 255, 0.72);
-  --admin-input-bg: #132f4c;
-  --admin-input-border: #1e4976;
-  --cpc-blue: #0d6efd;
-  --cpc-blue-dark: #0a58ca;
-  --cpc-blue-light: #4dabf7;
-  --liquid-blue: #228be6;
-  --liquid-blue-bright: #74c0fc;
+  --admin-input-bg: #15212d;
+  --admin-input-border: #46596a;
+  --cpc-blue: #5d8fb9;
+  --cpc-blue-dark: #426f95;
+  --cpc-blue-light: #8fb9df;
+  --liquid-blue: #739fc4;
+  --liquid-blue-bright: #b8d5ee;
   --radius: 8px;
   --radius-sm: 6px;
 
   /* Material Design 3 colors for dashboard */
-  --background: #0d2137;
+  --background: #101923;
   --on-background: rgba(255, 255, 255, 0.96);
-  --surface-container: #1a3a5c;
-  --surface-container-high: #1e4976;
-  --surface-container-highest: #2a5a96;
-  --surface-container-low: #132f4c;
-  --surface-bright: #224d7a;
+  --surface-container: #1b2a38;
+  --surface-container-high: #223445;
+  --surface-container-highest: #2b4054;
+  --surface-container-low: #15212d;
+  --surface-bright: #25384a;
   --on-surface: rgba(255, 255, 255, 0.96);
   --on-surface-variant: rgba(255, 255, 255, 0.72);
   --outline-variant: rgba(255, 255, 255, 0.15);
-  --primary: #4dabf7;
-  --secondary: #74c0fc;
-  --tertiary: #8dd9f7;
-  --primary-dim: #3b7ab8;
+  --primary: #8fb9df;
+  --secondary: #9fb8a9;
+  --tertiary: #b9afcf;
+  --primary-dim: #5d8fb9;
 }
 
 /* ---------------------------------------------------------------------------
