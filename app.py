@@ -716,7 +716,7 @@ SUBPAGE_CONFIGS = {
         'icon': 'home',
         'color': '#f97316',
         'keys': [
-            ('current_teaching_series_title', 'Current Teaching Series Title', 'Luke', 'select_series'),
+            ('current_teaching_series_title', 'Current Teaching Series Title', 'Luke', 'select_sermon_series'),
             ('current_teaching_series_subtitle', 'Current Teaching Series Subtitle', 'The Sunday Sermon Podcast', 'text'),
         ]
     }
@@ -736,6 +736,16 @@ def get_site_content():
             if not content.get(key):
                 content[key] = default
     return content
+
+
+def get_active_sermon_series_options():
+    """Return homepage selector options from sermon series, never podcast series."""
+    return [
+        {'id': series.title, 'label': series.title}
+        for series in SermonSeries.query.filter(SermonSeries.active.is_(True))
+        .order_by(SermonSeries.title)
+        .all()
+    ]
 
 def resolve_active_schedule(site_content, today=None):
     """Resolve the public schedule, including the exact summer cutoff day."""
@@ -817,13 +827,9 @@ def admin_subpage_edit():
     rows = {r.key: r.value for r in SiteContent.query.all()}
     fields = []
 
-    # Fetch sermon series for dropdown (if needed)
-    sermon_series_options = []
-    if active_page == 'homepage':
-        sermon_series_options = [
-            {'id': s.title, 'label': s.title}
-            for s in SermonSeries.query.filter_by(active=True).order_by(SermonSeries.title).all()
-        ]
+    # Fetch sermon series for the homepage dropdown only. This must stay
+    # separate from PodcastSeries, which powers the Podcasts admin screens.
+    sermon_series_options = get_active_sermon_series_options() if active_page == 'homepage' else []
 
     for item in config['keys']:
         key, label, default = item[:3]
@@ -837,7 +843,7 @@ def admin_subpage_edit():
             'input_type': input_type,
         }
         # Add options for select fields
-        if input_type == 'select_series':
+        if input_type == 'select_sermon_series':
             field_dict['options'] = sermon_series_options
         fields.append(field_dict)
 

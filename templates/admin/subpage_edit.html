@@ -512,7 +512,7 @@
                   {% else %}
                     <div class="field-hint">Enter a time (e.g. <strong style="color:rgba(255,255,255,0.7);">10:30am</strong>) or <strong style="color:rgba(255,255,255,0.7);">No</strong> to hide.</div>
                   {% endif %}
-                {% elif field.input_type == 'select_series' %}
+                {% elif field.input_type == 'select_sermon_series' %}
                 <div class="field-hint">Select from your active sermon series. The homepage sidebar updates immediately.</div>
                 {% elif field.is_json %}
                 <div class="field-hint">
@@ -537,7 +537,7 @@
                         <div class="color-swatch-label">CSS value</div>
                     </div>
                 </div>
-                {% elif field.input_type == 'select_series' %}
+                {% elif field.input_type == 'select_sermon_series' %}
                 <select id="field_{{ field.key }}" name="{{ field.key }}" style="width:100%; background:rgba(0,0,0,0.28); border:1px solid rgba(255,255,255,0.14); border-radius:6px; color:rgba(255,255,255,0.9); padding:0.75rem; font-size:0.9rem; cursor:pointer;">
                     <option value="{{ field.value }}" selected>{{ field.value }}</option>
                     {% for option in field.options %}
