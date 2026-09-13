@@ -285,9 +285,9 @@
 
     .leadership-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 24px;
-        max-width: 900px;
+        max-width: 760px;
         margin: 0 auto;
     }
 
@@ -923,6 +923,34 @@
     body.theme-white .about-page #what-we-believe p {
         color: #5b6b7a !important;
     }
+
+    /* Keep the About page readable when the site is in light mode. The page
+       uses a dark editorial palette by default, so these surfaces need a
+       complete light-theme treatment rather than relying on inherited text. */
+    body.theme-white .about-page .section-subtitle,
+    body.theme-white .about-page .leadership-group p,
+    body.theme-white .about-page .closing-cta p,
+    body.theme-white .about-page .about-events-feature__copy p {
+        color: #5b6b7a;
+    }
+
+    body.theme-white .about-page .gallery-image {
+        background: rgba(0, 50, 120, 0.05);
+        border-color: rgba(0, 50, 120, 0.14);
+        color: #7a8a9a;
+    }
+
+    body.theme-white .about-page .person-photo {
+        background: rgba(0, 82, 163, 0.06);
+        border-color: rgba(0, 82, 163, 0.16);
+        color: #0a52a3;
+    }
+
+    @media (max-width: 768px) {
+        .leadership-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
 </style>
 {% endblock %}
 
@@ -1058,6 +1086,7 @@
     <section class="about-section-container leadership-section-spacious" id="staff">
         <div class="leadership-group leadership-group-spacious">
             <h3>Our Staff Team</h3>
+            <p>Our staff serve the day-to-day life of CPC by shepherding our congregation, coordinating ministries, and caring for the practical needs that help our church family worship and grow together.</p>
             <div class="pastors-grid">
                 <a class="pastor-card" href="{{ url_for('craig_luekens') }}" aria-label="Read Craig Luekens's profile">
                     <img src="https://storage.googleapis.com/cpc-public-website/69.jpg" alt="Craig Luekens">
@@ -1154,6 +1183,7 @@
     <section class="about-section-container leadership-section-spacious">
         <div class="leadership-group leadership-group-spacious">
             <h3>Servant Leadership Board</h3>
+            <p>The SLB helps the church serve faithfully by coordinating practical ministries and caring for the spaces, welcome, safety, mercy, and shared meals that make life together possible.</p>
             <div class="leadership-grid">
                 {% set slb = [
                     ('Craig Luekens', 'Moderator'),

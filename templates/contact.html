@@ -231,6 +231,79 @@
         border: none;
     }
 
+    /* Contact cards and controls use translucent white surfaces in blue mode.
+       Restore a dark-on-light hierarchy in the site's white theme. */
+    body.theme-white .contact-page {
+        color: #1d2e42;
+    }
+
+    body.theme-white .contact-card,
+    body.theme-white .contact-form-section,
+    body.theme-white .office-hours {
+        background: rgba(255, 255, 255, 0.78);
+        border-color: rgba(0, 50, 120, 0.14);
+        box-shadow: 0 10px 26px rgba(17, 39, 68, 0.08);
+    }
+
+    body.theme-white .contact-card:hover {
+        background: #fff;
+        border-color: rgba(0, 82, 163, 0.28);
+        box-shadow: 0 12px 30px rgba(17, 39, 68, 0.12);
+    }
+
+    body.theme-white .contact-card h3,
+    body.theme-white .contact-form h2,
+    body.theme-white .office-hours h3 {
+        color: #1d2e42;
+    }
+
+    body.theme-white .contact-card p,
+    body.theme-white .hours-list li {
+        color: #526577;
+    }
+
+    body.theme-white .contact-card a {
+        color: #075fb9;
+    }
+
+    body.theme-white .contact-card a:hover {
+        color: #003d7a;
+    }
+
+    body.theme-white .form-group label {
+        color: #30465c;
+    }
+
+    body.theme-white .form-group input,
+    body.theme-white .form-group textarea,
+    body.theme-white .form-group select {
+        background: #fff;
+        border-color: rgba(0, 50, 120, 0.2);
+        color: #1d2e42;
+    }
+
+    body.theme-white .form-group input:focus,
+    body.theme-white .form-group textarea:focus,
+    body.theme-white .form-group select:focus {
+        border-color: #0066cc;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.12);
+    }
+
+    body.theme-white .form-group input::placeholder,
+    body.theme-white .form-group textarea::placeholder {
+        color: #7a8a9a;
+    }
+
+    body.theme-white .form-group select option {
+        background: #fff;
+        color: #1d2e42;
+    }
+
+    body.theme-white .hours-list li {
+        border-bottom-color: rgba(0, 50, 120, 0.12);
+    }
+
     @media (max-width: 768px) {
         .contact-grid {
             grid-template-columns: 1fr;
