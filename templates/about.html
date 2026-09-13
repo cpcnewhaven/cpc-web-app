@@ -200,8 +200,15 @@
     /* Five Marks Grid */
     .five-marks-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 20px;
+    }
+
+    /* Five cards fit comfortably across the full-width About layout on wide screens. */
+    @media (min-width: 1200px) {
+        .five-marks-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
     }
 
     .mark-card {
