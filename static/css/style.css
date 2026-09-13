@@ -203,30 +203,32 @@ body.theme-white .dropdown-menu a:hover {
     color: var(--cpc-blue) !important;
 }
 
-/* Settings dropdown in white theme */
-body.theme-white .dropdown-menu li span {
+/* Settings dropdown in white theme. Keep these selectors more specific than
+   the navigation's generic .text-white rule so the controls remain readable
+   on the white menu surface. */
+body.theme-white .top-nav .dropdown-menu li span {
     color: #1a1a1a !important;
 }
 
-body.theme-white .dropdown-menu li span.text-white\/70 {
+body.theme-white .top-nav .dropdown-menu li span.text-white\/70 {
     color: #666 !important;
 }
 
-body.theme-white .dropdown-menu button {
+body.theme-white .top-nav .dropdown-menu button {
     color: #1a1a1a !important;
 }
 
-body.theme-white .dropdown-menu button.bg-blue-500 {
+body.theme-white .top-nav .dropdown-menu button.bg-blue-500 {
     background: var(--cpc-blue) !important;
     color: white !important;
 }
 
-body.theme-white .dropdown-menu button.bg-white\/20 {
+body.theme-white .top-nav .dropdown-menu button.bg-white\/20 {
     background: rgba(0, 0, 0, 0.08) !important;
     color: #333 !important;
 }
 
-body.theme-white .dropdown-menu .border-white\/20 {
+body.theme-white .top-nav .dropdown-menu .border-white\/20 {
     border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
