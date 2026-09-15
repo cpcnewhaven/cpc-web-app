@@ -1620,7 +1620,10 @@ def api_highlights():
     """API endpoint for highlights data - pulls from database"""
     # Development prefers the public snapshot; production falls back to it
     # only when the database read raises an error.
-    announcements = _snapshot_announcements() if _prefer_announcement_snapshot() else []
+    # The committed snapshot is ordered newest first. Limit its public fallback
+    # to the current weekly set so historical rows without expiration dates do
+    # not reappear alongside current announcements.
+    announcements = _snapshot_announcements(active_only=True)[:7] if _prefer_announcement_snapshot() else []
     if not announcements:
         try:
             announcements = Announcement.query.filter(_not_expired(Announcement))\
