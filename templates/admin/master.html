@@ -12,33 +12,6 @@
         theme: {
             extend: {
                 colors: {
-<<<<<<< HEAD
-                    "primary": "#8fb9df",
-                    "primary-dim": "#5d8fb9",
-                    "primary-fixed": "#b8d5ee",
-                    "primary-container": "#173b5d",
-                    "secondary": "#9fb8a9",
-                    "secondary-dim": "#789789",
-                    "secondary-fixed": "#c4d7cb",
-                    "secondary-container": "#24463b",
-                    "tertiary": "#b9afcf",
-                    "tertiary-dim": "#9387b0",
-                    "tertiary-fixed": "#d6cee7",
-                    "tertiary-container": "#3b3451",
-                    "surface": "#101923",
-                    "surface-dim": "#101923",
-                    "surface-bright": "#25384a",
-                    "surface-container-lowest": "#000000",
-                    "surface-container-low": "#15212d",
-                    "surface-container": "#1b2a38",
-                    "surface-container-high": "#223445",
-                    "surface-container-highest": "#2b4054",
-                    "background": "#101923",
-                    "on-surface": "#e3eaf0",
-                    "on-surface-variant": "#acbac7",
-                    "outline": "#778898",
-                    "outline-variant": "#46596a",
-=======
                     "primary": "#3f8ed0",
                     "primary-dim": "#2d6fa8",
                     "primary-fixed": "#cfe8fb",
@@ -64,7 +37,6 @@
                     "on-surface-variant": "#6e7d8b",
                     "outline": "#8fa1b0",
                     "outline-variant": "#d9e1e8",
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
                 },
                 fontFamily: {
                     "headline": ["Manrope"],
@@ -77,17 +49,10 @@
     }
 </script>
 <style>
-<<<<<<< HEAD
-    body { font-family: 'Inter', sans-serif; background-color: #101923; color: #e3eaf0; }
-    .font-manrope { font-family: 'Manrope', sans-serif; }
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .admin-body { background-color: #101923; }
-=======
     body { font-family: 'Inter', sans-serif; background-color: #f6f8fa; color: #1d2a36; }
     .font-manrope { font-family: 'Manrope', sans-serif; }
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     .admin-body { background-color: #f6f8fa; }
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
     /* Overrides for Flask-Admin default styles that might bleed in */
     .container { width: 100% !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
     .navbar { display: none !important; } /* Hide old navbar */
@@ -95,35 +60,20 @@
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
     select,
     textarea {
-<<<<<<< HEAD
-        background-color: #15212d !important;
-        color: #e3eaf0 !important;
-        border-color: #46596a !important;
-=======
         background-color: #ffffff !important;
         color: #1d2a36 !important;
         border-color: #cbd6df !important;
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
     }
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus,
     select:focus,
     textarea:focus {
-<<<<<<< HEAD
-        background-color: #15212d !important;
-        border-color: #8fb9df !important;
-=======
         background-color: #ffffff !important;
         border-color: #3f8ed0 !important;
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
         outline: none !important;
         box-shadow: none !important;
     }
     /* Ensure select option text is readable */
-<<<<<<< HEAD
-    option { background-color: #1b2a38; color: #e3eaf0; }
-=======
     option { background-color: #ffffff; color: #1d2a36; }
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
@@ -707,7 +657,7 @@
     <!-- SideNavBar (The Anchor) -->
     <aside class="h-full w-64 fixed left-0 top-0 z-40 bg-surface flex flex-col py-6 border-r border-outline-variant/30 shadow-2xl admin-sidebar">
         <div class="px-6 mb-10">
-            <a href="{{ url_for('dashboard.index') }}" class="block text-lg font-black text-primary font-manrope uppercase tracking-tight hover:text-primary-fixed transition-colors">CPC Admin</a>
+            <div class="text-lg font-black text-primary font-manrope uppercase tracking-tight">CPC Admin</div>
         </div>
         
         <nav class="flex-1 space-y-1 overflow-y-auto px-2">
@@ -898,15 +848,7 @@
         </header>
 
         <!-- Form Content Container -->
-<<<<<<< HEAD
-        <div class="p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if 'create' not in request.path and 'edit' not in request.path %}admin-list-page{% endif %}">
-            {% block messages %}
-                {{ layout.messages() }}
-            {% endblock %}
-            
-=======
         <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if 'create' not in request.path and 'edit' not in request.path %}admin-list-page{% endif %} {% if request.endpoint == 'dashboard.index' %}dashboard-page{% endif %}">
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
             {{ super() }}
         </div>
         
@@ -1022,13 +964,6 @@
         header.left-64 { left: 0 !important; padding-left: 1rem !important; padding-right: 1rem !important; }
     }
 
-<<<<<<< HEAD
-    /* Keep navigation visually anchored without making content panels feel dim. */
-    .admin-sidebar { background: #05131f !important; }
-    .admin-sidebar nav > a { border-bottom: 1px solid rgba(255,255,255,.035); }
-    .admin-sidebar nav > div { border-top: 1px solid rgba(255,255,255,.1); margin-top: .45rem; }
-    .admin-sidebar nav > div > div { color: rgba(190,220,245,.78) !important; }
-=======
     .admin-sidebar { background: #ffffff !important; box-shadow: 8px 0 28px rgba(30, 55, 75, .06) !important; }
     .admin-sidebar nav > a { border-bottom: 1px solid rgba(83,105,124,.08); }
     .admin-sidebar nav > div { border-top: 1px solid rgba(83,105,124,.12); margin-top: .45rem; }
@@ -1036,7 +971,6 @@
     .admin-sidebar .text-primary { color: #3f8ed0 !important; }
     .admin-sidebar .bg-surface-container-high { background: #e8f2fb !important; }
     .admin-sidebar .border-primary { border-color: #3f8ed0 !important; }
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
 
     .mobile-menu-button, .mobile-nav-backdrop { display:none; }
     @media (max-width: 760px) {
@@ -1049,13 +983,8 @@
 
     @media (min-width: 761px) { .mobile-menu-button { display:none !important; } }
 
-<<<<<<< HEAD
-    /* The top app bar is fixed, so dashboard and list content needs its own clear space. */
-    .admin-list-page { padding-top: 7rem !important; }
-=======
     .admin-list-page { padding-top: 2rem !important; }
     .dashboard-page { padding-top: 0 !important; }
->>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
     @media (max-width: 760px) {
         .admin-list-page { padding-top: 1.25rem !important; padding-left: .75rem !important; padding-right: .75rem !important; }
     }
