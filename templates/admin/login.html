@@ -36,6 +36,14 @@
             margin-bottom: 2rem;
             font-size: 2rem;
         }
+
+        .login-logo {
+            display: block;
+            width: 150px;
+            height: auto;
+            margin: 0 auto 1.5rem;
+            filter: brightness(0) invert(1);
+        }
         
         .form-group {
             margin-bottom: 1.5rem;
@@ -151,6 +159,7 @@
     <body>
         <div class="login-container">
             <div class="login-box">
+                <img class="login-logo" src="https://cpcnewhaven.org/assets/CPC_LOGO_24.png" alt="Christ Presbyterian Church New Haven">
                 <h1>Admin Login</h1>
 
                 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -208,7 +217,7 @@
                 })();
                 </script>
 
-                {% if config.DEBUG %}
+                {% if demo_account_enabled %}
                 <!-- Development only: Admin Accounts (hidden in production) -->
                 <div
                     style="margin-top: 2rem; padding: 1.5rem; background: rgba(0, 0, 0, 0.2); border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.2);">
@@ -242,6 +251,13 @@
                             <span><strong>alexis</strong></span>
                             <span>adminADMIN</span>
                         </div>
+                        {% if demo_account_enabled %}
+                        <div
+                            style="display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.9); padding: 0.5rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm);">
+                            <span><strong>demo</strong></span>
+                            <span>demo</span>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% endif %}

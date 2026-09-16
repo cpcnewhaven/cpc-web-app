@@ -1,10 +1,11 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-    <div class="space-y-10">
+    <div class="dashboard-shell space-y-10">
         <!-- Dashboard Header -->
-        <div class="bg-surface-container rounded-3xl p-10 border border-outline-variant/10 shadow-xl relative overflow-hidden">
+        <div class="dashboard-glow-card bg-surface-container rounded-3xl p-10 border border-outline-variant/10 shadow-xl relative overflow-hidden">
              <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+             <div class="dashboard-sheen" aria-hidden="true"></div>
              <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div>
                     <h1 class="font-manrope text-4xl font-black text-primary tracking-tight">System Dashboard</h1>
@@ -20,7 +21,7 @@
                     </div>
                 </div>
                 
-                <button onclick="toggleNewEntryOverlay()" class="px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 flex items-center gap-2">
+                <button onclick="toggleNewEntryOverlay()" class="dashboard-glow-card px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 flex items-center gap-2">
                     Initiate New Entry
                 </button>
              </div>
@@ -28,20 +29,20 @@
 
         <!-- Quick Stats Grid -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <a href="{{ url_for('announcement.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-primary group-hover:scale-110 transition-transform">{{ stats.announcements }}</div>
+            <a href="{{ url_for('announcement.index_view') }}" class="dashboard-glow-card group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-primary">{{ stats.announcements }}</div>
                 <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Announcements</div>
             </a>
-            <a href="{{ url_for('sermon.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-tertiary/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-tertiary group-hover:scale-110 transition-transform">{{ stats.sermons }}</div>
+            <a href="{{ url_for('sermon.index_view') }}" class="dashboard-glow-card group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-tertiary/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-tertiary">{{ stats.sermons }}</div>
                 <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Sunday Sermons</div>
             </a>
-            <a href="{{ url_for('podcastepisode.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-secondary/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-secondary group-hover:scale-110 transition-transform">{{ stats.podcast_episodes }}</div>
+            <a href="{{ url_for('podcastepisode.index_view') }}" class="dashboard-glow-card group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-secondary/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-secondary">{{ stats.podcast_episodes }}</div>
                 <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Podcasts</div>
             </a>
-            <a href="{{ url_for('galleryimage.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary-dim/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-primary-dim group-hover:scale-110 transition-transform">{{ stats.gallery_images }}</div>
+            <a href="{{ url_for('galleryimage.index_view') }}" class="dashboard-glow-card group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary-dim/30 transition-all flex flex-col items-center text-center gap-3">
+                <div class="text-3xl font-manrope font-black text-primary-dim">{{ stats.gallery_images }}</div>
                 <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Gallery Assets</div>
             </a>
             <a href="{{ url_for('history.index') }}" class="group bg-surface-container-highest/30 rounded-2xl p-6 border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col items-center text-center gap-3">
@@ -49,41 +50,8 @@
             </a>
         </div>
 
-        <!-- Main Dashboard Content (2 Columns) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left: Quick Wizards & Actions (8-col) -->
-            <div class="lg:col-span-8 space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Sermon Wizard -->
-                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('sermon.create_view', url='/admin/sermon/') }}'">
-                        <div class="space-y-2">
-                            <h3 class="font-manrope text-xl font-bold text-on-surface">Publish Sunday Sermon</h3>
-                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Record a new teaching with automatic scripture mapping and platform link syndication.</p>
-                        </div>
-                        <div class="mt-auto pt-4 text-[10px] font-black text-tertiary uppercase tracking-widest">Initialize Workflow</div>
-                    </div>
-
-                    <!-- Announcement Wizard -->
-                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('announcement.create_view', url='/admin/announcement/') }}'">
-                        <div class="space-y-2">
-                            <h3 class="font-manrope text-xl font-bold text-on-surface">Broadcast News</h3>
-                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Deploy a new site-wide banner or informational update to all active channels.</p>
-                        </div>
-                        <div class="mt-auto pt-4 text-[10px] font-black text-primary uppercase tracking-widest">Initialize Workflow</div>
-                    </div>
-
-                    <!-- Podcast Wizard -->
-                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('podcastepisode.create_view', url='/admin/podcastepisode/') }}'">
-                        <div class="space-y-2">
-                            <h3 class="font-manrope text-xl font-bold text-on-surface">Add Podcast Episode</h3>
-                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Publish a new podcast episode with link syndication to major platforms.</p>
-                        </div>
-                        <div class="mt-auto pt-4 text-[10px] font-black text-secondary uppercase tracking-widest">Initialize Workflow</div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity Feed -->
-                <div class="bg-surface-container rounded-3xl border border-outline-variant/10 overflow-hidden shadow-xl">
+        <!-- Latest content appears immediately below the stats grid. -->
+        <div class="bg-surface-container rounded-3xl border border-outline-variant/10 overflow-hidden shadow-xl">
                     <div class="px-8 py-6 bg-surface-container-highest/50 border-b border-outline-variant/10 flex items-center justify-between">
                          <h3 class="font-manrope text-sm font-black text-primary uppercase tracking-[0.2em]">Latest Content Deployed</h3>
                          <a href="{{ url_for('history.index') }}" class="text-[10px] font-black text-on-surface-variant/40 hover:text-primary transition-colors uppercase tracking-widest">View Master Logs</a>
@@ -139,44 +107,10 @@
                     {% if not recent_announcements and not recent_sermons %}
                         <div class="p-12 text-center text-on-surface-variant/30 text-xs font-bold uppercase tracking-widest">No recent deployments recorded.</div>
                     {% endif %}
-                </div>
-            </div>
+        </div>
 
-            <!-- Right: Contextual Cards (4-col) -->
-            <div class="lg:col-span-4 space-y-6">
-                <!-- Status Card -->
-                <div class="bg-gradient-to-br from-surface-container to-surface-container-high rounded-3xl p-8 border border-outline-variant/10 shadow-xl relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-tertiary"></div>
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-3">
-                            <span class="relative flex h-3 w-3">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
-                            </span>
-                            <span class="text-[10px] font-black text-on-surface uppercase tracking-[0.2em]">Operational Status</span>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Public Frontend</span>
-                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest text-right">v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Admin Frontend</span>
-                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest text-right">v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Database Latency</span>
-                                <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">Optimized</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Banner Alerts</span>
-                                <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">{{ stats.active_announcements }} Live</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+        <!-- Supporting admin tools -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Manage Site Content -->
                 <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6 cursor-pointer hover:bg-surface-bright transition-all group" onclick="window.location.href='{{ url_for('page_editors.index') }}'">
                     <div class="flex items-center gap-3">
@@ -220,7 +154,84 @@
                         <div class="text-xs font-bold text-on-surface-variant/30 text-center py-4 uppercase tracking-widest">No active series spotlight.</div>
                     {% endif %}
                 </div>
-            </div>
         </div>
     </div>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<style>
+  .dashboard-shell .text-primary { color: #3f8ed0 !important; }
+  .dashboard-shell .text-primary-dim { color: #2d6fa8 !important; }
+  .dashboard-shell .text-tertiary { color: #6878b2 !important; }
+  .dashboard-shell .text-secondary { color: #5b9a7a !important; }
+  .dashboard-shell .text-on-surface { color: #1d2a36 !important; }
+  .dashboard-shell .text-on-surface-variant { color: #687887 !important; }
+  .dashboard-glow-card { position: relative; isolation: isolate; }
+  .dashboard-sheen {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,.58) 48%, transparent 62%);
+    background-size: 220% 100%;
+    background-position: 180% 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-sheen { display: none; }
+  }
+  @keyframes dashboard-glare-fallback {
+    0%, 100% { opacity: 0; background-position: 180% 0; }
+    45% { opacity: .22; }
+    72% { opacity: 0; background-position: -40% 0; }
+  }
+</style>
+<script>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Prefer Anime.js; keep the local preview graceful if the CDN is unavailable.
+    var animate = window.anime || function (options) {
+      var nodes = document.querySelectorAll(options.targets);
+      if (options.boxShadow) {
+        nodes.forEach(function (node, index) {
+          node.style.transition = 'box-shadow 2600ms ease-in-out';
+          setTimeout(function pulse() {
+            node.style.boxShadow = options.boxShadow[1];
+            setTimeout(function () { node.style.boxShadow = options.boxShadow[0]; }, 2600);
+            if (options.loop) setTimeout(pulse, 5200);
+          }, (index * 180) + 200);
+        });
+      } else {
+        nodes.forEach(function (node) {
+          node.style.animation = 'dashboard-glare-fallback 6800ms ease-in-out 900ms infinite';
+        });
+      }
+    };
+
+    animate({
+      targets: '.dashboard-glow-card',
+      boxShadow: [
+        '0 8px 22px rgba(35, 58, 78, .07)',
+        '0 14px 34px rgba(63, 142, 208, .14)',
+        '0 8px 22px rgba(35, 58, 78, .07)'
+      ],
+      duration: 5200,
+      delay: window.anime ? anime.stagger(180) : 0,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+
+    animate({
+      targets: '.dashboard-sheen',
+      opacity: [0, .22, 0],
+      backgroundPosition: ['180% 0', '-40% 0'],
+      duration: 6800,
+      easing: 'easeInOutSine',
+      delay: 900,
+      loop: true
+    });
+  })();
+</script>
 {% endblock %}

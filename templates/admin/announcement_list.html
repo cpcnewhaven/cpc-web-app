@@ -1,39 +1,152 @@
 {% extends "admin/model/list.html" %}
 
-{% block list_table %}
-<table id="announcementTable" class="admin-list basic-view">
+{% block model_list_table %}
+<div class="new-entry-widget">
+  <div><span class="new-entry-eyebrow">Announcements</span><strong>Create something new</strong></div>
+  <a class="content-new-entry" href="{{ url_for('announcement.create_view', url='/admin/announcement/') }}">New announcement</a>
+</div>
+<div class="advanced-toggle-section">
+  <button class="advanced-toggle-btn" id="advancedToggle">Show Advanced Fields</button>
+</div>
+<div class="announcement-bulk-bar" id="announcementBulkBar" aria-live="polite" hidden>
+  <div class="announcement-bulk-summary"><strong id="announcementSelectedCount">0</strong> announcements selected</div>
+  <div class="announcement-bulk-help">Choose an action to update the selected records.</div>
+  <button type="button" class="announcement-bulk-actions" id="announcementBulkActions">Bulk actions <span aria-hidden="true">⌄</span></button>
+  <button type="button" class="announcement-bulk-clear" id="announcementBulkClear">Clear selection</button>
+</div>
+<div id="announcementTableShell">
   {{ super() }}
-</table>
+</div>
 
 <script>
   (function() {
-    const toggleBtn = document.getElementById('advancedToggle');
-    const table = document.getElementById('announcementTable');
+    const shell = document.getElementById('announcementTableShell');
+    const table = shell && shell.querySelector('table.model-list');
+    if (!table) return;
+    table.id = 'announcementTable';
+    table.classList.add('admin-list', 'basic-view');
 
-    if (!toggleBtn || !table) return;
+    const bulkBar = document.getElementById('announcementBulkBar');
+    const selectedCount = document.getElementById('announcementSelectedCount');
+    const bulkToggle = document.querySelector('.actions-nav > li.dropdown .btn.dropdown-toggle');
+    const rowChecks = function() { return Array.from(table.querySelectorAll('input.action-checkbox')); };
+    function refreshBulkBar() {
+      const count = rowChecks().filter(function(input) { return input.checked; }).length;
+      if (selectedCount) selectedCount.textContent = count;
+      if (bulkBar) bulkBar.hidden = count === 0;
+      if (bulkToggle) {
+        bulkToggle.innerHTML = count ? 'Bulk actions (' + count + ')<b class="caret"></b>' : 'With selected<b class="caret"></b>';
+        bulkToggle.setAttribute('aria-label', count ? 'Bulk actions for ' + count + ' selected announcements' : 'Bulk actions');
+      }
+    }
+    table.addEventListener('change', function(event) {
+      if (event.target.matches('input[type="checkbox"]')) refreshBulkBar();
+    });
+    document.getElementById('announcementBulkClear')?.addEventListener('click', function() {
+      rowChecks().forEach(function(input) { input.checked = false; });
+      const selectAll = table.querySelector('input.action-rowtoggle');
+      if (selectAll) selectAll.checked = false;
+      refreshBulkBar();
+    });
+    document.getElementById('announcementBulkActions')?.addEventListener('click', function() {
+      if (bulkToggle) bulkToggle.click();
+    });
+    refreshBulkBar();
 
-    // Restore saved preference
-    const savedMode = localStorage.getItem('announcementViewMode');
-    if (savedMode === 'advanced') {
-      table.classList.remove('basic-view');
-      toggleBtn.classList.add('active');
-      toggleBtn.textContent = 'Show Basic Fields';
+    function quarterFor(year, month) {
+      return year + ' Q' + (Math.floor((month - 1) / 3) + 1);
+    }
+    function quarterRange(year, quarter) {
+      const starts = ['01-01', '04-01', '07-01', '10-01'];
+      const ends = ['03-31', '06-30', '09-30', '12-31'];
+      return year + '-' + starts[quarter - 1] + ' — ' + year + '-' + ends[quarter - 1];
     }
 
-    // Toggle handler
-    toggleBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      table.classList.toggle('basic-view');
-      this.classList.toggle('active');
-
-      if (this.classList.contains('active')) {
-        this.textContent = 'Show Basic Fields';
-        localStorage.setItem('announcementViewMode', 'advanced');
-      } else {
-        this.textContent = 'Show Advanced Fields';
-        localStorage.setItem('announcementViewMode', 'basic');
-      }
+    // Always lead with the current quarter, even before its first announcement is created.
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentQuarter = Math.floor(now.getMonth() / 3) + 1;
+    const currentGroup = quarterFor(currentYear, now.getMonth() + 1);
+    const dataRows = Array.from(table.querySelectorAll('tbody tr')).filter(function(row) {
+      return row.querySelector('.col-title');
     });
+    const hasCurrentQuarter = dataRows.some(function(row) {
+      const dateCell = row.querySelector('.col-date_entered');
+      const match = dateCell && dateCell.textContent.match(/(20\d{2})-(\d{2})-(\d{2})/);
+      return match && quarterFor(Number(match[1]), Number(match[2])) === currentGroup;
+    });
+    if (!hasCurrentQuarter && dataRows.length) {
+      const divider = document.createElement('tr');
+      divider.className = 'announcement-quarter-row announcement-quarter-current';
+      const cell = document.createElement('th');
+      cell.colSpan = table.rows[0].cells.length;
+      cell.scope = 'colgroup';
+      const label = document.createElement('span');
+      label.className = 'announcement-quarter-label';
+      label.textContent = currentGroup;
+      cell.appendChild(label);
+      const range = document.createElement('span');
+      range.className = 'announcement-quarter-range';
+      range.textContent = quarterRange(currentYear, currentQuarter);
+      cell.appendChild(range);
+      const badge = document.createElement('span');
+      badge.className = 'announcement-quarter-badge';
+      badge.textContent = 'Current quarter';
+      cell.appendChild(badge);
+      divider.appendChild(cell);
+      dataRows[0].parentNode.insertBefore(divider, dataRows[0]);
+    }
+
+    let previousGroup = null;
+    Array.from(table.querySelectorAll('tr')).slice(1).forEach(function(row) {
+      const dateCell = row.querySelector('.col-date_entered');
+      if (!dateCell && !row.querySelector('.col-title')) return;
+      const match = dateCell && dateCell.textContent.match(/(20\d{2})-(\d{2})-(\d{2})/);
+      const group = match ? quarterFor(Number(match[1]), Number(match[2])) : 'Undated';
+      if (row.classList.contains('announcement-quarter-current')) {
+        previousGroup = currentGroup;
+        return;
+      }
+      if (group === previousGroup) return;
+      previousGroup = group;
+
+      const divider = document.createElement('tr');
+      divider.className = 'announcement-quarter-row';
+      const cell = document.createElement('th');
+      cell.colSpan = table.rows[0].cells.length;
+      cell.scope = 'colgroup';
+      const label = document.createElement('span');
+      label.className = 'announcement-quarter-label';
+      label.textContent = group;
+      cell.appendChild(label);
+      if (match) {
+        const quarter = Math.floor((Number(match[2]) - 1) / 3) + 1;
+        const range = document.createElement('span');
+        range.className = 'announcement-quarter-range';
+        range.textContent = quarterRange(Number(match[1]), quarter);
+        cell.appendChild(range);
+      }
+      divider.appendChild(cell);
+      row.parentNode.insertBefore(divider, row);
+    });
+
+    const toggleBtn = document.getElementById('advancedToggle');
+    if (toggleBtn) {
+      const savedMode = localStorage.getItem('announcementViewMode');
+      if (savedMode === 'advanced') {
+        table.classList.remove('basic-view');
+        toggleBtn.classList.add('active');
+        toggleBtn.textContent = 'Show Basic Fields';
+      }
+      toggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        table.classList.toggle('basic-view');
+        this.classList.toggle('active');
+        const advanced = this.classList.contains('active');
+        this.textContent = advanced ? 'Show Basic Fields' : 'Show Advanced Fields';
+        localStorage.setItem('announcementViewMode', advanced ? 'advanced' : 'basic');
+      });
+    }
   })();
 </script>
 {% endblock %}
@@ -42,33 +155,98 @@
 {{ super() }}
 <style>
   .advanced-toggle-section { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
-  .new-entry-widget { width:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.25rem; margin-bottom:1rem; border:1px solid rgba(120,180,220,.18); border-radius:12px; background:#102b42; }
-  .new-entry-widget strong { display:block; color:#f1f7fb; font-size:1rem; }
-  .new-entry-eyebrow { display:block; margin-bottom:.2rem; color:#75c9f5; font-size:.65rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
-  .content-new-entry { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:.75rem 1.35rem; border-radius:.7rem; background:#3fa6eb; color:#06203a !important; font-weight:800; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none !important; }
-  .content-new-entry:hover { background:#66bbf3; transform:translateY(-1px); }
-  .admin-list { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; border:1px solid rgba(120,180,220,.16); border-radius:12px; overflow:hidden; }
-  .admin-list thead th { background:#294461 !important; color:#d9e9f5 !important; }
-  .admin-list tbody tr:nth-child(odd) td { background:#103247 !important; }
-  .admin-list tbody tr:nth-child(even) td { background:#0d2a3d !important; }
+  .announcement-bulk-bar { display:flex; align-items:center; gap:.8rem 1rem; flex-wrap:wrap; margin:.85rem 0 1rem; padding:.9rem 1.1rem; border:1px solid #b9dff3; border-radius:14px; background:#edf8fe; color:#36546a; box-shadow:0 8px 18px rgba(54,88,116,.06); }
+  .announcement-bulk-bar[hidden] { display:none; }
+  .announcement-bulk-summary { color:#12354f; font-size:.9rem; }
+  .announcement-bulk-summary strong { color:#1879b8; font-size:1.15rem; }
+  .announcement-bulk-help { flex:1 1 12rem; color:#6b8190; font-size:.76rem; }
+  .announcement-bulk-actions, .announcement-bulk-clear { border:0; border-radius:8px; padding:.55rem .8rem; font-size:.72rem; font-weight:800; cursor:pointer; }
+  .announcement-bulk-actions { background:#3f97d8; color:#fff; box-shadow:0 5px 12px rgba(63,151,216,.18); }
+  .announcement-bulk-clear { background:transparent; color:#39708f; }
+  .announcement-bulk-clear:hover { background:#d9effa; }
+  .new-entry-widget { width:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.35rem 1.5rem; margin-bottom:1rem; border:1px solid #d9e5ee; border-radius:18px; background:linear-gradient(135deg,#ffffff 0%,#f3f8fc 100%); box-shadow:0 12px 28px rgba(54,88,116,.08); }
+  .new-entry-widget strong { display:block; color:#1d2a36; font-size:1.08rem; }
+  .new-entry-eyebrow { display:block; margin-bottom:.3rem; color:#3f8ed0; font-size:.68rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+  .content-new-entry { display:inline-flex; align-items:center; justify-content:center; min-height:50px; padding:.8rem 1.5rem; border-radius:.8rem; background:#3f97d8; color:#fff !important; font-weight:800; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none !important; box-shadow:0 8px 18px rgba(63,151,216,.2); }
+  .content-new-entry:hover { background:#2f82bf; box-shadow:0 10px 22px rgba(63,151,216,.28); }
+  .admin-list { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; border:1px solid #d9e5ee; border-radius:18px; overflow:hidden; background:#fff; box-shadow:0 16px 34px rgba(54,88,116,.08); }
+  .admin-list thead th { padding:1rem 1.1rem !important; background:#eef5fa !important; color:#5f7486 !important; border-bottom:1px solid #d9e5ee !important; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; }
+  .admin-list tbody tr:not(.announcement-quarter-row) td { padding:1.2rem 1.1rem !important; min-height:84px; background:#fff !important; color:#304254 !important; border-bottom:1px solid #e7eef3 !important; vertical-align:middle; }
+  .admin-list tbody tr:not(.announcement-quarter-row):hover td { background:#f7fbfe !important; }
   .admin-list th, .admin-list td { overflow:hidden; text-overflow:ellipsis; }
+  .admin-list .announcement-quarter-row th { padding:1.35rem 1.5rem !important; background:linear-gradient(135deg,#12354f 0%,#1e5578 100%) !important; border-top:1px solid #8fd0f2 !important; border-bottom:0 !important; text-align:left; }
+  .announcement-quarter-label { color:#fff; font:800 1.05rem/1.2 Manrope,sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+  .announcement-quarter-range { margin-left:1rem; color:#b8d9ea; font-size:.78rem; font-weight:600; letter-spacing:.04em; }
+  .announcement-quarter-badge { display:inline-flex; margin-left:1rem; padding:.35rem .65rem; border:1px solid rgba(255,255,255,.24); border-radius:999px; color:#dff4ff; font-size:.65rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; vertical-align:middle; }
+  .admin-list .col-title { color:#1d2a36 !important; font-size:.95rem; font-weight:700; line-height:1.45; }
+  .admin-list .col-status span, .admin-list .col-status a { border-radius:999px; }
+  .admin-list .col-date_entered { color:#687887 !important; font-size:.82rem; }
+  /* Keep row emphasis in the status badges, not in full-width muddy backgrounds. */
+  .admin-body .admin-list tbody tr:not(.announcement-quarter-row):has(.announcement-status-wrap) td,
+  .admin-body .admin-list tbody tr:not(.announcement-quarter-row):has(.admin-status-published) td,
+  .admin-body .admin-list tbody tr:not(.announcement-quarter-row):has(.admin-status-draft) td,
+  .admin-body .admin-list tbody tr:not(.announcement-quarter-row):has(.admin-status-banner) td { background:#fff !important; }
+  .admin-body .admin-list tbody tr:not(.announcement-quarter-row):hover td { background:#f7fbfe !important; }
+  #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td { background:#fff !important; }
+  #announcementTable.admin-list tbody tr:not(.announcement-quarter-row):hover td { background:#f7fbfe !important; }
+  @media (max-width:1100px) {
+    .announcement-bulk-bar { align-items:flex-start; }
+    .announcement-bulk-actions { margin-left:auto; }
+    .admin-list-page .actions-nav { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem; }
+    .admin-list-page .actions-nav > li { float:none; margin:0; }
+    .admin-list-page .actions-nav > li:last-child { flex:1 1 100%; }
+    .admin-list-page .actions-nav > li:last-child .navbar-form { float:none; width:100%; margin:0; padding:.35rem 0 .5rem; }
+    .admin-list-page .actions-nav > li:last-child .form-group,
+    .admin-list-page .actions-nav > li:last-child input[type="search"] { width:100%; max-width:none; box-sizing:border-box; }
+    #announcementTable.admin-list { display:block; border:0; border-radius:0; box-shadow:none; background:transparent; }
+    #announcementTable.admin-list tbody { padding:.25rem; background:#edf4f8; border-radius:18px; }
+    #announcementTable.admin-list thead { display:none; }
+    #announcementTable.admin-list tbody { display:block; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) {
+      display:grid;
+      grid-template-columns:2.75rem minmax(0,1fr) minmax(7.5rem, 9rem);
+      grid-template-areas:
+        "select title status"
+        "actions title status"
+        "actions meta date";
+      align-items:center;
+      margin:0 0 1rem;
+      border:1px solid #d9e5ee;
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow:0 12px 26px rgba(54,88,116,.08);
+    }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td {
+      display:block !important;
+      min-height:0;
+      padding:.8rem 1rem !important;
+      border:0 !important;
+      background:#fff !important;
+      white-space:normal;
+      overflow:visible;
+      text-overflow:clip;
+    }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td:nth-child(1) { grid-area:select; padding-right:0 !important; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.list-buttons-column { grid-area:actions; align-self:start; padding-top:1rem !important; padding-right:0 !important; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-id { grid-area:meta; color:#7b8b98 !important; font-size:.72rem; font-weight:700; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-id::before { content:'ID '; color:#a0adb7; letter-spacing:.08em; text-transform:uppercase; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-title { grid-area:title; align-self:stretch; display:flex !important; align-items:center; padding:1.15rem 1rem !important; color:#1d2a36 !important; font-size:1rem; font-weight:750; line-height:1.4; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-active { grid-area:status; align-self:stretch; padding:1.15rem .75rem !important; border-left:1px solid #edf2f5 !important; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-date_entered { grid-area:date; padding:.2rem .75rem 1rem !important; color:#687887 !important; font-size:.72rem; line-height:1.35; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-category { display:none !important; }
+    #announcementTable.admin-list .announcement-quarter-row { display:block; margin:1.25rem 0 .8rem; }
+    #announcementTable.admin-list .announcement-quarter-row th { display:block !important; width:auto; border-radius:15px; padding:1.25rem 1.2rem !important; }
+    #announcementTable.admin-list .announcement-quarter-row:first-child { margin-top:0; }
+    #announcementTable.admin-list .announcement-quarter-range { display:block; margin:.35rem 0 0; }
+    #announcementTable.admin-list .announcement-quarter-badge { margin:.65rem 0 0; }
+  }
   @media (max-width:1200px) { .admin-list th:nth-child(n+7), .admin-list td:nth-child(n+7) { display:none; } }
   @media (max-width:760px) {
     .new-entry-widget { align-items:stretch; flex-direction:column; }
-    .new-entry-widget .content-new-entry, .new-entry-widget .future-toggle { width:100%; }
+    .new-entry-widget .content-new-entry { width:100%; }
     .admin-list th:nth-child(n+5), .admin-list td:nth-child(n+5) { display:none; }
-    .admin-list th, .admin-list td { padding:.55rem .4rem !important; }
+    .announcement-quarter-row th { display:table-cell !important; }
   }
 </style>
-{% endblock %}
-
-{% block list_header %}
-<div class="new-entry-widget">
-  <div><span class="new-entry-eyebrow">Announcements</span><strong>Create something new</strong></div>
-  <a class="content-new-entry" href="{{ url_for('announcement.create_view', url='/admin/announcement/') }}">New announcement</a>
-</div>
-<div class="advanced-toggle-section">
-  {{ super() }}
-  <button class="advanced-toggle-btn" id="advancedToggle">Show Advanced Fields</button>
-</div>
 {% endblock %}

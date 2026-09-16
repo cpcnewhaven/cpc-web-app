@@ -199,7 +199,14 @@ class PodcastSeries(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    episodes = db.relationship('PodcastEpisode', back_populates='series')
+    # A series owns its episodes in the admin.  Deleting the series should
+    # not leave detached episodes behind (or make the normal Flask-Admin
+    # delete path behave differently from the custom bulk-delete path).
+    episodes = db.relationship(
+        'PodcastEpisode',
+        back_populates='series',
+        cascade='all, delete-orphan',
+    )
 
 class GalleryImage(db.Model):
     __tablename__ = 'gallery_images'
@@ -249,7 +256,12 @@ class TeachingSeries(db.Model):
     date_entered = db.Column(db.DateTime, default=datetime.utcnow)
     expires_at = db.Column(db.Date, nullable=True)
 
-    sessions = db.relationship('TeachingSeriesSession', back_populates='series', order_by='TeachingSeriesSession.number')
+    sessions = db.relationship(
+        'TeachingSeriesSession',
+        back_populates='series',
+        order_by='TeachingSeriesSession.number',
+        cascade='all, delete-orphan',
+    )
 
 
 class TeachingSeriesSession(db.Model):

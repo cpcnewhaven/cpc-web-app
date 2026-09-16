@@ -243,6 +243,8 @@ def ensure_db_columns():
         ],
         'podcast_episodes': [
             ('expires_at', 'DATE', 'DATE'),
+            ('source', 'VARCHAR(50) DEFAULT \'manual\'', 'VARCHAR(50) DEFAULT \'manual\''),
+            ('original_id', 'VARCHAR(200)', 'VARCHAR(200)'),
         ],
         'teaching_series_sessions': [
             ('session_date', 'DATE', 'DATE'),
@@ -3030,7 +3032,7 @@ def api_archive():
 
 # Authentication Routes
 def init_admin_users():
-    """Initialize the 5 admin accounts"""
+    """Initialize the standard admin accounts and local demo account."""
     admin_accounts = [
         {'username': 'alex', 'password': 'totalchrist135'},
         {'username': 'chris', 'password': 'chrisROCKS!@#'},
@@ -3038,6 +3040,9 @@ def init_admin_users():
         {'username': 'craig', 'password': 'mrCRAIG'},
         {'username': 'alexis', 'password': 'adminADMIN'}
     ]
+    # Keep the intentionally weak demo credentials out of hosted production.
+    if not _is_production:
+        admin_accounts.append({'username': 'demo', 'password': 'demo'})
     
     for account in admin_accounts:
         user = User.query.filter_by(username=account['username']).first()
@@ -3121,9 +3126,16 @@ def inject_current_user_metadata():
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
+<<<<<<< HEAD
         # Public feedback is available to every visitor in every environment.
         # This is deliberately unrelated to a client IP or preview session.
         'feedback_mode': True,
+=======
+        # Keep feedback convenient during local development, but invite-only
+        # in production so the public launcher is not exposed to every visitor.
+        'feedback_mode': (not _is_production) or bool(session.get('feedback_mode')),
+        'demo_account_enabled': not _is_production,
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
         'new_feedback_count': new_feedback_count,
     }
 
@@ -4810,10 +4822,11 @@ class GalleryImageView(AuthenticatedModelView):
         specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
         base = model.created or datetime.utcnow()
         model.expires_at = _compute_expires_at(preset, specific, base)
-        if form.tags.data:
-            # Convert comma-separated string to list
-            tags = [tag.strip() for tag in form.tags.data.split(',') if tag.strip()]
-            model.tags = tags
+        # Convert comma-separated input to JSON.  Explicitly clear the value
+        # when an editor removes all tags; otherwise an edit silently keeps
+        # the old tags because the JSON column is only updated when truthy.
+        raw_tags = (form.tags.data or '').strip()
+        model.tags = [tag.strip() for tag in raw_tags.split(',') if tag.strip()]
     
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected gallery images?')
     def bulk_delete(self, ids):

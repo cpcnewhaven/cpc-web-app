@@ -8,6 +8,7 @@
    --------------------------------------------------------------------------- */
 .admin-body,
 body.admin-body {
+<<<<<<< HEAD
   --admin-bg: #101923;
   --admin-panel: #15212d;
   --admin-panel-strong: #1b2a38;
@@ -21,10 +22,26 @@ body.admin-body {
   --cpc-blue-light: #8fb9df;
   --liquid-blue: #739fc4;
   --liquid-blue-bright: #b8d5ee;
+=======
+  --admin-bg: #f6f8fa;
+  --admin-panel: #ffffff;
+  --admin-panel-strong: #eef3f7;
+  --admin-border: #d9e1e8;
+  --admin-text: #1d2a36;
+  --admin-text-muted: #6e7d8b;
+  --admin-input-bg: #ffffff;
+  --admin-input-border: #cbd6df;
+  --cpc-blue: #3f8ed0;
+  --cpc-blue-dark: #2d6fa8;
+  --cpc-blue-light: #78b6e8;
+  --liquid-blue: #4e9bd8;
+  --liquid-blue-bright: #2f78b4;
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
   --radius: 8px;
   --radius-sm: 6px;
 
   /* Material Design 3 colors for dashboard */
+<<<<<<< HEAD
   --background: #101923;
   --on-background: rgba(255, 255, 255, 0.96);
   --surface-container: #1b2a38;
@@ -39,6 +56,22 @@ body.admin-body {
   --secondary: #9fb8a9;
   --tertiary: #b9afcf;
   --primary-dim: #5d8fb9;
+=======
+  --background: #f6f8fa;
+  --on-background: #1d2a36;
+  --surface-container: #ffffff;
+  --surface-container-high: #eef3f7;
+  --surface-container-highest: #e3ebf2;
+  --surface-container-low: #f8fafc;
+  --surface-bright: #ffffff;
+  --on-surface: #1d2a36;
+  --on-surface-variant: #6e7d8b;
+  --outline-variant: rgba(83, 105, 124, 0.18);
+  --primary: #3f8ed0;
+  --secondary: #6ca98b;
+  --tertiary: #7c8bc4;
+  --primary-dim: #2d6fa8;
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
 }
 
 /* ---------------------------------------------------------------------------
@@ -57,12 +90,12 @@ body.admin-body {
 }
 
 .admin-body a {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--admin-text-muted);
   text-decoration: none;
 }
 
 .admin-body a:hover {
-  color: #fff;
+  color: var(--cpc-blue-dark);
   text-decoration: underline;
 }
 

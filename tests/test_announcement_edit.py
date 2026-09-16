@@ -8,8 +8,8 @@ _database_file.close()
 os.environ["DATABASE_URL"] = f"sqlite:///{_database_file.name}"
 os.environ["SECRET_KEY"] = "announcement-edit-test"
 
-from app import app, db  # noqa: E402
-from models import Announcement  # noqa: E402
+from app import app, db, init_admin_users  # noqa: E402
+from models import Announcement, GalleryImage, TeachingSeries, TeachingSeriesSession  # noqa: E402
 from wtforms.validators import Optional  # noqa: E402
 
 
@@ -225,6 +225,58 @@ class AnnouncementEditTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Record does not exist.", body)
         self.assertNotIn("Editing Record", body)
+
+    def test_local_demo_account_can_log_in(self):
+        with app.app_context():
+            init_admin_users()
+        response = self.client.post(
+            "/admin/login?next=/admin/dashboard/",
+            data={"username": "demo", "password": "demo"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers["Location"], "/admin/dashboard/")
+
+    def test_gallery_edit_can_clear_existing_tags(self):
+        with app.app_context():
+            image = GalleryImage(
+                id=482,
+                name="Tagged image",
+                url="https://example.com/image.jpg",
+                tags=["worship", "summer"],
+            )
+            db.session.add(image)
+            db.session.commit()
+            gallery_view = next(
+                view for view in app.extensions["admin"][0]._views
+                if getattr(view, "endpoint", None) == "galleryimage"
+            )
+            form = gallery_view.edit_form(image)
+            with app.test_request_context(
+                "/admin/galleryimage/edit/", method="POST", data={"tags": ""}
+            ):
+                form.tags.data = ""
+                gallery_view.on_model_change(form, image, is_created=False)
+            db.session.commit()
+            db.session.expire_all()
+            self.assertEqual(db.session.get(GalleryImage, 482).tags, [])
+
+    def test_deleting_teaching_series_also_deletes_sessions(self):
+        with app.app_context():
+            series = TeachingSeries(id=483, title="Delete me")
+            series.sessions.append(
+                TeachingSeriesSession(number=1, title="Child session")
+            )
+            db.session.add(series)
+            db.session.commit()
+            session_id = series.sessions[0].id
+
+            teaching_view = next(
+                view for view in app.extensions["admin"][0]._views
+                if getattr(view, "endpoint", None) == "teachingseries"
+            )
+            self.assertTrue(teaching_view.delete_model(series))
+            self.assertIsNone(db.session.get(TeachingSeries, 483))
+            self.assertIsNone(db.session.get(TeachingSeriesSession, session_id))
 
 
 if __name__ == "__main__":

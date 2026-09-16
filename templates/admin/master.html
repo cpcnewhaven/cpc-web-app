@@ -5,12 +5,14 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
 <script id="tailwind-config">
     tailwind.config = {
         darkMode: "class",
         theme: {
             extend: {
                 colors: {
+<<<<<<< HEAD
                     "primary": "#8fb9df",
                     "primary-dim": "#5d8fb9",
                     "primary-fixed": "#b8d5ee",
@@ -36,6 +38,33 @@
                     "on-surface-variant": "#acbac7",
                     "outline": "#778898",
                     "outline-variant": "#46596a",
+=======
+                    "primary": "#3f8ed0",
+                    "primary-dim": "#2d6fa8",
+                    "primary-fixed": "#cfe8fb",
+                    "primary-container": "#dceefa",
+                    "secondary": "#6ca98b",
+                    "secondary-dim": "#4c866b",
+                    "secondary-fixed": "#dcefe4",
+                    "secondary-container": "#e4f2ea",
+                    "tertiary": "#7c8bc4",
+                    "tertiary-dim": "#5d6da8",
+                    "tertiary-fixed": "#e5e8f8",
+                    "tertiary-container": "#eef0fb",
+                    "surface": "#ffffff",
+                    "surface-dim": "#eef2f5",
+                    "surface-bright": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f8fafc",
+                    "surface-container": "#ffffff",
+                    "surface-container-high": "#eef3f7",
+                    "surface-container-highest": "#e3ebf2",
+                    "background": "#f6f8fa",
+                    "on-surface": "#1d2a36",
+                    "on-surface-variant": "#6e7d8b",
+                    "outline": "#8fa1b0",
+                    "outline-variant": "#d9e1e8",
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
                 },
                 fontFamily: {
                     "headline": ["Manrope"],
@@ -48,10 +77,17 @@
     }
 </script>
 <style>
+<<<<<<< HEAD
     body { font-family: 'Inter', sans-serif; background-color: #101923; color: #e3eaf0; }
     .font-manrope { font-family: 'Manrope', sans-serif; }
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     .admin-body { background-color: #101923; }
+=======
+    body { font-family: 'Inter', sans-serif; background-color: #f6f8fa; color: #1d2a36; }
+    .font-manrope { font-family: 'Manrope', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .admin-body { background-color: #f6f8fa; }
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
     /* Overrides for Flask-Admin default styles that might bleed in */
     .container { width: 100% !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
     .navbar { display: none !important; } /* Hide old navbar */
@@ -59,20 +95,35 @@
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
     select,
     textarea {
+<<<<<<< HEAD
         background-color: #15212d !important;
         color: #e3eaf0 !important;
         border-color: #46596a !important;
+=======
+        background-color: #ffffff !important;
+        color: #1d2a36 !important;
+        border-color: #cbd6df !important;
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
     }
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus,
     select:focus,
     textarea:focus {
+<<<<<<< HEAD
         background-color: #15212d !important;
         border-color: #8fb9df !important;
+=======
+        background-color: #ffffff !important;
+        border-color: #3f8ed0 !important;
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
         outline: none !important;
         box-shadow: none !important;
     }
     /* Ensure select option text is readable */
+<<<<<<< HEAD
     option { background-color: #1b2a38; color: #e3eaf0; }
+=======
+    option { background-color: #ffffff; color: #1d2a36; }
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
@@ -628,9 +679,30 @@
         document.addEventListener('DOMContentLoaded', addBannerMenuItem);
     })();
 </script>
+<script>
+    (function () {
+        var button = document.getElementById('adminNotificationButton');
+        var menu = document.getElementById('adminNotificationMenu');
+        if (!button || !menu) return;
+        button.addEventListener('click', function (event) {
+            event.stopPropagation();
+            var isOpen = !menu.hasAttribute('hidden');
+            if (isOpen) menu.setAttribute('hidden', '');
+            else menu.removeAttribute('hidden');
+            button.setAttribute('aria-expanded', String(!isOpen));
+        });
+        document.addEventListener('click', function (event) {
+            if (!menu.contains(event.target) && event.target !== button) {
+                menu.setAttribute('hidden', '');
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
+    })();
+</script>
 {% endblock %}
 
 {% block page_body %}
+{% set admin_notifications = get_flashed_messages(with_categories=true) %}
 <div class="flex min-h-screen bg-background text-on-surface selection:bg-primary/30">
     <!-- SideNavBar (The Anchor) -->
     <aside class="h-full w-64 fixed left-0 top-0 z-40 bg-surface flex flex-col py-6 border-r border-outline-variant/30 shadow-2xl admin-sidebar">
@@ -792,9 +864,25 @@
                         <span class="admin-feedback-top-label">Feedback</span>
                         {% if new_feedback_count %}<span class="admin-feedback-top-count">{{ new_feedback_count }}</span>{% endif %}
                     </a>
-                    <button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface hover:text-primary transition-colors group">
+                    <div class="admin-notification-wrap">
+                    <button type="button" id="adminNotificationButton" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface hover:text-primary transition-colors group" aria-label="Notifications{% if admin_notifications %}; {{ admin_notifications|length }} new{% endif %}" aria-expanded="false">
                         <span class="material-symbols-outlined text-xl">notifications</span>
+                        {% if admin_notifications %}<span class="admin-notification-count">{{ admin_notifications|length }}</span>{% endif %}
                     </button>
+                    <div id="adminNotificationMenu" class="admin-notification-menu" hidden>
+                        <div class="admin-notification-title">Notifications</div>
+                        {% if admin_notifications %}
+                            {% for category, message in admin_notifications %}
+                            <div class="admin-notification-item admin-notification-{{ category }}">
+                                <span class="material-symbols-outlined">{% if category == 'error' %}error{% elif category == 'warning' %}warning{% else %}check_circle{% endif %}</span>
+                                <span>{{ message }}</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="admin-notification-empty">No new notifications.</div>
+                        {% endif %}
+                    </div>
+                    </div>
                     <button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface hover:text-primary transition-colors">
                         <span class="material-symbols-outlined text-xl">settings</span>
                     </button>
@@ -810,11 +898,15 @@
         </header>
 
         <!-- Form Content Container -->
+<<<<<<< HEAD
         <div class="p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if 'create' not in request.path and 'edit' not in request.path %}admin-list-page{% endif %}">
             {% block messages %}
                 {{ layout.messages() }}
             {% endblock %}
             
+=======
+        <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if 'create' not in request.path and 'edit' not in request.path %}admin-list-page{% endif %} {% if request.endpoint == 'dashboard.index' %}dashboard-page{% endif %}">
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
             {{ super() }}
         </div>
         
@@ -911,6 +1003,18 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='js/admin-wysiwyg.js') }}"></script>
 <style>
+    .admin-notification-wrap { position: relative; }
+    .admin-notification-count { position: absolute; top: -3px; right: -3px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: #e58a63; color: #fff; font: 800 10px/17px Inter, sans-serif; text-align: center; }
+    .admin-notification-menu { position: absolute; top: calc(100% + .7rem); right: 0; z-index: 2000; width: min(340px, calc(100vw - 2rem)); padding: .45rem; border: 1px solid #d9e1e8; border-radius: 14px; background: rgba(255,255,255,.98); box-shadow: 0 16px 38px rgba(30,55,75,.18); color: #1d2a36; }
+    .admin-notification-menu[hidden] { display: none; }
+    .admin-notification-title { padding: .7rem .8rem .55rem; color: #6e7d8b; font: 800 10px/1.2 Inter, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+    .admin-notification-item { display: flex; align-items: flex-start; gap: .55rem; padding: .7rem .8rem; border-radius: 9px; font-size: .78rem; line-height: 1.35; }
+    .admin-notification-item:hover { background: #f1f6fa; }
+    .admin-notification-item .material-symbols-outlined { color: #5b9a7a; font-size: 18px; }
+    .admin-notification-error .material-symbols-outlined { color: #c76565; }
+    .admin-notification-warning .material-symbols-outlined { color: #c69442; }
+    .admin-notification-empty { padding: .8rem; color: #6e7d8b; font-size: .78rem; }
+
     .admin-feedback-top-button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid rgba(105,218,255,.32);border-radius:999px;background:#102645;color:#dbe6ff;text-decoration:none;font:700 11px Inter,sans-serif;letter-spacing:.04em;transition:all .2s}.admin-feedback-top-button:hover{color:#69daff;border-color:#69daff;background:#152c4e}.admin-feedback-top-count,.admin-feedback-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ffb020;color:#071a31;font:800 11px Inter,sans-serif}.admin-feedback-badge{height:18px;min-width:18px;background:#ffb020;color:#071a31}.admin-feedback-top-label{display:inline}@media(max-width:800px){.admin-feedback-top-label{display:none}.admin-feedback-top-button{padding:9px}}
     @media (max-width: 760px) {
         .admin-sidebar { display:none !important; }
@@ -918,16 +1022,26 @@
         header.left-64 { left: 0 !important; padding-left: 1rem !important; padding-right: 1rem !important; }
     }
 
+<<<<<<< HEAD
     /* Keep navigation visually anchored without making content panels feel dim. */
     .admin-sidebar { background: #05131f !important; }
     .admin-sidebar nav > a { border-bottom: 1px solid rgba(255,255,255,.035); }
     .admin-sidebar nav > div { border-top: 1px solid rgba(255,255,255,.1); margin-top: .45rem; }
     .admin-sidebar nav > div > div { color: rgba(190,220,245,.78) !important; }
+=======
+    .admin-sidebar { background: #ffffff !important; box-shadow: 8px 0 28px rgba(30, 55, 75, .06) !important; }
+    .admin-sidebar nav > a { border-bottom: 1px solid rgba(83,105,124,.08); }
+    .admin-sidebar nav > div { border-top: 1px solid rgba(83,105,124,.12); margin-top: .45rem; }
+    .admin-sidebar nav > div > div { color: #7890a2 !important; }
+    .admin-sidebar .text-primary { color: #3f8ed0 !important; }
+    .admin-sidebar .bg-surface-container-high { background: #e8f2fb !important; }
+    .admin-sidebar .border-primary { border-color: #3f8ed0 !important; }
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
 
     .mobile-menu-button, .mobile-nav-backdrop { display:none; }
     @media (max-width: 760px) {
-        .mobile-menu-button { display:flex; align-items:center; justify-content:center; width:2.7rem; height:2.7rem; border:1px solid rgba(180,220,245,.25); border-radius:.75rem; background:#183957; color:#eaf6ff; cursor:pointer; }
-        .mobile-nav-backdrop { position:fixed; inset:0; z-index:60; background:rgba(2,12,24,.72); backdrop-filter:blur(3px); }
+        .mobile-menu-button { display:flex; align-items:center; justify-content:center; width:2.7rem; height:2.7rem; border:1px solid #cbd6df; border-radius:.75rem; background:#ffffff; color:#3f8ed0; cursor:pointer; }
+        .mobile-nav-backdrop { position:fixed; inset:0; z-index:60; background:rgba(31,46,61,.22); backdrop-filter:blur(3px); }
         .mobile-nav-backdrop.is-open { display:block; }
         .admin-sidebar.mobile-nav-open { display:flex !important; width: min(18rem, 86vw) !important; z-index:70 !important; box-shadow:1.5rem 0 3rem rgba(0,0,0,.4); }
         header.left-64 { z-index:50; }
@@ -935,11 +1049,31 @@
 
     @media (min-width: 761px) { .mobile-menu-button { display:none !important; } }
 
+<<<<<<< HEAD
     /* The top app bar is fixed, so dashboard and list content needs its own clear space. */
     .admin-list-page { padding-top: 7rem !important; }
+=======
+    .admin-list-page { padding-top: 2rem !important; }
+    .dashboard-page { padding-top: 0 !important; }
+>>>>>>> 14e1367 (Polish admin dashboard and announcement workflows)
     @media (max-width: 760px) {
         .admin-list-page { padding-top: 1.25rem !important; padding-left: .75rem !important; padding-right: .75rem !important; }
     }
+
+    header.fixed {
+        background: rgba(255,255,255,.92) !important;
+        border-color: #d9e1e8 !important;
+        box-shadow: 0 10px 28px rgba(30,55,75,.08) !important;
+    }
+    .admin-feedback-top-button { border-color: #c5dced !important; background: #f5faff !important; color: #2d6fa8 !important; }
+    .admin-feedback-top-button:hover { background: #e8f2fb !important; border-color: #3f8ed0 !important; color: #2d6fa8 !important; }
+    #newEntryOverlay .bg-surface\/90 { background: rgba(255,255,255,.88) !important; }
+    #newEntryOverlay [class*="bg-surface-container"] { box-shadow: 0 24px 70px rgba(30,55,75,.16); }
+    #adminCreateDropdown { background: rgba(255,255,255,.98) !important; border-color: #d9e1e8 !important; box-shadow: 0 14px 32px rgba(30,55,75,.14) !important; }
+    #adminCreateDropdown .admin-create-item { color: #1d2a36 !important; }
+    #adminCreateDropdown .admin-create-item:hover { background: #eef6fc !important; color: #2d6fa8 !important; }
+    .dashboard-shell [class*="scale-"],
+    .dashboard-shell [class*="translate-"] { transform: none !important; }
 
     /* Create dropdown above navbar (1000) and modals (1050) */
     .admin-create-wrap {
