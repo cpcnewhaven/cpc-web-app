@@ -196,10 +196,16 @@
   .announcement-direct-editor > p strong { color: #1d2a36; }
   .announcement-direct-editor form { width: 100%; }
   .announcement-direct-editor fieldset { border: 0 !important; border-top: 1px solid #cbd6df !important; border-radius: 0 !important; padding: 1.5rem 0 !important; margin-bottom: 0 !important; }
-  .announcement-direct-editor legend { color: #426276 !important; font-weight: 800; }
-  .announcement-direct-editor label { color: #27475d !important; font-size: .95rem !important; }
+  /* These controls previously retained their dark-theme inline colors. Keep
+     every field label readable when the admin shell is in light mode. */
+  .admin-body .announcement-direct-editor legend,
+  .admin-body .announcement-direct-editor fieldset legend { color: #34566d !important; font-weight: 800; }
+  .admin-body .announcement-direct-editor label,
+  .admin-body .announcement-direct-editor .form-group > label,
+  .admin-body .announcement-direct-editor fieldset > div > div > label { color: #1d3d52 !important; font-size: .95rem !important; font-weight: 700 !important; }
+  .admin-body .announcement-direct-editor label span { color: #b42318 !important; }
   .announcement-direct-editor input:not([type="checkbox"]), .announcement-direct-editor select, .announcement-direct-editor textarea { background: #fff !important; border-color: #aebfcb !important; color: #1d2a36 !important; }
-  .announcement-direct-editor input::placeholder, .announcement-direct-editor textarea::placeholder { color: #718594 !important; opacity: 1; }
+  .announcement-direct-editor input::placeholder, .announcement-direct-editor textarea::placeholder { color: #607888 !important; opacity: 1; }
   .announcement-direct-editor fieldset > div,
   .announcement-direct-editor fieldset [style*="grid-template-columns"] { display: block !important; }
   .announcement-direct-editor fieldset > div > div { width: 100%; margin-bottom: 1.1rem; }
