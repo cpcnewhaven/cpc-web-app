@@ -26,9 +26,12 @@
   .content-new-entry { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:.75rem 1.35rem; border-radius:.7rem; background:#3fa6eb; color:#06203a !important; font-weight:800; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none !important; box-shadow:0 8px 20px rgba(63,166,235,.2); }
   .content-new-entry:hover { background:#66bbf3; transform:translateY(-1px); }
   .admin-list { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; border:1px solid rgba(120,180,220,.16); border-radius:12px; overflow:hidden; }
+  {% if current_user.is_authenticated and ((current_user.full_name or '')|lower == 'alex gonzalez' or (current_user.username or '')|lower == 'alex gonzalez') %}
+  .admin-body .table-responsive { background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+  .admin-list, .admin-list tbody, .admin-list tbody tr, .admin-list tbody td { background:transparent !important; }
+  {% endif %}
   .admin-list thead th { background:#294461 !important; color:#d9e9f5 !important; }
-  .admin-list tbody tr:nth-child(odd) td { background:#103247 !important; }
-  .admin-list tbody tr:nth-child(even) td { background:#0d2a3d !important; }
+  .admin-list tbody tr:hover td { background:rgba(34,139,230,.08) !important; }
   .admin-list th, .admin-list td { overflow:hidden; text-overflow:ellipsis; }
   @media (max-width: 1200px) {
     .admin-list th:nth-child(n+6), .admin-list td:nth-child(n+6) { display:none; }

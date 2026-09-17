@@ -972,6 +972,18 @@
     .admin-sidebar .bg-surface-container-high { background: #e8f2fb !important; }
     .admin-sidebar .border-primary { border-color: #3f8ed0 !important; }
 
+    /* Keep the admin navigation compact on desktop. */
+    @media (min-width: 761px) {
+        .admin-sidebar { width: 12rem !important; padding-top: .85rem !important; padding-bottom: .85rem !important; }
+        .admin-sidebar > div:first-child { padding-left: .75rem !important; padding-right: .75rem !important; margin-bottom: .7rem !important; }
+        .admin-sidebar nav { padding-left: .35rem !important; padding-right: .35rem !important; }
+        .admin-sidebar nav > a { padding: .38rem .55rem !important; font-size: .58rem !important; letter-spacing: .07em !important; }
+        .admin-sidebar nav > div { padding-top: .65rem !important; padding-bottom: .2rem !important; padding-left: .55rem !important; padding-right: .55rem !important; margin-top: .25rem !important; }
+        .admin-sidebar > div:last-child { padding-left: .75rem !important; padding-right: .75rem !important; }
+        main.ml-64 { margin-left: 12rem !important; }
+        header.left-64 { left: 12rem !important; }
+    }
+
     .mobile-menu-button, .mobile-nav-backdrop { display:none; }
     @media (max-width: 760px) {
         .mobile-menu-button { display:flex; align-items:center; justify-content:center; width:2.7rem; height:2.7rem; border:1px solid #cbd6df; border-radius:.75rem; background:#ffffff; color:#3f8ed0; cursor:pointer; }
