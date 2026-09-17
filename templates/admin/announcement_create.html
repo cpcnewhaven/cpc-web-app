@@ -74,9 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
     /* The create screen is a focused editor: one readable column, with the
        optional field groups stacked below the core content. */
     .announcement-create-wrap { max-width: 920px; margin: 0 auto; padding-bottom: 5rem; }
-    .announcement-site-link { margin: 0 0 1rem; font-size: .9rem; }
-    .announcement-intro { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
-    .announcement-intro p { color: rgba(255,255,255,.78); margin: 0; font-size: .95rem; }
+    .announcement-site-link { margin: 0 0 1rem; font-size: .95rem; font-weight: 600; }
+    .announcement-site-link a { color: #216b9e !important; }
+    .announcement-intro { background: #eaf5fc; border: 1px solid #b8d9ed; border-radius: 8px; padding: 1rem 1.15rem; margin-bottom: 1.5rem; }
+    .announcement-intro p { color: #27475d; margin: 0; font-size: 1rem; line-height: 1.6; }
+    .announcement-intro strong { color: #17384f !important; }
     .announcement-form { max-width: 760px; margin: 0 auto; }
     .announcement-form .row { display: block; margin-left: 0; margin-right: 0; }
     .announcement-form .col-md-6,
@@ -87,10 +89,10 @@ document.addEventListener('DOMContentLoaded', function() {
     .announcement-form .form-control,
     .announcement-form select,
     .announcement-form textarea { width: 100%; box-sizing: border-box; }
-    .announcement-form fieldset { margin-bottom: 1.5rem; padding: 1.25rem 1.5rem; border-color: rgba(255,255,255,.12); }
-    .announcement-form fieldset legend { padding: 0 .5rem; color: rgba(255,255,255,.62); font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; }
+    .announcement-form fieldset { margin-bottom: 1.5rem; padding: 1.25rem 1.5rem; border-color: #cbd6df; background: #fff; border-radius: 8px; }
+    .announcement-form fieldset legend { padding: 0 .5rem; color: #426276; font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
     .announcement-form textarea { min-height: 170px; resize: vertical; }
-    .announcement-form .submit-row { position: sticky; bottom: 0; z-index: 5; display: flex; gap: .75rem; align-items: center; padding: 1rem 0; margin-top: 1rem; background: #081b2d; border-top: 1px solid rgba(255,255,255,.12); }
+    .announcement-form .submit-row { position: sticky; bottom: 0; z-index: 5; display: flex; gap: .75rem; align-items: center; padding: 1rem 0; margin-top: 1rem; background: #f6f8fa; border-top: 1px solid #cbd6df; }
     .announcement-form .submit-row input { margin: 0 .5rem 0 0; }
     .announcement-form input[name="_save_and_publish"] { order: 2; background: linear-gradient(135deg,#4aaaf0,#2586d0) !important; border: 0 !important; }
     .announcement-form .submit-row input[type="submit"]:not([name]) { order: 1; }

@@ -189,9 +189,17 @@
 {% block tail %}
 {{ super() }}
 <style>
-  .announcement-direct-editor { max-width: 820px !important; margin: 0 auto !important; }
+  .announcement-direct-editor { max-width: 820px !important; margin: 0 auto !important; color: #1d2a36; }
+  .announcement-direct-editor h2 { color: #17384f !important; font-size: 1.8rem; letter-spacing: -.02em; }
+  .announcement-direct-editor > div:first-child a { color: #426276 !important; font-weight: 600; }
+  .announcement-direct-editor > p { color: #536b7b !important; font-size: .98rem !important; line-height: 1.55; }
+  .announcement-direct-editor > p strong { color: #1d2a36; }
   .announcement-direct-editor form { width: 100%; }
-  .announcement-direct-editor fieldset { border: 0 !important; border-top: 1px solid rgba(255,255,255,.14) !important; border-radius: 0 !important; padding: 1.5rem 0 !important; margin-bottom: 0 !important; }
+  .announcement-direct-editor fieldset { border: 0 !important; border-top: 1px solid #cbd6df !important; border-radius: 0 !important; padding: 1.5rem 0 !important; margin-bottom: 0 !important; }
+  .announcement-direct-editor legend { color: #426276 !important; font-weight: 800; }
+  .announcement-direct-editor label { color: #27475d !important; font-size: .95rem !important; }
+  .announcement-direct-editor input:not([type="checkbox"]), .announcement-direct-editor select, .announcement-direct-editor textarea { background: #fff !important; border-color: #aebfcb !important; color: #1d2a36 !important; }
+  .announcement-direct-editor input::placeholder, .announcement-direct-editor textarea::placeholder { color: #718594 !important; opacity: 1; }
   .announcement-direct-editor fieldset > div,
   .announcement-direct-editor fieldset [style*="grid-template-columns"] { display: block !important; }
   .announcement-direct-editor fieldset > div > div { width: 100%; margin-bottom: 1.1rem; }
@@ -202,7 +210,9 @@
   .announcement-direct-editor fieldset:last-of-type label { display: flex !important; align-items: center; gap: .55rem; width: 100%; margin-bottom: .8rem; }
   .announcement-direct-editor textarea { min-height: 170px; }
   .announcement-direct-editor .form-group { width: 100%; }
-  .announcement-direct-editor form > div:last-child { display: flex !important; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.14); }
+  .announcement-direct-editor form > div:last-child { display: flex !important; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid #cbd6df; }
+  .announcement-direct-editor form > div:last-child button[type="submit"]:not([name]) { background: #fff !important; border-color: #9eb2c0 !important; color: #27475d !important; }
+  .announcement-direct-editor form > div:last-child a { color: #426276 !important; font-weight: 600; }
   @media (max-width:600px) { .announcement-direct-editor { padding: 0 .75rem !important; } .announcement-direct-editor form > div:last-child { flex-direction:column; } .announcement-direct-editor form > div:last-child button, .announcement-direct-editor form > div:last-child a { width:100%; justify-content:center; text-align:center; } }
 </style>
 {% endblock %}
