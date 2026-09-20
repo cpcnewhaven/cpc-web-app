@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ resource.title }} - CPC New Haven{% endblock %}
+{% block meta_description %}{{ resource.intro }}{% endblock %}
+{% block og_title %}{{ resource.title }} — CPC New Haven{% endblock %}
+{% block og_description %}{{ resource.intro }}{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/resources/{{ slug }}{% endblock %}
+
+{% block head %}
+<style>
+.resource-detail { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 4rem; color: var(--surface-text); }
+.resource-detail__back { display: inline-block; margin-bottom: 1.25rem; color: var(--surface-accent); font-weight: 600; text-decoration: none; }
+.resource-detail__card { padding: clamp(1.4rem, 4vw, 2.5rem); background: var(--surface-bg); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); box-shadow: var(--surface-shadow); }
+.resource-detail h1 { margin: 0 0 .75rem; font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.15; }
+.resource-detail__intro, .resource-detail__note { color: var(--surface-muted); font-size: 1.05rem; line-height: 1.65; }
+.resource-detail__note { margin-top: 1.25rem; padding: 1rem; border-left: 3px solid var(--surface-accent); background: var(--surface-accent-soft); }
+.resource-detail__schedule { margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--surface-border); border-radius: .5rem; }
+.resource-detail__schedule h2, .resource-detail__links h2 { font-size: 1.1rem; margin: 0 0 .75rem; }
+.resource-detail__schedule p { margin: .35rem 0; color: var(--surface-muted); }
+.resource-detail__links { margin-top: 1.75rem; }
+.resource-detail__links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .7rem; }
+.resource-detail__links a { display: block; padding: .9rem 1rem; color: var(--surface-text); text-decoration: none; border: 1px solid var(--surface-border); border-radius: .5rem; background: var(--surface-bg-hover); }
+.resource-detail__links a:hover { border-color: var(--surface-accent); }
+.resource-detail__links strong, .resource-detail__links span { display: block; }
+.resource-detail__links span { margin-top: .2rem; color: var(--surface-muted); font-size: .92rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="resource-detail">
+  <a class="resource-detail__back" href="{{ url_for('resources') }}">← All resources</a>
+  <article class="resource-detail__card">
+    <h1>{{ resource.title }}</h1>
+    <p class="resource-detail__intro">{{ resource.intro }}</p>
+    {% if resource.schedule %}
+      {% if active_schedule == 'summer' %}
+        {% set prayer_time = site_content.get('service_summer_prayer_time', '') %}
+      {% else %}
+        {% set prayer_time = site_content.get('service_prayer_time', '') %}
+      {% endif %}
+      {% set prayer_label = site_content.get('service_prayer_label', 'Prayer in the Parlor') %}
+      <section class="resource-detail__schedule">
+        <h2>Sunday prayer</h2>
+        {% if prayer_time and prayer_time.strip().lower() != 'no' %}
+          <p><strong>{{ prayer_time }}</strong> — {{ prayer_label }}</p>
+        {% else %}
+          <p>The current Sunday prayer time is listed on the Plan Your Visit page.</p>
+        {% endif %}
+      </section>
+    {% endif %}
+    {% if resource.note %}<p class="resource-detail__note">{{ resource.note }}</p>{% endif %}
+    {% if resource.links %}
+      <section class="resource-detail__links">
+        <h2>Available resources</h2>
+        <ul>
+          {% for title, url, description in resource.links %}
+            <li><a href="{{ url }}"><strong>{{ title }}</strong><span>{{ description }}</span></a></li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+  </article>
+</main>
+{% endblock %}

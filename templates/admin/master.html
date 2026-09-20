@@ -11,31 +11,31 @@
         theme: {
             extend: {
                 colors: {
-                    "primary": "#8fb9df",
-                    "primary-dim": "#5d8fb9",
-                    "primary-fixed": "#b8d5ee",
-                    "primary-container": "#173b5d",
-                    "secondary": "#9fb8a9",
-                    "secondary-dim": "#789789",
-                    "secondary-fixed": "#c4d7cb",
-                    "secondary-container": "#24463b",
-                    "tertiary": "#b9afcf",
-                    "tertiary-dim": "#9387b0",
-                    "tertiary-fixed": "#d6cee7",
-                    "tertiary-container": "#3b3451",
-                    "surface": "#101923",
-                    "surface-dim": "#101923",
-                    "surface-bright": "#25384a",
-                    "surface-container-lowest": "#000000",
-                    "surface-container-low": "#15212d",
-                    "surface-container": "#1b2a38",
-                    "surface-container-high": "#223445",
-                    "surface-container-highest": "#2b4054",
-                    "background": "#101923",
-                    "on-surface": "#e3eaf0",
-                    "on-surface-variant": "#acbac7",
-                    "outline": "#778898",
-                    "outline-variant": "#46596a",
+                    "primary": "#174c74",
+                    "primary-dim": "#28658e",
+                    "primary-fixed": "#d9eaf4",
+                    "primary-container": "#e7f1f7",
+                    "secondary": "#28755d",
+                    "secondary-dim": "#4c957e",
+                    "secondary-fixed": "#e1f1e9",
+                    "secondary-container": "#e7f3ed",
+                    "tertiary": "#735b97",
+                    "tertiary-dim": "#9379ba",
+                    "tertiary-fixed": "#eee8f6",
+                    "tertiary-container": "#f0ebf7",
+                    "surface": "#ffffff",
+                    "surface-dim": "#eef3f6",
+                    "surface-bright": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f7f9fa",
+                    "surface-container": "#ffffff",
+                    "surface-container-high": "#f0f5f7",
+                    "surface-container-highest": "#e7eef2",
+                    "background": "#f4f7f8",
+                    "on-surface": "#14212b",
+                    "on-surface-variant": "#63727d",
+                    "outline": "#9aabb5",
+                    "outline-variant": "#d8e0e5",
                 },
                 fontFamily: {
                     "headline": ["Manrope"],
@@ -48,10 +48,10 @@
     }
 </script>
 <style>
-    body { font-family: 'Inter', sans-serif; background-color: #101923; color: #e3eaf0; }
+    body { font-family: 'Inter', sans-serif; background-color: #f4f7f8; color: #14212b; }
     .font-manrope { font-family: 'Manrope', sans-serif; }
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .admin-body { background-color: #101923; }
+    .admin-body { background-color: #f4f7f8; }
     /* Overrides for Flask-Admin default styles that might bleed in */
     .container { width: 100% !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
     .navbar { display: none !important; } /* Hide old navbar */
@@ -59,20 +59,20 @@
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
     select,
     textarea {
-        background-color: #15212d !important;
-        color: #e3eaf0 !important;
-        border-color: #46596a !important;
+        background-color: #fff !important;
+        color: #14212b !important;
+        border-color: #d8e0e5 !important;
     }
     input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus,
     select:focus,
     textarea:focus {
-        background-color: #15212d !important;
-        border-color: #8fb9df !important;
+        background-color: #fff !important;
+        border-color: #174c74 !important;
         outline: none !important;
         box-shadow: none !important;
     }
     /* Ensure select option text is readable */
-    option { background-color: #1b2a38; color: #e3eaf0; }
+    option { background-color: #fff; color: #14212b; }
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
@@ -920,6 +920,10 @@
 
     /* Keep navigation visually anchored without making content panels feel dim. */
     .admin-sidebar { background: #05131f !important; }
+    .admin-sidebar .text-on-surface-variant { color: rgba(211, 227, 238, .72) !important; }
+    .admin-sidebar .text-on-surface { color: #f5f9fc !important; }
+    .admin-sidebar .hover\\:text-primary:hover, .admin-sidebar .text-primary { color: #9fc6df !important; }
+    .admin-sidebar .hover\\:bg-surface-container:hover, .admin-sidebar .bg-surface-container-high { background: rgba(159, 198, 223, .11) !important; }
     .admin-sidebar nav > a { border-bottom: 1px solid rgba(255,255,255,.035); }
     .admin-sidebar nav > div { border-top: 1px solid rgba(255,255,255,.1); margin-top: .45rem; }
     .admin-sidebar nav > div > div { color: rgba(190,220,245,.78) !important; }

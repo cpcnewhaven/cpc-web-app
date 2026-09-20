@@ -986,6 +986,7 @@
     .adult-study-feature h2 { margin: 0 0 .55rem; color: var(--series-text); font: 750 clamp(1.45rem, 3vw, 2rem)/1.15 Manrope, sans-serif; letter-spacing: -.035em; }
     .adult-study-feature p, .adult-study-card p { margin: 0; color: var(--series-muted); line-height: 1.6; }
     .adult-study-feature__marks { display: grid; align-content: center; gap: .45rem; padding: 1rem; border: 1px solid var(--series-border); border-radius: 12px; background: var(--series-surface-hover); color: var(--series-text); font-size: .82rem; font-weight: 700; }
+    .adult-study-feature__image { width: 100%; min-height: 190px; border: 1px solid var(--series-border); border-radius: 12px; object-fit: cover; }
     .adult-study-feature__marks span::before { content: '•'; margin-right: .45rem; color: var(--series-accent); }
     .adult-studies__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; }
     .adult-studies__archive-label { display: flex; align-items: center; gap: .7rem; margin: .35rem 0 -.1rem; color: var(--series-muted); font-size: .76rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
@@ -1106,18 +1107,21 @@
     <div class="compact-hero" style="grid-column: 1 / -1; margin-bottom: 0.5rem;">
         <p class="compact-hero__eyebrow">Teaching Series</p>
         <h1>Adult Sunday Studies</h1>
-        <p>Explore CPC’s Sunday courses, with class materials and recordings gathered in one place.</p>
+        <p>Adult Sunday Studies meet around Scripture, doctrine, and life together. Choose a course to explore its full class material, handouts, and recordings.</p>
     </div>
 
     <div class="adult-studies">
-        <div class="adult-studies__intro">Adult Sunday Studies meet around Scripture, doctrine, and life together. Choose a course to explore its full class material, handouts, and recordings.</div>
         <article class="adult-study-feature">
             <div>
                 <p class="adult-study-feature__eyebrow">Featured course · Beginning next week</p>
                 <h2>The Wonders of Communal Worship</h2>
                 <p>This class will be a great opportunity to discuss all that God promises to do through communal worship, and why we worship the way we do at CPC. We’ll study exciting theology, insight into how we’re created, principles for deciding worship styles, and more. All are welcome.</p>
+                <a class="adult-study-link" href="{{ url_for('wonders_of_communal_worship') }}">Explore the course →</a>
             </div>
-            <div class="adult-study-feature__marks" aria-label="Class details"><span>Sunday mornings</span><span>9:30am · before service</span><span>Fellowship Hall</span></div>
+            <div>
+                <img class="adult-study-feature__image" src="https://storage.googleapis.com/cpc-public-website/adult-studies/fall2026/THE%20WONDERS%20OF%20COMMUNAL%20WORSHIP.jpg" alt="The Wonders of Communal Worship">
+                <div class="adult-study-feature__marks" aria-label="Class details"><span>Sunday mornings</span><span>9:30am · before service</span><span>Fellowship Hall</span></div>
+            </div>
         </article>
         <div class="adult-studies__archive-label">Previous courses</div>
         <div class="adult-studies__grid">

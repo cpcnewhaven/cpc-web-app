@@ -1,226 +1,57 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-    <div class="space-y-10">
-        <!-- Dashboard Header -->
-        <div class="bg-surface-container rounded-3xl p-10 border border-outline-variant/10 shadow-xl relative overflow-hidden">
-             <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
-             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                <div>
-                    <h1 class="font-manrope text-4xl font-black text-primary tracking-tight">System Dashboard</h1>
-                    <div class="flex items-center gap-4 mt-3">
-                        <div class="flex items-center gap-2 text-on-surface-variant font-bold text-[10px] uppercase tracking-[0.2em] bg-surface-container-highest px-3 py-1.5 rounded-lg border border-outline-variant/10">
-                            {{ today.strftime('%A, %B %d, %Y') }}
-                        </div>
-                        {% if current_user_last_login %}
-                            <div class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em]">
-                                Last Login: <span class="text-on-surface-variant/70">{{ current_user_last_login.strftime('%b %d, %I:%M %p') }}</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <button onclick="toggleNewEntryOverlay()" class="px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 flex items-center gap-2">
-                    Initiate New Entry
-                </button>
-             </div>
+<div class="admin-dashboard space-y-6">
+    <section class="dashboard-welcome">
+        <div>
+            <p class="dashboard-eyebrow">CPC New Haven · Content Console</p>
+            <h1>Good morning{% if session.get('username') %}, {{ session.get('username')|title }}{% endif %}.</h1>
+            <p class="dashboard-subtitle">A clear view of today’s church content and the work that needs attention.</p>
         </div>
-
-        <!-- Quick Stats Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <a href="{{ url_for('announcement.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-primary group-hover:scale-110 transition-transform">{{ stats.announcements }}</div>
-                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Announcements</div>
-            </a>
-            <a href="{{ url_for('sermon.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-tertiary/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-tertiary group-hover:scale-110 transition-transform">{{ stats.sermons }}</div>
-                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Sunday Sermons</div>
-            </a>
-            <a href="{{ url_for('podcastepisode.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-secondary/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-secondary group-hover:scale-110 transition-transform">{{ stats.podcast_episodes }}</div>
-                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Podcasts</div>
-            </a>
-            <a href="{{ url_for('galleryimage.index_view') }}" class="group bg-surface-container rounded-2xl p-6 border border-outline-variant/10 hover:border-primary-dim/30 transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-3xl font-manrope font-black text-primary-dim group-hover:scale-110 transition-transform">{{ stats.gallery_images }}</div>
-                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Gallery Assets</div>
-            </a>
-            <a href="{{ url_for('history.index') }}" class="group bg-surface-container-highest/30 rounded-2xl p-6 border border-outline-variant/10 hover:bg-surface-container-highest transition-all flex flex-col items-center text-center gap-3">
-                <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Audit Logs</div>
-            </a>
+        <div class="dashboard-header-actions">
+            <span class="dashboard-date">{{ today.strftime('%a, %b %d, %Y') }}</span>
+            <button onclick="toggleNewEntryOverlay()" class="dashboard-primary-action"><span class="material-symbols-outlined">add</span> New content</button>
         </div>
+    </section>
 
-        <!-- Main Dashboard Content (2 Columns) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left: Quick Wizards & Actions (8-col) -->
-            <div class="lg:col-span-8 space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Sermon Wizard -->
-                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('sermon.create_view', url='/admin/sermon/') }}'">
-                        <div class="space-y-2">
-                            <h3 class="font-manrope text-xl font-bold text-on-surface">Publish Sunday Sermon</h3>
-                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Record a new teaching with automatic scripture mapping and platform link syndication.</p>
-                        </div>
-                        <div class="mt-auto pt-4 text-[10px] font-black text-tertiary uppercase tracking-widest">Initialize Workflow</div>
-                    </div>
+    <section class="dashboard-stat-grid" aria-label="Content overview">
+        <a href="{{ url_for('announcement.index_view') }}" class="dashboard-stat-card"><span class="dashboard-stat-label">Announcements</span><strong>{{ stats.announcements }}</strong><small>{{ stats.active_announcements }} currently live</small></a>
+        <a href="{{ url_for('sermon.index_view') }}" class="dashboard-stat-card"><span class="dashboard-stat-label">Sunday sermons</span><strong>{{ stats.sermons }}</strong><small>Teaching archive</small></a>
+        <a href="{{ url_for('podcastepisode.index_view') }}" class="dashboard-stat-card"><span class="dashboard-stat-label">Podcast episodes</span><strong>{{ stats.podcast_episodes }}</strong><small>Ready to manage</small></a>
+        <a href="{{ url_for('galleryimage.index_view') }}" class="dashboard-stat-card"><span class="dashboard-stat-label">Gallery assets</span><strong>{{ stats.gallery_images }}</strong><small>Images in the library</small></a>
+    </section>
 
-                    <!-- Announcement Wizard -->
-                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('announcement.create_view', url='/admin/announcement/') }}'">
-                        <div class="space-y-2">
-                            <h3 class="font-manrope text-xl font-bold text-on-surface">Broadcast News</h3>
-                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Deploy a new site-wide banner or informational update to all active channels.</p>
-                        </div>
-                        <div class="mt-auto pt-4 text-[10px] font-black text-primary uppercase tracking-widest">Initialize Workflow</div>
-                    </div>
-
-                    <!-- Podcast Wizard -->
-                    <div class="group bg-surface-container hover:bg-surface-bright rounded-3xl border border-outline-variant/10 p-8 transition-all hover:-translate-y-1 cursor-pointer flex flex-col gap-6" onclick="window.location.href='{{ url_for('podcastepisode.create_view', url='/admin/podcastepisode/') }}'">
-                        <div class="space-y-2">
-                            <h3 class="font-manrope text-xl font-bold text-on-surface">Add Podcast Episode</h3>
-                            <p class="text-on-surface-variant text-xs leading-relaxed font-medium">Publish a new podcast episode with link syndication to major platforms.</p>
-                        </div>
-                        <div class="mt-auto pt-4 text-[10px] font-black text-secondary uppercase tracking-widest">Initialize Workflow</div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity Feed -->
-                <div class="bg-surface-container rounded-3xl border border-outline-variant/10 overflow-hidden shadow-xl">
-                    <div class="px-8 py-6 bg-surface-container-highest/50 border-b border-outline-variant/10 flex items-center justify-between">
-                         <h3 class="font-manrope text-sm font-black text-primary uppercase tracking-[0.2em]">Latest Content Deployed</h3>
-                         <a href="{{ url_for('history.index') }}" class="text-[10px] font-black text-on-surface-variant/40 hover:text-primary transition-colors uppercase tracking-widest">View Master Logs</a>
-                    </div>
-                    {% if recent_announcements %}
-                        <div class="px-8 py-3 bg-surface-container-low border-b border-outline-variant/10">
-                             <div class="text-[9px] font-black text-on-surface-variant/40 uppercase tracking-widest">Recent Announcements</div>
-                        </div>
-                        <div class="divide-y divide-outline-variant/5">
-                            {% for item in recent_announcements[:3] %}
-                            <div class="p-6 flex items-center justify-between group">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 group-hover:text-primary transition-all">
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">{{ item.title }}</div>
-                                        <div class="text-[9px] text-on-surface-variant/50 font-bold uppercase tracking-widest mt-0.5">
-                                            {{ item.date_entered.strftime('%b %d') }} — {{ item.type|title }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="{{ url_for('announcement.edit_view', id=item.id) }}" class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-primary/10 hover:text-primary transition-all">
-                                </a>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if recent_sermons %}
-                        <div class="px-8 py-3 bg-surface-container-low border-b border-t border-outline-variant/10">
-                             <div class="text-[9px] font-black text-on-surface-variant/40 uppercase tracking-widest">Recent Sermons</div>
-                        </div>
-                        <div class="divide-y divide-outline-variant/5">
-                            {% for item in recent_sermons[:3] %}
-                            <div class="p-6 flex items-center justify-between group">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 group-hover:text-tertiary transition-all">
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-bold text-on-surface group-hover:text-tertiary transition-colors">{{ item.title }}</div>
-                                        <div class="text-[9px] text-on-surface-variant/50 font-bold uppercase tracking-widest mt-0.5">
-                                            {{ item.date.strftime('%b %d') }} — Sermon by {{ item.speaker_name or item.speaker }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="{{ url_for('sermon.edit_view', id=item.id) }}" class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant/40 hover:bg-tertiary/10 hover:text-tertiary transition-all">
-                                </a>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if not recent_announcements and not recent_sermons %}
-                        <div class="p-12 text-center text-on-surface-variant/30 text-xs font-bold uppercase tracking-widest">No recent deployments recorded.</div>
-                    {% endif %}
+    <section class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div class="xl:col-span-8 space-y-6">
+            <div class="dashboard-panel dashboard-quick-actions">
+                <div class="dashboard-panel-heading"><div><p class="dashboard-eyebrow">Start here</p><h2>Publish something new</h2></div><p>Choose a workflow and pick up where you left off.</p></div>
+                <div class="dashboard-action-grid">
+                    <a href="{{ url_for('sermon.create_view', url='/admin/sermon/') }}" class="dashboard-action-card action-sermon"><span class="material-symbols-outlined">menu_book</span><div><h3>Sunday sermon</h3><p>Add a teaching, scripture, and media links.</p></div><b>Start <span>→</span></b></a>
+                    <a href="{{ url_for('announcement.create_view', url='/admin/announcement/') }}" class="dashboard-action-card action-announcement"><span class="material-symbols-outlined">campaign</span><div><h3>Announcement</h3><p>Share an update, event, or banner alert.</p></div><b>Start <span>→</span></b></a>
+                    <a href="{{ url_for('podcastepisode.create_view', url='/admin/podcastepisode/') }}" class="dashboard-action-card action-podcast"><span class="material-symbols-outlined">podcasts</span><div><h3>Podcast episode</h3><p>Publish a new episode and its links.</p></div><b>Start <span>→</span></b></a>
                 </div>
             </div>
 
-            <!-- Right: Contextual Cards (4-col) -->
-            <div class="lg:col-span-4 space-y-6">
-                <!-- Status Card -->
-                <div class="bg-gradient-to-br from-surface-container to-surface-container-high rounded-3xl p-8 border border-outline-variant/10 shadow-xl relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-tertiary"></div>
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-3">
-                            <span class="relative flex h-3 w-3">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
-                            </span>
-                            <span class="text-[10px] font-black text-on-surface uppercase tracking-[0.2em]">Operational Status</span>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Public Frontend</span>
-                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest text-right">v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Admin Frontend</span>
-                                <span class="text-[10px] font-black text-secondary uppercase tracking-widest text-right">v{{ app_version }}{% if git_rev %} ({{ git_rev }}){% endif %}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Database Latency</span>
-                                <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">Optimized</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Banner Alerts</span>
-                                <span class="text-[10px] font-black text-on-surface uppercase tracking-widest">{{ stats.active_announcements }} Live</span>
-                            </div>
-                        </div>
+            <div class="dashboard-panel dashboard-activity">
+                <div class="dashboard-panel-heading compact"><div><p class="dashboard-eyebrow">Recently updated</p><h2>Latest content</h2></div><a href="{{ url_for('history.index') }}">View activity <span>→</span></a></div>
+                {% if recent_announcements or recent_sermons %}
+                    <div class="dashboard-activity-list">
+                        {% for item in recent_announcements[:3] %}
+                        <a href="{{ url_for('announcement.edit_view', id=item.id) }}" class="dashboard-activity-row"><span class="dashboard-row-icon announcement"><span class="material-symbols-outlined">campaign</span></span><span><strong>{{ item.title }}</strong><small>Announcement · {{ item.date_entered.strftime('%b %d') }}</small></span><span class="dashboard-row-arrow">→</span></a>
+                        {% endfor %}
+                        {% for item in recent_sermons[:3] %}
+                        <a href="{{ url_for('sermon.edit_view', id=item.id) }}" class="dashboard-activity-row"><span class="dashboard-row-icon sermon"><span class="material-symbols-outlined">menu_book</span></span><span><strong>{{ item.title }}</strong><small>Sermon · {{ item.date.strftime('%b %d') }}</small></span><span class="dashboard-row-arrow">→</span></a>
+                        {% endfor %}
                     </div>
-                </div>
-
-                <!-- Manage Site Content -->
-                <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6 cursor-pointer hover:bg-surface-bright transition-all group" onclick="window.location.href='{{ url_for('page_editors.index') }}'">
-                    <div class="flex items-center gap-3">
-                        <h3 class="font-manrope text-sm font-black text-primary uppercase tracking-[0.2em]">Manage Site Content</h3>
-                    </div>
-                    <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Edit messaging, copy, and descriptions across all public-facing pages.</p>
-                    <a href="{{ url_for('page_editors.index') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">Open Editor</a>
-                </div>
-
-                <!-- Featured Teaching Series Selector -->
-                <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6">
-                    <h3 class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em]">Featured on Homepage</h3>
-                    <div class="space-y-4">
-                        <div class="text-3xl font-manrope font-black text-on-surface">{{ current_teaching_series or 'Luke' }}</div>
-                        <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Appears in the right sidebar "Current Teaching Series" box.</p>
-                        <a href="{{ url_for('admin_subpage_edit', page='homepage') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">
-                            <i class="fas fa-pencil"></i> Edit Series
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Service Times -->
-                <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6 cursor-pointer hover:bg-surface-bright transition-all group" onclick="window.location.href='{{ url_for('admin_subpage_edit', page='service_times') }}'">
-                    <h3 class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em]">⏰ Sunday Service Times</h3>
-                    <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Edit service times, schedule mode, and slot descriptions (Prayer, School, Worship, Fellowship).</p>
-                    <a href="{{ url_for('admin_subpage_edit', page='service_times') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">
-                        <i class="fas fa-clock"></i> Edit Times
-                    </a>
-                </div>
-
-                <!-- Teaching Series Spotlight -->
-                <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6">
-                    <h3 class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em]">Curriculum Active</h3>
-                    {% if latest_luke %}
-                        <div class="space-y-4">
-                            <div class="text-3xl font-manrope font-black text-on-surface">Luke {{ latest_luke.latest_by_date.chapter }}</div>
-                            <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Most recently updated chapter in the Luke teaching series library.</p>
-                        <a href="{{ url_for('sermon.index_view') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">Browse Scripture</a>
-                    </div>
-                    {% else %}
-                        <div class="text-xs font-bold text-on-surface-variant/30 text-center py-4 uppercase tracking-widest">No active series spotlight.</div>
-                    {% endif %}
-                </div>
+                {% else %}<p class="dashboard-empty-state">Your published content will appear here.</p>{% endif %}
             </div>
         </div>
-    </div>
+
+        <aside class="xl:col-span-4 space-y-6">
+            <div class="dashboard-panel dashboard-status-card"><div class="dashboard-status-heading"><span></span><p>Site status</p></div><h2>Everything is connected.</h2><p>Your public site and admin tools are available.</p><dl><div><dt>Banner alerts</dt><dd>{{ stats.active_announcements }} live</dd></div><div><dt>Featured series</dt><dd>{{ current_teaching_series or 'Luke' }}</dd></div><div><dt>Content activity</dt><dd>Up to date</dd></div></dl></div>
+            <a href="{{ url_for('page_editors.index') }}" class="dashboard-panel dashboard-link-card"><span class="material-symbols-outlined">edit_note</span><div><p class="dashboard-eyebrow">Site copy</p><h2>Page editor</h2><p>Update public messaging and descriptions.</p></div><b>→</b></a>
+            <a href="{{ url_for('admin_subpage_edit', page='service_times') }}" class="dashboard-panel dashboard-link-card"><span class="material-symbols-outlined">schedule</span><div><p class="dashboard-eyebrow">This Sunday</p><h2>Service times</h2><p>Review worship and fellowship timing.</p></div><b>→</b></a>
+        </aside>
+    </section>
+</div>
 {% endblock %}

@@ -10,7 +10,7 @@ if not hasattr(collections, 'Mapping'):
     collections.Sequence = collections.abc.Sequence
 
 import logging
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context, abort
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -1068,6 +1068,114 @@ def resources():
     site_content = {r.key: r.value for r in SiteContent.query.all()}
     return render_template('resources.html', site_content=site_content)
 
+
+RESOURCE_PAGES = {
+    'weekly-bible-study-materials': {
+        'title': 'Weekly Bible Study Materials',
+        'intro': 'Follow along with CPC’s current teaching and study material.',
+        'links': [
+            ('Current teaching series', '/teaching-series', 'Browse the current and recent teaching series.'),
+            ('Pastor teaching PDFs', '/pastor-teaching', 'Open pastor-led handouts, lesson notes, and PDFs.'),
+            ('Sermons', '/sermons', 'Listen to recent preaching from CPC.'),
+        ],
+    },
+    'study-guides': {
+        'title': 'Study Guides',
+        'intro': 'CPC study guides and class handouts are published with the relevant teaching series when available.',
+        'links': [
+            ('Pastor teaching PDFs', '/pastor-teaching', 'Browse available handouts and lesson notes.'),
+            ('Teaching series', '/teaching-series', 'See the studies currently being offered.'),
+        ],
+    },
+    'recommended-commentaries': {
+        'title': 'Recommended Commentaries',
+        'intro': 'A CPC commentary list is not currently published online.',
+        'note': 'For a recommendation suited to a particular book of the Bible or question, please contact the church office.',
+    },
+    'prayer-requests': {
+        'title': 'Prayer Requests',
+        'intro': 'Share a prayer request with the CPC church office.',
+        'links': [
+            ('Email the church office', 'mailto:admin@cpcnewhaven.org', 'Send a prayer request to admin@cpcnewhaven.org.'),
+            ('Contact CPC', '/contact', 'Find additional ways to get in touch.'),
+        ],
+    },
+    'prayer-guide': {
+        'title': 'Prayer Guide',
+        'intro': 'A church-specific written prayer guide is not currently published online.',
+        'note': 'You are welcome to join CPC for prayer or contact the church office for guidance.',
+        'links': [('Prayer meeting schedule', '/resources/prayer-meeting-schedule', 'See the current Sunday prayer gathering details.')],
+    },
+    'prayer-meeting-schedule': {
+        'title': 'Prayer Meeting Schedule',
+        'intro': 'CPC gathers for prayer as part of its Sunday morning schedule.',
+        'schedule': True,
+        'links': [('Plan your visit', '/plan-a-visit', 'See the full Sunday schedule and visit information.')],
+    },
+    'volunteer-opportunities': {
+        'title': 'Volunteer Opportunities',
+        'intro': 'Current opportunities to serve are shared through CPC’s events and community life.',
+        'links': [
+            ('Events', '/events', 'See current events and service opportunities.'),
+            ('Community', '/community', 'Learn about ways to connect and get involved.'),
+            ('Contact CPC', '/contact', 'Ask about serving in a particular area.'),
+        ],
+    },
+    'ministry-descriptions': {
+        'title': 'Ministry Descriptions',
+        'intro': 'Explore the ways CPC gathers, cares for one another, and serves the wider New Haven community.',
+        'links': [
+            ('Community', '/community', 'Learn about life together at CPC.'),
+            ('Life Groups', '/lifegroups', 'Find a group for prayer, teaching, fellowship, and care.'),
+            ('About CPC', '/about', 'Learn more about the church and its mission.'),
+        ],
+    },
+    'leadership-resources': {
+        'title': 'Leadership Resources',
+        'intro': 'CPC’s leadership training is offered through church life and announced opportunities.',
+        'links': [
+            ('Events', '/events', 'See upcoming Christian Leadership Training and other gatherings.'),
+            ('Pastor teaching PDFs', '/pastor-teaching', 'Browse pastor-led teaching resources.'),
+            ('Staff', '/about', 'Meet CPC’s pastors and staff.'),
+        ],
+    },
+    'sunday-school-curriculum': {
+        'title': 'Sunday School Curriculum',
+        'intro': 'Children’s Sunday School and Adult Sunday Studies are part of CPC’s Sunday morning life.',
+        'links': [
+            ('Teaching series', '/teaching-series', 'Explore current adult Sunday Study material.'),
+            ('Plan your visit', '/plan-a-visit', 'See the current Sunday schedule.'),
+        ],
+    },
+    'theological-resources': {
+        'title': 'Theological Resources',
+        'intro': 'Explore CPC teaching on the Christian faith through its beliefs, sermons, podcasts, and classes.',
+        'links': [
+            ('What we believe', '/about/what-we-believe', 'Read CPC’s statement of faith and theological commitments.'),
+            ('Sermons', '/sermons', 'Listen to biblical preaching from CPC.'),
+            ('Podcasts', '/podcasts', 'Browse theological and biblical teaching in audio form.'),
+            ('Teaching series', '/teaching-series', 'Explore current and recent classes.'),
+        ],
+    },
+    'recommended-reading': {
+        'title': 'Recommended Reading',
+        'intro': 'Begin with the books currently recommended by CPC’s pastors.',
+        'links': [
+            ("Pastor’s Book Picks", '/pastors-book', 'Read the current pastor recommendation.'),
+            ('Theological resources', '/resources/theological-resources', 'Explore CPC teaching and study material.'),
+        ],
+    },
+}
+
+
+@app.route('/resources/<slug>')
+def resource_detail(slug):
+    resource = RESOURCE_PAGES.get(slug)
+    if resource is None:
+        abort(404)
+    site_content = get_site_content()
+    return render_template('resource_detail.html', resource=resource, slug=slug, site_content=site_content)
+
 @app.route('/pastors-book')
 def pastors_book():
     site_content = {r.key: r.value for r in SiteContent.query.all()}
@@ -1137,6 +1245,7 @@ def sitemap():
         ('/search', '0.5', 'monthly'),
         ('/announcements', '0.6', 'weekly'),
     ]
+    static_pages.extend((f'/resources/{slug}', '0.5', 'monthly') for slug in RESOURCE_PAGES)
     urls = []
     for path, priority, freq in static_pages:
         urls.append(f'  <url><loc>{base}{path}</loc><changefreq>{freq}</changefreq><priority>{priority}</priority></url>')
@@ -1256,6 +1365,12 @@ def suggest_event():
 def teaching_series():
     """Teaching series page showing sermon series and Sunday school series"""
     return render_template('teaching-series.html')
+
+
+@app.route('/teaching-series/wonders-of-communal-worship')
+def wonders_of_communal_worship():
+    """Public details page for the current Adult Sunday Studies course."""
+    return render_template('wonders-of-communal-worship.html')
 
 
 @app.route('/pastor-teaching')

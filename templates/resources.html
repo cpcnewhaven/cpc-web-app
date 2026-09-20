@@ -446,36 +446,36 @@ body.theme-white .resource-category:hover {
                     <div id="bible-study" class="resource-category">
                         <h3>Bible Study</h3>
                         <ul>
-                            <li><a href="#">Weekly Bible Study Materials</a></li>
-                            <li><a href="#">Study Guides</a></li>
-                            <li><a href="#">Recommended Commentaries</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='weekly-bible-study-materials') }}">Weekly Bible Study Materials</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='study-guides') }}">Study Guides</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='recommended-commentaries') }}">Recommended Commentaries</a></li>
                         </ul>
                     </div>
                     
                     <div id="prayer" class="resource-category">
                         <h3>Prayer</h3>
                         <ul>
-                            <li><a href="#">Prayer Requests</a></li>
-                            <li><a href="#">Prayer Guide</a></li>
-                            <li><a href="#">Prayer Meeting Schedule</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='prayer-requests') }}">Prayer Requests</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='prayer-guide') }}">Prayer Guide</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='prayer-meeting-schedule') }}">Prayer Meeting Schedule</a></li>
                         </ul>
                     </div>
                     
                     <div id="ministry" class="resource-category">
                         <h3>Ministry</h3>
                         <ul>
-                            <li><a href="#">Volunteer Opportunities</a></li>
-                            <li><a href="#">Ministry Descriptions</a></li>
-                            <li><a href="#">Leadership Resources</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='volunteer-opportunities') }}">Volunteer Opportunities</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='ministry-descriptions') }}">Ministry Descriptions</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='leadership-resources') }}">Leadership Resources</a></li>
                         </ul>
                     </div>
                     
                     <div id="education" class="resource-category">
                         <h3>Education</h3>
                         <ul>
-                            <li><a href="#">Sunday School Curriculum</a></li>
-                            <li><a href="#">Theological Resources</a></li>
-                            <li><a href="#">Recommended Reading</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='sunday-school-curriculum') }}">Sunday School Curriculum</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='theological-resources') }}">Theological Resources</a></li>
+                            <li><a href="{{ url_for('resource_detail', slug='recommended-reading') }}">Recommended Reading</a></li>
                         </ul>
                     </div>
                 </div>
