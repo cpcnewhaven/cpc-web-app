@@ -32,6 +32,7 @@ from dotenv import load_dotenv
 import zipfile
 import io
 import hmac
+import hashlib
 
 # Optional integration with Google Cloud Storage for media
 try:
@@ -972,6 +973,54 @@ def podcasts():
 def events():
     site_content = get_site_content()
     return render_template('events.html', site_content=site_content)
+
+
+@app.route('/auth/planning-center/connect')
+@require_auth
+def planning_center_connect():
+    from planning_center import oauth_authorize_url
+    state = uuid.uuid4().hex
+    session['planning_center_oauth_state'] = state
+    return redirect(oauth_authorize_url(state, url_for('planning_center_callback', _external=True)))
+
+
+@app.route('/auth/planning-center/callback')
+@require_auth
+def planning_center_callback():
+    if request.args.get('error'):
+        return redirect(url_for('events'))
+    if not request.args.get('code') or not hmac.compare_digest(request.args.get('state', ''), session.pop('planning_center_oauth_state', '')):
+        return jsonify({'error': 'invalid OAuth state'}), 400
+    from planning_center import exchange_code
+    try:
+        tokens = exchange_code(request.args['code'], url_for('planning_center_callback', _external=True))
+        SiteContent.query.filter_by(key='planning_center_oauth_tokens').delete()
+        db.session.add(SiteContent(key='planning_center_oauth_tokens', value=json.dumps(tokens)))
+        db.session.commit()
+        flash('Planning Center is connected.', 'success')
+        return redirect(url_for('events'))
+    except Exception:
+        app.logger.exception('Planning Center OAuth callback failed')
+        return jsonify({'error': 'Planning Center connection failed'}), 502
+
+
+@app.route('/api/planning-center/events')
+def api_planning_center_events():
+    token_row = SiteContent.query.filter_by(key='planning_center_oauth_tokens').first()
+    if not token_row:
+        return jsonify({'connected': False, 'events': []})
+    try:
+        token = json.loads(token_row.value).get('access_token')
+        from planning_center import upcoming_events_with_token
+        items = upcoming_events_with_token(token, app.config.get('PLANNING_CENTER_CALENDAR_ID'))
+        events = []
+        for item in items:
+            attrs = item.get('attributes', {})
+            events.append({'id': item.get('id'), 'name': attrs.get('name'), 'description': attrs.get('description'), 'starts_at': attrs.get('starts_at'), 'ends_at': attrs.get('ends_at'), 'url': attrs.get('url')})
+        return jsonify({'connected': True, 'events': events})
+    except Exception:
+        app.logger.exception('Planning Center widget failed')
+        return jsonify({'connected': True, 'events': [], 'error': 'Planning Center events are temporarily unavailable'}), 502
 
 @app.route('/announcements')
 def announcements():
@@ -1975,6 +2024,76 @@ def api_events():
         return jsonify(data), 200
     except Exception as ex:
         return jsonify({"error": "failed to load events", "details": str(ex)}), 502
+
+
+def _pco_event_to_announcement(event_data, instances=None):
+    """Convert a Planning Center event payload into the site's announcement shape."""
+    attrs = event_data.get("attributes", {})
+    event_id = str(event_data.get("id"))
+    description = attrs.get("description") or attrs.get("summary") or ""
+    marker = f"[planning-center-event:{event_id}]"
+    instances = instances or []
+    first = (instances[0].get("attributes", {}) if instances else {})
+    starts_at = first.get("starts_at")
+    event_date = datetime.fromisoformat(starts_at.replace("Z", "+00:00")).date() if starts_at else None
+    return {
+        "marker": marker,
+        "title": attrs.get("name") or "Untitled event",
+        "description": f"{description}\n\n{marker}".strip(),
+        "event_date": event_date,
+        "event_start_time": starts_at,
+        "event_end_time": first.get("ends_at"),
+        "active": not bool(attrs.get("archived_at")),
+    }
+
+
+def _upsert_pco_announcement(event_data):
+    from planning_center import event_instances
+    payload = _pco_event_to_announcement(event_data, event_instances(event_data["id"]))
+    announcement = Announcement.query.filter(Announcement.description.contains(payload["marker"])).first()
+    if announcement is None:
+        announcement = Announcement(id=next_global_id(), type="event", category="Planning Center")
+        db.session.add(announcement)
+    for key in ("title", "description", "event_date", "event_start_time", "event_end_time", "active"):
+        setattr(announcement, key, payload[key])
+    announcement.updated_at = datetime.utcnow()
+    announcement.updated_by = "planning-center"
+    db.session.commit()
+    return announcement
+
+
+@app.route("/webhooks/planning-center", methods=["POST"])
+def planning_center_webhook():
+    """Receive Planning Center Calendar webhook deliveries."""
+    secret = app.config.get("PLANNING_CENTER_WEBHOOK_SECRET")
+    signature = request.headers.get("X-PCO-Webhooks-Authenticity", "")
+    if not secret or not hmac.compare_digest(
+        signature, hmac.new(secret.encode(), request.get_data(), hashlib.sha256).hexdigest()
+    ):
+        return jsonify({"error": "invalid webhook signature"}), 401
+    delivery = request.get_json(silent=True) or {}
+    payload = delivery.get("data", delivery)
+    if isinstance(payload, dict) and isinstance(payload.get("payload"), str):
+        payload = json.loads(payload["payload"])
+    resource = payload.get("data", payload) if isinstance(payload, dict) else {}
+    if resource.get("type") != "Event" or not resource.get("id"):
+        return jsonify({"status": "ignored"}), 200
+    try:
+        _upsert_pco_announcement(resource)
+        return jsonify({"status": "ok", "event_id": resource["id"]}), 200
+    except Exception:
+        app.logger.exception("Planning Center webhook processing failed")
+        return jsonify({"error": "event processing failed"}), 500
+
+
+@app.route("/admin/planning-center/sync", methods=["POST"])
+@require_auth
+def planning_center_sync():
+    """Backfill/synchronize current Planning Center Calendar events."""
+    from planning_center import upcoming_events
+    events = upcoming_events(app.config.get("PLANNING_CENTER_CALENDAR_ID"))
+    synced = [_upsert_pco_announcement(item).id for item in events]
+    return jsonify({"status": "ok", "synced": len(synced), "announcement_ids": synced})
 
 @app.route("/api/youtube")
 @cache.cached(timeout=900)

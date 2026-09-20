@@ -52,6 +52,16 @@ MAILCHIMP_SERVER_PREFIX = os.getenv("MAILCHIMP_SERVER_PREFIX")  # e.g., "us21"
 MAILCHIMP_LIST_ID = os.getenv("MAILCHIMP_LIST_ID")
 MAILCHIMP_RSS_URL = "<PASTE_YOUR_MAILCHIMP_RSS_URL>"  # Alternative to API
 
+# --- Planning Center Calendar integration ---
+# Use a Personal Access Token for a single church; keep both values in the
+# deployment environment, never in source control.
+PLANNING_CENTER_CLIENT_ID = os.getenv("PLANNING_CENTER_CLIENT_ID")
+PLANNING_CENTER_PERSONAL_ACCESS_TOKEN = os.getenv("PLANNING_CENTER_PERSONAL_ACCESS_TOKEN")
+PLANNING_CENTER_CLIENT_SECRET = os.getenv("PLANNING_CENTER_CLIENT_SECRET")
+PLANNING_CENTER_OAUTH_SCOPES = os.getenv("PLANNING_CENTER_OAUTH_SCOPES", "calendar")
+PLANNING_CENTER_WEBHOOK_SECRET = os.getenv("PLANNING_CENTER_WEBHOOK_SECRET")
+PLANNING_CENTER_CALENDAR_ID = os.getenv("PLANNING_CENTER_CALENDAR_ID")
+
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,

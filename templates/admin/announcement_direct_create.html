@@ -32,6 +32,7 @@
     </div>
   {% endif %}
 
+  <div class="announcement-editor-layout">
   <form method="POST" action="{{ url_for('announcement.create_view') }}" id="admin-form" style="display:block !important; width:100% !important;">
 
     <fieldset style="display:block !important; width:100% !important; box-sizing:border-box; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
@@ -183,6 +184,24 @@
     </div>
 
   </form>
+  <aside class="announcement-preview-panel" aria-live="polite">
+    <div class="preview-heading"><span>Live preview</span><small>Updates as you type</small></div>
+    <div class="preview-device">
+      <div class="preview-sitebar"><span class="preview-dot"></span> CPC New Haven <span class="preview-sitebar-label">Announcements</span></div>
+      <article class="preview-card">
+        <div class="preview-image" id="preview-image" hidden></div>
+        <div class="preview-card-body">
+          <div class="preview-badges"><span id="preview-type">Announcement</span><span id="preview-category">General</span></div>
+          <h3 id="preview-title">Your announcement title</h3>
+          <p id="preview-description">Your announcement details will appear here. Add a clear title and a helpful description to see the finished card.</p>
+          <div class="preview-event" id="preview-event" hidden><span>◷</span><span id="preview-event-text"></span></div>
+          <div class="preview-meta">Just now · CPC New Haven</div>
+        </div>
+      </article>
+    </div>
+    <p class="preview-note">This is a preview of the announcement card shown on the public announcements page.</p>
+  </aside>
+  </div>
 </div>
 {% endblock %}
 
@@ -190,6 +209,24 @@
 {{ super() }}
 <style>
   .announcement-direct-editor { max-width: 820px !important; margin: 0 auto !important; color: #1d2a36; }
+  .announcement-editor-layout { display:grid; grid-template-columns:minmax(0, 1fr) minmax(280px, 360px); gap:2.5rem; align-items:start; }
+  .announcement-preview-panel { position:sticky; top:1.25rem; padding:1rem; border:1px solid #d9e5ee; border-radius:16px; background:#f7fbfe; box-shadow:0 12px 28px rgba(54,88,116,.08); }
+  .preview-heading { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:.9rem; color:#17384f; font-weight:800; }
+  .preview-heading small { color:#6d8291; font-size:.68rem; font-weight:600; }
+  .preview-device { padding:.7rem; border-radius:12px; background:linear-gradient(160deg,#0d2941,#164e70); }
+  .preview-sitebar { padding:.25rem .2rem .7rem; color:#dff4ff; font-size:.65rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .preview-sitebar-label { float:right; color:#8fc9e8; font-weight:600; letter-spacing:0; text-transform:none; }
+  .preview-dot { display:inline-block; width:6px; height:6px; margin-right:.25rem; border-radius:50%; background:#43b3e8; vertical-align:middle; }
+  .preview-card { overflow:hidden; border-radius:10px; background:#fff; box-shadow:0 10px 25px rgba(4,25,42,.25); }
+  .preview-image { height:112px; background-position:center; background-size:cover; }
+  .preview-card-body { padding:1rem; }
+  .preview-badges { display:flex; gap:.35rem; flex-wrap:wrap; margin-bottom:.6rem; }
+  .preview-badges span { padding:.25rem .5rem; border-radius:999px; background:#e6f3fb; color:#2878a5; font-size:.62rem; font-weight:800; text-transform:capitalize; }
+  .preview-card h3 { margin:0 0 .55rem; color:#17384f; font-size:1.15rem; line-height:1.25; }
+  .preview-card p { margin:0; color:#536b7b; font-size:.82rem; line-height:1.55; white-space:pre-line; }
+  .preview-event { display:flex; gap:.35rem; margin-top:.75rem; color:#2878a5; font-size:.75rem; font-weight:700; }
+  .preview-meta { margin-top:1rem; padding-top:.7rem; border-top:1px solid #e4edf2; color:#8a9aa4; font-size:.65rem; }
+  .preview-note { margin:.8rem .2rem 0; color:#718593; font-size:.7rem; line-height:1.45; }
   .announcement-direct-editor h2 { color: #17384f !important; font-size: 1.8rem; letter-spacing: -.02em; }
   .announcement-direct-editor > div:first-child a { color: #426276 !important; font-weight: 600; }
   .announcement-direct-editor > p { color: #536b7b !important; font-size: .98rem !important; line-height: 1.55; }
@@ -219,6 +256,28 @@
   .announcement-direct-editor form > div:last-child { display: flex !important; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid #cbd6df; }
   .announcement-direct-editor form > div:last-child button[type="submit"]:not([name]) { background: #fff !important; border-color: #9eb2c0 !important; color: #27475d !important; }
   .announcement-direct-editor form > div:last-child a { color: #426276 !important; font-weight: 600; }
+  @media (max-width:900px) { .announcement-editor-layout { grid-template-columns:1fr; } .announcement-preview-panel { position:static; order:-1; } }
   @media (max-width:600px) { .announcement-direct-editor { padding: 0 .75rem !important; } .announcement-direct-editor form > div:last-child { flex-direction:column; } .announcement-direct-editor form > div:last-child button, .announcement-direct-editor form > div:last-child a { width:100%; justify-content:center; text-align:center; } }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('admin-form');
+  if (!form) return;
+  const field = name => form.querySelector('[name="' + name + '"]');
+  const text = (id, value, fallback) => { const el = document.getElementById(id); if (el) el.textContent = value || fallback; };
+  function updatePreview() {
+    text('preview-title', field('title')?.value.trim(), 'Your announcement title');
+    text('preview-description', field('description')?.value.trim(), 'Your announcement details will appear here. Add a clear title and a helpful description to see the finished card.');
+    text('preview-type', field('type')?.selectedOptions[0]?.textContent.trim(), 'Announcement');
+    text('preview-category', field('category')?.selectedOptions[0]?.textContent.trim(), 'General');
+    const start = field('event_start_time')?.value.trim(), end = field('event_end_time')?.value.trim(), date = field('event_date')?.value;
+    const event = document.getElementById('preview-event');
+    if (event) event.hidden = !(start || end || date);
+    text('preview-event-text', [date, start && end ? start + ' – ' + end : start || end].filter(Boolean).join(' · '), 'Event details');
+    const image = document.getElementById('preview-image'), url = field('featured_image')?.value.trim();
+    if (image) { image.hidden = !url; if (url) image.style.backgroundImage = 'url("' + url.replace(/"/g, '') + '")'; }
+  }
+  form.addEventListener('input', updatePreview); form.addEventListener('change', updatePreview); updatePreview();
+});
+</script>
 {% endblock %}
