@@ -278,6 +278,18 @@ class AnnouncementEditTestCase(unittest.TestCase):
             self.assertIsNone(db.session.get(TeachingSeries, 483))
             self.assertIsNone(db.session.get(TeachingSeriesSession, session_id))
 
+    def test_require_auth_redirects_unauthenticated(self):
+        unauthed_client = app.test_client()
+        response = unauthed_client.get("/auth/planning-center/connect")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/admin/login", response.headers.get("Location", ""))
+
+    def test_require_auth_allows_authenticated(self):
+        response = self.client.get("/auth/planning-center/connect")
+        # Should redirect to Planning Center OAuth, not admin_login
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("planningcenteronline.com", response.headers.get("Location", ""))
+
 
 if __name__ == "__main__":
     unittest.main()

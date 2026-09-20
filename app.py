@@ -331,6 +331,23 @@ def _ensure_columns_pg(migrations):
     except Exception as exc:
         app.logger.warning("PostgreSQL column migration skipped: %s", exc)
 
+
+def is_authenticated():
+    """Check if user is authenticated"""
+    return session.get('authenticated', False)
+
+
+def require_auth(f):
+    """Decorator to require authentication"""
+    from functools import wraps
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_authenticated():
+            return redirect(url_for('admin_login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 # ---------------------------------------------------------------------------
 # Health check — lightweight DB liveness probe for Render
 # ---------------------------------------------------------------------------
@@ -3201,11 +3218,6 @@ def _seed_pastor_teaching_sample():
     db.session.commit()
 
 
-def is_authenticated():
-    """Check if user is authenticated"""
-    return session.get('authenticated', False)
-
-
 def get_authenticated_user():
     """Return the currently authenticated admin user or None."""
     if not is_authenticated():
@@ -3267,16 +3279,6 @@ def inject_site_content():
         'regular_schedule_resume_label': get_regular_schedule_resume_label(sc),
         'belief_lessons': get_belief_lessons(sc),
     }
-
-def require_auth(f):
-    """Decorator to require authentication"""
-    from functools import wraps
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not is_authenticated():
-            return redirect(url_for('admin_login', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
 
 
 @app.route('/admin/export/feedback')
