@@ -1620,7 +1620,7 @@ def api_announcements():
                 'superfeatured': a.superfeatured,
                 'showInBanner': getattr(a, 'show_in_banner', False),
                 'featuredImage': a.featured_image,
-                'imageDisplayType': a.image_display_type,
+                'imageDisplayType': _normalize_aspect_ratio(a.image_display_type) if a.featured_image else None,
                 'eventDate': a.event_date.strftime('%Y-%m-%d') if a.event_date else None,
                 'eventStartTime': getattr(a, 'event_start_time', None),
                 'eventEndTime': getattr(a, 'event_end_time', None),
@@ -3500,35 +3500,55 @@ ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 def _allowed_image(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
-@app.route('/admin/upload-image', methods=['POST'])
-@require_auth
-def admin_upload_image():
-    """Accept an image file; save to static/uploads; return the public URL to store in DB."""
-    if 'file' not in request.files and 'image' not in request.files:
-        return jsonify({'error': 'No file in request'}), 400
-    f = request.files.get('file') or request.files.get('image')
-    if not f or f.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
+def _save_uploaded_image(f):
+    """Save an uploaded image to static/uploads and return its relative URL."""
+    if not f or not getattr(f, 'filename', None):
+        return None
     if not _allowed_image(f.filename):
-        return jsonify({'error': 'Invalid file type. Use PNG, JPG, GIF, or WebP.'}), 400
+        return None
     base = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
     os.makedirs(base, exist_ok=True)
     ext = (f.filename.rsplit('.', 1)[1].lower() or 'jpg')
-    safe_name = secure_filename(f.filename)
-    if not safe_name:
-        safe_name = 'image'
+    safe_name = secure_filename(f.filename) or 'image'
     unique = str(uuid.uuid4())[:8] + '_' + (safe_name[:50] if len(safe_name) > 50 else safe_name)
     unique = secure_filename(unique)
     if not unique.endswith('.' + ext):
         unique = unique + '.' + ext
     path = os.path.join(base, unique)
+    f.save(path)
+    return url_for('static', filename='uploads/' + unique)
+
+def _normalize_aspect_ratio(val):
+    """Normalize aspect ratio string to '16x9', 'square', or '9x16'."""
+    if not val:
+        return '16x9'
+    v = str(val).strip().lower()
+    if v in {'16x9', '16:9', 'landscape', 'cover'}:
+        return '16x9'
+    if v in {'square', '1:1', '1x1'}:
+        return 'square'
+    if v in {'9x16', '9:16', 'portrait', 'poster', 'story'}:
+        return '9x16'
+    return '16x9'
+
+@app.route('/admin/upload-image', methods=['POST'])
+@require_auth
+def admin_upload_image():
+    """Accept an image file; save to static/uploads; return the public URL to store in DB."""
+    if 'file' not in request.files and 'image' not in request.files and 'image_file' not in request.files:
+        return jsonify({'error': 'No file in request'}), 400
+    f = request.files.get('file') or request.files.get('image') or request.files.get('image_file')
+    if not f or f.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    if not _allowed_image(f.filename):
+        return jsonify({'error': 'Invalid file type. Use PNG, JPG, GIF, or WebP.'}), 400
     try:
-        f.save(path)
+        url = _save_uploaded_image(f)
+        if not url:
+            return jsonify({'error': 'Failed to save file'}), 400
+        return jsonify({'url': url})
     except Exception as e:
         return jsonify({'error': 'Failed to save file: ' + str(e)}), 500
-    # URL that works on this host (relative so it works behind a reverse proxy)
-    url = url_for('static', filename='uploads/' + unique)
-    return jsonify({'url': url})
 
 @app.route('/admin/upload-gallery-image', methods=['POST'])
 @require_auth
@@ -3962,8 +3982,8 @@ from flask_admin.form import rules
 
 class AnnouncementView(AuthenticatedModelView):
     list_template = 'admin/announcement_list.html'
-    create_template = 'admin/announcement_create.html'
-    edit_template = 'admin/model/edit_bento.html'
+    create_template = 'admin/announcement_direct_create.html'
+    edit_template = 'admin/announcement_direct_create.html'
     # Default display: only 4 columns. Users can toggle "Advanced" to see all.
     column_list = ('id', 'title', 'active', 'date_entered', 'category')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
@@ -4135,8 +4155,10 @@ class AnnouncementView(AuthenticatedModelView):
         speakers = _admin_speaker_choices() or [('', '— No admins —')]
         errors = []
         form_data = {}
+        return_url = request.args.get('url') or url_for('announcement.index_view')
         if request.method == 'POST':
             form_data = request.form.to_dict()
+            return_url = form_data.get('return_url') or return_url
             title = form_data.get('title', '').strip()
             description = form_data.get('description', '').strip()
             event_date = None
@@ -4160,11 +4182,26 @@ class AnnouncementView(AuthenticatedModelView):
                 errors.append('Choose an expiration date or select another expiration option.')
             if not errors:
                 now = datetime.utcnow()
+                banner_type = form_data.get('banner_type', '').strip().lower()
+                type_val = form_data.get('type', 'announcement')
+                show_in_banner = bool(form_data.get('show_in_banner'))
+                if banner_type:
+                    show_in_banner = True
+                    type_val = banner_type
+                featured_image = form_data.get('featured_image', '').strip() or None
+                img_file = request.files.get('image_file') or request.files.get('file')
+                if img_file and getattr(img_file, 'filename', None):
+                    uploaded_url = _save_uploaded_image(img_file)
+                    if uploaded_url:
+                        featured_image = uploaded_url
+                raw_img_type = form_data.get('image_display_type', '').strip()
+                image_display_type = _normalize_aspect_ratio(raw_img_type) if (featured_image or raw_img_type) else None
+
                 ann = Announcement(
                     id=next_global_id(),
                     title=title,
                     description=description,
-                    type=form_data.get('type', 'announcement'),
+                    type=type_val,
                     category=form_data.get('category', 'general'),
                     tag=form_data.get('tag', '') or None,
                     speaker=form_data.get('speaker', '') or None,
@@ -4174,9 +4211,9 @@ class AnnouncementView(AuthenticatedModelView):
                     active=('_publish' in request.form or
                             '_save_and_publish' in request.form),
                     superfeatured=bool(form_data.get('superfeatured')),
-                    show_in_banner=bool(form_data.get('show_in_banner')),
-                    featured_image=form_data.get('featured_image', '').strip() or None,
-                    image_display_type=form_data.get('image_display_type', '').strip() or None,
+                    show_in_banner=show_in_banner,
+                    featured_image=featured_image,
+                    image_display_type=image_display_type,
                     expires_at=_compute_expires_at(
                         expiration_preset,
                         expiration_date,
@@ -4193,8 +4230,147 @@ class AnnouncementView(AuthenticatedModelView):
                 except Exception:
                     pass
                 flash(f'"{title}" {"published" if ann.active else "saved as draft"}.', 'success')
-                return redirect(url_for('announcement.index_view'))
+                return redirect(return_url)
         return self.render('admin/announcement_direct_create.html',
+                           is_editing=False,
+                           form_action=url_for('announcement.create_view'),
+                           return_url=return_url,
+                           form_data=form_data,
+                           errors=errors,
+                           type_choices=ANNOUNCEMENT_TYPE_CHOICES,
+                           category_choices=ANNOUNCEMENT_CATEGORY_CHOICES,
+                           speakers=speakers)
+
+    @expose('/edit/', methods=['GET', 'POST'])
+    def edit_view(self):
+        if not is_authenticated():
+            return redirect(url_for('admin_login'))
+        id_val = request.args.get('id', type=int)
+        return_url = request.args.get('url') or url_for('announcement.index_view')
+        if not id_val:
+            flash('Record does not exist.', 'error')
+            return redirect(return_url)
+        ann = Announcement.query.get(id_val)
+        if not ann:
+            flash('Record does not exist.', 'error')
+            return redirect(return_url)
+
+        speakers = _admin_speaker_choices() or [('', '— No admins —')]
+        errors = []
+
+        if request.method == 'POST':
+            form_data = request.form.to_dict()
+            return_url = form_data.get('return_url') or return_url
+            title = form_data.get('title', '').strip()
+            description = form_data.get('description', '').strip()
+            event_date = None
+            expiration_date = None
+            if not title:
+                errors.append('Title is required.')
+            if not description:
+                errors.append('Description is required.')
+            if form_data.get('event_date'):
+                try:
+                    event_date = date.fromisoformat(form_data['event_date'])
+                except ValueError:
+                    errors.append('Event date must be a valid date.')
+            if form_data.get('expiration_date'):
+                try:
+                    expiration_date = date.fromisoformat(form_data['expiration_date'])
+                except ValueError:
+                    errors.append('Expiration date must be a valid date.')
+            expiration_preset = form_data.get('expiration_preset', 'never')
+            if expiration_preset == 'specific' and not expiration_date:
+                errors.append('Choose an expiration date or select another expiration option.')
+
+            if not errors:
+                now = datetime.utcnow()
+                ann.title = title
+                ann.description = description
+                ann.category = form_data.get('category', 'general')
+                ann.tag = form_data.get('tag', '') or None
+                ann.speaker = form_data.get('speaker', '') or None
+                ann.event_date = event_date
+                ann.event_start_time = form_data.get('event_start_time', '') or None
+                ann.event_end_time = form_data.get('event_end_time', '') or None
+
+                banner_type = form_data.get('banner_type', '').strip().lower()
+                type_val = form_data.get('type', 'announcement')
+                if banner_type:
+                    ann.show_in_banner = True
+                    ann.type = banner_type
+                else:
+                    ann.show_in_banner = bool(form_data.get('show_in_banner'))
+                    ann.type = type_val
+
+                if '_save_and_publish' in request.form or '_publish' in request.form:
+                    ann.active = True
+                    ann.archived = False
+                elif 'active' in request.form:
+                    raw_act = str(request.form.get('active', '')).strip().lower()
+                    ann.active = raw_act in ('1', 'y', 'yes', 'true', 'on')
+                elif '_save_draft' in request.form:
+                    ann.active = False
+
+                ann.superfeatured = bool(form_data.get('superfeatured'))
+
+                featured_image = form_data.get('featured_image', '').strip() or None
+                img_file = request.files.get('image_file') or request.files.get('file')
+                if img_file and getattr(img_file, 'filename', None):
+                    uploaded_url = _save_uploaded_image(img_file)
+                    if uploaded_url:
+                        featured_image = uploaded_url
+                ann.featured_image = featured_image
+                raw_img_type = form_data.get('image_display_type', '').strip()
+                ann.image_display_type = _normalize_aspect_ratio(raw_img_type) if (featured_image or raw_img_type) else None
+
+                base_date = ann.date_entered or now
+                ann.expires_at = _compute_expires_at(
+                    expiration_preset,
+                    expiration_date,
+                    base_date,
+                )
+                ann.updated_at = now
+                ann.updated_by = session.get('username') or None
+                ann.revision = (getattr(ann, 'revision', None) or 1) + 1
+
+                db.session.commit()
+                _log_audit('edited', ann)
+                try:
+                    cache.clear()
+                except Exception:
+                    pass
+                flash(f'"{title}" updated successfully.', 'success')
+                return redirect(return_url)
+        else:
+            banner_val = ''
+            if ann.show_in_banner and (ann.type or '').lower() in {'weather', 'parking', 'alert', 'info'}:
+                banner_val = (ann.type or '').lower()
+            form_data = {
+                'title': ann.title or '',
+                'description': ann.description or '',
+                'type': ann.type or 'announcement',
+                'category': ann.category or 'general',
+                'tag': ann.tag or '',
+                'speaker': ann.speaker or '',
+                'event_date': ann.event_date.isoformat() if ann.event_date else '',
+                'event_start_time': ann.event_start_time or '',
+                'event_end_time': ann.event_end_time or '',
+                'featured_image': ann.featured_image or '',
+                'image_display_type': _normalize_aspect_ratio(ann.image_display_type) if ann.image_display_type else '16x9',
+                'superfeatured': '1' if ann.superfeatured else '',
+                'show_in_banner': '1' if ann.show_in_banner else '',
+                'banner_type': banner_val,
+                'expiration_preset': 'specific' if ann.expires_at else 'never',
+                'expiration_date': ann.expires_at.isoformat() if ann.expires_at else '',
+                'active': '1' if ann.active else '',
+            }
+
+        return self.render('admin/announcement_direct_create.html',
+                           is_editing=True,
+                           announcement_id=ann.id,
+                           form_action=url_for('announcement.edit_view', id=ann.id, url=return_url),
+                           return_url=return_url,
                            form_data=form_data,
                            errors=errors,
                            type_choices=ANNOUNCEMENT_TYPE_CHOICES,
