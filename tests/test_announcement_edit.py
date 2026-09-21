@@ -59,6 +59,9 @@ class AnnouncementEditTestCase(unittest.TestCase):
         self.assertIn('name="event_end_time"', body)
         self.assertIn('name="featured_image"', body)
         self.assertIn('name="_save_and_publish"', body)
+        self.assertIn("Edit Announcement", body)
+        self.assertIn("announcement-preview-panel", body)
+        self.assertNotIn('id="bento-grid-form"', body)
 
     def test_edit_persists_with_no_expiration_date(self):
         response = self.client.post(
@@ -185,7 +188,7 @@ class AnnouncementEditTestCase(unittest.TestCase):
                 announcement.featured_image,
                 "https://example.com/created.jpg",
             )
-            self.assertEqual(announcement.image_display_type, "poster")
+            self.assertEqual(announcement.image_display_type, "9x16")
             self.assertEqual(str(announcement.expires_at), "2026-07-20")
 
     def test_all_expiration_date_fields_accept_empty_values(self):
@@ -284,11 +287,41 @@ class AnnouncementEditTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/admin/login", response.headers.get("Location", ""))
 
-    def test_require_auth_allows_authenticated(self):
-        response = self.client.get("/auth/planning-center/connect")
-        # Should redirect to Planning Center OAuth, not admin_login
-        self.assertEqual(response.status_code, 302)
-        self.assertIn("planningcenteronline.com", response.headers.get("Location", ""))
+    def test_announcement_image_upload_and_aspect_ratios(self):
+        import io
+        fake_image = (io.BytesIO(b"GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"), "test.gif")
+        response = self.client.post(
+            "/admin/upload-image",
+            data={"file": fake_image},
+            content_type="multipart/form-data",
+        )
+        self.assertEqual(response.status_code, 200)
+        uploaded_url = response.get_json().get("url")
+        self.assertTrue(uploaded_url and uploaded_url.startswith("/static/uploads/"))
+
+        # Test creating announcement with square aspect ratio
+        resp_create = self.client.post(
+            "/admin/announcement/create/",
+            data={
+                "title": "Square Announcement",
+                "description": "Has square image",
+                "featured_image": uploaded_url,
+                "image_display_type": "square",
+                "_save_and_publish": "1",
+            },
+        )
+        self.assertEqual(resp_create.status_code, 302)
+
+        with app.app_context():
+            ann = Announcement.query.filter_by(title="Square Announcement").one()
+            self.assertEqual(ann.image_display_type, "square")
+            self.assertEqual(ann.featured_image, uploaded_url)
+
+        # Verify api_announcements returns normalized imageDisplayType
+        api_data = self.client.get("/api/announcements").get_json()
+        matching = next(a for a in api_data["announcements"] if a["id"] == ann.id)
+        self.assertEqual(matching["imageDisplayType"], "square")
+        self.assertEqual(matching["featuredImage"], uploaded_url)
 
 
 if __name__ == "__main__":

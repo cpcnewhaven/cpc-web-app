@@ -4,15 +4,22 @@
 <div class="announcement-direct-editor" style="max-width: 760px; margin: 2rem auto; padding: 0 1rem;">
 
   <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
-    <a href="{{ url_for('announcement.index_view') }}" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem;">
+    <a href="{{ return_url or url_for('announcement.index_view') }}" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem;">
       ← Back to Announcements
     </a>
   </div>
 
+  {% if is_editing %}
+  <h2 style="color:#fff; font-weight:700; margin-bottom:0.25rem;">Edit Announcement</h2>
+  <p style="color:rgba(255,255,255,0.5); font-size:0.9rem; margin-bottom:2rem;">
+    Update the announcement details below. Use <strong>Save and Publish</strong> to make changes live immediately.
+  </p>
+  {% else %}
   <h2 style="color:#fff; font-weight:700; margin-bottom:0.25rem;">New Announcement</h2>
   <p style="color:rgba(255,255,255,0.5); font-size:0.9rem; margin-bottom:2rem;">
     Fill in the details below. Use <strong>Save as Draft</strong> to review before publishing.
   </p>
+  {% endif %}
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -33,7 +40,9 @@
   {% endif %}
 
   <div class="announcement-editor-layout">
-  <form method="POST" action="{{ url_for('announcement.create_view') }}" id="admin-form" style="display:block !important; width:100% !important;">
+  <form method="POST" action="{{ form_action or url_for('announcement.create_view') }}" enctype="multipart/form-data" id="admin-form" style="display:block !important; width:100% !important;">
+    {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>{% endif %}
+    {% if return_url %}<input type="hidden" name="return_url" value="{{ return_url }}"/>{% endif %}
 
     <fieldset style="display:block !important; width:100% !important; box-sizing:border-box; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Content</legend>
@@ -116,19 +125,50 @@
     <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Image</legend>
       <div class="form-group" style="margin-bottom:1.25rem;">
-        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Featured Image URL</label>
-        <input type="url" name="featured_image" value="{{ form_data.get('featured_image', '') }}"
-          style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
-          placeholder="https://example.com/image.jpg">
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Featured Image URL or File Upload</label>
+        <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
+          <input type="url" name="featured_image" id="featured_image_input" value="{{ form_data.get('featured_image', '') }}"
+            style="flex:1; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
+            placeholder="https://example.com/image.jpg">
+          <label for="image_file_input" style="cursor:pointer; background:#2563eb; color:#fff; font-weight:600; font-size:0.88rem; padding:0.7rem 1rem; border-radius:7px; white-space:nowrap; display:inline-flex; align-items:center; gap:0.4rem; margin:0;">
+            <span>Upload File</span>
+          </label>
+          <input type="file" id="image_file_input" name="image_file" accept="image/*" style="display:none;">
+          <button type="button" id="clear_image_btn" style="display:none; background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; font-size:0.88rem; padding:0.7rem 0.9rem; border-radius:7px; cursor:pointer;">
+            Clear
+          </button>
+        </div>
+        <div id="upload_status" style="font-size:0.82rem; color:#60a5fa; display:none; margin-top:0.3rem;"></div>
+        <small style="display:block; color:rgba(255,255,255,0.5); font-size:0.8rem; margin-top:0.25rem;">Paste an image link or upload a file from your device (PNG, JPG, WebP, GIF).</small>
       </div>
+
       <div class="form-group">
-        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Image Display Type</label>
-        <select name="image_display_type"
-          style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
-          <option value="" {% if not form_data.get('image_display_type') %}selected{% endif %}>Default</option>
-          <option value="cover" {% if form_data.get('image_display_type') == 'cover' %}selected{% endif %}>Cover</option>
-          <option value="poster" {% if form_data.get('image_display_type') == 'poster' %}selected{% endif %}>Poster</option>
-        </select>
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.6rem; font-size:0.9rem;">Image Aspect Ratio Template</label>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.75rem;">
+          {% set current_ratio = form_data.get('image_display_type', '16x9') %}
+          {% if current_ratio in ['cover', '', None] %}{% set current_ratio = '16x9' %}{% elif current_ratio in ['poster', 'story'] %}{% set current_ratio = '9x16' %}{% elif current_ratio in ['1:1'] %}{% set current_ratio = 'square' %}{% endif %}
+
+          <label style="cursor:pointer; border:2px solid {% if current_ratio == '16x9' %}#38bdf8{% else %}rgba(255,255,255,0.15){% endif %}; background:{% if current_ratio == '16x9' %}rgba(56,189,248,0.12){% else %}rgba(255,255,255,0.03){% endif %}; border-radius:8px; padding:0.75rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.4rem; transition:all 0.2s ease;">
+            <input type="radio" name="image_display_type" value="16x9" {% if current_ratio == '16x9' %}checked{% endif %} style="display:none;">
+            <div style="width:54px; height:30px; border:2px dashed #94a3b8; border-radius:4px; margin-bottom:0.2rem;"></div>
+            <strong style="color:#fff; font-size:0.88rem;">16 : 9</strong>
+            <span style="color:rgba(255,255,255,0.6); font-size:0.72rem;">Landscape (Wide)</span>
+          </label>
+
+          <label style="cursor:pointer; border:2px solid {% if current_ratio == 'square' %}#38bdf8{% else %}rgba(255,255,255,0.15){% endif %}; background:{% if current_ratio == 'square' %}rgba(56,189,248,0.12){% else %}rgba(255,255,255,0.03){% endif %}; border-radius:8px; padding:0.75rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.4rem; transition:all 0.2s ease;">
+            <input type="radio" name="image_display_type" value="square" {% if current_ratio == 'square' %}checked{% endif %} style="display:none;">
+            <div style="width:36px; height:36px; border:2px dashed #94a3b8; border-radius:4px; margin-bottom:0.2rem;"></div>
+            <strong style="color:#fff; font-size:0.88rem;">Square</strong>
+            <span style="color:rgba(255,255,255,0.6); font-size:0.72rem;">1 : 1 (Feed)</span>
+          </label>
+
+          <label style="cursor:pointer; border:2px solid {% if current_ratio == '9x16' %}#38bdf8{% else %}rgba(255,255,255,0.15){% endif %}; background:{% if current_ratio == '9x16' %}rgba(56,189,248,0.12){% else %}rgba(255,255,255,0.03){% endif %}; border-radius:8px; padding:0.75rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.4rem; transition:all 0.2s ease;">
+            <input type="radio" name="image_display_type" value="9x16" {% if current_ratio == '9x16' %}checked{% endif %} style="display:none;">
+            <div style="width:26px; height:46px; border:2px dashed #94a3b8; border-radius:4px; margin-bottom:0.2rem;"></div>
+            <strong style="color:#fff; font-size:0.88rem;">9 : 16</strong>
+            <span style="color:rgba(255,255,255,0.6); font-size:0.72rem;">Portrait (Story)</span>
+          </label>
+        </div>
       </div>
     </fieldset>
 
@@ -154,7 +194,7 @@
 
     <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:2rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Placement</legend>
-      <div style="display:flex; gap:2rem; flex-wrap:wrap;">
+      <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:1rem;">
         <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
           <input type="checkbox" name="superfeatured" value="1" {% if form_data.get('superfeatured') %}checked{% endif %}
             style="width:16px !important; max-width:16px !important; height:16px !important; cursor:pointer; flex:0 0 auto;">
@@ -166,18 +206,29 @@
           Show in Top Bar Banner
         </label>
       </div>
+      <div class="form-group" style="margin-top:0.75rem;">
+        <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Banner Type (if top bar banner is active)</label>
+        <select name="banner_type"
+          style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+          <option value="" {% if not form_data.get('banner_type') %}selected{% endif %}>Standard Announcement</option>
+          <option value="weather" {% if form_data.get('banner_type') == 'weather' %}selected{% endif %}>Weather</option>
+          <option value="parking" {% if form_data.get('banner_type') == 'parking' %}selected{% endif %}>Parking</option>
+          <option value="alert" {% if form_data.get('banner_type') == 'alert' %}selected{% endif %}>Alert</option>
+          <option value="info" {% if form_data.get('banner_type') == 'info' %}selected{% endif %}>Info</option>
+        </select>
+      </div>
     </fieldset>
 
     <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-      <button type="submit" name="_publish" value="1"
+      <button type="submit" name="_save_and_publish" value="1"
         style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:0.75rem 1.75rem; border-radius:8px; font-weight:700; font-size:1rem; cursor:pointer;">
         Save and Publish
       </button>
-      <button type="submit"
+      <button type="submit" name="_save_draft" value="1"
         style="background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.85); border:1px solid rgba(255,255,255,0.15); padding:0.75rem 1.75rem; border-radius:8px; font-weight:600; font-size:1rem; cursor:pointer;">
-        Save as Draft
+        {% if is_editing %}Save as Draft{% else %}Save as Draft{% endif %}
       </button>
-      <a href="{{ url_for('announcement.index_view') }}"
+      <a href="{{ return_url or url_for('announcement.index_view') }}"
         style="padding:0.75rem 1.25rem; border-radius:8px; color:rgba(255,255,255,0.45); text-decoration:none; font-size:0.95rem; display:inline-flex; align-items:center;">
         Cancel
       </a>
@@ -218,7 +269,10 @@
   .preview-sitebar-label { float:right; color:#8fc9e8; font-weight:600; letter-spacing:0; text-transform:none; }
   .preview-dot { display:inline-block; width:6px; height:6px; margin-right:.25rem; border-radius:50%; background:#43b3e8; vertical-align:middle; }
   .preview-card { overflow:hidden; border-radius:10px; background:#fff; box-shadow:0 10px 25px rgba(4,25,42,.25); }
-  .preview-image { height:112px; background-position:center; background-size:cover; }
+  .preview-image { width:100%; background-position:center; background-size:cover; transition:all 0.2s ease; }
+  .preview-image.ratio-16x9 { aspect-ratio: 16 / 9; height: auto; max-height: 200px; }
+  .preview-image.ratio-square { aspect-ratio: 1 / 1; height: auto; max-height: 240px; }
+  .preview-image.ratio-9x16 { aspect-ratio: 9 / 16; height: auto; max-height: 300px; }
   .preview-card-body { padding:1rem; }
   .preview-badges { display:flex; gap:.35rem; flex-wrap:wrap; margin-bottom:.6rem; }
   .preview-badges span { padding:.25rem .5rem; border-radius:999px; background:#e6f3fb; color:#2878a5; font-size:.62rem; font-weight:800; text-transform:capitalize; }
@@ -241,12 +295,12 @@
   .admin-body .announcement-direct-editor .form-group > label,
   .admin-body .announcement-direct-editor fieldset > div > div > label { color: #1d3d52 !important; font-size: .95rem !important; font-weight: 700 !important; }
   .admin-body .announcement-direct-editor label span { color: #b42318 !important; }
-  .announcement-direct-editor input:not([type="checkbox"]), .announcement-direct-editor select, .announcement-direct-editor textarea { background: #fff !important; border-color: #aebfcb !important; color: #1d2a36 !important; }
+  .announcement-direct-editor input:not([type="checkbox"]):not([type="radio"]), .announcement-direct-editor select, .announcement-direct-editor textarea { background: #fff !important; border-color: #aebfcb !important; color: #1d2a36 !important; }
   .announcement-direct-editor input::placeholder, .announcement-direct-editor textarea::placeholder { color: #607888 !important; opacity: 1; }
   .announcement-direct-editor fieldset > div,
   .announcement-direct-editor fieldset [style*="grid-template-columns"] { display: block !important; }
   .announcement-direct-editor fieldset > div > div { width: 100%; margin-bottom: 1.1rem; }
-  .announcement-direct-editor input,
+  .announcement-direct-editor input:not([type="checkbox"]):not([type="radio"]),
   .announcement-direct-editor select,
   .announcement-direct-editor textarea { width: 100% !important; max-width: none !important; box-sizing: border-box !important; }
   .announcement-direct-editor input[type="checkbox"] { width: 16px !important; max-width: 16px !important; height: 16px; flex: 0 0 auto; }
@@ -265,6 +319,34 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!form) return;
   const field = name => form.querySelector('[name="' + name + '"]');
   const text = (id, value, fallback) => { const el = document.getElementById(id); if (el) el.textContent = value || fallback; };
+
+  const imageInput = document.getElementById('featured_image_input');
+  const fileInput = document.getElementById('image_file_input');
+  const clearBtn = document.getElementById('clear_image_btn');
+  const uploadStatus = document.getElementById('upload_status');
+  const ratioInputs = form.querySelectorAll('input[name="image_display_type"]');
+
+  function getSelectedRatio() {
+    const checked = form.querySelector('input[name="image_display_type"]:checked');
+    return checked ? checked.value : '16x9';
+  }
+
+  function updateRatioStyles() {
+    const selected = getSelectedRatio();
+    ratioInputs.forEach(input => {
+      const parentLabel = input.closest('label');
+      if (parentLabel) {
+        if (input.value === selected) {
+          parentLabel.style.borderColor = '#38bdf8';
+          parentLabel.style.background = 'rgba(56,189,248,0.12)';
+        } else {
+          parentLabel.style.borderColor = 'rgba(255,255,255,0.15)';
+          parentLabel.style.background = 'rgba(255,255,255,0.03)';
+        }
+      }
+    });
+  }
+
   function updatePreview() {
     text('preview-title', field('title')?.value.trim(), 'Your announcement title');
     text('preview-description', field('description')?.value.trim(), 'Your announcement details will appear here. Add a clear title and a helpful description to see the finished card.');
@@ -274,10 +356,85 @@ document.addEventListener('DOMContentLoaded', function() {
     const event = document.getElementById('preview-event');
     if (event) event.hidden = !(start || end || date);
     text('preview-event-text', [date, start && end ? start + ' – ' + end : start || end].filter(Boolean).join(' · '), 'Event details');
-    const image = document.getElementById('preview-image'), url = field('featured_image')?.value.trim();
-    if (image) { image.hidden = !url; if (url) image.style.backgroundImage = 'url("' + url.replace(/"/g, '') + '")'; }
+
+    const image = document.getElementById('preview-image');
+    const url = imageInput ? imageInput.value.trim() : '';
+    if (clearBtn) {
+      clearBtn.style.display = url ? 'inline-block' : 'none';
+    }
+    if (image) {
+      image.hidden = !url;
+      if (url) {
+        image.style.backgroundImage = 'url("' + url.replace(/"/g, '') + '")';
+        const ratio = getSelectedRatio();
+        image.className = 'preview-image ratio-' + ratio;
+      }
+    }
+    updateRatioStyles();
   }
-  form.addEventListener('input', updatePreview); form.addEventListener('change', updatePreview); updatePreview();
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function() {
+      if (!fileInput.files || fileInput.files.length === 0) return;
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      if (uploadStatus) {
+        uploadStatus.textContent = 'Uploading ' + file.name + '...';
+        uploadStatus.style.display = 'block';
+        uploadStatus.style.color = '#60a5fa';
+      }
+
+      fetch('/admin/upload-image', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.url) {
+          if (imageInput) imageInput.value = data.url;
+          if (uploadStatus) {
+            uploadStatus.textContent = 'Uploaded successfully!';
+            uploadStatus.style.color = '#34d399';
+            setTimeout(() => { uploadStatus.style.display = 'none'; }, 3000);
+          }
+          updatePreview();
+        } else {
+          if (uploadStatus) {
+            uploadStatus.textContent = data.error || 'Upload failed.';
+            uploadStatus.style.color = '#f87171';
+          }
+        }
+      })
+      .catch(err => {
+        if (uploadStatus) {
+          uploadStatus.textContent = 'Upload error: ' + err.message;
+          uploadStatus.style.color = '#f87171';
+        }
+      });
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+      if (imageInput) imageInput.value = '';
+      if (fileInput) fileInput.value = '';
+      if (uploadStatus) uploadStatus.style.display = 'none';
+      updatePreview();
+    });
+  }
+
+  ratioInputs.forEach(input => {
+    input.addEventListener('change', updatePreview);
+  });
+
+  form.addEventListener('input', updatePreview);
+  form.addEventListener('change', updatePreview);
+  updatePreview();
 });
 </script>
 {% endblock %}
