@@ -323,6 +323,20 @@ class AnnouncementEditTestCase(unittest.TestCase):
         self.assertEqual(matching["imageDisplayType"], "square")
         self.assertEqual(matching["featuredImage"], uploaded_url)
 
+    def test_image_library_endpoint_and_picker(self):
+        # 1. Verify library endpoint returns images including the one uploaded in previous tests
+        response = self.client.get("/admin/api/image-library")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertIn("images", data)
+        self.assertIsInstance(data["images"], list)
+
+        # 2. Verify editor template renders library picker trigger button and modal
+        create_page = self.client.get("/admin/announcement/create/").get_data(as_text=True)
+        self.assertIn('id="open_library_btn"', create_page)
+        self.assertIn('id="image-library-modal"', create_page)
+        self.assertIn('Select Image from Library', create_page)
+
 
 if __name__ == "__main__":
     unittest.main()

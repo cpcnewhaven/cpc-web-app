@@ -3550,6 +3550,62 @@ def admin_upload_image():
     except Exception as e:
         return jsonify({'error': 'Failed to save file: ' + str(e)}), 500
 
+@app.route('/admin/api/image-library', methods=['GET'])
+@require_auth
+def admin_api_image_library():
+    """Return recent images from gallery, announcements, and static uploads for the image picker."""
+    images = []
+    seen_urls = set()
+
+    # 1. Gallery images
+    try:
+        g_images = GalleryImage.query.order_by(GalleryImage.created.desc().nullslast(), GalleryImage.id.desc()).limit(40).all()
+        for g in g_images:
+            if g.url and g.url.strip() and g.url not in seen_urls:
+                seen_urls.add(g.url)
+                images.append({
+                    'url': g.url,
+                    'title': g.name or 'Gallery Image',
+                    'source': 'gallery',
+                })
+    except Exception as e:
+        app.logger.warning("Failed to fetch gallery images for library picker: %s", e)
+
+    # 2. Recent announcement images
+    try:
+        a_images = Announcement.query.filter(Announcement.featured_image.isnot(None), Announcement.featured_image != '').order_by(Announcement.date_entered.desc().nullslast(), Announcement.id.desc()).limit(30).all()
+        for a in a_images:
+            if a.featured_image and a.featured_image.strip() and a.featured_image not in seen_urls:
+                seen_urls.add(a.featured_image)
+                images.append({
+                    'url': a.featured_image,
+                    'title': a.title or 'Announcement Image',
+                    'source': 'announcements',
+                })
+    except Exception as e:
+        app.logger.warning("Failed to fetch announcement images for library picker: %s", e)
+
+    # 3. Local upload files in static/uploads
+    try:
+        uploads_dir = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+        if os.path.exists(uploads_dir):
+            for fname in sorted(os.listdir(uploads_dir), reverse=True):
+                if _allowed_image(fname):
+                    file_url = url_for('static', filename='uploads/' + fname)
+                    if file_url not in seen_urls:
+                        seen_urls.add(file_url)
+                        images.append({
+                            'url': file_url,
+                            'title': fname,
+                            'source': 'uploads',
+                        })
+                if len(images) >= 60:
+                    break
+    except Exception as e:
+        app.logger.warning("Failed to scan static/uploads for library picker: %s", e)
+
+    return jsonify({'images': images[:60]})
+
 @app.route('/admin/upload-gallery-image', methods=['POST'])
 @require_auth
 def admin_upload_gallery_image():
