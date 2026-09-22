@@ -1,0 +1,1639 @@
+{% extends "base.html" %}
+
+{% block title %}Sunday Sermons - CPC New Haven{% endblock %}
+{% block meta_description %}Listen to Sunday sermons from Christ Presbyterian Church in New Haven, CT. 25 years of gospel-centered preaching.{% endblock %}
+{% block og_title %}Sunday Sermons — CPC New Haven{% endblock %}
+{% block og_description %}Listen to Sunday sermons from Christ Presbyterian Church in New Haven, CT. 25 years of gospel-centered preaching.{% endblock %}
+{% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/sermons{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+
+<style>
+/* Sermons hero photo */
+.sermons-hero {
+    padding: 2.5rem 1rem;
+    background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
+                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg') center/cover no-repeat;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.compact-hero.sermons-hero h1 {
+    color: rgba(255, 255, 255, 0.98) !important;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.compact-hero.sermons-hero p {
+    color: rgba(255, 255, 255, 0.86) !important;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Alpine.js x-cloak - hide elements until Alpine processes them */
+[x-cloak] {
+    display: none !important;
+}
+
+/* Sermons Page - Compact Layout */
+.sermons-page {
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+}
+
+.sermons-section {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.sermon-controls {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+}
+
+.filter-controls {
+    display: flex;
+    align-items: center;
+}
+
+.filter-controls select,
+.year-filter {
+    min-width: 0;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    background: rgba(0, 50, 120, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    outline: none;
+    max-width: 120px;
+}
+
+.filter-controls select:hover,
+.year-filter:hover {
+    background: rgba(0, 50, 120, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 50, 120, 0.3);
+    transform: translateY(-1px);
+}
+
+.filter-controls select:focus,
+.year-filter:focus {
+    background: rgba(0, 50, 120, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 50, 120, 0.4);
+}
+
+.filter-controls select option,
+.year-filter option {
+    background: rgba(0, 50, 120, 0.95);
+    color: rgba(255, 255, 255, 0.95);
+    padding: 0.5rem;
+}
+
+.search-container {
+    flex: 1;
+    min-width: 120px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 0.4rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+}
+
+.search-container input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.view-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-controls button {
+    padding: 0.4rem 0.6rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    line-height: 1;
+}
+
+.view-controls button.active {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.view-controls button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.sort-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.sort-controls select {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+}
+
+.sort-controls button {
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+}
+
+/* Sermons Grid - Optimized for Maximum Space */
+.sermons-grid {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    padding: 0.85rem 0;
+    max-width: 100%;
+    min-height: 400px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    grid-auto-rows: min-content;
+    align-content: start;
+    align-items: start;
+}
+
+/* Override Alpine.js display: none when element should be visible */
+.sermons-grid:not([style*="display: none"]) {
+    display: grid !important;
+}
+
+.sermon-card {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(0, 82, 163, 0.14);
+    border-radius: 20px;
+    padding: 1.1rem 1.2rem;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.1rem;
+    min-height: 0;
+    height: auto;
+    align-self: start;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 12px 30px rgba(16, 44, 84, 0.1);
+}
+
+.sermon-card:hover {
+    z-index: 100;
+}
+
+.sermon-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.99);
+    border-color: rgba(0, 82, 163, 0.2);
+    box-shadow: 0 18px 40px rgba(16, 44, 84, 0.16);
+}
+
+.sermon-thumbnail {
+    width: 132px;
+    flex: 0 0 132px;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 0;
+    background: rgba(0, 82, 163, 0.06);
+}
+
+.sermon-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sermon-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sermon-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #1a2a3f;
+    margin-bottom: 0.45rem;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.sermon-meta {
+    font-size: 0.85rem;
+    color: #5b6b7a;
+    margin-bottom: 0.5rem;
+}
+
+.sermon-scripture {
+    font-size: 0.85rem;
+    color: #52606e;
+    font-style: italic;
+    margin-bottom: 0.75rem;
+}
+
+.sermon-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.2rem;
+}
+
+.sermon-links a {
+    padding: 0.48rem 0.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 82, 163, 0.18);
+    box-shadow: 0 6px 16px rgba(16, 44, 84, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.sermon-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.sermon-links a:hover::before {
+    left: 100%;
+}
+
+/* Play button - for Spotify-linked sermons */
+.btn-play {
+    background: rgba(0, 82, 163, 0.1);
+    color: #0d4b91;
+    border-color: rgba(0, 82, 163, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-play:hover {
+    background: rgba(0, 82, 163, 0.16);
+    border-color: rgba(0, 82, 163, 0.28);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 82, 163, 0.12);
+}
+
+.btn-spotify {
+    background: rgba(29, 185, 84, 0.18);
+    color: #0f5e28;
+    border-color: rgba(29, 185, 84, 0.3);
+}
+
+.btn-spotify:hover {
+    background: rgba(29, 185, 84, 0.26);
+    border-color: rgba(29, 185, 84, 0.38);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(29, 185, 84, 0.14);
+}
+
+.btn-youtube {
+    background: rgba(255, 0, 0, 0.1);
+    color: #b10000;
+    border-color: rgba(255, 0, 0, 0.18);
+}
+
+.btn-youtube:hover {
+    background: rgba(255, 0, 0, 0.18);
+    border-color: rgba(255, 0, 0, 0.28);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.1);
+}
+
+.btn-apple {
+    background: rgba(0, 0, 0, 0.06);
+    color: #1a2a3f;
+    border-color: rgba(26, 42, 63, 0.12);
+}
+
+.btn-apple:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-color: rgba(26, 42, 63, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(16, 44, 84, 0.1);
+}
+
+
+/* Upcoming Sermon Badge */
+.upcoming-badge {
+    display: inline-block;
+    background: rgba(255, 193, 7, 0.25);
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    color: rgba(255, 193, 7, 0.95);
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: auto;
+}
+
+/* Dropdown Menu for Play Button */
+.sermon-play-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.sermon-play-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(20, 50, 90, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    min-width: 200px;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.sermon-play-menu.show {
+    display: block;
+}
+
+.sermon-play-menu a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sermon-play-menu a:last-child {
+    border-bottom: none;
+}
+
+.sermon-play-menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    padding-left: 1.25rem;
+}
+
+.sermon-play-menu a i {
+    margin-right: 0.5rem;
+    width: 16px;
+    text-align: center;
+}
+
+/* Play button styling */
+.play-btn {
+    cursor: pointer;
+    background: rgba(29, 185, 84, 0.45);
+    color: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(29, 185, 84, 0.55);
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.play-btn:hover {
+    background: rgba(29, 185, 84, 0.6);
+    border-color: rgba(29, 185, 84, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.35);
+}
+
+/* Table View - Styled to Match Page Vibe */
+.table-responsive {
+    width: 100%;
+    max-width: 100%; /* Ensure it doesn't overflow parent */
+    overflow-x: auto; /* Allow horizontal scroll if needed but don't clip dropdowns if possible */
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    background: rgba(0, 50, 120, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 50, 120, 0.2);
+    /* Remove max-height and overflow-y to let it scroll naturally with page */
+}
+
+.sermons-table {
+    width: 115%; /* Increased by 15% but contained by parent */
+    max-width: 100%; /* Never exceed parent container */
+    border-collapse: collapse;
+    background: transparent;
+    display: table;
+    table-layout: fixed;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.sermons-table th:nth-child(1),
+.sermons-table td:nth-child(1) {
+    width: 12%;
+}
+
+.sermons-table th:nth-child(2),
+.sermons-table td:nth-child(2) {
+    width: 35%;
+}
+
+.sermons-table th:nth-child(3),
+.sermons-table td:nth-child(3) {
+    width: 15%;
+}
+
+.sermons-table th:nth-child(4),
+.sermons-table td:nth-child(4) {
+    width: 20%;
+}
+
+.sermons-table th:nth-child(5),
+.sermons-table td:nth-child(5) {
+    width: 18%;
+}
+
+.sermons-table thead {
+    background: rgba(0, 50, 120, 0.25);
+    backdrop-filter: blur(10px);
+}
+
+.sermons-table th {
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    font-size: 0.75rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.sermons-table td {
+    padding: 0.6rem 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    vertical-align: top;
+    word-wrap: break-word;
+    max-width: 0;
+}
+
+.sermons-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.sermons-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(2px);
+}
+
+.sermons-table .sermon-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sermons-table .sermon-links a {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.7rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    line-height: 1.2;
+    display: inline-block;
+    margin: 0.15rem 0.15rem 0.15rem 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.sermons-table .sermon-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.sermons-table .sermon-links a:hover::before {
+    left: 100%;
+}
+
+.sermons-table .sermon-links a[href*="spotify"] {
+    background: rgba(29, 185, 84, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(29, 185, 84, 0.4);
+}
+
+.sermons-table .sermon-links a[href*="spotify"]:hover {
+    background: rgba(29, 185, 84, 0.5);
+    border-color: rgba(29, 185, 84, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3);
+}
+
+.sermons-table .sermon-links a.btn-play {
+    background: rgba(29, 185, 84, 0.45);
+    color: rgba(255, 255, 255, 0.98);
+    border-color: rgba(29, 185, 84, 0.55);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.sermons-table .sermon-links a.btn-play:hover {
+    background: rgba(29, 185, 84, 0.6);
+    border-color: rgba(29, 185, 84, 0.7);
+}
+
+.sermons-table .sermon-links a[href*="youtube"] {
+    background: rgba(255, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 0, 0, 0.4);
+}
+
+.sermons-table .sermon-links a[href*="youtube"]:hover {
+    background: rgba(255, 0, 0, 0.5);
+    border-color: rgba(255, 0, 0, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+}
+
+.sermons-table .sermon-links a[href*="apple"] {
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sermons-table .sermon-links a[href*="apple"]:hover {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Loading and Empty States */
+.loading, .no-results {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.results-count {
+    text-align: center;
+    padding: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+/* Ensure grid displays correctly when visible */
+/* Alpine.js x-show adds style="display: none" when hidden */
+.sermons-grid {
+    display: grid !important;
+}
+
+/* When Alpine.js adds inline style="display: none", respect it */
+.sermons-grid[style*="display: none"] {
+    display: none !important;
+}
+
+/* Ensure table displays when visible */
+.table-responsive {
+    display: block !important;
+}
+
+.table-responsive[style*="display: none"] {
+    display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sermons-grid {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+
+    .sermon-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sermon-thumbnail {
+        width: 100%;
+        flex: 0 0 auto;
+        aspect-ratio: 16 / 9;
+    }
+    
+    .sermon-controls {
+        flex-direction: column;
+    }
+    
+    .search-container {
+        width: 100%;
+    }
+    
+    .sermons-table {
+        font-size: 0.85rem;
+    }
+    
+    .sermons-table th,
+    .sermons-table td {
+        padding: 0.5rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .sermons-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+@media (min-width: 1600px) {
+    .sermons-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+/* Sermon rows follow the same quieter editorial system as the podcast list. */
+.sermons-page .sermons-grid { gap: 0.95rem; }
+.sermons-page .sermon-card {
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-color: rgba(13, 75, 145, 0.12);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 26px rgba(16, 44, 84, 0.08);
+}
+.sermons-page .sermon-card:hover { border-color: rgba(11, 97, 195, 0.26); box-shadow: 0 16px 32px rgba(16, 44, 84, 0.13); }
+.sermons-page .sermon-thumbnail { width: 116px; flex-basis: 116px; border-radius: 13px; box-shadow: 0 7px 16px rgba(16, 44, 84, 0.13); }
+.sermons-page .sermon-thumbnail img { object-position: center; }
+.sermons-page .sermon-topline { display: flex; flex-wrap: wrap; align-items: center; gap: 0.42rem; margin-bottom: 0.46rem; }
+.sermons-page .sermon-series-label,
+.sermons-page .sermon-date-chip { display: inline-flex; align-items: center; gap: 0.28rem; border-radius: 999px; font-size: 0.71rem; font-weight: 700; line-height: 1; }
+.sermons-page .sermon-series-label { padding: 0.22rem 0.48rem; color: #0b61c3; background: rgba(11, 97, 195, 0.055); border: 1px solid rgba(11, 97, 195, 0.12); letter-spacing: 0.035em; }
+.sermons-page .sermon-date-chip { padding: 0.22rem 0; color: #607287; }
+.sermons-page .sermon-date-chip i { color: #0b61c3; font-size: 0.65rem; }
+.sermons-page .sermon-title { margin: 0 0 0.3rem; color: #172b45 !important; font-size: 1.04rem; line-height: 1.3; }
+.sermons-page .sermon-meta { margin: 0; color: #64768a !important; font-size: 0.82rem; }
+.sermons-page .sermon-scripture { margin: 0.32rem 0 0; color: #42566d !important; font-size: 0.84rem; font-style: normal; }
+.sermons-page .sermon-scripture i { margin-right: 0.32rem; color: #0b61c3; font-size: 0.72rem; }
+.sermons-page .sermon-links { gap: 0.42rem; margin-top: 0.72rem; }
+.sermons-page .sermon-links .sermon-action,
+.sermons-page .sermon-links .btn-play-mp3,
+.sermons-page .sermon-links .btn-download-mp3 { display: inline-flex; align-items: center; gap: 0.34rem; padding: 0.42rem 0.68rem; border: 1px solid rgba(11, 97, 195, 0.14); border-radius: 999px; background: rgba(11, 97, 195, 0.045); color: #0b61c3 !important; box-shadow: none; font-size: 0.75rem; font-weight: 700; text-decoration: none; }
+.sermons-page .sermon-links .sermon-action-primary,
+.sermons-page .sermon-links .btn-play-mp3 { border-color: #0b61c3; background: #0b61c3; color: #fff !important; box-shadow: 0 7px 14px rgba(5, 53, 112, 0.16); }
+.sermons-page .sermon-links .sermon-action:hover,
+.sermons-page .sermon-links .btn-play-mp3:hover,
+.sermons-page .sermon-links .btn-download-mp3:hover { transform: translateY(-1px); border-color: #2d7dd9; background: rgba(11, 97, 195, 0.1); }
+.sermons-page .sermon-links .sermon-action-primary:hover,
+.sermons-page .sermon-links .btn-play-mp3:hover { background: #084c9c; }
+.sermons-page .sermon-card .sermon-media-empty { margin: 0.72rem 0 0; color: #8492a2; font-size: 0.78rem; }
+
+body.theme-blue .sermons-page .sermon-card { border-color: rgba(168, 208, 255, 0.18) !important; background: rgba(12, 34, 57, 0.94) !important; box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18) !important; }
+body.theme-blue .sermons-page .sermon-card:hover { border-color: rgba(168, 208, 255, 0.34) !important; background: rgba(20, 49, 78, 0.98) !important; }
+body.theme-blue .sermons-page .sermon-title { color: #fff !important; }
+body.theme-blue .sermons-page .sermon-meta { color: #b9d0e8 !important; }
+body.theme-blue .sermons-page .sermon-scripture { color: #d6e6f8 !important; }
+body.theme-blue .sermons-page .sermon-series-label { border-color: rgba(168, 208, 255, 0.2); background: rgba(168, 208, 255, 0.07); color: #a8d0ff; }
+body.theme-blue .sermons-page .sermon-date-chip { color: #a8c5e5; }
+body.theme-blue .sermons-page .sermon-date-chip i,
+body.theme-blue .sermons-page .sermon-scripture i { color: #a8d0ff; }
+body.theme-blue .sermons-page .sermon-links .sermon-action,
+body.theme-blue .sermons-page .sermon-links .btn-download-mp3 { border-color: rgba(168, 208, 255, 0.24); background: rgba(168, 208, 255, 0.07); color: #d9ecff !important; }
+body.theme-blue .sermons-page .sermon-links .sermon-action-primary,
+body.theme-blue .sermons-page .sermon-links a[href*="spotify"].sermon-action-primary,
+body.theme-blue .sermons-page .sermon-links a[href*="youtube"].sermon-action-primary,
+body.theme-blue .sermons-page .sermon-links a[href*="apple"].sermon-action-primary { border-color: #0b61c3 !important; background: #0b61c3 !important; color: #fff !important; }
+body.theme-blue .sermons-page .sermon-links a[href*="spotify"].sermon-action,
+body.theme-blue .sermons-page .sermon-links a[href*="youtube"].sermon-action,
+body.theme-blue .sermons-page .sermon-links a[href*="apple"].sermon-action { border-color: rgba(168, 208, 255, 0.24) !important; background: rgba(168, 208, 255, 0.07) !important; color: #d9ecff !important; }
+body.theme-blue .sermons-page .sermon-links a.sermon-action-primary[href] { border-color: #0b61c3 !important; background: #0b61c3 !important; color: #fff !important; }
+body.theme-blue .sermons-page .sermon-card .sermon-media-empty { color: #a8c5e5; }
+
+@media (max-width: 620px) {
+    .sermons-page .sermon-card { align-items: flex-start; gap: 0.8rem; padding: 0.8rem; }
+    .sermons-page .sermon-thumbnail { width: 78px; flex-basis: 78px; border-radius: 11px; }
+    .sermons-page .sermon-title { font-size: 0.98rem; }
+    .sermons-page .sermon-links { gap: 0.34rem; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Compact Hero -->
+<div class="compact-hero sermons-hero">
+    <h1 style="color: rgba(255, 255, 255, 0.98) !important; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);">Sunday Sermons</h1>
+    <p style="color: rgba(255, 255, 255, 0.86) !important; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);">Weekly messages from our Sunday worship services • 25 Years of Archive</p>
+</div>
+
+<!-- Sermons Section -->
+<section class="sermons-section sermons-page compact-page">
+    <div class="compact-content" style="max-width: 100%; padding: 0 0.75rem;">
+        <!-- Filter Controls -->
+        <div class="sermon-controls">
+            <div class="search-container">
+                <input type="text" id="sermonSearchInput" placeholder="Search sermons...">
+            </div>
+            <div class="filter-controls" style="display: flex; gap: 0.5rem;">
+                <select id="speakerFilter">
+                    <option value="">Speakers</option>
+                </select>
+                <select id="seriesFilter">
+                    <option value="">Series</option>
+                </select>
+                <select id="yearFilter">
+                    <option value="">Year</option>
+                </select>
+            </div>
+            <div class="view-controls">
+                <button class="view-btn active" data-view="card" title="Card View"><i class="fas fa-th-large"></i></button>
+                <button class="view-btn" data-view="table" title="Table View"><i class="fas fa-list"></i></button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading" style="display: none;">
+            <p>Loading sermons...</p>
+        </div>
+
+        <!-- Card View -->
+        <div id="sermonResults" class="sermons-grid" style="display: none;">
+        </div>
+
+        <!-- Table View -->
+        <div id="sermonTable" class="table-responsive" style="display: none;">
+            <table class="sermons-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Speaker</th>
+                        <th>Scripture</th>
+                        <th>Links</th>
+                    </tr>
+                </thead>
+                <tbody id="sermonTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="sermonPagination" style="display: none; display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">
+            <button id="prevSermonBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">← Previous</button>
+            <span id="sermonPageInfo" style="color: rgba(255,255,255,0.7);">Page 1</span>
+            <button id="nextSermonBtn" style="padding: 0.5rem 1rem; background: rgba(0,82,163,0.3); border: 1px solid rgba(0,82,163,0.5); border-radius: 6px; color: white; cursor: pointer;">Next →</button>
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <p>No sermons found matching your search criteria.</p>
+        </div>
+
+        <!-- Results Count -->
+        <div id="resultsCount" class="results-count" style="display: none;">
+            <p>Showing <span id="resultCountSpan">0</span> results</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- Phase 3: Sermons with /api/search backend -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentQuery = '';
+    let currentSpeaker = '';
+    let currentSeries = '';
+    let currentYear = '';
+    let currentView = 'card';
+    let currentPage = 1;
+    let sermonSearchTimer;
+    let filteredSermons = [];
+
+    // Initialize sermons
+    loadSermonMeta();
+    setupSermonFilters();
+    searchSermons();
+
+    async function loadSermonMeta() {
+        try {
+            const response = await fetch('/api/search/meta?type=sermons');
+            const data = await response.json();
+            if (data.success && data.meta) {
+                // Populate speaker dropdown
+                if (data.meta.speakers) {
+                    const speakerSelect = document.getElementById('speakerFilter');
+                    data.meta.speakers.forEach(speaker => {
+                        const option = document.createElement('option');
+                        option.value = speaker;
+                        option.textContent = speaker;
+                        speakerSelect.appendChild(option);
+                    });
+                }
+                // Populate series dropdown
+                if (data.meta.series) {
+                    const seriesSelect = document.getElementById('seriesFilter');
+                    data.meta.series.forEach(series => {
+                        const option = document.createElement('option');
+                        option.value = series.id;
+                        option.textContent = series.title;
+                        seriesSelect.appendChild(option);
+                    });
+                }
+                // Populate year dropdown
+                if (data.meta.years) {
+                    const yearSelect = document.getElementById('yearFilter');
+                    data.meta.years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        yearSelect.appendChild(option);
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load sermon metadata:', error);
+        }
+    }
+
+    function setupSermonFilters() {
+        const searchInput = document.getElementById('sermonSearchInput');
+        const filterToggle = document.getElementById('sermonFilterToggle');
+        const filterControls = document.querySelector('.sermons-section .mobile-collapsible');
+        const speakerFilter = document.getElementById('speakerFilter');
+        const seriesFilter = document.getElementById('seriesFilter');
+        const yearFilter = document.getElementById('yearFilter');
+
+        // Mobile filter toggle
+        if (filterToggle) {
+            filterToggle.addEventListener('click', () => {
+                filterControls.classList.toggle('open');
+                filterToggle.textContent = filterControls.classList.contains('open') ? 'Filters ▲' : 'Filters ▼';
+            });
+        }
+
+        // Search input (debounced 250ms)
+        searchInput.addEventListener('input', () => {
+            clearTimeout(sermonSearchTimer);
+            sermonSearchTimer = setTimeout(() => {
+                currentQuery = searchInput.value;
+                currentPage = 1;
+                searchSermons();
+            }, 250);
+        });
+
+        // Speaker filter (immediate)
+        speakerFilter.addEventListener('change', () => {
+            currentSpeaker = speakerFilter.value;
+            currentPage = 1;
+            searchSermons();
+        });
+
+        // Series filter (immediate)
+        seriesFilter.addEventListener('change', () => {
+            currentSeries = seriesFilter.value;
+            currentPage = 1;
+            searchSermons();
+        });
+
+        // Year filter (immediate)
+        yearFilter.addEventListener('change', () => {
+            currentYear = yearFilter.value;
+            currentPage = 1;
+            searchSermons();
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-btn[data-view]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentView = this.dataset.view;
+                renderSermons();
+            });
+        });
+
+        // Pagination
+        document.getElementById('prevSermonBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                searchSermons();
+                window.scrollTo(0, 0);
+            }
+        });
+
+        document.getElementById('nextSermonBtn').addEventListener('click', () => {
+            currentPage++;
+            searchSermons();
+            window.scrollTo(0, 0);
+        });
+    }
+
+    async function searchSermons() {
+        const loadingState = document.getElementById('loadingState');
+        loadingState.style.display = 'block';
+
+        try {
+            let url = `/api/search?type=sermons&page=${currentPage}&per_page=20`;
+            if (currentQuery) url += `&q=${encodeURIComponent(currentQuery)}`;
+            if (currentSpeaker) url += `&speaker=${encodeURIComponent(currentSpeaker)}`;
+            if (currentSeries) url += `&series_id=${encodeURIComponent(currentSeries)}`;
+            if (currentYear) url += `&year=${encodeURIComponent(currentYear)}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.results && data.results.length > 0) {
+                // Client-side guard: at most 1 upcoming badge, only within 14 days
+                const cutoff = new Date();
+                cutoff.setDate(cutoff.getDate() + 14);
+                let upcomingShown = false;
+                filteredSermons = data.results.map(s => {
+                    if (s._nextUpcoming && !upcomingShown && s.date && new Date(s.date) <= cutoff) {
+                        upcomingShown = true;
+                        return s;
+                    }
+                    return Object.assign({}, s, { _nextUpcoming: false });
+                });
+                renderSermons();
+
+                // Update pagination
+                const paginationContainer = document.getElementById('sermonPagination');
+                if (data.pages > 1) {
+                    paginationContainer.style.display = 'flex';
+                    document.getElementById('sermonPageInfo').textContent = `Page ${data.page} of ${data.pages}`;
+                    document.getElementById('prevSermonBtn').disabled = data.page === 1;
+                    document.getElementById('nextSermonBtn').disabled = data.page >= data.pages;
+                } else {
+                    paginationContainer.style.display = 'none';
+                }
+
+                // Hide no results
+                document.getElementById('noResults').style.display = 'none';
+                document.getElementById('resultsCount').style.display = 'block';
+                document.getElementById('resultCountSpan').textContent = data.total || 0;
+            } else {
+                document.getElementById('noResults').style.display = 'block';
+                document.getElementById('resultsCount').style.display = 'none';
+                document.getElementById('sermonResults').style.display = 'none';
+                document.getElementById('sermonTable').style.display = 'none';
+                const paginationContainer = document.getElementById('sermonPagination');
+                if (paginationContainer) paginationContainer.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Sermon search error:', error);
+            document.getElementById('noResults').style.display = 'block';
+            document.getElementById('noResults').innerHTML = '<p>Search error. Please try again.</p>';
+        } finally {
+            loadingState.style.display = 'none';
+        }
+    }
+
+    function renderSermons() {
+        document.getElementById('noResults').style.display = 'none';
+
+        if (currentView === 'table') {
+            renderTableView();
+        } else {
+            renderCardView();
+        }
+    }
+
+    // HTML-escape helper for data attribute values
+    function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
+
+    const SERMON_THUMBNAIL_FALLBACK = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg';
+
+    function resolveSermonThumbnail(sermon) {
+        const raw = sermon && sermon.thumbnail ? String(sermon.thumbnail).trim() : '';
+        if (!raw) return SERMON_THUMBNAIL_FALLBACK;
+        if (/example\.com\/thumbnail/i.test(raw)) return SERMON_THUMBNAIL_FALLBACK;
+        return transformImage(raw) || SERMON_THUMBNAIL_FALLBACK;
+    }
+
+    function renderCardView() {
+        const container = document.getElementById('sermonResults');
+        document.getElementById('sermonTable').style.display = 'none';
+        container.style.display = 'grid';
+        container.innerHTML = '';
+
+        if (filteredSermons.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+
+        filteredSermons.forEach(sermon => {
+            const card = document.createElement('div');
+            card.className = 'sermon-card';
+
+            const isUpcoming = sermon._nextUpcoming === true;
+            const AUDIO_RE = /\.(mp3|m4a|ogg|wav|aac)(\?|$)/i;
+            const hasAudio = !!sermon.audio_file_url;
+            const urlIsAudio = sermon.url && AUDIO_RE.test(sermon.url);
+            const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
+            const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
+                                     (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
+            const thumbnailSrc = resolveSermonThumbnail(sermon);
+            const hasSpotify = !!(sermon.spotify_url && sermon.spotify_url.includes('spotify'));
+            const hasYoutube = !!(sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be')));
+            const hasApple = !!(sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
+            const seriesLabel = sermon.series?.title || 'Sunday Sermon';
+
+            card.innerHTML = `
+                ${thumbnailSrc ? `
+                    <div class="sermon-thumbnail">
+                        <img src="${thumbnailSrc}" alt="${sermon.title}" loading="lazy" onerror="this.onerror=null;this.src='${SERMON_THUMBNAIL_FALLBACK}'">
+                    </div>
+                ` : ''}
+                <div class="sermon-content">
+                    <div class="sermon-topline">
+                        <span class="sermon-series-label">${seriesLabel}</span>
+                        <span class="sermon-date-chip"><i class="far fa-calendar" aria-hidden="true"></i>${formatDate(sermon.date)}</span>
+                    </div>
+                    <h3 class="sermon-title">${sermon.title}</h3>
+                    <p class="sermon-meta"><span class="sermon-author">${sermon.speaker || 'CPC New Haven'}</span></p>
+                    ${sermon.scripture ? `<p class="sermon-scripture"><i class="fas fa-book-open" aria-hidden="true"></i>${sermon.scripture}</p>` : ''}
+                    ${isUpcoming ? `
+                        <span class="sermon-links">
+                            <a href="/live" class="sermon-action sermon-action-primary">
+                                <i class="fas fa-calendar-alt"></i> Upcoming
+                            </a>
+                            <a href="https://www.youtube.com/playlist?list=PL7xij5KggExtDLlPXnYaDdpyKNW_tbNzm" target="_blank" rel="noopener" class="sermon-action">
+                                <i class="fas fa-play-circle"></i> Preview
+                            </a>
+                        </span>
+                        
+                    ` : `
+                        <div class="sermon-links">
+                            ${hasSpotify ? `
+                                <a href="${sermon.spotify_url}" target="_blank" rel="noopener" class="sermon-action sermon-action-primary" title="Listen on Spotify">
+                                    <i class="fab fa-spotify"></i> Spotify
+                                </a>
+                            ` : ''}
+                            ${hasYoutube ? `
+                                <a href="${sermon.youtube_url}" target="_blank" rel="noopener" class="sermon-action${hasSpotify ? '' : ' sermon-action-primary'}" title="Watch on YouTube">
+                                    <i class="fab fa-youtube"></i> YouTube
+                                </a>
+                            ` : ''}
+                            ${hasApple ? `
+                                <a href="${sermon.apple_podcasts_url}" target="_blank" rel="noopener" class="sermon-action${hasSpotify || hasYoutube ? '' : ' sermon-action-primary'}" title="Listen on Apple Podcasts">
+                                    <i class="fab fa-apple"></i> Apple
+                                </a>
+                            ` : ''}
+                            ${audioSrc && !hasStreamingLinks ? `
+                                <button class="btn-play-mp3"
+                                    data-play-audio="${esc(audioSrc)}"
+                                    data-play-title="${esc(sermon.title)}"
+                                    data-play-img="${esc(thumbnailSrc)}"
+                                    data-play-subtitle="${esc(sermon.speaker || '')}">
+                                    <i class="fas fa-play"></i> Play
+                                </button>
+                                <a href="${esc(audioSrc)}" download class="btn-download-mp3" title="Download sermon audio">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            ` : ''}
+                            ${!hasStreamingLinks && !audioSrc && sermon.url ? `
+                                <a href="${sermon.url}" target="_blank" rel="noopener" class="sermon-action sermon-action-primary">
+                                    <i class="fas fa-play"></i> Listen
+                                </a>
+                            ` : ''}
+                            ${!hasStreamingLinks && !audioSrc && !sermon.url ? '<span class="sermon-media-empty">Audio coming soon</span>' : ''}
+                        </div>
+                    `}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderTableView() {
+        const tbody = document.getElementById('sermonTableBody');
+        document.getElementById('sermonResults').style.display = 'none';
+        document.getElementById('sermonTable').style.display = 'block';
+        tbody.innerHTML = '';
+
+        if (filteredSermons.length === 0) {
+            document.getElementById('sermonTable').style.display = 'none';
+            return;
+        }
+
+        filteredSermons.forEach(sermon => {
+            const tr = document.createElement('tr');
+            const isUpcoming = sermon._nextUpcoming === true;
+            const AUDIO_RE = /\.(mp3|m4a|ogg|wav|aac)(\?|$)/i;
+            const hasAudio = !!sermon.audio_file_url;
+            const urlIsAudio = sermon.url && AUDIO_RE.test(sermon.url);
+            const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
+            const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
+                                     (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
+                                     (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
+
+            tr.innerHTML = `
+                <td><img src="${sermon.thumbnail}" alt="${sermon.title}" style="max-width: 100px; max-height: 100px;" /></td>
+                <td>${formatDate(sermon.date)}</td>
+                <td>${sermon.title}</td>
+                <td>${sermon.speaker_id || 'Unknown'}</td>
+                <td>${sermon.scripture || '-'}</td>
+                <td class="sermon-links">
+                    ${isUpcoming ? `
+                        <span style="color: rgba(255, 193, 7, 0.95); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                            <i class="fas fa-calendar-alt"></i> Upcoming
+                        </span>
+                    ` : `
+                        ${sermon.spotify_url.includes('spotify') ? `
+                            <a href="${sermon.spotify_url}" target="_blank" rel="noopener" class="btn-spotify" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Spotify">
+                                <i class="fab fa-spotify"></i> Spotify
+                            </a>
+                        ` : ''}
+                        ${sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be') ? `
+                            <a href="${sermon.youtube_url}" target="_blank" rel="noopener" class="btn-youtube" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="YouTube">
+                                <i class="fab fa-youtube"></i> YouTube
+                            </a>
+                        ` : ''}
+                        ${sermon.apple_podcasts_url.includes('apple') ? `
+                            <a href="${sermon.apple_podcasts_url}" target="_blank" rel="noopener" class="btn-apple" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Apple Podcasts">
+                                <i class="fab fa-apple"></i> Apple
+                            </a>
+                        ` : ''}
+                        ${audioSrc && !hasStreamingLinks ? `
+                            <button class="btn-play-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;"
+                                data-play-audio="${esc(audioSrc)}"
+                                data-play-title="${esc(sermon.title)}"
+                                data-play-img="${esc(thumbnailSrc)}"
+                                data-play-subtitle="${esc(sermon.speaker || '')}">
+                                <i class="fas fa-play"></i> Play
+                            </button>
+                            <a href="${esc(audioSrc)}" download class="btn-download-mp3" style="font-size: 0.7rem; padding: 0.35rem 0.7rem;" title="Download sermon audio">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        ` : ''}
+                        ${!hasStreamingLinks && !audioSrc && sermon.url ? `
+                             <a href="${sermon.url}" target="_blank" rel="noopener" class="btn-play" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Listen">
+                                <i class="fas fa-play"></i> Listen
+                            </a>
+                        ` : ''}
+                        ${!sermon.url && !audioSrc ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
+                    `}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return 'N/A';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return dateStr;
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(-2);
+        return `${month}/${day}/${year}`;
+    }
+});
+
+// Handle play button dropdowns
+document.addEventListener('click', function(e) {
+    const playBtn = e.target.closest('.play-btn');
+    const dropdown = e.target.closest('.sermon-play-dropdown');
+
+    // Toggle dropdown when play button is clicked
+    if (playBtn) {
+        const menu = playBtn.nextElementSibling;
+        if (menu && menu.classList.contains('sermon-play-menu')) {
+            menu.classList.toggle('show');
+        }
+    } else if (!dropdown) {
+        // Close all menus when clicking outside
+        document.querySelectorAll('.sermon-play-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+        });
+    }
+});
+/*
+// Old Alpine code below - keeping for reference, remove later
+window.sermonData = function() {
+    return {
+        sortKey: 'date',
+        sortAsc: false,
+        searchQuery: '',
+        selectedYear: '',
+        availableYears: [],
+        viewMode: 'card', // Default to card view
+        sermons: [],
+        filteredSermons: [],
+        loadingComplete: false,
+        
+        init() {
+            this.loadSermons();
+        },
+        
+        loadSermons() {
+            console.log('loadSermons called');
+            this.loadingComplete = false;
+            // Changed to use Flask API endpoint
+            fetch('/api/sermons')
+                .then(response => {
+                    console.log('Response received:', response);
+                    console.log('Response status:', response.status);
+                    console.log('Response ok:', response.ok);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data loaded:', data);
+                    console.log('Episodes count:', data.episodes ? data.episodes.length : 'no episodes');
+                    
+                    if (!data.episodes || data.episodes.length === 0) {
+                        console.error('No episodes in response!');
+                        this.loadingComplete = true;
+                        return;
+                    }
+                    
+                    // Format dates for display - always show as Sunday sermons
+                    this.sermons = (data.episodes || []).map(sermon => {
+                        const date = sermon.date ? new Date(sermon.date) : null;
+                        const year = date ? date.getFullYear() : null;
+                        return {
+                            ...sermon,
+                            displayDate: sermon.date ? this.formatSundayDate(sermon.date) : sermon.date,
+                            year: year
+                        };
+                    });
+                    
+                    console.log('Mapped sermons:', this.sermons.length);
+                    console.log('First sermon:', this.sermons[0]);
+                    console.log('First sermon keys:', Object.keys(this.sermons[0] || {}));
+                    
+                    // Extract available years
+                    const yearsSet = new Set();
+                    this.sermons.forEach(s => {
+                        if (s.year) yearsSet.add(s.year);
+                    });
+                    this.availableYears = Array.from(yearsSet).sort((a, b) => b - a); // Descending order
+                    console.log('Available years:', this.availableYears);
+                    
+                    // Ensure filteredSermons is a proper array and all items have required fields
+                    this.filteredSermons = Array.isArray(this.sermons) 
+                        ? this.sermons.filter(s => s != null).map(s => ({
+                            ...s,
+                            id: s.id || `sermon-${s.date || 'unknown'}-${s.title?.substring(0, 10) || 'untitled'}`
+                        }))
+                        : [];
+                    this.sortSermons();
+                    
+                    console.log('After sort - Filtered sermons:', this.filteredSermons.length);
+                    console.log('First filtered sermon:', this.filteredSermons[0]);
+                    console.log('First sermon has ID:', !!this.filteredSermons[0]?.id);
+                    
+                    // Use $nextTick to ensure Alpine.js processes the data
+                    this.loadingComplete = true;
+                    
+                    console.log('Sermons loaded:', this.sermons.length);
+                    console.log('Filtered sermons:', this.filteredSermons.length);
+                    console.log('View mode:', this.viewMode);
+                    console.log('Loading complete:', this.loadingComplete);
+                    
+                    // Immediately try manual rendering for table view (Alpine.js seems unreliable)
+                    if (this.viewMode === 'table' && this.filteredSermons.length > 0) {
+                        setTimeout(() => {
+                            const tbody = document.getElementById('sermons-tbody');
+                            if (tbody) {
+                                const rows = tbody.querySelectorAll('tr');
+                                console.log('Checking table rendering...');
+                                console.log('Rows found:', rows.length);
+                                console.log('Expected:', this.filteredSermons.length);
+                                
+                                // If Alpine.js didn't render, do it manually
+                                if (rows.length === 0) {
+                                    console.log('⚠️ Alpine.js did not render rows. Manually rendering...');
+                                    this.renderTableManually(tbody);
+                                } else {
+                                    console.log('✓ Alpine.js rendered rows successfully');
+                                }
+                            }
+                        }, 100);
+                    }
+                    
+                    // Force display update after Alpine.js processes
+                    setTimeout(() => {
+                        console.log('=== DISPLAY CHECK ===');
+                        console.log('View mode:', this.viewMode);
+                        console.log('Loading complete:', this.loadingComplete);
+                        console.log('Sermons count:', this.sermons.length);
+                        console.log('Filtered count:', this.filteredSermons.length);
+                        
+                        const grid = document.querySelector('.sermons-grid');
+                        const table = document.querySelector('.table-responsive');
+                        const tbody = document.getElementById('sermons-tbody');
+                        
+                        console.log('Grid element found:', !!grid);
+                        console.log('Table element found:', !!table);
+                        console.log('Tbody element found:', !!tbody);
+                        
+                        if (tbody) {
+                            const rows = tbody.querySelectorAll('tr');
+                            console.log('Number of rows in tbody:', rows.length);
+                            console.log('Expected rows:', this.filteredSermons.length);
+                            
+                            // Force manual render if still no rows
+                            if (rows.length === 0 && this.filteredSermons.length > 0 && this.viewMode === 'table') {
+                                console.log('⚠️ Still no rows! Forcing manual render...');
+                                this.renderTableManually(tbody);
+                            }
+                        }
+                        
+                        if (grid) {
+                            const computed = window.getComputedStyle(grid);
+                            const shouldShow = this.loadingComplete && this.viewMode === 'card' && this.filteredSermons.length > 0;
+                            if (shouldShow && computed.display === 'none') {
+                                grid.style.setProperty('display', 'grid', 'important');
+                                console.log('✓ Grid forced to display: grid');
+                            }
+                        }
+                        
+                        if (table) {
+                            const computed = window.getComputedStyle(table);
+                            const shouldShow = this.loadingComplete && this.viewMode === 'table' && this.filteredSermons.length > 0;
+                            if (shouldShow && computed.display === 'none') {
+                                table.style.setProperty('display', 'block', 'important');
+                                console.log('✓ Table forced to display: block');
+                            }
+                        }
+                        console.log('=== END DISPLAY CHECK ===');
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error loading sermons:', error);
+                    console.error('Error details:', error.message);
+                    this.sermons = [];
+                    this.filteredSermons = [];
+                    this.loadingComplete = true;
+                });
+        },
+
+        formatSundayDate(dateString) {
+            // Parse the date string and ensure it's treated as local time, not UTC
+            const [year, month, day] = dateString.split('-').map(num => parseInt(num, 10));
+            // Format as mm/dd/yy
+            const mm = String(month).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const yy = String(year).slice(-2); // Last 2 digits of year
+            return `${mm}/${dd}/${yy}`;
+        },
+
+        filterSermons() {
+            console.log('filterSermons called');
+            console.log('Selected year:', this.selectedYear, 'Type:', typeof this.selectedYear);
+            const query = this.searchQuery.toLowerCase().trim();
+            let filtered = [...this.sermons];
+            
+            console.log('Starting with', filtered.length, 'sermons');
+            
+            // Filter by search query
+            if (query) {
+                filtered = filtered.filter(sermon =>
+                    sermon.title?.toLowerCase().includes(query) ||
+                    sermon.author?.toLowerCase().includes(query) ||
+                    sermon.scripture?.toLowerCase().includes(query) ||
+                    sermon.date?.toLowerCase().includes(query)
+                );
+                console.log('After search filter:', filtered.length);
+            }
+            
+            // Filter by year
+            if (this.selectedYear && this.selectedYear !== '') {
+                const selectedYearNum = parseInt(this.selectedYear);
+                console.log('Filtering by year:', selectedYearNum);
+                const beforeCount = filtered.length;
+                filtered = filtered.filter(sermon => {
+                    const sermonYear = sermon.year ? (typeof sermon.year === 'number' ? sermon.year : parseInt(sermon.year)) : null;
+                    const matches = sermonYear === selectedYearNum;
+                    if (!matches && filtered.indexOf(sermon) < 3) {
+                        console.log('Sermon year mismatch:', sermonYear, 'vs', selectedYearNum, 'for sermon:', sermon.title?.substring(0, 30));
+                    }
+                    return matches;
+                });
+                console.log('After year filter:', filtered.length, '(was', beforeCount + ')');
+            } else {
+                console.log('No year filter applied');
+            }
+            
+            this.filteredSermons = filtered;
+            console.log('Final filtered count:', this.filteredSermons.length);
+            this.sortSermons();
+        },
+
+        sortSermons() {
+            console.log('sortSermons called');
+            this.filteredSermons.sort((a, b) => {
+                let aValue = a[this.sortKey] || '';
+                let bValue = b[this.sortKey] || '';
+                
+                // Handle date sorting
+                if (this.sortKey === 'date') {
+                    aValue = new Date(aValue);
+                    bValue = new Date(bValue);
+                } else {
+                    // String sorting
+                    aValue = aValue.toString().toLowerCase();
+                    bValue = bValue.toString().toLowerCase();
+                }
+                
+                if (aValue < bValue) {
+                    return this.sortAsc ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return this.sortAsc ? 1 : -1;
+                }
+                return 0;
+            });
+        },
+        
+        renderTableManually(tbody) {
+            console.log('renderTableManually called with', this.filteredSermons.length, 'sermons');
+            // Clear existing content
+            tbody.innerHTML = '';
+            
+            if (!this.filteredSermons || this.filteredSermons.length === 0) {
+                console.warn('No sermons to render!');
+                return;
+            }
+            
+            // Render each sermon as a table row
+            this.filteredSermons.forEach((sermon, index) => {
+                if (!sermon) {
+                    console.warn('Skipping null sermon at index', index);
+                    return;
+                }
+                const tr = document.createElement('tr');
+                
+                const dateCell = document.createElement('td');
+                dateCell.textContent = sermon.displayDate || sermon.date || 'N/A';
+                tr.appendChild(dateCell);
+                
+                const titleCell = document.createElement('td');
+                titleCell.textContent = sermon.title || 'Untitled';
+                tr.appendChild(titleCell);
+                
+                const authorCell = document.createElement('td');
+                authorCell.textContent = sermon.author || 'Unknown';
+                tr.appendChild(authorCell);
+                
+                const scriptureCell = document.createElement('td');
+                scriptureCell.textContent = sermon.scripture || '-';
+                tr.appendChild(scriptureCell);
+                
+                const linksCell = document.createElement('td');
+                linksCell.className = 'sermon-links';
+
+                if (sermon.spotify_url || sermon.youtube_url) {
+                    const dropdown = document.createElement('div');
+                    dropdown.className = 'sermon-play-dropdown';
+
+                    const playBtn = document.createElement('button');
+                    playBtn.className = 'btn-play play-btn';
+                    playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                    playBtn.type = 'button';
+                    playBtn.style.cssText = 'padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; background: rgba(29, 185, 84, 0.45); color: rgba(255, 255, 255, 0.98); border: 1px solid rgba(29, 185, 84, 0.55); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); cursor: pointer;';
+                    playBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const menu = dropdown.querySelector('.sermon-play-menu');
+                        menu.classList.toggle('show');
+                    });
+                    dropdown.appendChild(playBtn);
+
+                    const menu = document.createElement('div');
+                    menu.className = 'sermon-play-menu';
+
+                    if (sermon.spotify_url) {
+                        const spotifyLink = document.createElement('a');
+                        spotifyLink.href = sermon.spotify_url;
+                        spotifyLink.target = '_blank';
+                        spotifyLink.rel = 'noopener';
+                        spotifyLink.innerHTML = '<i class="fab fa-spotify"></i> Spotify';
+                        menu.appendChild(spotifyLink);
+                    }
+
+                    if (sermon.youtube_url) {
+                        const youtubeLink = document.createElement('a');
+                        youtubeLink.href = sermon.youtube_url;
+                        youtubeLink.target = '_blank';
+                        youtubeLink.rel = 'noopener';
+                        youtubeLink.innerHTML = '<i class="fab fa-youtube"></i> YouTube';
+                        menu.appendChild(youtubeLink);
+                    }
+
+                    dropdown.appendChild(menu);
+                    linksCell.appendChild(dropdown);
+                } else {
+                    const span = document.createElement('span');
+                    span.style.color = 'rgba(255,255,255,0.5)';
+                    span.textContent = '-';
+                    linksCell.appendChild(span);
+                }
+                
+                tr.appendChild(linksCell);
+                tbody.appendChild(tr);
+            });
+            
+            const renderedRows = tbody.querySelectorAll('tr').length;
+            console.log('✓ Manually rendered', renderedRows, 'rows');
+            console.log('Tbody now has', tbody.children.length, 'children');
+            
+            // Force table to be visible
+            const table = tbody.closest('.table-responsive');
+            if (table) {
+                table.style.setProperty('display', 'block', 'important');
+                console.log('✓ Table visibility forced');
+            }
+        }
+    };
+};
+*/
+</script>
+{% endblock %}
