@@ -128,18 +128,21 @@
         <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Featured Image URL or File Upload</label>
         <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
           <input type="url" name="featured_image" id="featured_image_input" value="{{ form_data.get('featured_image', '') }}"
-            style="flex:1; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
+            style="flex:1; min-width:200px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
             placeholder="https://example.com/image.jpg">
           <label for="image_file_input" style="cursor:pointer; background:#2563eb; color:#fff; font-weight:600; font-size:0.88rem; padding:0.7rem 1rem; border-radius:7px; white-space:nowrap; display:inline-flex; align-items:center; gap:0.4rem; margin:0;">
             <span>Upload File</span>
           </label>
           <input type="file" id="image_file_input" name="image_file" accept="image/*" style="display:none;">
+          <button type="button" id="open_library_btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; font-weight:600; font-size:0.88rem; padding:0.7rem 1rem; border-radius:7px; white-space:nowrap; cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
+            <span>🖼️ Library</span>
+          </button>
           <button type="button" id="clear_image_btn" style="display:none; background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; font-size:0.88rem; padding:0.7rem 0.9rem; border-radius:7px; cursor:pointer;">
             Clear
           </button>
         </div>
         <div id="upload_status" style="font-size:0.82rem; color:#60a5fa; display:none; margin-top:0.3rem;"></div>
-        <small style="display:block; color:rgba(255,255,255,0.5); font-size:0.8rem; margin-top:0.25rem;">Paste an image link or upload a file from your device (PNG, JPG, WebP, GIF).</small>
+        <small style="display:block; color:rgba(255,255,255,0.5); font-size:0.8rem; margin-top:0.25rem;">Paste an image link, pick from the image library, or upload from your device.</small>
       </div>
 
       <div class="form-group">
@@ -252,6 +255,45 @@
     </div>
     <p class="preview-note">This is a preview of the announcement card shown on the public announcements page.</p>
   </aside>
+  </div>
+
+  <!-- Image Library Modal -->
+  <div id="image-library-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:1.5rem;">
+    <div style="background:#0f2238; border:1px solid rgba(255,255,255,0.18); border-radius:14px; max-width:800px; width:100%; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+      <!-- Modal Header -->
+      <div style="padding:1.2rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h3 style="margin:0; color:#fff; font-size:1.2rem; font-weight:700;">Select Image from Library</h3>
+          <p style="margin:0.25rem 0 0; color:rgba(255,255,255,0.55); font-size:0.8rem;">Click any image to select it for your announcement.</p>
+        </div>
+        <button type="button" id="close_library_btn" style="background:none; border:none; color:rgba(255,255,255,0.7); font-size:1.5rem; cursor:pointer; line-height:1; padding:0.25rem 0.5rem; border-radius:6px;">&times;</button>
+      </div>
+
+      <!-- Search & Filters -->
+      <div style="padding:0.75rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; gap:0.75rem; align-items:center; background:rgba(0,0,0,0.2);">
+        <input type="text" id="library_search_input" placeholder="Filter by image title or filename..." style="flex:1; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.5rem 0.8rem; border-radius:6px; font-size:0.88rem;">
+        <span id="library_count_badge" style="color:rgba(255,255,255,0.5); font-size:0.8rem; white-space:nowrap;"></span>
+      </div>
+
+      <!-- Modal Body / Grid -->
+      <div id="library_grid_container" style="padding:1.5rem; overflow-y:auto; flex:1;">
+        <div id="library_loading_indicator" style="text-align:center; padding:3rem; color:rgba(255,255,255,0.6);">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">⏳</div>
+          Loading images from library...
+        </div>
+        <div id="library_grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:0.9rem;"></div>
+        <div id="library_empty_state" style="display:none; text-align:center; padding:3rem; color:rgba(255,255,255,0.5);">
+          No matching images found.
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding:0.9rem 1.5rem; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); display:flex; justify-content:flex-end;">
+        <button type="button" id="cancel_library_btn" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:0.5rem 1.25rem; border-radius:6px; cursor:pointer; font-size:0.9rem;">
+          Close
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
@@ -425,6 +467,125 @@ document.addEventListener('DOMContentLoaded', function() {
       if (fileInput) fileInput.value = '';
       if (uploadStatus) uploadStatus.style.display = 'none';
       updatePreview();
+    });
+  }
+
+  // --- Image Library Picker Logic ---
+  const libraryModal = document.getElementById('image-library-modal');
+  const openLibraryBtn = document.getElementById('open_library_btn');
+  const closeLibraryBtn = document.getElementById('close_library_btn');
+  const cancelLibraryBtn = document.getElementById('cancel_library_btn');
+  const librarySearchInput = document.getElementById('library_search_input');
+  const libraryGrid = document.getElementById('library_grid');
+  const libraryLoading = document.getElementById('library_loading_indicator');
+  const libraryEmpty = document.getElementById('library_empty_state');
+  const libraryCount = document.getElementById('library_count_badge');
+
+  let libraryImages = [];
+  let libraryLoaded = false;
+
+  function renderLibraryGrid(images) {
+    if (!libraryGrid) return;
+    libraryGrid.innerHTML = '';
+    if (libraryCount) libraryCount.textContent = images.length + ' image' + (images.length === 1 ? '' : 's');
+    if (images.length === 0) {
+      if (libraryEmpty) libraryEmpty.style.display = 'block';
+      return;
+    }
+    if (libraryEmpty) libraryEmpty.style.display = 'none';
+
+    images.forEach(img => {
+      const card = document.createElement('div');
+      card.style.cssText = 'cursor:pointer; border:2px solid rgba(255,255,255,0.12); border-radius:8px; overflow:hidden; background:rgba(0,0,0,0.3); transition:all 0.15s ease; display:flex; flex-direction:column;';
+      card.title = img.title || img.url;
+
+      card.innerHTML = `
+        <div style="height:90px; width:100%; background:rgba(0,0,0,0.5); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+          <img src="${img.url}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy">
+        </div>
+        <div style="padding:0.4rem 0.5rem; flex:1;">
+          <div style="color:#fff; font-size:0.75rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            ${img.title || 'Image'}
+          </div>
+          <div style="color:rgba(255,255,255,0.45); font-size:0.65rem; text-transform:capitalize;">
+            ${img.source || 'library'}
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('mouseenter', () => {
+        card.style.borderColor = '#38bdf8';
+        card.style.transform = 'translateY(-2px)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.borderColor = 'rgba(255,255,255,0.12)';
+        card.style.transform = 'translateY(0)';
+      });
+
+      card.addEventListener('click', () => {
+        if (imageInput) {
+          imageInput.value = img.url;
+        }
+        if (uploadStatus) uploadStatus.style.display = 'none';
+        updatePreview();
+        closeModal();
+      });
+
+      libraryGrid.appendChild(card);
+    });
+  }
+
+  function filterLibrary() {
+    const q = (librarySearchInput?.value || '').trim().toLowerCase();
+    if (!q) {
+      renderLibraryGrid(libraryImages);
+      return;
+    }
+    const filtered = libraryImages.filter(img => 
+      (img.title && img.title.toLowerCase().includes(q)) || 
+      (img.url && img.url.toLowerCase().includes(q))
+    );
+    renderLibraryGrid(filtered);
+  }
+
+  function openModal() {
+    if (libraryModal) libraryModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    if (!libraryLoaded) {
+      if (libraryLoading) libraryLoading.style.display = 'block';
+      if (libraryEmpty) libraryEmpty.style.display = 'none';
+      fetch('/admin/api/image-library')
+        .then(r => r.json())
+        .then(data => {
+          libraryImages = data.images || [];
+          libraryLoaded = true;
+          if (libraryLoading) libraryLoading.style.display = 'none';
+          renderLibraryGrid(libraryImages);
+        })
+        .catch(err => {
+          if (libraryLoading) libraryLoading.textContent = 'Failed to load images: ' + err.message;
+        });
+    } else {
+      filterLibrary();
+    }
+    if (librarySearchInput) {
+      setTimeout(() => librarySearchInput.focus(), 50);
+    }
+  }
+
+  function closeModal() {
+    if (libraryModal) libraryModal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  if (openLibraryBtn) openLibraryBtn.addEventListener('click', openModal);
+  if (closeLibraryBtn) closeLibraryBtn.addEventListener('click', closeModal);
+  if (cancelLibraryBtn) cancelLibraryBtn.addEventListener('click', closeModal);
+  if (librarySearchInput) librarySearchInput.addEventListener('input', filterLibrary);
+
+  if (libraryModal) {
+    libraryModal.addEventListener('click', function(e) {
+      if (e.target === libraryModal) closeModal();
     });
   }
 
