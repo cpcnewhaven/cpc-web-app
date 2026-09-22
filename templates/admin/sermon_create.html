@@ -16,10 +16,12 @@
 {% endmacro %}
 
 {% block body %}
+{% set is_editing = request.path.rstrip('/').endswith('/edit') %}
+{% set content_name = 'Podcast episode' if admin_view.endpoint == 'podcastepisode' else 'Sermon' %}
 <main class="sermon-editor">
   <p class="sermon-kicker">{{ admin_view.name }}</p>
-  <h2>New entry</h2>
-  <p class="sermon-intro">Add the details, resources, and publishing settings.</p>
+  <h2>{% if is_editing %}Edit {{ content_name }}{% else %}New {{ content_name }}{% endif %}</h2>
+  <p class="sermon-intro">{% if is_editing %}Update the details, resources, and publishing settings.{% else %}Add the details, resources, and publishing settings.{% endif %}</p>
   <form action="{{ action }}" method="POST" enctype="multipart/form-data" id="admin-form">
     {{ form.hidden_tag() if form.hidden_tag }}
     {% for name, opts in admin_view.form_fieldsets %}
@@ -51,27 +53,43 @@
 {% block tail %}
 {{ super() }}
 <style>
-  .sermon-editor { width: min(100%, 900px); margin: 0 auto; padding-bottom: 5rem; }
-  .sermon-kicker { color: #4aaaf0; text-transform: uppercase; letter-spacing: .18em; font-size: .7rem; font-weight: 800; margin: 0 0 .4rem; }
-  .sermon-editor h2 { margin: 0; color: #fff; font-size: 2rem; }
-  .sermon-intro { color: rgba(255,255,255,.58); margin: .5rem 0 2rem; }
-  .sermon-section { padding: 1.5rem 0; border-top: 1px solid rgba(255,255,255,.14); }
-  .sermon-section h3 { color: #fff; font-size: 1.15rem; margin: 0 0 1.25rem; }
+  .sermon-editor { width: min(100%, 900px); margin: 0 auto; padding-bottom: 5rem; color: #1d2a36; }
+  .sermon-kicker { color: #2d6fa8; text-transform: uppercase; letter-spacing: .18em; font-size: .7rem; font-weight: 800; margin: 0 0 .4rem; }
+  .sermon-editor h2 { margin: 0; color: #17384f; font-size: 2rem; }
+  .sermon-intro { color: #536b7b; margin: .5rem 0 2rem; }
+  .sermon-section { padding: 1.5rem 0; border-top: 1px solid #cbd6df; }
+  .sermon-section h3 { color: #1d3d52; font-size: 1.15rem; margin: 0 0 1.25rem; }
   .sermon-fields { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
   .scripture-fields { grid-template-columns: 1fr 1fr; }
   .scripture-fields .sermon-field:first-child { grid-column: 1 / -1; }
-  .sermon-field label { display:block; color: rgba(255,255,255,.7); font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .45rem; }
-  .sermon-input { width:100%; box-sizing:border-box; border:1px solid rgba(255,255,255,.12); border-radius: .55rem; background:#061a30; color:#fff; padding:.8rem .9rem; }
+  .sermon-field label { display:block; color: #34566d; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .45rem; }
+  .sermon-input { width:100%; box-sizing:border-box; border:1px solid #aebfcb; border-radius: .55rem; background:#fff; color:#1d2a36; padding:.8rem .9rem; }
+  .sermon-input::placeholder { color: #607888; opacity: 1; }
   .sermon-select { appearance:auto; }
-  .sermon-toggle { display:flex; justify-content:space-between; align-items:center; padding:.8rem .9rem; border:1px solid rgba(255,255,255,.12); border-radius:.55rem; color:rgba(255,255,255,.8); }
-  .sermon-toggle b { width:2.5rem; height:1.35rem; border-radius:2rem; background:#24588e; position:relative; }
+  .sermon-toggle { display:flex; justify-content:space-between; align-items:center; padding:.8rem .9rem; border:1px solid #aebfcb; border-radius:.55rem; color:#27475d; background:#fff; }
+  .sermon-toggle b { width:2.5rem; height:1.35rem; border-radius:2rem; background:#7890a2; position:relative; }
   .sermon-toggle b:after { content:''; position:absolute; width:1.05rem; height:1.05rem; top:.15rem; left:.15rem; background:#fff; border-radius:50%; }
   .sermon-toggle input:checked + span + b { background:#35a8f2; }
   .sermon-toggle input:checked + span + b:after { left:1.3rem; }
   .sermon-error { color:#f87171; display:block; margin-top:.35rem; }
-  .sermon-actions { display:flex; justify-content:flex-end; gap:.7rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.14); }
-  .sermon-actions a, .sermon-actions button { border:0; border-radius:.55rem; padding:.8rem 1.15rem; color:#fff; background:rgba(255,255,255,.08); font-weight:700; text-decoration:none; }
-  .sermon-actions .primary { background:#3fa6eb; color:#06203a; }
+  .sermon-actions { display:flex; justify-content:flex-end; gap:.7rem; padding-top:1.5rem; border-top:1px solid #cbd6df; }
+  .sermon-actions a, .sermon-actions button { border:1px solid #9eb2c0; border-radius:.55rem; padding:.8rem 1.15rem; color:#27475d; background:#fff; font-weight:700; text-decoration:none; }
+  .sermon-actions .primary { background:#2d6fa8; border-color:#2d6fa8; color:#fff; }
+  .sermon-actions .primary:hover { background:#245d8e; border-color:#245d8e; color:#fff; }
+  /* The public-site theme switch can also be present in an embedded admin
+     session.  These rules retain contrast instead of inheriting light text
+     onto a light form control. */
+  body.theme-blue .sermon-editor { color:#e8f3fb; }
+  body.theme-blue .sermon-kicker { color:#8fd3ff; }
+  body.theme-blue .sermon-editor h2, body.theme-blue .sermon-section h3 { color:#fff; }
+  body.theme-blue .sermon-intro { color:#c2d9e8; }
+  body.theme-blue .sermon-section, body.theme-blue .sermon-actions { border-color:rgba(210,232,246,.28); }
+  body.theme-blue .sermon-field label { color:#d8ebf7; }
+  body.theme-blue .sermon-input, body.theme-blue .sermon-toggle { background:#102c45 !important; border-color:#5c819b !important; color:#fff !important; }
+  body.theme-blue .sermon-input::placeholder { color:#b9d0df; }
+  body.theme-blue .sermon-toggle b { background:#7292a8; }
+  body.theme-blue .sermon-actions a, body.theme-blue .sermon-actions button { background:#173a58; border-color:#6a8ba1; color:#fff; }
+  body.theme-blue .sermon-actions .primary { background:#5aace4; border-color:#5aace4; color:#102c45; }
   @media (max-width: 700px) { .sermon-editor { padding: 0 .25rem 4rem; } .scripture-fields { grid-template-columns:1fr; } .scripture-fields .sermon-field:first-child { grid-column:auto; } .sermon-actions { flex-direction:column-reverse; } .sermon-actions a, .sermon-actions button { width:100%; text-align:center; } }
 </style>
 {% endblock %}

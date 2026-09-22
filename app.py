@@ -4244,14 +4244,18 @@ class AnnouncementView(AuthenticatedModelView):
                 if banner_type:
                     show_in_banner = True
                     type_val = banner_type
-                featured_image = form_data.get('featured_image', '').strip() or None
-                img_file = request.files.get('image_file') or request.files.get('file')
-                if img_file and getattr(img_file, 'filename', None):
-                    uploaded_url = _save_uploaded_image(img_file)
-                    if uploaded_url:
-                        featured_image = uploaded_url
                 raw_img_type = form_data.get('image_display_type', '').strip()
-                image_display_type = _normalize_aspect_ratio(raw_img_type) if (featured_image or raw_img_type) else None
+                if raw_img_type == 'none':
+                    featured_image = None
+                    image_display_type = None
+                else:
+                    featured_image = form_data.get('featured_image', '').strip() or None
+                    img_file = request.files.get('image_file') or request.files.get('file')
+                    if img_file and getattr(img_file, 'filename', None):
+                        uploaded_url = _save_uploaded_image(img_file)
+                        if uploaded_url:
+                            featured_image = uploaded_url
+                    image_display_type = _normalize_aspect_ratio(raw_img_type) if featured_image else None
 
                 ann = Announcement(
                     id=next_global_id(),
@@ -4370,15 +4374,19 @@ class AnnouncementView(AuthenticatedModelView):
 
                 ann.superfeatured = bool(form_data.get('superfeatured'))
 
-                featured_image = form_data.get('featured_image', '').strip() or None
-                img_file = request.files.get('image_file') or request.files.get('file')
-                if img_file and getattr(img_file, 'filename', None):
-                    uploaded_url = _save_uploaded_image(img_file)
-                    if uploaded_url:
-                        featured_image = uploaded_url
-                ann.featured_image = featured_image
                 raw_img_type = form_data.get('image_display_type', '').strip()
-                ann.image_display_type = _normalize_aspect_ratio(raw_img_type) if (featured_image or raw_img_type) else None
+                if raw_img_type == 'none':
+                    featured_image = None
+                    ann.image_display_type = None
+                else:
+                    featured_image = form_data.get('featured_image', '').strip() or None
+                    img_file = request.files.get('image_file') or request.files.get('file')
+                    if img_file and getattr(img_file, 'filename', None):
+                        uploaded_url = _save_uploaded_image(img_file)
+                        if uploaded_url:
+                            featured_image = uploaded_url
+                    ann.image_display_type = _normalize_aspect_ratio(raw_img_type) if featured_image else None
+                ann.featured_image = featured_image
 
                 base_date = ann.date_entered or now
                 ann.expires_at = _compute_expires_at(
@@ -4413,7 +4421,7 @@ class AnnouncementView(AuthenticatedModelView):
                 'event_start_time': ann.event_start_time or '',
                 'event_end_time': ann.event_end_time or '',
                 'featured_image': ann.featured_image or '',
-                'image_display_type': _normalize_aspect_ratio(ann.image_display_type) if ann.image_display_type else '16x9',
+                'image_display_type': _normalize_aspect_ratio(ann.image_display_type) if ann.featured_image else 'none',
                 'superfeatured': '1' if ann.superfeatured else '',
                 'show_in_banner': '1' if ann.show_in_banner else '',
                 'banner_type': banner_val,
@@ -4713,7 +4721,10 @@ class PaperView(AuthenticatedModelView):
 class SermonView(AuthenticatedModelView):
     list_template = 'admin/content_list.html'
     create_template = 'admin/sermon_create.html'
-    edit_template = 'admin/model/edit_bento.html'
+    # The bento shell is useful for small admin records, but it does not
+    # preserve this editor's grouped controls.  Use the same complete form
+    # for a new sermon and an existing sermon.
+    edit_template = 'admin/sermon_create.html'
     column_list = ('title', 'series', 'speaker_user', 'date', 'active')
     column_searchable_list = ('title', 'scripture')
     column_filters = ('series', 'speaker_user.full_name', 'date', 'active')
@@ -4992,7 +5003,10 @@ class SermonView(AuthenticatedModelView):
 class PodcastEpisodeView(AuthenticatedModelView):
     list_template = 'admin/content_list.html'
     create_template = 'admin/sermon_create.html'
-    edit_template = 'admin/model/edit_bento.html'
+    # Podcast episodes share the grouped content editor with sermons.  Keeping
+    # create and edit on one template prevents the edit view from collapsing
+    # into the generic bento layout.
+    edit_template = 'admin/sermon_create.html'
     column_list = ('number', 'title', 'series', 'guest', 'date_added')
     column_searchable_list = ('title', 'guest', 'scripture')
     column_filters = ('series', 'guest', 'season', 'source')

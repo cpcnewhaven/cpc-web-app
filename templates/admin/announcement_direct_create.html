@@ -126,50 +126,54 @@
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Image</legend>
       <div class="form-group" style="margin-bottom:1.25rem;">
         <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Featured Image URL or File Upload</label>
-        <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
+        <div class="image-source-controls">
           <input type="url" name="featured_image" id="featured_image_input" value="{{ form_data.get('featured_image', '') }}"
             style="flex:1; min-width:200px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;"
             placeholder="https://example.com/image.jpg">
-          <label for="image_file_input" style="cursor:pointer; background:#2563eb; color:#fff; font-weight:600; font-size:0.88rem; padding:0.7rem 1rem; border-radius:7px; white-space:nowrap; display:inline-flex; align-items:center; gap:0.4rem; margin:0;">
+          <label for="image_file_input" class="image-upload-button">
             <span>Upload File</span>
           </label>
           <input type="file" id="image_file_input" name="image_file" accept="image/*" style="display:none;">
-          <button type="button" id="open_library_btn" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; font-weight:600; font-size:0.88rem; padding:0.7rem 1rem; border-radius:7px; white-space:nowrap; cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
+          <button type="button" id="open_library_btn" class="image-library-button">
             <span>🖼️ Library</span>
           </button>
-          <button type="button" id="clear_image_btn" style="display:none; background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; font-size:0.88rem; padding:0.7rem 0.9rem; border-radius:7px; cursor:pointer;">
+          <button type="button" id="clear_image_btn" class="image-clear-button" style="display:none;">
             Clear
           </button>
         </div>
         <div id="upload_status" style="font-size:0.82rem; color:#60a5fa; display:none; margin-top:0.3rem;"></div>
-        <small style="display:block; color:rgba(255,255,255,0.5); font-size:0.8rem; margin-top:0.25rem;">Paste an image link, pick from the image library, or upload from your device.</small>
+        <small class="image-help">Paste an image link, pick from the image library, upload from your device, or choose “No image.”</small>
       </div>
 
       <div class="form-group">
         <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.6rem; font-size:0.9rem;">Image Aspect Ratio Template</label>
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.75rem;">
-          {% set current_ratio = form_data.get('image_display_type', '16x9') %}
-          {% if current_ratio in ['cover', '', None] %}{% set current_ratio = '16x9' %}{% elif current_ratio in ['poster', 'story'] %}{% set current_ratio = '9x16' %}{% elif current_ratio in ['1:1'] %}{% set current_ratio = 'square' %}{% endif %}
+        <div class="image-ratio-options">
+          {% set current_ratio = form_data.get('image_display_type', 'none') %}
+          {% if current_ratio in ['cover'] %}{% set current_ratio = '16x9' %}{% elif current_ratio in ['poster', 'story'] %}{% set current_ratio = '9x16' %}{% elif current_ratio in ['1:1'] %}{% set current_ratio = 'square' %}{% elif current_ratio not in ['none', '16x9', 'square', '9x16'] %}{% set current_ratio = 'none' %}{% endif %}
 
-          <label style="cursor:pointer; border:2px solid {% if current_ratio == '16x9' %}#38bdf8{% else %}rgba(255,255,255,0.15){% endif %}; background:{% if current_ratio == '16x9' %}rgba(56,189,248,0.12){% else %}rgba(255,255,255,0.03){% endif %}; border-radius:8px; padding:0.75rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.4rem; transition:all 0.2s ease;">
-            <input type="radio" name="image_display_type" value="16x9" {% if current_ratio == '16x9' %}checked{% endif %} style="display:none;">
-            <div style="width:54px; height:30px; border:2px dashed #94a3b8; border-radius:4px; margin-bottom:0.2rem;"></div>
-            <strong style="color:#fff; font-size:0.88rem;">16 : 9</strong>
-            <span style="color:rgba(255,255,255,0.6); font-size:0.72rem;">Landscape (Wide)</span>
+          <label class="image-ratio-option {% if current_ratio == 'none' %}is-selected{% endif %}">
+            <input type="radio" name="image_display_type" value="none" {% if current_ratio == 'none' %}checked{% endif %}>
+            <span class="image-ratio-icon image-ratio-none" aria-hidden="true">—</span>
+            <strong>No image</strong>
+            <span class="image-ratio-detail">Text-only card</span>
           </label>
-
-          <label style="cursor:pointer; border:2px solid {% if current_ratio == 'square' %}#38bdf8{% else %}rgba(255,255,255,0.15){% endif %}; background:{% if current_ratio == 'square' %}rgba(56,189,248,0.12){% else %}rgba(255,255,255,0.03){% endif %}; border-radius:8px; padding:0.75rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.4rem; transition:all 0.2s ease;">
-            <input type="radio" name="image_display_type" value="square" {% if current_ratio == 'square' %}checked{% endif %} style="display:none;">
-            <div style="width:36px; height:36px; border:2px dashed #94a3b8; border-radius:4px; margin-bottom:0.2rem;"></div>
-            <strong style="color:#fff; font-size:0.88rem;">Square</strong>
-            <span style="color:rgba(255,255,255,0.6); font-size:0.72rem;">1 : 1 (Feed)</span>
+          <label class="image-ratio-option {% if current_ratio == '16x9' %}is-selected{% endif %}">
+            <input type="radio" name="image_display_type" value="16x9" {% if current_ratio == '16x9' %}checked{% endif %}>
+            <span class="image-ratio-icon image-ratio-16x9" aria-hidden="true"></span>
+            <strong>16 : 9</strong>
+            <span class="image-ratio-detail">Landscape</span>
           </label>
-
-          <label style="cursor:pointer; border:2px solid {% if current_ratio == '9x16' %}#38bdf8{% else %}rgba(255,255,255,0.15){% endif %}; background:{% if current_ratio == '9x16' %}rgba(56,189,248,0.12){% else %}rgba(255,255,255,0.03){% endif %}; border-radius:8px; padding:0.75rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.4rem; transition:all 0.2s ease;">
-            <input type="radio" name="image_display_type" value="9x16" {% if current_ratio == '9x16' %}checked{% endif %} style="display:none;">
-            <div style="width:26px; height:46px; border:2px dashed #94a3b8; border-radius:4px; margin-bottom:0.2rem;"></div>
-            <strong style="color:#fff; font-size:0.88rem;">9 : 16</strong>
-            <span style="color:rgba(255,255,255,0.6); font-size:0.72rem;">Portrait (Story)</span>
+          <label class="image-ratio-option {% if current_ratio == 'square' %}is-selected{% endif %}">
+            <input type="radio" name="image_display_type" value="square" {% if current_ratio == 'square' %}checked{% endif %}>
+            <span class="image-ratio-icon image-ratio-square" aria-hidden="true"></span>
+            <strong>Square</strong>
+            <span class="image-ratio-detail">1 : 1 feed</span>
+          </label>
+          <label class="image-ratio-option {% if current_ratio == '9x16' %}is-selected{% endif %}">
+            <input type="radio" name="image_display_type" value="9x16" {% if current_ratio == '9x16' %}checked{% endif %}>
+            <span class="image-ratio-icon image-ratio-9x16" aria-hidden="true"></span>
+            <strong>9 : 16</strong>
+            <span class="image-ratio-detail">Portrait</span>
           </label>
         </div>
       </div>
@@ -301,10 +305,13 @@
 {% block tail %}
 {{ super() }}
 <style>
-  .announcement-direct-editor { max-width: 820px !important; margin: 0 auto !important; color: #1d2a36; }
-  .announcement-editor-layout { display:grid; grid-template-columns:minmax(0, 1fr) minmax(280px, 360px); gap:2.5rem; align-items:start; }
-  .announcement-preview-panel { position:sticky; top:1.25rem; padding:1rem; border:1px solid #d9e5ee; border-radius:16px; background:#f7fbfe; box-shadow:0 12px 28px rgba(54,88,116,.08); }
-  .preview-heading { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:.9rem; color:#17384f; font-weight:800; }
+  .announcement-direct-editor { max-width: 960px !important; margin: 0 auto !important; color: #1d2a36; }
+  /* Keep the editor full width, then show the finished card below it.  A
+     side-by-side preview made both the rich-text editor and the card too
+     narrow on ordinary desktop screens. */
+  .announcement-editor-layout { display:grid; grid-template-columns:minmax(0, 1fr); gap:2rem; align-items:start; }
+  .announcement-preview-panel { position:static; width:min(100%, 760px); box-sizing:border-box; margin:0 auto; padding:1rem; border:1px solid #d9e5ee; border-radius:16px; background:#f7fbfe; box-shadow:0 12px 28px rgba(54,88,116,.08); }
+  .preview-heading { display:flex; justify-content:space-between; align-items:baseline; gap:.75rem; flex-wrap:wrap; margin-bottom:.9rem; color:#17384f; font-weight:800; }
   .preview-heading small { color:#6d8291; font-size:.68rem; font-weight:600; }
   .preview-device { padding:.7rem; border-radius:12px; background:linear-gradient(160deg,#0d2941,#164e70); }
   .preview-sitebar { padding:.25rem .2rem .7rem; color:#dff4ff; font-size:.65rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
@@ -336,7 +343,7 @@
   .admin-body .announcement-direct-editor label,
   .admin-body .announcement-direct-editor .form-group > label,
   .admin-body .announcement-direct-editor fieldset > div > div > label { color: #1d3d52 !important; font-size: .95rem !important; font-weight: 700 !important; }
-  .admin-body .announcement-direct-editor label span { color: #b42318 !important; }
+  .admin-body .announcement-direct-editor label > .required-marker { color: #b42318 !important; }
   .announcement-direct-editor input:not([type="checkbox"]):not([type="radio"]), .announcement-direct-editor select, .announcement-direct-editor textarea { background: #fff !important; border-color: #aebfcb !important; color: #1d2a36 !important; }
   .announcement-direct-editor input::placeholder, .announcement-direct-editor textarea::placeholder { color: #607888 !important; opacity: 1; }
   .announcement-direct-editor fieldset > div,
@@ -349,10 +356,33 @@
   .announcement-direct-editor fieldset:last-of-type label { display: flex !important; align-items: center; gap: .55rem; width: 100%; margin-bottom: .8rem; }
   .announcement-direct-editor textarea { min-height: 170px; }
   .announcement-direct-editor .form-group { width: 100%; }
+  .image-source-controls { display:flex !important; gap:.5rem !important; align-items:center !important; flex-wrap:wrap !important; margin-bottom:.5rem !important; }
+  .image-source-controls > * { margin:0 !important; }
+  .image-upload-button, .image-library-button, .image-clear-button { min-height:44px; box-sizing:border-box; padding:.7rem 1rem !important; border-radius:7px !important; font-size:.88rem !important; font-weight:700 !important; cursor:pointer; white-space:nowrap; display:inline-flex !important; align-items:center; justify-content:center; gap:.4rem; }
+  .admin-body .announcement-direct-editor .image-upload-button { background:#2563eb !important; color:#fff !important; border:1px solid #2563eb !important; }
+  .admin-body .announcement-direct-editor .image-upload-button span { color:#fff !important; }
+  .image-library-button { background:#eaf4fb !important; color:#174d70 !important; border:1px solid #96bcd5 !important; }
+  .image-library-button span { color:#174d70 !important; }
+  .image-clear-button { background:#fff1f1 !important; color:#9f2020 !important; border:1px solid #df9a9a !important; }
+  .image-help { display:block; color:#526c7d !important; font-size:.8rem; margin-top:.25rem; }
+  .image-ratio-options { display:grid !important; grid-template-columns:repeat(4, minmax(0, 1fr)) !important; gap:.75rem !important; }
+  .announcement-direct-editor .image-ratio-option { width:auto !important; min-height:134px; margin:0 !important; padding:.8rem .55rem !important; border:2px solid #aebfcb !important; border-radius:10px !important; background:#fff !important; color:#1d3d52 !important; cursor:pointer; text-align:center; display:flex !important; flex-direction:column; align-items:center; justify-content:center; gap:.32rem; transition:border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+  .announcement-direct-editor .image-ratio-option.is-selected { border-color:#168ac4 !important; background:#e7f5fc !important; box-shadow:0 0 0 2px rgba(22,138,196,.12); }
+  .announcement-direct-editor .image-ratio-option input { width:16px !important; height:16px !important; margin:0 0 .2rem !important; accent-color:#147fb5; }
+  .announcement-direct-editor .image-ratio-option strong { color:#193b52 !important; font-size:.86rem !important; }
+  .announcement-direct-editor .image-ratio-option .image-ratio-detail { color:#5a7181 !important; font-size:.72rem !important; font-weight:600 !important; }
+  .image-ratio-icon { display:block; border:2px dashed #66869b; border-radius:4px; box-sizing:border-box; }
+  .image-ratio-none { width:36px; height:30px; border-style:solid; color:#66869b; font-size:1.45rem; line-height:23px; }
+  .image-ratio-16x9 { width:48px; height:27px; }
+  .image-ratio-square { width:31px; height:31px; }
+  .image-ratio-9x16 { width:20px; height:36px; }
   .announcement-direct-editor form > div:last-child { display: flex !important; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid #cbd6df; }
+  .announcement-direct-editor form > div:last-child button[name="_save_and_publish"] { background:linear-gradient(135deg,#15805c,#0d6346) !important; color:#fff !important; border:1px solid #0d6346 !important; }
+  .announcement-direct-editor form > div:last-child button[name="_save_draft"] { background:#fff !important; color:#27475d !important; border:1px solid #9eb2c0 !important; }
   .announcement-direct-editor form > div:last-child button[type="submit"]:not([name]) { background: #fff !important; border-color: #9eb2c0 !important; color: #27475d !important; }
   .announcement-direct-editor form > div:last-child a { color: #426276 !important; font-weight: 600; }
-  @media (max-width:900px) { .announcement-editor-layout { grid-template-columns:1fr; } .announcement-preview-panel { position:static; order:-1; } }
+  @media (max-width:900px) { .announcement-preview-panel { width:100%; } }
+  @media (max-width:680px) { .image-ratio-options { grid-template-columns:repeat(2, minmax(0, 1fr)) !important; } }
   @media (max-width:600px) { .announcement-direct-editor { padding: 0 .75rem !important; } .announcement-direct-editor form > div:last-child { flex-direction:column; } .announcement-direct-editor form > div:last-child button, .announcement-direct-editor form > div:last-child a { width:100%; justify-content:center; text-align:center; } }
 </style>
 <script>
@@ -361,6 +391,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!form) return;
   const field = name => form.querySelector('[name="' + name + '"]');
   const text = (id, value, fallback) => { const el = document.getElementById(id); if (el) el.textContent = value || fallback; };
+  const plainText = value => {
+    const temporary = document.createElement('div');
+    temporary.innerHTML = value || '';
+    return (temporary.textContent || temporary.innerText || '').trim();
+  };
 
   const imageInput = document.getElementById('featured_image_input');
   const fileInput = document.getElementById('image_file_input');
@@ -378,20 +413,19 @@ document.addEventListener('DOMContentLoaded', function() {
     ratioInputs.forEach(input => {
       const parentLabel = input.closest('label');
       if (parentLabel) {
-        if (input.value === selected) {
-          parentLabel.style.borderColor = '#38bdf8';
-          parentLabel.style.background = 'rgba(56,189,248,0.12)';
-        } else {
-          parentLabel.style.borderColor = 'rgba(255,255,255,0.15)';
-          parentLabel.style.background = 'rgba(255,255,255,0.03)';
-        }
+        parentLabel.classList.toggle('is-selected', input.value === selected);
       }
     });
   }
 
+  function chooseRatio(value) {
+    const input = form.querySelector('input[name="image_display_type"][value="' + value + '"]');
+    if (input) input.checked = true;
+  }
+
   function updatePreview() {
     text('preview-title', field('title')?.value.trim(), 'Your announcement title');
-    text('preview-description', field('description')?.value.trim(), 'Your announcement details will appear here. Add a clear title and a helpful description to see the finished card.');
+    text('preview-description', plainText(field('description')?.value), 'Your announcement details will appear here. Add a clear title and a helpful description to see the finished card.');
     text('preview-type', field('type')?.selectedOptions[0]?.textContent.trim(), 'Announcement');
     text('preview-category', field('category')?.selectedOptions[0]?.textContent.trim(), 'General');
     const start = field('event_start_time')?.value.trim(), end = field('event_end_time')?.value.trim(), date = field('event_date')?.value;
@@ -404,11 +438,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (clearBtn) {
       clearBtn.style.display = url ? 'inline-block' : 'none';
     }
+    const ratio = getSelectedRatio();
     if (image) {
-      image.hidden = !url;
-      if (url) {
+      image.hidden = !url || ratio === 'none';
+      if (url && ratio !== 'none') {
         image.style.backgroundImage = 'url("' + url.replace(/"/g, '') + '")';
-        const ratio = getSelectedRatio();
         image.className = 'preview-image ratio-' + ratio;
       }
     }
@@ -439,6 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(data => {
         if (data.url) {
           if (imageInput) imageInput.value = data.url;
+          if (getSelectedRatio() === 'none') chooseRatio('16x9');
           if (uploadStatus) {
             uploadStatus.textContent = 'Uploaded successfully!';
             uploadStatus.style.color = '#34d399';
@@ -465,6 +500,7 @@ document.addEventListener('DOMContentLoaded', function() {
     clearBtn.addEventListener('click', function() {
       if (imageInput) imageInput.value = '';
       if (fileInput) fileInput.value = '';
+      chooseRatio('none');
       if (uploadStatus) uploadStatus.style.display = 'none';
       updatePreview();
     });
@@ -526,6 +562,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (imageInput) {
           imageInput.value = img.url;
         }
+        if (getSelectedRatio() === 'none') chooseRatio('16x9');
         if (uploadStatus) uploadStatus.style.display = 'none';
         updatePreview();
         closeModal();
@@ -592,6 +629,12 @@ document.addEventListener('DOMContentLoaded', function() {
   ratioInputs.forEach(input => {
     input.addEventListener('change', updatePreview);
   });
+
+  if (imageInput) {
+    imageInput.addEventListener('input', function() {
+      if (imageInput.value.trim() && getSelectedRatio() === 'none') chooseRatio('16x9');
+    });
+  }
 
   form.addEventListener('input', updatePreview);
   form.addEventListener('change', updatePreview);
