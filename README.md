@@ -157,15 +157,16 @@ export LOCAL_DATABASE_URL="sqlite:///cpc_newhaven.db"   # optional
 python sync_db.py
 ```
 
-### Invite-only site feedback mode
+### Site feedback mode
 
-Set `FEEDBACK_INVITE_TOKEN` to a long, private value in the environment, then send testers:
+The site includes a lower-left floating feedback button available across the site for all visitors in every environment (including production on Render). Visitors can click the button to pop up the feedback form, select a reaction type, submit a note and contact info, and track their feedback status with a generated tracking code (e.g. `CPC-12`).
 
-`https://cpcnewhaven.org/preview/<that-token>`
+Authenticated admins can review submissions under **Admin → More → Feedback** or download `/admin/export/feedback` as CSV.
 
-The link starts a browser session with a lower-left floating feedback button available across the site. Testers do not need an account or a separate app. Feedback records the page, reaction type, note, and optional contact details. Authenticated admins can review it under **Admin → More → Feedback** or download `/admin/export/feedback` as CSV. Leave `FEEDBACK_INVITE_TOKEN` unset to keep feedback mode off.
+- **Disable globally**: Set `FEEDBACK_ENABLED=0` in the environment to turn off the public feedback button.
+- **Invite-only preview mode**: If `FEEDBACK_ENABLED=0`, setting `FEEDBACK_INVITE_TOKEN` allows testers to activate feedback mode for their session by visiting `https://cpcnewhaven.org/preview/<that-token>`.
 
-The feedback button and panel are styled in `static/css/feedback.css`. Keep the launcher fixed to the lower left, above the mobile bottom nav and audio player. The idle state should stay subtle and nearly transparent; hover, focus, and the open panel state should make it clear that feedback mode is active.
+The feedback button and panel are styled in `static/css/feedback.css`. The launcher is fixed to the lower left, above the mobile bottom nav and audio player. The idle state stays clean and visible; clicking it pops up the interactive feedback panel.
 
 **Other options:**
 

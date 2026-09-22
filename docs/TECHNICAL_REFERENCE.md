@@ -116,7 +116,8 @@ Database-backed content managed in admin is the production source of truth. Cale
 | `DATABASE_URL` | Production | PostgreSQL connection string; optional locally |
 | `FLASK_ENV` | Recommended | Set to `production` for production behavior |
 | `PORT` | Render | Render-provided bind port |
-| `FEEDBACK_INVITE_TOKEN` | Optional | Enables invite-only public feedback mode |
+| `FEEDBACK_ENABLED` | Optional | Set to `0` to turn off public feedback (defaults to enabled for all visitors) |
+| `FEEDBACK_INVITE_TOKEN` | Optional | Enables invite-only feedback session via `/preview/<token>` when `FEEDBACK_ENABLED=0` |
 | `MAILCHIMP_API_KEY` | Optional | Mailchimp API authentication |
 | `MAILCHIMP_SERVER_PREFIX` | Optional | Mailchimp data-center prefix, such as `us21` |
 | `MAILCHIMP_LIST_ID` | Optional | Mailchimp audience/list identifier |
