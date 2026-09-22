@@ -1,6 +1,7 @@
 import os
 import tempfile
 import unittest
+from datetime import date
 
 
 _database_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
@@ -9,7 +10,14 @@ os.environ["DATABASE_URL"] = f"sqlite:///{_database_file.name}"
 os.environ["SECRET_KEY"] = "announcement-edit-test"
 
 from app import app, db, init_admin_users  # noqa: E402
-from models import Announcement, GalleryImage, TeachingSeries, TeachingSeriesSession  # noqa: E402
+from models import (  # noqa: E402
+    Announcement,
+    GalleryImage,
+    PodcastEpisode,
+    Sermon,
+    TeachingSeries,
+    TeachingSeriesSession,
+)
 from wtforms.validators import Optional  # noqa: E402
 
 
@@ -39,6 +47,19 @@ class AnnouncementEditTestCase(unittest.TestCase):
                     active=True,
                 )
             )
+            db.session.add_all([
+                Sermon(
+                    id=482,
+                    title="Editable sermon",
+                    date=date(2026, 9, 20),
+                    active=True,
+                ),
+                PodcastEpisode(
+                    id=483,
+                    title="Editable podcast",
+                    date_added=date(2026, 9, 20),
+                ),
+            ])
             db.session.commit()
 
         self.client = app.test_client()
@@ -58,10 +79,28 @@ class AnnouncementEditTestCase(unittest.TestCase):
         self.assertIn("Original body", body)
         self.assertIn('name="event_end_time"', body)
         self.assertIn('name="featured_image"', body)
+        self.assertIn('value="none" checked', body)
         self.assertIn('name="_save_and_publish"', body)
         self.assertIn("Edit Announcement", body)
         self.assertIn("announcement-preview-panel", body)
         self.assertNotIn('id="bento-grid-form"', body)
+
+    def test_sermon_and_podcast_edits_use_the_complete_editor(self):
+        cases = (
+            ("/admin/sermon/edit/?id=482", "Edit Sermon", "Basic Details"),
+            ("/admin/podcastepisode/edit/?id=483", "Edit Podcast episode", "Episode Information"),
+        )
+
+        for path, heading, section in cases:
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                body = response.get_data(as_text=True)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('id="admin-form"', body)
+                self.assertIn(heading, body)
+                self.assertIn(section, body)
+                self.assertNotIn('id="bento-grid-form"', body)
 
     def test_edit_persists_with_no_expiration_date(self):
         response = self.client.post(
@@ -142,6 +181,32 @@ class AnnouncementEditTestCase(unittest.TestCase):
         with app.app_context():
             announcement = db.session.get(Announcement, 481)
             self.assertTrue(announcement.active)
+
+    def test_no_image_choice_clears_an_existing_image(self):
+        with app.app_context():
+            announcement = db.session.get(Announcement, 481)
+            announcement.featured_image = "https://example.com/existing.jpg"
+            announcement.image_display_type = "16x9"
+            db.session.commit()
+
+        response = self.client.post(
+            "/admin/announcement/edit/?id=481&url=/admin/announcement/",
+            data={
+                "type": "event", "title": "Text-only announcement",
+                "description": "No featured image is needed.", "category": "general",
+                "tag": "", "speaker": "", "event_date": "",
+                "event_start_time": "", "event_end_time": "", "banner_type": "",
+                "featured_image": "https://example.com/should-be-cleared.jpg",
+                "image_display_type": "none", "expiration_preset": "never",
+                "expiration_date": "", "_save_draft": "1",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        with app.app_context():
+            announcement = db.session.get(Announcement, 481)
+            self.assertIsNone(announcement.featured_image)
+            self.assertIsNone(announcement.image_display_type)
 
     def test_create_supports_dates_image_and_expiration(self):
         create_page = self.client.get("/admin/announcement/create/")
