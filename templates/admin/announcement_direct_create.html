@@ -202,16 +202,34 @@
     <fieldset style="border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:2rem;">
       <legend style="color:rgba(255,255,255,0.6); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; padding:0 0.5rem;">Placement</legend>
       <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:1rem;">
-        <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
-          <input type="checkbox" name="superfeatured" value="1" {% if form_data.get('superfeatured') %}checked{% endif %}
-            style="width:16px !important; max-width:16px !important; height:16px !important; cursor:pointer; flex:0 0 auto;">
-          Super Featured
-        </label>
-        <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
-          <input type="checkbox" name="show_in_banner" value="1" {% if form_data.get('show_in_banner') %}checked{% endif %}
-            style="width:16px !important; max-width:16px !important; height:16px !important; cursor:pointer; flex:0 0 auto;">
-          Show in Top Bar Banner
-        </label>
+        <div class="placement-option">
+          <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
+            <input type="checkbox" name="superfeatured" value="1" {% if form_data.get('superfeatured') %}checked{% endif %}
+              style="width:16px !important; max-width:16px !important; height:16px !important; cursor:pointer; flex:0 0 auto;">
+            Super Featured
+          </label>
+          <span class="placement-help" tabindex="0" aria-label="Where Super Featured appears" title="Shows at the top of the public announcements page.">
+            <span class="placement-help-icon" aria-hidden="true">i</span>
+            <span class="placement-tooltip" role="tooltip">Shows in the featured area at the top of the public announcements page.</span>
+          </span>
+        </div>
+        <div class="placement-option">
+          <label style="display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.85); cursor:pointer; font-size:0.95rem;">
+            <input type="checkbox" name="show_in_banner" value="1" {% if form_data.get('show_in_banner') %}checked{% endif %}
+              style="width:16px !important; max-width:16px !important; height:16px !important; cursor:pointer; flex:0 0 auto;">
+            Show in Top Bar Banner
+          </label>
+          <span class="placement-help" tabindex="0" aria-label="Where the top bar banner appears" title="Shows in the sitewide banner at the top of the public site.">
+            <span class="placement-help-icon" aria-hidden="true">i</span>
+            <span class="placement-tooltip" role="tooltip">Shows in the sitewide banner at the very top of the public site.</span>
+          </span>
+        </div>
+      </div>
+      <div class="form-group publish-schedule-field">
+        <label for="scheduled_at" style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Publish date &amp; time</label>
+        <input type="datetime-local" id="scheduled_at" name="scheduled_at" value="{{ form_data.get('scheduled_at', '') }}"
+          style="width:100%; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:0.7rem 0.9rem; border-radius:7px; font-size:0.95rem; box-sizing:border-box;">
+        <small class="publish-schedule-help">Optional. Choose a future time, then use “Schedule publication” to keep this post hidden until then. Times are Eastern Time.</small>
       </div>
       <div class="form-group" style="margin-top:0.75rem;">
         <label style="display:block; color:rgba(255,255,255,0.85); font-weight:600; margin-bottom:0.4rem; font-size:0.9rem;">Banner Type (if top bar banner is active)</label>
@@ -234,6 +252,9 @@
       <button type="submit" name="_save_draft" value="1"
         style="background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.85); border:1px solid rgba(255,255,255,0.15); padding:0.75rem 1.75rem; border-radius:8px; font-weight:600; font-size:1rem; cursor:pointer;">
         {% if is_editing %}Save as Draft{% else %}Save as Draft{% endif %}
+      </button>
+      <button type="submit" name="_schedule" value="1" class="schedule-publication-button">
+        Schedule publication
       </button>
       <a href="{{ return_url or url_for('announcement.index_view') }}"
         style="padding:0.75rem 1.25rem; border-radius:8px; color:rgba(255,255,255,0.45); text-decoration:none; font-size:0.95rem; display:inline-flex; align-items:center;">
@@ -354,8 +375,17 @@
   .announcement-direct-editor textarea { width: 100% !important; max-width: none !important; box-sizing: border-box !important; }
   .announcement-direct-editor input[type="checkbox"] { width: 16px !important; max-width: 16px !important; height: 16px; flex: 0 0 auto; }
   .announcement-direct-editor fieldset:last-of-type label { display: flex !important; align-items: center; gap: .55rem; width: 100%; margin-bottom: .8rem; }
+  .announcement-direct-editor .placement-option { display:flex !important; align-items:center; gap:.45rem; width:auto !important; margin:0 0 .8rem !important; }
+  .announcement-direct-editor .placement-option label { width:auto !important; margin:0 !important; }
+  .placement-help { position:relative; display:inline-flex; flex:0 0 auto; align-items:center; cursor:help; outline:none; }
+  .placement-help-icon { display:inline-flex; width:17px; height:17px; align-items:center; justify-content:center; border:1px solid #6a899d; border-radius:50%; color:#315a73; background:#eef6fa; font-family:Georgia,serif; font-size:.72rem; font-style:italic; font-weight:700; line-height:1; }
+  .placement-help:focus-visible .placement-help-icon { outline:2px solid #168ac4; outline-offset:2px; }
+  .placement-tooltip { position:absolute; z-index:20; left:calc(100% + .55rem); top:50%; width:220px; padding:.55rem .65rem; border-radius:7px; background:#17384f; color:#fff; font-size:.76rem; font-weight:600; line-height:1.35; box-shadow:0 6px 18px rgba(13,42,61,.25); opacity:0; pointer-events:none; transform:translateY(-50%) translateX(-3px); transition:opacity .16s ease, transform .16s ease; }
+  .placement-help.is-open .placement-tooltip { opacity:1; transform:translateY(-50%) translateX(0); }
   .announcement-direct-editor textarea { min-height: 170px; }
   .announcement-direct-editor .form-group { width: 100%; }
+  .publish-schedule-field { margin-top:.2rem; }
+  .publish-schedule-help { display:block; margin-top:.35rem; color:#526c7d !important; font-size:.78rem; line-height:1.4; }
   .image-source-controls { display:flex !important; gap:.5rem !important; align-items:center !important; flex-wrap:wrap !important; margin-bottom:.5rem !important; }
   .image-source-controls > * { margin:0 !important; }
   .image-upload-button, .image-library-button, .image-clear-button { min-height:44px; box-sizing:border-box; padding:.7rem 1rem !important; border-radius:7px !important; font-size:.88rem !important; font-weight:700 !important; cursor:pointer; white-space:nowrap; display:inline-flex !important; align-items:center; justify-content:center; gap:.4rem; }
@@ -379,11 +409,12 @@
   .announcement-direct-editor form > div:last-child { display: flex !important; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; padding-top: 1.5rem; border-top: 1px solid #cbd6df; }
   .announcement-direct-editor form > div:last-child button[name="_save_and_publish"] { background:linear-gradient(135deg,#15805c,#0d6346) !important; color:#fff !important; border:1px solid #0d6346 !important; }
   .announcement-direct-editor form > div:last-child button[name="_save_draft"] { background:#fff !important; color:#27475d !important; border:1px solid #9eb2c0 !important; }
+  .announcement-direct-editor form > div:last-child .schedule-publication-button { background:#eaf4fb !important; color:#174d70 !important; border:1px solid #96bcd5 !important; }
   .announcement-direct-editor form > div:last-child button[type="submit"]:not([name]) { background: #fff !important; border-color: #9eb2c0 !important; color: #27475d !important; }
   .announcement-direct-editor form > div:last-child a { color: #426276 !important; font-weight: 600; }
   @media (max-width:900px) { .announcement-preview-panel { width:100%; } }
   @media (max-width:680px) { .image-ratio-options { grid-template-columns:repeat(2, minmax(0, 1fr)) !important; } }
-  @media (max-width:600px) { .announcement-direct-editor { padding: 0 .75rem !important; } .announcement-direct-editor form > div:last-child { flex-direction:column; } .announcement-direct-editor form > div:last-child button, .announcement-direct-editor form > div:last-child a { width:100%; justify-content:center; text-align:center; } }
+  @media (max-width:600px) { .announcement-direct-editor { padding: 0 .75rem !important; } .placement-tooltip { left:0; top:calc(100% + .55rem); transform:translateY(-3px); } .placement-help.is-open .placement-tooltip { transform:translateY(0); } .announcement-direct-editor form > div:last-child { flex-direction:column; } .announcement-direct-editor form > div:last-child button, .announcement-direct-editor form > div:last-child a { width:100%; justify-content:center; text-align:center; } }
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -402,6 +433,26 @@ document.addEventListener('DOMContentLoaded', function() {
   const clearBtn = document.getElementById('clear_image_btn');
   const uploadStatus = document.getElementById('upload_status');
   const ratioInputs = form.querySelectorAll('input[name="image_display_type"]');
+  const placementHelp = form.querySelectorAll('.placement-help');
+
+  function closePlacementTooltips(except) {
+    placementHelp.forEach(help => {
+      if (help !== except) help.classList.remove('is-open');
+    });
+  }
+
+  placementHelp.forEach(help => {
+    help.addEventListener('pointerenter', () => {
+      closePlacementTooltips(help);
+      help.classList.add('is-open');
+    });
+    help.addEventListener('pointerleave', () => help.classList.remove('is-open'));
+    help.addEventListener('focus', () => {
+      closePlacementTooltips(help);
+      help.classList.add('is-open');
+    });
+    help.addEventListener('blur', () => help.classList.remove('is-open'));
+  });
 
   function getSelectedRatio() {
     const checked = form.querySelector('input[name="image_display_type"]:checked');

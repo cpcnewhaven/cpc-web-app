@@ -1,7 +1,7 @@
 import os
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, datetime, timedelta
 
 
 _database_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
@@ -9,7 +9,7 @@ _database_file.close()
 os.environ["DATABASE_URL"] = f"sqlite:///{_database_file.name}"
 os.environ["SECRET_KEY"] = "announcement-edit-test"
 
-from app import app, db, init_admin_users  # noqa: E402
+from app import app, db, init_admin_users, _announcement_is_due  # noqa: E402
 from models import (  # noqa: E402
     Announcement,
     GalleryImage,
@@ -45,6 +45,8 @@ class AnnouncementEditTestCase(unittest.TestCase):
                     type="event",
                     category="general",
                     active=True,
+                    created_by="original-author",
+                    date_entered=datetime(2026, 9, 22, 11, 21),
                 )
             )
             db.session.add_all([
@@ -80,6 +82,10 @@ class AnnouncementEditTestCase(unittest.TestCase):
         self.assertIn('name="event_end_time"', body)
         self.assertIn('name="featured_image"', body)
         self.assertIn('value="none" checked', body)
+        self.assertIn('name="scheduled_at"', body)
+        self.assertIn("Schedule publication", body)
+        self.assertIn("Where Super Featured appears", body)
+        self.assertIn("Where the top bar banner appears", body)
         self.assertIn('name="_save_and_publish"', body)
         self.assertIn("Edit Announcement", body)
         self.assertIn("announcement-preview-panel", body)
@@ -101,6 +107,13 @@ class AnnouncementEditTestCase(unittest.TestCase):
                 self.assertIn(heading, body)
                 self.assertIn(section, body)
                 self.assertNotIn('id="bento-grid-form"', body)
+
+    def test_list_shows_human_readable_post_timestamp_and_author(self):
+        body = self.client.get("/admin/announcement/").get_data(as_text=True)
+
+        self.assertIn("Sep 22, 2026 at 11:21 AM", body)
+        self.assertIn("original-author", body)
+        self.assertIn("Post ID", body)
 
     def test_edit_persists_with_no_expiration_date(self):
         response = self.client.post(
@@ -207,6 +220,46 @@ class AnnouncementEditTestCase(unittest.TestCase):
             announcement = db.session.get(Announcement, 481)
             self.assertIsNone(announcement.featured_image)
             self.assertIsNone(announcement.image_display_type)
+
+    def test_scheduled_announcement_is_labeled_and_not_public_before_publish_time(self):
+        future_publish = (datetime.now() + timedelta(days=7)).strftime(
+            "%Y-%m-%dT%H:%M"
+        )
+        response = self.client.post(
+            "/admin/announcement/create/",
+            data={
+                "type": "announcement", "title": "Scheduled announcement",
+                "description": "This should not be public early.",
+                "category": "general", "tag": "", "speaker": "",
+                "event_date": "", "event_start_time": "", "event_end_time": "",
+                "featured_image": "", "image_display_type": "none",
+                "expiration_preset": "never", "expiration_date": "",
+                "scheduled_at": future_publish, "_schedule": "1",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        with app.app_context():
+            announcement = Announcement.query.filter_by(
+                title="Scheduled announcement"
+            ).one()
+            self.assertTrue(announcement.active)
+            self.assertIsNotNone(announcement.scheduled_at)
+            self.assertIsNone(
+                Announcement.query.filter_by(id=announcement.id)
+                .filter(_announcement_is_due(Announcement))
+                .one_or_none()
+            )
+
+        list_body = self.client.get("/admin/announcement/").get_data(as_text=True)
+        self.assertIn("Scheduled", list_body)
+
+        with self.client.session_transaction() as session:
+            session.clear()
+        self.assertEqual(
+            self.client.get(f"/announcement/{announcement.id}").status_code,
+            404,
+        )
 
     def test_create_supports_dates_image_and_expiration(self):
         create_page = self.client.get("/admin/announcement/create/")
