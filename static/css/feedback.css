@@ -2,7 +2,7 @@
     position: fixed;
     left: max(18px, env(safe-area-inset-left));
     bottom: calc(52px + env(safe-area-inset-bottom));
-    z-index: 1200;
+    z-index: 10001;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -49,7 +49,7 @@
     position: fixed;
     left: max(18px, env(safe-area-inset-left));
     bottom: calc(114px + env(safe-area-inset-bottom));
-    z-index: 1210;
+    z-index: 10002;
     width: min(365px, calc(100vw - 28px));
     padding: 25px;
     background: #f4f8fc;
@@ -247,6 +247,14 @@
 .cpc-feedback-track input { min-width: 0; flex: 1; padding: 9px; border: 1px solid #9eb7d0; border-radius: 8px; background: #fff; color: #122b49; }
 .cpc-feedback-track button { padding: 9px 10px; border: 0; border-radius: 8px; background: #dcecff; color: #075fb9; font-weight: 800; cursor: pointer; }
 
+body.player-open .cpc-feedback-tab {
+    bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+body.player-open .cpc-feedback-panel {
+    bottom: calc(150px + env(safe-area-inset-bottom));
+}
+
 @media (max-width: 768px) {
     .cpc-feedback-tab {
         bottom: calc(128px + env(safe-area-inset-bottom));
@@ -255,6 +263,14 @@
     .cpc-feedback-panel {
         bottom: calc(190px + env(safe-area-inset-bottom));
         max-height: calc(100dvh - 208px);
+    }
+
+    body.player-open .cpc-feedback-tab {
+        bottom: calc(160px + env(safe-area-inset-bottom));
+    }
+
+    body.player-open .cpc-feedback-panel {
+        bottom: calc(222px + env(safe-area-inset-bottom));
     }
 }
 

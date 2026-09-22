@@ -413,7 +413,8 @@ def submit_site_feedback():
         return jsonify({'error': 'Please add your name (up to 100 characters).'}), 400
 
     page_url = str(payload.get('page_url', request.referrer or '/')).strip()[:1000]
-    if not page_url.startswith('/') and not page_url.startswith('https://cpcnewhaven.org'):
+    valid_prefixes = ('/', 'https://cpcnewhaven.org', 'http://cpcnewhaven.org', 'https://cpc-web-app.onrender.com', 'http://cpc-web-app.onrender.com', 'nav-')
+    if not any(page_url.startswith(p) for p in valid_prefixes):
         page_url = '/'
     entry = SiteFeedback(
         kind=kind,
@@ -3303,9 +3304,9 @@ def inject_current_user_metadata():
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
-        # Keep feedback convenient during local development, but invite-only
-        # in production so the public launcher is not exposed to every visitor.
-        'feedback_mode': (not _is_production) or bool(session.get('feedback_mode')),
+        # Public feedback is available to every visitor in every environment.
+        # This is deliberately unrelated to a client IP or preview session.
+        'feedback_mode': os.getenv('FEEDBACK_ENABLED', '1').lower() not in ('0', 'false', 'no', 'off') or bool(session.get('feedback_mode')),
         'demo_account_enabled': not _is_production,
         'new_feedback_count': new_feedback_count,
     }
