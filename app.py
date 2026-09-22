@@ -10,8 +10,8 @@ if not hasattr(collections, 'Mapping'):
     collections.Sequence = collections.abc.Sequence
 
 import logging
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context
-from markupsafe import Markup
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context, abort
+from markupsafe import Markup, escape
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin, AdminIndexView as _AdminIndexView
@@ -32,6 +32,7 @@ from dotenv import load_dotenv
 import zipfile
 import io
 import hmac
+import hashlib
 
 # Optional integration with Google Cloud Storage for media
 try:
@@ -213,7 +214,9 @@ def ensure_db_columns():
             ('event_date', 'DATE', 'DATE'),
             ('event_start_time', 'VARCHAR(100)', 'VARCHAR(100)'),
             ('event_end_time', 'VARCHAR(100)', 'VARCHAR(100)'),
+            ('scheduled_at', 'DATETIME', 'TIMESTAMP'),
             ('revision', 'INTEGER DEFAULT 1', 'INTEGER DEFAULT 1'),
+            ('created_by', 'VARCHAR(80)', 'VARCHAR(80)'),
             ('updated_at', 'DATETIME', 'TIMESTAMP'),
             ('updated_by', 'VARCHAR(80)', 'VARCHAR(80)'),
         ],
@@ -330,6 +333,23 @@ def _ensure_columns_pg(migrations):
     except Exception as exc:
         app.logger.warning("PostgreSQL column migration skipped: %s", exc)
 
+
+def is_authenticated():
+    """Check if user is authenticated"""
+    return session.get('authenticated', False)
+
+
+def require_auth(f):
+    """Decorator to require authentication"""
+    from functools import wraps
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_authenticated():
+            return redirect(url_for('admin_login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 # ---------------------------------------------------------------------------
 # Health check — lightweight DB liveness probe for Render
 # ---------------------------------------------------------------------------
@@ -393,7 +413,8 @@ def submit_site_feedback():
         return jsonify({'error': 'Please add your name (up to 100 characters).'}), 400
 
     page_url = str(payload.get('page_url', request.referrer or '/')).strip()[:1000]
-    if not page_url.startswith('/') and not page_url.startswith('https://cpcnewhaven.org'):
+    valid_prefixes = ('/', 'https://cpcnewhaven.org', 'http://cpcnewhaven.org', 'https://cpc-web-app.onrender.com', 'http://cpc-web-app.onrender.com', 'nav-')
+    if not any(page_url.startswith(p) for p in valid_prefixes):
         page_url = '/'
     entry = SiteFeedback(
         kind=kind,
@@ -973,6 +994,54 @@ def events():
     site_content = get_site_content()
     return render_template('events.html', site_content=site_content)
 
+
+@app.route('/auth/planning-center/connect')
+@require_auth
+def planning_center_connect():
+    from planning_center import oauth_authorize_url
+    state = uuid.uuid4().hex
+    session['planning_center_oauth_state'] = state
+    return redirect(oauth_authorize_url(state, url_for('planning_center_callback', _external=True)))
+
+
+@app.route('/auth/planning-center/callback')
+@require_auth
+def planning_center_callback():
+    if request.args.get('error'):
+        return redirect(url_for('events'))
+    if not request.args.get('code') or not hmac.compare_digest(request.args.get('state', ''), session.pop('planning_center_oauth_state', '')):
+        return jsonify({'error': 'invalid OAuth state'}), 400
+    from planning_center import exchange_code
+    try:
+        tokens = exchange_code(request.args['code'], url_for('planning_center_callback', _external=True))
+        SiteContent.query.filter_by(key='planning_center_oauth_tokens').delete()
+        db.session.add(SiteContent(key='planning_center_oauth_tokens', value=json.dumps(tokens)))
+        db.session.commit()
+        flash('Planning Center is connected.', 'success')
+        return redirect(url_for('events'))
+    except Exception:
+        app.logger.exception('Planning Center OAuth callback failed')
+        return jsonify({'error': 'Planning Center connection failed'}), 502
+
+
+@app.route('/api/planning-center/events')
+def api_planning_center_events():
+    token_row = SiteContent.query.filter_by(key='planning_center_oauth_tokens').first()
+    if not token_row:
+        return jsonify({'connected': False, 'events': []})
+    try:
+        token = json.loads(token_row.value).get('access_token')
+        from planning_center import upcoming_events_with_token
+        items = upcoming_events_with_token(token, app.config.get('PLANNING_CENTER_CALENDAR_ID'))
+        events = []
+        for item in items:
+            attrs = item.get('attributes', {})
+            events.append({'id': item.get('id'), 'name': attrs.get('name'), 'description': attrs.get('description'), 'starts_at': attrs.get('starts_at'), 'ends_at': attrs.get('ends_at'), 'url': attrs.get('url')})
+        return jsonify({'connected': True, 'events': events})
+    except Exception:
+        app.logger.exception('Planning Center widget failed')
+        return jsonify({'connected': True, 'events': [], 'error': 'Planning Center events are temporarily unavailable'}), 502
+
 @app.route('/announcements')
 def announcements():
     return render_template('announcements.html')
@@ -985,9 +1054,12 @@ def highlights():
 def announcement_detail(announcement_id):
     """Detail page for a single announcement or event highlight."""
     announcement = Announcement.query.get_or_404(announcement_id)
-    
-    # If it's not active or expired (and user isn't admin), maybe we shouldn't show it?
-    # For now, let's just show it if it exists.
+    if (
+        not is_authenticated()
+        and announcement.scheduled_at
+        and announcement.scheduled_at > datetime.utcnow()
+    ):
+        abort(404)
     
     return render_template('announcement_detail.html', announcement=announcement)
 
@@ -1496,6 +1568,40 @@ def _not_expired(model_klass):
     return db.or_(col.is_(None), col > date.today())
 
 
+_CHURCH_TIMEZONE = pytz.timezone('America/New_York')
+
+
+def _announcement_is_due(model_klass):
+    """Allow unscheduled posts and scheduled posts whose UTC time has arrived."""
+    scheduled_at = getattr(model_klass, 'scheduled_at', None)
+    if scheduled_at is None:
+        from sqlalchemy import text
+        return text('1 = 1')
+    return db.or_(scheduled_at.is_(None), scheduled_at <= datetime.utcnow())
+
+
+def _parse_scheduled_at(value):
+    """Convert the editor's Eastern Time datetime-local input to UTC."""
+    if not value:
+        return None
+    local_time = datetime.fromisoformat(value)
+    if local_time.tzinfo is not None:
+        return local_time.astimezone(pytz.UTC).replace(tzinfo=None)
+    return _CHURCH_TIMEZONE.localize(local_time).astimezone(pytz.UTC).replace(tzinfo=None)
+
+
+def _format_scheduled_at_for_input(value):
+    if not value:
+        return ''
+    return pytz.UTC.localize(value).astimezone(_CHURCH_TIMEZONE).strftime('%Y-%m-%dT%H:%M')
+
+
+def _format_scheduled_at_for_display(value):
+    if not value:
+        return ''
+    return pytz.UTC.localize(value).astimezone(_CHURCH_TIMEZONE).strftime('%b %d, %Y at %I:%M %p').replace(' 0', ' ')
+
+
 def _snapshot_announcements(active_only=False):
     """Use the public JSON snapshot in development or after a DB read failure."""
     from announcement_snapshot import load_snapshot
@@ -1522,9 +1628,11 @@ def _get_home_announcements():
     try:
         featured = Announcement.query.filter_by(active=True, superfeatured=True)\
             .filter(_not_expired(Announcement))\
+            .filter(_announcement_is_due(Announcement))\
             .order_by(Announcement.date_entered.desc()).limit(3).all()
         regular = Announcement.query.filter_by(active=True, superfeatured=False)\
             .filter(_not_expired(Announcement))\
+            .filter(_announcement_is_due(Announcement))\
             .order_by(Announcement.date_entered.desc()).limit(7).all()
         return featured + regular
     except Exception as exc:
@@ -1538,6 +1646,7 @@ def api_announcements():
     """API endpoint matching your highlights.json structure"""
     announcements = Announcement.query.filter_by(active=True)\
         .filter(_not_expired(Announcement))\
+        .filter(_announcement_is_due(Announcement))\
         .order_by(Announcement.date_entered.desc()).all()
     
     return jsonify({
@@ -1554,7 +1663,7 @@ def api_announcements():
                 'superfeatured': a.superfeatured,
                 'showInBanner': getattr(a, 'show_in_banner', False),
                 'featuredImage': a.featured_image,
-                'imageDisplayType': a.image_display_type,
+                'imageDisplayType': _normalize_aspect_ratio(a.image_display_type) if a.featured_image else None,
                 'eventDate': a.event_date.strftime('%Y-%m-%d') if a.event_date else None,
                 'eventStartTime': getattr(a, 'event_start_time', None),
                 'eventEndTime': getattr(a, 'event_end_time', None),
@@ -1569,6 +1678,7 @@ def api_banner_announcements():
     """Active announcements marked to show in the top yellow bar (weather, parking, etc.)"""
     announcements = Announcement.query.filter_by(active=True, show_in_banner=True)\
         .filter(_not_expired(Announcement))\
+        .filter(_announcement_is_due(Announcement))\
         .order_by(Announcement.banner_sort_order.asc(), Announcement.date_entered.desc()).all()
     return jsonify({
         'announcements': [
@@ -1598,6 +1708,7 @@ def api_event_announcements():
         Announcement.event_date >= today,
         Announcement.event_date <= future_limit
     ).filter(_not_expired(Announcement))\
+    .filter(_announcement_is_due(Announcement))\
     .order_by(Announcement.event_date.asc()).all()
 
     return jsonify({
@@ -1629,6 +1740,7 @@ def api_highlights():
     if not announcements:
         try:
             announcements = Announcement.query.filter(_not_expired(Announcement))\
+                .filter(_announcement_is_due(Announcement))\
                 .order_by(Announcement.date_entered.desc()).limit(50).all()
         except Exception as exc:
             log.error("Highlights DB read failed; using snapshot: %s", exc)
@@ -1975,6 +2087,76 @@ def api_events():
         return jsonify(data), 200
     except Exception as ex:
         return jsonify({"error": "failed to load events", "details": str(ex)}), 502
+
+
+def _pco_event_to_announcement(event_data, instances=None):
+    """Convert a Planning Center event payload into the site's announcement shape."""
+    attrs = event_data.get("attributes", {})
+    event_id = str(event_data.get("id"))
+    description = attrs.get("description") or attrs.get("summary") or ""
+    marker = f"[planning-center-event:{event_id}]"
+    instances = instances or []
+    first = (instances[0].get("attributes", {}) if instances else {})
+    starts_at = first.get("starts_at")
+    event_date = datetime.fromisoformat(starts_at.replace("Z", "+00:00")).date() if starts_at else None
+    return {
+        "marker": marker,
+        "title": attrs.get("name") or "Untitled event",
+        "description": f"{description}\n\n{marker}".strip(),
+        "event_date": event_date,
+        "event_start_time": starts_at,
+        "event_end_time": first.get("ends_at"),
+        "active": not bool(attrs.get("archived_at")),
+    }
+
+
+def _upsert_pco_announcement(event_data):
+    from planning_center import event_instances
+    payload = _pco_event_to_announcement(event_data, event_instances(event_data["id"]))
+    announcement = Announcement.query.filter(Announcement.description.contains(payload["marker"])).first()
+    if announcement is None:
+        announcement = Announcement(id=next_global_id(), type="event", category="Planning Center")
+        db.session.add(announcement)
+    for key in ("title", "description", "event_date", "event_start_time", "event_end_time", "active"):
+        setattr(announcement, key, payload[key])
+    announcement.updated_at = datetime.utcnow()
+    announcement.updated_by = "planning-center"
+    db.session.commit()
+    return announcement
+
+
+@app.route("/webhooks/planning-center", methods=["POST"])
+def planning_center_webhook():
+    """Receive Planning Center Calendar webhook deliveries."""
+    secret = app.config.get("PLANNING_CENTER_WEBHOOK_SECRET")
+    signature = request.headers.get("X-PCO-Webhooks-Authenticity", "")
+    if not secret or not hmac.compare_digest(
+        signature, hmac.new(secret.encode(), request.get_data(), hashlib.sha256).hexdigest()
+    ):
+        return jsonify({"error": "invalid webhook signature"}), 401
+    delivery = request.get_json(silent=True) or {}
+    payload = delivery.get("data", delivery)
+    if isinstance(payload, dict) and isinstance(payload.get("payload"), str):
+        payload = json.loads(payload["payload"])
+    resource = payload.get("data", payload) if isinstance(payload, dict) else {}
+    if resource.get("type") != "Event" or not resource.get("id"):
+        return jsonify({"status": "ignored"}), 200
+    try:
+        _upsert_pco_announcement(resource)
+        return jsonify({"status": "ok", "event_id": resource["id"]}), 200
+    except Exception:
+        app.logger.exception("Planning Center webhook processing failed")
+        return jsonify({"error": "event processing failed"}), 500
+
+
+@app.route("/admin/planning-center/sync", methods=["POST"])
+@require_auth
+def planning_center_sync():
+    """Backfill/synchronize current Planning Center Calendar events."""
+    from planning_center import upcoming_events
+    events = upcoming_events(app.config.get("PLANNING_CENTER_CALENDAR_ID"))
+    synced = [_upsert_pco_announcement(item).id for item in events]
+    return jsonify({"status": "ok", "synced": len(synced), "announcement_ids": synced})
 
 @app.route("/api/youtube")
 @cache.cached(timeout=900)
@@ -2531,7 +2713,8 @@ def api_search():
 
         # Search announcements
         if content_type in ['all', 'announcements']:
-            q = Announcement.query.filter(_not_expired(Announcement))
+            q = Announcement.query.filter(_not_expired(Announcement))\
+                .filter(_announcement_is_due(Announcement))
 
             if query:
                 q = q.filter(db.or_(
@@ -3082,11 +3265,6 @@ def _seed_pastor_teaching_sample():
     db.session.commit()
 
 
-def is_authenticated():
-    """Check if user is authenticated"""
-    return session.get('authenticated', False)
-
-
 def get_authenticated_user():
     """Return the currently authenticated admin user or None."""
     if not is_authenticated():
@@ -3126,9 +3304,9 @@ def inject_current_user_metadata():
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
-        # Keep feedback convenient during local development, but invite-only
-        # in production so the public launcher is not exposed to every visitor.
-        'feedback_mode': (not _is_production) or bool(session.get('feedback_mode')),
+        # Public feedback is available to every visitor in every environment.
+        # This is deliberately unrelated to a client IP or preview session.
+        'feedback_mode': os.getenv('FEEDBACK_ENABLED', '1').lower() not in ('0', 'false', 'no', 'off') or bool(session.get('feedback_mode')),
         'demo_account_enabled': not _is_production,
         'new_feedback_count': new_feedback_count,
     }
@@ -3148,16 +3326,6 @@ def inject_site_content():
         'regular_schedule_resume_label': get_regular_schedule_resume_label(sc),
         'belief_lessons': get_belief_lessons(sc),
     }
-
-def require_auth(f):
-    """Decorator to require authentication"""
-    from functools import wraps
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not is_authenticated():
-            return redirect(url_for('admin_login', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
 
 
 @app.route('/admin/export/feedback')
@@ -3379,35 +3547,111 @@ ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 def _allowed_image(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
-@app.route('/admin/upload-image', methods=['POST'])
-@require_auth
-def admin_upload_image():
-    """Accept an image file; save to static/uploads; return the public URL to store in DB."""
-    if 'file' not in request.files and 'image' not in request.files:
-        return jsonify({'error': 'No file in request'}), 400
-    f = request.files.get('file') or request.files.get('image')
-    if not f or f.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
+def _save_uploaded_image(f):
+    """Save an uploaded image to static/uploads and return its relative URL."""
+    if not f or not getattr(f, 'filename', None):
+        return None
     if not _allowed_image(f.filename):
-        return jsonify({'error': 'Invalid file type. Use PNG, JPG, GIF, or WebP.'}), 400
+        return None
     base = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
     os.makedirs(base, exist_ok=True)
     ext = (f.filename.rsplit('.', 1)[1].lower() or 'jpg')
-    safe_name = secure_filename(f.filename)
-    if not safe_name:
-        safe_name = 'image'
+    safe_name = secure_filename(f.filename) or 'image'
     unique = str(uuid.uuid4())[:8] + '_' + (safe_name[:50] if len(safe_name) > 50 else safe_name)
     unique = secure_filename(unique)
     if not unique.endswith('.' + ext):
         unique = unique + '.' + ext
     path = os.path.join(base, unique)
+    f.save(path)
+    return url_for('static', filename='uploads/' + unique)
+
+def _normalize_aspect_ratio(val):
+    """Normalize aspect ratio string to '16x9', 'square', or '9x16'."""
+    if not val:
+        return '16x9'
+    v = str(val).strip().lower()
+    if v in {'16x9', '16:9', 'landscape', 'cover'}:
+        return '16x9'
+    if v in {'square', '1:1', '1x1'}:
+        return 'square'
+    if v in {'9x16', '9:16', 'portrait', 'poster', 'story'}:
+        return '9x16'
+    return '16x9'
+
+@app.route('/admin/upload-image', methods=['POST'])
+@require_auth
+def admin_upload_image():
+    """Accept an image file; save to static/uploads; return the public URL to store in DB."""
+    if 'file' not in request.files and 'image' not in request.files and 'image_file' not in request.files:
+        return jsonify({'error': 'No file in request'}), 400
+    f = request.files.get('file') or request.files.get('image') or request.files.get('image_file')
+    if not f or f.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    if not _allowed_image(f.filename):
+        return jsonify({'error': 'Invalid file type. Use PNG, JPG, GIF, or WebP.'}), 400
     try:
-        f.save(path)
+        url = _save_uploaded_image(f)
+        if not url:
+            return jsonify({'error': 'Failed to save file'}), 400
+        return jsonify({'url': url})
     except Exception as e:
         return jsonify({'error': 'Failed to save file: ' + str(e)}), 500
-    # URL that works on this host (relative so it works behind a reverse proxy)
-    url = url_for('static', filename='uploads/' + unique)
-    return jsonify({'url': url})
+
+@app.route('/admin/api/image-library', methods=['GET'])
+@require_auth
+def admin_api_image_library():
+    """Return recent images from gallery, announcements, and static uploads for the image picker."""
+    images = []
+    seen_urls = set()
+
+    # 1. Gallery images
+    try:
+        g_images = GalleryImage.query.order_by(GalleryImage.created.desc().nullslast(), GalleryImage.id.desc()).limit(40).all()
+        for g in g_images:
+            if g.url and g.url.strip() and g.url not in seen_urls:
+                seen_urls.add(g.url)
+                images.append({
+                    'url': g.url,
+                    'title': g.name or 'Gallery Image',
+                    'source': 'gallery',
+                })
+    except Exception as e:
+        app.logger.warning("Failed to fetch gallery images for library picker: %s", e)
+
+    # 2. Recent announcement images
+    try:
+        a_images = Announcement.query.filter(Announcement.featured_image.isnot(None), Announcement.featured_image != '').order_by(Announcement.date_entered.desc().nullslast(), Announcement.id.desc()).limit(30).all()
+        for a in a_images:
+            if a.featured_image and a.featured_image.strip() and a.featured_image not in seen_urls:
+                seen_urls.add(a.featured_image)
+                images.append({
+                    'url': a.featured_image,
+                    'title': a.title or 'Announcement Image',
+                    'source': 'announcements',
+                })
+    except Exception as e:
+        app.logger.warning("Failed to fetch announcement images for library picker: %s", e)
+
+    # 3. Local upload files in static/uploads
+    try:
+        uploads_dir = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+        if os.path.exists(uploads_dir):
+            for fname in sorted(os.listdir(uploads_dir), reverse=True):
+                if _allowed_image(fname):
+                    file_url = url_for('static', filename='uploads/' + fname)
+                    if file_url not in seen_urls:
+                        seen_urls.add(file_url)
+                        images.append({
+                            'url': file_url,
+                            'title': fname,
+                            'source': 'uploads',
+                        })
+                if len(images) >= 60:
+                    break
+    except Exception as e:
+        app.logger.warning("Failed to scan static/uploads for library picker: %s", e)
+
+    return jsonify({'images': images[:60]})
 
 @app.route('/admin/upload-gallery-image', methods=['POST'])
 @require_auth
@@ -3815,8 +4059,11 @@ def _format_announcement_status(view, context, model, name):
     archive_url = base + '?id=' + str(model.id) + '&status=archive'
     active = getattr(model, 'active', True)
     archived = getattr(model, 'archived', False)
+    scheduled_at = getattr(model, 'scheduled_at', None)
     if archived:
         status_tag = '<span class="admin-status-tag admin-status-archived">Archived</span>'
+    elif scheduled_at and scheduled_at > datetime.utcnow():
+        status_tag = '<span class="admin-status-tag admin-status-scheduled">Scheduled</span>'
     elif active:
         status_tag = '<span class="admin-status-tag admin-status-published">Published</span>'
     else:
@@ -3830,6 +4077,8 @@ def _format_announcement_status(view, context, model, name):
         '</select>'
     )
     tags = [status_tag, dropdown]
+    if scheduled_at and scheduled_at > datetime.utcnow():
+        tags.insert(1, '<span class="admin-schedule-time">' + str(escape(_format_scheduled_at_for_display(scheduled_at))) + '</span>')
     if getattr(model, 'superfeatured', False):
         tags.insert(1, '<span class="admin-status-tag admin-status-featured">Featured</span>')
     if getattr(model, 'show_in_banner', False):
@@ -3837,12 +4086,41 @@ def _format_announcement_status(view, context, model, name):
     return Markup('<span class="admin-status-wrap announcement-status-wrap">' + ' '.join(tags) + '</span>')
 
 
+def _format_announcement_title(view, context, model, name):
+    """Show a readable byline without exposing the raw database timestamp."""
+    posted_at = getattr(model, 'date_entered', None)
+    if posted_at:
+        posted_text = posted_at.strftime('%b %d, %Y at %I:%M %p').replace(' 0', ' ')
+        posted_datetime = posted_at.isoformat()
+    else:
+        posted_text = 'Date unavailable'
+        posted_datetime = ''
+
+    # Speaker is the content author when supplied; otherwise retain the
+    # original admin creator instead of replacing the byline on later edits.
+    author = (
+        getattr(model, 'speaker', None)
+        or getattr(model, 'created_by', None)
+        or getattr(model, 'updated_by', None)
+        or 'CPC New Haven'
+    )
+    return Markup(
+        '<div class="announcement-title-cell">'
+        '<div class="announcement-title-text">' + str(escape(model.title or 'Untitled announcement')) + '</div>'
+        '<div class="announcement-post-meta">'
+        '<span><b>Posted</b> <time datetime="' + str(escape(posted_datetime)) + '">' + str(escape(posted_text)) + '</time></span>'
+        '<span><b>Author</b> ' + str(escape(author)) + '</span>'
+        '<span><b>Post ID</b> ' + str(escape(model.id)) + '</span>'
+        '</div></div>'
+    )
+
+
 from flask_admin.form import rules
 
 class AnnouncementView(AuthenticatedModelView):
     list_template = 'admin/announcement_list.html'
-    create_template = 'admin/announcement_create.html'
-    edit_template = 'admin/model/edit_bento.html'
+    create_template = 'admin/announcement_direct_create.html'
+    edit_template = 'admin/announcement_direct_create.html'
     # Default display: only 4 columns. Users can toggle "Advanced" to see all.
     column_list = ('id', 'title', 'active', 'date_entered', 'category')
     column_searchable_list = ('title', 'description', 'tag', 'speaker')
@@ -3925,7 +4203,8 @@ class AnnouncementView(AuthenticatedModelView):
     }
 
     column_formatters = {
-        'active': _format_announcement_status
+        'active': _format_announcement_status,
+        'title': _format_announcement_title,
     }
 
     def get_form(self):
@@ -3987,6 +4266,7 @@ class AnnouncementView(AuthenticatedModelView):
             if not model.date_entered:
                 model.date_entered = datetime.utcnow()
             model.id = next_global_id()
+            model.created_by = session.get('username') or None
         else:
             # Versioning: so editors know what is what
             model.updated_at = datetime.utcnow()
@@ -4014,8 +4294,128 @@ class AnnouncementView(AuthenticatedModelView):
         speakers = _admin_speaker_choices() or [('', '— No admins —')]
         errors = []
         form_data = {}
+        return_url = request.args.get('url') or url_for('announcement.index_view')
         if request.method == 'POST':
             form_data = request.form.to_dict()
+            return_url = form_data.get('return_url') or return_url
+            title = form_data.get('title', '').strip()
+            description = form_data.get('description', '').strip()
+            event_date = None
+            expiration_date = None
+            scheduled_at = None
+            if not title:
+                errors.append('Title is required.')
+            if not description:
+                errors.append('Description is required.')
+            if form_data.get('event_date'):
+                try:
+                    event_date = date.fromisoformat(form_data['event_date'])
+                except ValueError:
+                    errors.append('Event date must be a valid date.')
+            if form_data.get('expiration_date'):
+                try:
+                    expiration_date = date.fromisoformat(form_data['expiration_date'])
+                except ValueError:
+                    errors.append('Expiration date must be a valid date.')
+            if form_data.get('scheduled_at'):
+                try:
+                    scheduled_at = _parse_scheduled_at(form_data['scheduled_at'])
+                except ValueError:
+                    errors.append('Publish date and time must be valid.')
+            expiration_preset = form_data.get('expiration_preset', 'never')
+            if expiration_preset == 'specific' and not expiration_date:
+                errors.append('Choose an expiration date or select another expiration option.')
+            if '_schedule' in request.form and not scheduled_at:
+                errors.append('Choose a future publish date and time to schedule this announcement.')
+            if scheduled_at and '_schedule' in request.form and scheduled_at <= datetime.utcnow():
+                errors.append('Scheduled publish time must be in the future.')
+            if not errors:
+                now = datetime.utcnow()
+                banner_type = form_data.get('banner_type', '').strip().lower()
+                type_val = form_data.get('type', 'announcement')
+                show_in_banner = bool(form_data.get('show_in_banner'))
+                if banner_type:
+                    show_in_banner = True
+                    type_val = banner_type
+                raw_img_type = form_data.get('image_display_type', '').strip()
+                if raw_img_type == 'none':
+                    featured_image = None
+                    image_display_type = None
+                else:
+                    featured_image = form_data.get('featured_image', '').strip() or None
+                    img_file = request.files.get('image_file') or request.files.get('file')
+                    if img_file and getattr(img_file, 'filename', None):
+                        uploaded_url = _save_uploaded_image(img_file)
+                        if uploaded_url:
+                            featured_image = uploaded_url
+                    image_display_type = _normalize_aspect_ratio(raw_img_type) if featured_image else None
+
+                ann = Announcement(
+                    id=next_global_id(),
+                    title=title,
+                    description=description,
+                    type=type_val,
+                    category=form_data.get('category', 'general'),
+                    tag=form_data.get('tag', '') or None,
+                    speaker=form_data.get('speaker', '') or None,
+                    event_date=event_date,
+                    event_start_time=form_data.get('event_start_time', '') or None,
+                    event_end_time=form_data.get('event_end_time', '') or None,
+                    active=('_publish' in request.form or '_save_and_publish' in request.form or '_schedule' in request.form),
+                    superfeatured=bool(form_data.get('superfeatured')),
+                    show_in_banner=show_in_banner,
+                    featured_image=featured_image,
+                    image_display_type=image_display_type,
+                    expires_at=_compute_expires_at(
+                        expiration_preset,
+                        expiration_date,
+                        now,
+                    ),
+                    archived=False,
+                    date_entered=now,
+                    created_by=session.get('username') or None,
+                    scheduled_at=scheduled_at if '_schedule' in request.form else None,
+                )
+                db.session.add(ann)
+                db.session.commit()
+                _log_audit('created', ann)
+                try:
+                    cache.clear()
+                except Exception:
+                    pass
+                outcome = 'scheduled' if ann.scheduled_at else ('published' if ann.active else 'saved as draft')
+                flash(f'"{title}" {outcome}.', 'success')
+                return redirect(return_url)
+        return self.render('admin/announcement_direct_create.html',
+                           is_editing=False,
+                           form_action=url_for('announcement.create_view'),
+                           return_url=return_url,
+                           form_data=form_data,
+                           errors=errors,
+                           type_choices=ANNOUNCEMENT_TYPE_CHOICES,
+                           category_choices=ANNOUNCEMENT_CATEGORY_CHOICES,
+                           speakers=speakers)
+
+    @expose('/edit/', methods=['GET', 'POST'])
+    def edit_view(self):
+        if not is_authenticated():
+            return redirect(url_for('admin_login'))
+        id_val = request.args.get('id', type=int)
+        return_url = request.args.get('url') or url_for('announcement.index_view')
+        if not id_val:
+            flash('Record does not exist.', 'error')
+            return redirect(return_url)
+        ann = Announcement.query.get(id_val)
+        if not ann:
+            flash('Record does not exist.', 'error')
+            return redirect(return_url)
+
+        speakers = _admin_speaker_choices() or [('', '— No admins —')]
+        errors = []
+
+        if request.method == 'POST':
+            form_data = request.form.to_dict()
+            return_url = form_data.get('return_url') or return_url
             title = form_data.get('title', '').strip()
             description = form_data.get('description', '').strip()
             event_date = None
@@ -4034,46 +4434,119 @@ class AnnouncementView(AuthenticatedModelView):
                     expiration_date = date.fromisoformat(form_data['expiration_date'])
                 except ValueError:
                     errors.append('Expiration date must be a valid date.')
+            scheduled_at = None
+            if form_data.get('scheduled_at'):
+                try:
+                    scheduled_at = _parse_scheduled_at(form_data['scheduled_at'])
+                except ValueError:
+                    errors.append('Publish date and time must be valid.')
             expiration_preset = form_data.get('expiration_preset', 'never')
             if expiration_preset == 'specific' and not expiration_date:
                 errors.append('Choose an expiration date or select another expiration option.')
+            if '_schedule' in request.form and not scheduled_at:
+                errors.append('Choose a future publish date and time to schedule this announcement.')
+            if scheduled_at and '_schedule' in request.form and scheduled_at <= datetime.utcnow():
+                errors.append('Scheduled publish time must be in the future.')
+
             if not errors:
                 now = datetime.utcnow()
-                ann = Announcement(
-                    id=next_global_id(),
-                    title=title,
-                    description=description,
-                    type=form_data.get('type', 'announcement'),
-                    category=form_data.get('category', 'general'),
-                    tag=form_data.get('tag', '') or None,
-                    speaker=form_data.get('speaker', '') or None,
-                    event_date=event_date,
-                    event_start_time=form_data.get('event_start_time', '') or None,
-                    event_end_time=form_data.get('event_end_time', '') or None,
-                    active=('_publish' in request.form or
-                            '_save_and_publish' in request.form),
-                    superfeatured=bool(form_data.get('superfeatured')),
-                    show_in_banner=bool(form_data.get('show_in_banner')),
-                    featured_image=form_data.get('featured_image', '').strip() or None,
-                    image_display_type=form_data.get('image_display_type', '').strip() or None,
-                    expires_at=_compute_expires_at(
-                        expiration_preset,
-                        expiration_date,
-                        now,
-                    ),
-                    archived=False,
-                    date_entered=now,
+                ann.title = title
+                ann.description = description
+                ann.category = form_data.get('category', 'general')
+                ann.tag = form_data.get('tag', '') or None
+                ann.speaker = form_data.get('speaker', '') or None
+                ann.event_date = event_date
+                ann.event_start_time = form_data.get('event_start_time', '') or None
+                ann.event_end_time = form_data.get('event_end_time', '') or None
+
+                banner_type = form_data.get('banner_type', '').strip().lower()
+                type_val = form_data.get('type', 'announcement')
+                if banner_type:
+                    ann.show_in_banner = True
+                    ann.type = banner_type
+                else:
+                    ann.show_in_banner = bool(form_data.get('show_in_banner'))
+                    ann.type = type_val
+
+                if '_schedule' in request.form:
+                    ann.active = True
+                    ann.archived = False
+                    ann.scheduled_at = scheduled_at
+                elif '_save_and_publish' in request.form or '_publish' in request.form:
+                    ann.active = True
+                    ann.archived = False
+                    ann.scheduled_at = None
+                elif 'active' in request.form:
+                    raw_act = str(request.form.get('active', '')).strip().lower()
+                    ann.active = raw_act in ('1', 'y', 'yes', 'true', 'on')
+                elif '_save_draft' in request.form:
+                    ann.active = False
+                    ann.scheduled_at = None
+
+                ann.superfeatured = bool(form_data.get('superfeatured'))
+
+                raw_img_type = form_data.get('image_display_type', '').strip()
+                if raw_img_type == 'none':
+                    featured_image = None
+                    ann.image_display_type = None
+                else:
+                    featured_image = form_data.get('featured_image', '').strip() or None
+                    img_file = request.files.get('image_file') or request.files.get('file')
+                    if img_file and getattr(img_file, 'filename', None):
+                        uploaded_url = _save_uploaded_image(img_file)
+                        if uploaded_url:
+                            featured_image = uploaded_url
+                    ann.image_display_type = _normalize_aspect_ratio(raw_img_type) if featured_image else None
+                ann.featured_image = featured_image
+
+                base_date = ann.date_entered or now
+                ann.expires_at = _compute_expires_at(
+                    expiration_preset,
+                    expiration_date,
+                    base_date,
                 )
-                db.session.add(ann)
+                ann.updated_at = now
+                ann.updated_by = session.get('username') or None
+                ann.revision = (getattr(ann, 'revision', None) or 1) + 1
+
                 db.session.commit()
-                _log_audit('created', ann)
+                _log_audit('edited', ann)
                 try:
                     cache.clear()
                 except Exception:
                     pass
-                flash(f'"{title}" {"published" if ann.active else "saved as draft"}.', 'success')
-                return redirect(url_for('announcement.index_view'))
+                flash(f'"{title}" updated successfully.', 'success')
+                return redirect(return_url)
+        else:
+            banner_val = ''
+            if ann.show_in_banner and (ann.type or '').lower() in {'weather', 'parking', 'alert', 'info'}:
+                banner_val = (ann.type or '').lower()
+            form_data = {
+                'title': ann.title or '',
+                'description': ann.description or '',
+                'type': ann.type or 'announcement',
+                'category': ann.category or 'general',
+                'tag': ann.tag or '',
+                'speaker': ann.speaker or '',
+                'event_date': ann.event_date.isoformat() if ann.event_date else '',
+                'event_start_time': ann.event_start_time or '',
+                'event_end_time': ann.event_end_time or '',
+                'featured_image': ann.featured_image or '',
+                'image_display_type': _normalize_aspect_ratio(ann.image_display_type) if ann.featured_image else 'none',
+                'superfeatured': '1' if ann.superfeatured else '',
+                'show_in_banner': '1' if ann.show_in_banner else '',
+                'banner_type': banner_val,
+                'expiration_preset': 'specific' if ann.expires_at else 'never',
+                'expiration_date': ann.expires_at.isoformat() if ann.expires_at else '',
+                'active': '1' if ann.active else '',
+                'scheduled_at': _format_scheduled_at_for_input(ann.scheduled_at),
+            }
+
         return self.render('admin/announcement_direct_create.html',
+                           is_editing=True,
+                           announcement_id=ann.id,
+                           form_action=url_for('announcement.edit_view', id=ann.id, url=return_url),
+                           return_url=return_url,
                            form_data=form_data,
                            errors=errors,
                            type_choices=ANNOUNCEMENT_TYPE_CHOICES,
@@ -4096,12 +4569,15 @@ class AnnouncementView(AuthenticatedModelView):
         if status == 'publish':
             ann.active = True
             ann.archived = False
+            ann.scheduled_at = None
         elif status == 'draft':
             ann.active = False
             ann.archived = False
+            ann.scheduled_at = None
         else:
             ann.active = False
             ann.archived = True
+            ann.scheduled_at = None
         ann.updated_at = datetime.utcnow()
         ann.updated_by = session.get('username') or None
         ann.revision = (getattr(ann, 'revision', None) or 1) + 1
@@ -4360,7 +4836,10 @@ class PaperView(AuthenticatedModelView):
 class SermonView(AuthenticatedModelView):
     list_template = 'admin/content_list.html'
     create_template = 'admin/sermon_create.html'
-    edit_template = 'admin/model/edit_bento.html'
+    # The bento shell is useful for small admin records, but it does not
+    # preserve this editor's grouped controls.  Use the same complete form
+    # for a new sermon and an existing sermon.
+    edit_template = 'admin/sermon_create.html'
     column_list = ('title', 'series', 'speaker_user', 'date', 'active')
     column_searchable_list = ('title', 'scripture')
     column_filters = ('series', 'speaker_user.full_name', 'date', 'active')
@@ -4639,7 +5118,10 @@ class SermonView(AuthenticatedModelView):
 class PodcastEpisodeView(AuthenticatedModelView):
     list_template = 'admin/content_list.html'
     create_template = 'admin/sermon_create.html'
-    edit_template = 'admin/model/edit_bento.html'
+    # Podcast episodes share the grouped content editor with sermons.  Keeping
+    # create and edit on one template prevents the edit view from collapsing
+    # into the generic bento layout.
+    edit_template = 'admin/sermon_create.html'
     column_list = ('number', 'title', 'series', 'guest', 'date_added')
     column_searchable_list = ('title', 'guest', 'scripture')
     column_filters = ('series', 'guest', 'season', 'source')

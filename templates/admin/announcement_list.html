@@ -179,8 +179,31 @@
   .announcement-quarter-range { margin-left:1rem; color:#b8d9ea; font-size:.78rem; font-weight:600; letter-spacing:.04em; }
   .announcement-quarter-badge { display:inline-flex; margin-left:1rem; padding:.35rem .65rem; border:1px solid rgba(255,255,255,.24); border-radius:999px; color:#dff4ff; font-size:.65rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; vertical-align:middle; }
   .admin-list .col-title { color:#1d2a36 !important; font-size:.95rem; font-weight:700; line-height:1.45; }
+  .announcement-title-cell { min-width:0; }
+  .announcement-title-text { color:#1d2a36; font:750 1rem/1.35 Manrope,sans-serif; }
+  .announcement-post-meta { display:flex; gap:.3rem .8rem; flex-wrap:wrap; margin-top:.42rem; color:#617889; font-size:.72rem; font-weight:600; line-height:1.35; }
+  .announcement-post-meta b { margin-right:.16rem; color:#426276; font-size:.62rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .announcement-post-meta time { color:#365c74; }
+  .admin-list.basic-view .col-id,
+  .admin-list.basic-view .col-date_entered { display:none !important; }
   .admin-list .col-status span, .admin-list .col-status a { border-radius:999px; }
+  .admin-list .admin-status-scheduled { background:#fff4d6 !important; color:#8b5a00 !important; border:1px solid #e3bd63 !important; }
+  .admin-list .admin-schedule-time { display:block; margin:.4rem 0; color:#725e37; font-size:.68rem; font-weight:700; line-height:1.35; }
   .admin-list .col-date_entered { color:#687887 !important; font-size:.82rem; }
+  /* Flask-Admin supplies icon-only edit and delete controls. Turn them into
+     deliberate, easy-to-hit buttons without changing either route. */
+  #announcementTable .list-buttons-column { white-space:nowrap; }
+  #announcementTable .list-buttons-column > a.icon,
+  #announcementTable .list-buttons-column > form.icon { display:inline-flex; vertical-align:middle; margin:0 .35rem 0 0; }
+  #announcementTable .list-buttons-column > a.icon,
+  #announcementTable .list-buttons-column > form.icon button { width:34px !important; min-width:34px !important; height:34px !important; box-sizing:border-box; align-items:center; justify-content:center; border:1px solid #9bc9e3 !important; border-radius:9px !important; background:#eaf5fb !important; color:#1f6c97 !important; font-size:.9rem !important; line-height:1 !important; text-decoration:none; cursor:pointer; transition:background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease; }
+  #announcementTable .list-buttons-column > a.icon .fa,
+  #announcementTable .list-buttons-column > form.icon button .fa { color:inherit !important; }
+  #announcementTable .list-buttons-column > form.icon button { border-color:#e6b2b2 !important; background:#fff1f1 !important; color:#a72d2d !important; }
+  #announcementTable .list-buttons-column > a.icon:hover,
+  #announcementTable .list-buttons-column > a.icon:focus-visible { border-color:#237fab !important; background:#237fab !important; color:#fff !important; box-shadow:0 4px 10px rgba(35,127,171,.22); transform:translateY(-1px); outline:none; }
+  #announcementTable .list-buttons-column > form.icon button:hover,
+  #announcementTable .list-buttons-column > form.icon button:focus-visible { border-color:#a72d2d !important; background:#a72d2d !important; color:#fff !important; box-shadow:0 4px 10px rgba(167,45,45,.18); transform:translateY(-1px); outline:none; }
   /* Keep row emphasis in the status badges, not in full-width muddy backgrounds. */
   .admin-body .admin-list tbody tr:not(.announcement-quarter-row):has(.announcement-status-wrap) td,
   .admin-body .admin-list tbody tr:not(.announcement-quarter-row):has(.admin-status-published) td,
@@ -207,8 +230,8 @@
       grid-template-columns:2.75rem minmax(0,1fr) minmax(7.5rem, 9rem);
       grid-template-areas:
         "select title status"
-        "actions title status"
-        "actions meta date";
+        ". title status"
+        ". actions status";
       align-items:center;
       margin:0 0 1rem;
       border:1px solid #d9e5ee;
@@ -228,12 +251,13 @@
       text-overflow:clip;
     }
     #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td:nth-child(1) { grid-area:select; padding-right:0 !important; }
-    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.list-buttons-column { grid-area:actions; align-self:start; padding-top:1rem !important; padding-right:0 !important; }
-    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-id { grid-area:meta; color:#7b8b98 !important; font-size:.72rem; font-weight:700; }
-    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-id::before { content:'ID '; color:#a0adb7; letter-spacing:.08em; text-transform:uppercase; }
-    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-title { grid-area:title; align-self:stretch; display:flex !important; align-items:center; padding:1.15rem 1rem !important; color:#1d2a36 !important; font-size:1rem; font-weight:750; line-height:1.4; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.list-buttons-column { grid-area:actions; align-self:end; display:flex !important; flex-direction:row; gap:.45rem; padding:.15rem 1rem 1rem !important; }
+    #announcementTable.admin-list .list-buttons-column > a.icon,
+    #announcementTable.admin-list .list-buttons-column > form.icon { margin:0; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-id,
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-date_entered { display:none !important; }
+    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-title { grid-area:title; align-self:stretch; display:flex !important; align-items:center; padding:1.15rem 1rem .7rem !important; color:#1d2a36 !important; font-size:1rem; font-weight:750; line-height:1.4; }
     #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-active { grid-area:status; align-self:stretch; padding:1.15rem .75rem !important; border-left:1px solid #edf2f5 !important; }
-    #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-date_entered { grid-area:date; padding:.2rem .75rem 1rem !important; color:#687887 !important; font-size:.72rem; line-height:1.35; }
     #announcementTable.admin-list tbody tr:not(.announcement-quarter-row) td.col-category { display:none !important; }
     #announcementTable.admin-list .announcement-quarter-row { display:block; margin:1.25rem 0 .8rem; }
     #announcementTable.admin-list .announcement-quarter-row th { display:block !important; width:auto; border-radius:15px; padding:1.25rem 1.2rem !important; }

@@ -23,6 +23,16 @@ services:
         fromDatabase:
           name: cpc-newhaven-db
           property: connectionString
+      - key: PLANNING_CENTER_CLIENT_ID
+        sync: false
+      - key: PLANNING_CENTER_PERSONAL_ACCESS_TOKEN
+        sync: false
+      - key: PLANNING_CENTER_CLIENT_SECRET
+        sync: false
+      - key: PLANNING_CENTER_WEBHOOK_SECRET
+        sync: false
+      - key: PLANNING_CENTER_CALENDAR_ID
+        sync: false
     healthCheckPath: /healthz
     autoDeploy: true
 

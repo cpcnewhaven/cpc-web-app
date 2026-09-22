@@ -21,6 +21,13 @@
     --page-accent: var(--surface-accent);
     --page-accent-soft: var(--surface-accent-soft);
 }
+.pco-calendar-widget { margin: 0 0 1rem; }
+.pco-calendar-widget .section-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem; }
+.pco-calendar-widget h2 { margin:.1rem 0; color:var(--page-text); }
+.pco-calendar-widget .pco-event { padding:.8rem 0; border-top:1px solid var(--page-border); }
+.pco-calendar-widget .pco-event:first-child { border-top:0; }
+.pco-calendar-widget time { color:var(--page-accent); font-weight:700; font-size:.85rem; }
+.pco-calendar-widget p { color:var(--page-muted); margin:.3rem 0 0; }
 
 .events-main-container {
     max-width: 100%;
@@ -535,6 +542,10 @@ body.theme-white .events-hero p { color: var(--page-muted); }
 {% block content %}
 <div class="events-page compact-page">
     <div class="events-main-container compact-content">
+        <section class="events-section pco-calendar-widget" aria-labelledby="pco-calendar-title">
+            <div class="section-heading"><div><p class="events-eyebrow">Planning Center</p><h2 id="pco-calendar-title">Church calendar</h2></div></div>
+            <div id="pco-calendar-items"><p>Loading Planning Center events…</p></div>
+        </section>
         <!-- Compact Hero -->
         <div class="events-hero">
             <h1>Events & Activities</h1>
@@ -678,4 +689,17 @@ body.theme-white .events-hero p { color: var(--page-muted); }
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/events.js') }}"></script>
+<script>
+(function () {
+  const root = document.getElementById('pco-calendar-items');
+  if (!root) return;
+  const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const formatDate = value => value ? new Intl.DateTimeFormat(undefined, {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}).format(new Date(value)) : 'Date to be announced';
+  fetch('/api/planning-center/events').then(r => r.json()).then(data => {
+    if (!data.connected) { root.innerHTML = '<p>Planning Center calendar is not connected yet.</p>'; return; }
+    if (!data.events || !data.events.length) { root.innerHTML = '<p>No upcoming Planning Center events right now.</p>'; return; }
+    root.innerHTML = data.events.slice(0, 8).map(event => '<article class="pco-event"><time datetime="' + escapeHtml(event.starts_at) + '">' + escapeHtml(formatDate(event.starts_at)) + '</time><h3>' + escapeHtml(event.name || 'Untitled event') + '</h3>' + (event.description ? '<p>' + escapeHtml(event.description).slice(0, 220) + '</p>' : '') + '</article>').join('');
+  }).catch(() => { root.innerHTML = '<p>Planning Center events are temporarily unavailable.</p>'; });
+}());
+</script>
 {% endblock %}

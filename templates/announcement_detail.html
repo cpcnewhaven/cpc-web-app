@@ -23,11 +23,36 @@
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
     }
 
+    .detail-image-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+    }
+
     .detail-image {
         width: 100%;
-        max-height: 500px;
+        display: block;
         object-fit: cover;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .detail-image.ratio-16x9 {
+        aspect-ratio: 16 / 9;
+        max-height: 480px;
+    }
+
+    .detail-image.ratio-square {
+        aspect-ratio: 1 / 1;
+        max-width: 480px;
+        max-height: 480px;
+    }
+
+    .detail-image.ratio-9x16 {
+        aspect-ratio: 9 / 16;
+        max-width: 360px;
+        max-height: 600px;
     }
 
     .detail-content {
@@ -148,7 +173,11 @@
 
     <article class="detail-card">
         {% if announcement.featured_image %}
-        <img src="{{ announcement.featured_image }}" alt="" class="detail-image">
+        {% set img_ratio = announcement.image_display_type %}
+        {% if img_ratio in ['poster', 'story', '9x16'] %}{% set ratio_cls = 'ratio-9x16' %}{% elif img_ratio in ['square', '1:1'] %}{% set ratio_cls = 'ratio-square' %}{% else %}{% set ratio_cls = 'ratio-16x9' %}{% endif %}
+        <div class="detail-image-container">
+            <img src="{{ announcement.featured_image }}" alt="{{ announcement.title }}" class="detail-image {{ ratio_cls }}">
+        </div>
         {% endif %}
 
         <div class="detail-content">

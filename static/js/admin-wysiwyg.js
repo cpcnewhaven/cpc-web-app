@@ -57,12 +57,14 @@
   }
 
   ready(function () {
-    // The announcement creator is a focused, single-column workflow. Keep
-    // the generic split-screen preview for the other admin editors only.
-    if (window.location.pathname.indexOf('/admin/announcement/create') === 0) return;
-    if (document.querySelector('[data-no-wysiwyg]')) return;
     var form = document.querySelector('form');
     if (!form) return;
+    var isDirectAnnouncementEditor = !!form.closest('.announcement-direct-editor');
+    // The announcement editor already owns its preview and its layout.  It
+    // still uses Quill below, but must not be lifted into this generic
+    // split-screen wrapper (which puts the dedicated preview ahead of form).
+    if (!isDirectAnnouncementEditor && window.location.pathname.indexOf('/admin/announcement/create') === 0) return;
+    if (document.querySelector('[data-no-wysiwyg]')) return;
     if (form.closest('.admin-form-with-preview')) return;
 
     var textareas = [];
@@ -74,43 +76,47 @@
     if (textareas.length === 0) return;
 
     var formParent = form.parentNode;
-    var wrapper = document.createElement('div');
-    wrapper.className = 'admin-form-with-preview';
-    var formCol = document.createElement('div');
-    formCol.className = 'admin-form-col';
-    formCol.appendChild(form);
+    var wrapper;
 
     var hasEventInfo = textareas.some(function (p) { return p.name === 'event_info'; });
     var hasScripture = textareas.some(function (p) { return p.name === 'scripture'; });
-    var previewHtml =
-      '<h4>Live preview</h4>' +
-      '<div class="admin-preview-card">' +
-      '<div class="preview-title" id="admin-preview-title">Your title</div>' +
-      '<div class="preview-meta" id="admin-preview-meta"></div>' +
-      '<div class="preview-description" id="admin-preview-description">' +
-      '<span class="admin-preview-placeholder">Content will appear here as you type.</span></div>';
-    if (hasEventInfo) {
-      previewHtml +=
-        '<div class="preview-event-info-wrap" id="admin-preview-event-info-wrap" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">' +
-        '<div class="preview-event-info-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:rgba(255,255,255,0.5);margin-bottom:4px;">When / Where</div>' +
-        '<div class="preview-description preview-event-info" id="admin-preview-event-info">' +
-        '<span class="admin-preview-placeholder">When/where will appear here.</span></div></div>';
-    }
-    if (hasScripture) {
-      previewHtml +=
-        '<div class="preview-scripture-wrap" id="admin-preview-scripture-wrap" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">' +
-        '<div class="preview-event-info-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:rgba(255,255,255,0.5);margin-bottom:4px;">Scripture</div>' +
-        '<div class="preview-description" id="admin-preview-scripture">' +
-        '<span class="admin-preview-placeholder">Scripture will appear here.</span></div></div>';
-    }
-    previewHtml += '</div>';
+    if (!isDirectAnnouncementEditor) {
+      var wrapper = document.createElement('div');
+      wrapper.className = 'admin-form-with-preview';
+      var formCol = document.createElement('div');
+      formCol.className = 'admin-form-col';
+      formCol.appendChild(form);
 
-    var previewCol = document.createElement('div');
-    previewCol.className = 'admin-preview-panel';
-    previewCol.innerHTML = previewHtml;
-    wrapper.appendChild(formCol);
-    wrapper.appendChild(previewCol);
-    formParent.appendChild(wrapper);
+      var previewHtml =
+        '<h4>Live preview</h4>' +
+        '<div class="admin-preview-card">' +
+        '<div class="preview-title" id="admin-preview-title">Your title</div>' +
+        '<div class="preview-meta" id="admin-preview-meta"></div>' +
+        '<div class="preview-description" id="admin-preview-description">' +
+        '<span class="admin-preview-placeholder">Content will appear here as you type.</span></div>';
+      if (hasEventInfo) {
+        previewHtml +=
+          '<div class="preview-event-info-wrap" id="admin-preview-event-info-wrap" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">' +
+          '<div class="preview-event-info-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:rgba(255,255,255,0.5);margin-bottom:4px;">When / Where</div>' +
+          '<div class="preview-description preview-event-info" id="admin-preview-event-info">' +
+          '<span class="admin-preview-placeholder">When/where will appear here.</span></div></div>';
+      }
+      if (hasScripture) {
+        previewHtml +=
+          '<div class="preview-scripture-wrap" id="admin-preview-scripture-wrap" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">' +
+          '<div class="preview-event-info-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:rgba(255,255,255,0.5);margin-bottom:4px;">Scripture</div>' +
+          '<div class="preview-description" id="admin-preview-scripture">' +
+          '<span class="admin-preview-placeholder">Scripture will appear here.</span></div></div>';
+      }
+      previewHtml += '</div>';
+
+      var previewCol = document.createElement('div');
+      previewCol.className = 'admin-preview-panel';
+      previewCol.innerHTML = previewHtml;
+      wrapper.appendChild(formCol);
+      wrapper.appendChild(previewCol);
+      formParent.appendChild(wrapper);
+    }
 
     var titleInput = form.querySelector('input[name="title"]');
     var typeSelect = form.querySelector('select[name="type"]');
@@ -250,6 +256,7 @@
     }
 
     function fallback() {
+      if (isDirectAnnouncementEditor) return;
       formParent.appendChild(form);
       wrapper.remove();
     }

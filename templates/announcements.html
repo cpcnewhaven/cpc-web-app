@@ -64,10 +64,28 @@
 
 .announcement-image {
     width: 100%;
-    height: 150px;
     object-fit: cover;
     border-radius: 6px;
     margin-bottom: 0.5rem;
+    display: block;
+}
+
+.announcement-image.ratio-16x9 {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    max-height: 220px;
+}
+
+.announcement-image.ratio-square {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    max-height: 280px;
+}
+
+.announcement-image.ratio-9x16 {
+    aspect-ratio: 9 / 16;
+    height: auto;
+    max-height: 340px;
 }
 
 .announcement-card h3 {
@@ -194,10 +212,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     normalize(activeFilter.value) === normalize(value);
                 return `<span class="announcement-badge clickable-badge${isActive ? ' active' : ''}" data-filter-type="${kind}" data-filter-value="${value}">${value}</span>`;
             };
-            container.innerHTML = announcements.map(announcement => `
+            container.innerHTML = announcements.map(announcement => {
+                const ratioClass = announcement.imageDisplayType === 'square' ? 'ratio-square' : (announcement.imageDisplayType === '9x16' ? 'ratio-9x16' : 'ratio-16x9');
+                return `
                 <div class="announcement-card">
                     <a href="/announcement/${announcement.id}" style="text-decoration:none;display:block;height:100%;color:inherit;">
-                        ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image">` : ''}
+                        ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image ${ratioClass}">` : ''}
                         <h3>${announcement.title}</h3>
                         <div class="announcement-badges">
                             ${announcement.type ? badge('type', announcement.type) : ''}
@@ -209,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
                     </a>
                 </div>
-            `).join('');
+            `;}).join('');
         } else {
             container.innerHTML = '<div class="empty-state">No announcements at this time.</div>';
         }
