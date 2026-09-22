@@ -117,8 +117,10 @@ class Announcement(db.Model):
     event_date = db.Column(db.Date, nullable=True)  # date of event (for event type announcements)
     event_start_time = db.Column(db.String(100), nullable=True)  # e.g. "9:00 AM" or "Sunday 10:30"
     event_end_time = db.Column(db.String(100), nullable=True)
+    scheduled_at = db.Column(db.DateTime, nullable=True)  # UTC timestamp for scheduled publication
     # Versioning: so editors know what is what
     revision = db.Column(db.Integer, default=1, nullable=False)  # incremented on each edit
+    created_by = db.Column(db.String(80), nullable=True)  # username who originally created the post
     updated_at = db.Column(db.DateTime, nullable=True)  # set on edit; NULL = never edited
     updated_by = db.Column(db.String(80), nullable=True)  # username who last edited
 

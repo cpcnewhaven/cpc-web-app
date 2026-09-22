@@ -10,8 +10,8 @@ if not hasattr(collections, 'Mapping'):
     collections.Sequence = collections.abc.Sequence
 
 import logging
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context
-from markupsafe import Markup
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, Response, session, has_app_context, has_request_context, abort
+from markupsafe import Markup, escape
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin, AdminIndexView as _AdminIndexView
@@ -214,7 +214,9 @@ def ensure_db_columns():
             ('event_date', 'DATE', 'DATE'),
             ('event_start_time', 'VARCHAR(100)', 'VARCHAR(100)'),
             ('event_end_time', 'VARCHAR(100)', 'VARCHAR(100)'),
+            ('scheduled_at', 'DATETIME', 'TIMESTAMP'),
             ('revision', 'INTEGER DEFAULT 1', 'INTEGER DEFAULT 1'),
+            ('created_by', 'VARCHAR(80)', 'VARCHAR(80)'),
             ('updated_at', 'DATETIME', 'TIMESTAMP'),
             ('updated_by', 'VARCHAR(80)', 'VARCHAR(80)'),
         ],
@@ -1051,9 +1053,12 @@ def highlights():
 def announcement_detail(announcement_id):
     """Detail page for a single announcement or event highlight."""
     announcement = Announcement.query.get_or_404(announcement_id)
-    
-    # If it's not active or expired (and user isn't admin), maybe we shouldn't show it?
-    # For now, let's just show it if it exists.
+    if (
+        not is_authenticated()
+        and announcement.scheduled_at
+        and announcement.scheduled_at > datetime.utcnow()
+    ):
+        abort(404)
     
     return render_template('announcement_detail.html', announcement=announcement)
 
@@ -1562,6 +1567,40 @@ def _not_expired(model_klass):
     return db.or_(col.is_(None), col > date.today())
 
 
+_CHURCH_TIMEZONE = pytz.timezone('America/New_York')
+
+
+def _announcement_is_due(model_klass):
+    """Allow unscheduled posts and scheduled posts whose UTC time has arrived."""
+    scheduled_at = getattr(model_klass, 'scheduled_at', None)
+    if scheduled_at is None:
+        from sqlalchemy import text
+        return text('1 = 1')
+    return db.or_(scheduled_at.is_(None), scheduled_at <= datetime.utcnow())
+
+
+def _parse_scheduled_at(value):
+    """Convert the editor's Eastern Time datetime-local input to UTC."""
+    if not value:
+        return None
+    local_time = datetime.fromisoformat(value)
+    if local_time.tzinfo is not None:
+        return local_time.astimezone(pytz.UTC).replace(tzinfo=None)
+    return _CHURCH_TIMEZONE.localize(local_time).astimezone(pytz.UTC).replace(tzinfo=None)
+
+
+def _format_scheduled_at_for_input(value):
+    if not value:
+        return ''
+    return pytz.UTC.localize(value).astimezone(_CHURCH_TIMEZONE).strftime('%Y-%m-%dT%H:%M')
+
+
+def _format_scheduled_at_for_display(value):
+    if not value:
+        return ''
+    return pytz.UTC.localize(value).astimezone(_CHURCH_TIMEZONE).strftime('%b %d, %Y at %I:%M %p').replace(' 0', ' ')
+
+
 def _snapshot_announcements(active_only=False):
     """Use the public JSON snapshot in development or after a DB read failure."""
     from announcement_snapshot import load_snapshot
@@ -1588,9 +1627,11 @@ def _get_home_announcements():
     try:
         featured = Announcement.query.filter_by(active=True, superfeatured=True)\
             .filter(_not_expired(Announcement))\
+            .filter(_announcement_is_due(Announcement))\
             .order_by(Announcement.date_entered.desc()).limit(3).all()
         regular = Announcement.query.filter_by(active=True, superfeatured=False)\
             .filter(_not_expired(Announcement))\
+            .filter(_announcement_is_due(Announcement))\
             .order_by(Announcement.date_entered.desc()).limit(7).all()
         return featured + regular
     except Exception as exc:
@@ -1604,6 +1645,7 @@ def api_announcements():
     """API endpoint matching your highlights.json structure"""
     announcements = Announcement.query.filter_by(active=True)\
         .filter(_not_expired(Announcement))\
+        .filter(_announcement_is_due(Announcement))\
         .order_by(Announcement.date_entered.desc()).all()
     
     return jsonify({
@@ -1635,6 +1677,7 @@ def api_banner_announcements():
     """Active announcements marked to show in the top yellow bar (weather, parking, etc.)"""
     announcements = Announcement.query.filter_by(active=True, show_in_banner=True)\
         .filter(_not_expired(Announcement))\
+        .filter(_announcement_is_due(Announcement))\
         .order_by(Announcement.banner_sort_order.asc(), Announcement.date_entered.desc()).all()
     return jsonify({
         'announcements': [
@@ -1664,6 +1707,7 @@ def api_event_announcements():
         Announcement.event_date >= today,
         Announcement.event_date <= future_limit
     ).filter(_not_expired(Announcement))\
+    .filter(_announcement_is_due(Announcement))\
     .order_by(Announcement.event_date.asc()).all()
 
     return jsonify({
@@ -1695,6 +1739,7 @@ def api_highlights():
     if not announcements:
         try:
             announcements = Announcement.query.filter(_not_expired(Announcement))\
+                .filter(_announcement_is_due(Announcement))\
                 .order_by(Announcement.date_entered.desc()).limit(50).all()
         except Exception as exc:
             log.error("Highlights DB read failed; using snapshot: %s", exc)
@@ -2667,7 +2712,8 @@ def api_search():
 
         # Search announcements
         if content_type in ['all', 'announcements']:
-            q = Announcement.query.filter(_not_expired(Announcement))
+            q = Announcement.query.filter(_not_expired(Announcement))\
+                .filter(_announcement_is_due(Announcement))
 
             if query:
                 q = q.filter(db.or_(
@@ -4012,8 +4058,11 @@ def _format_announcement_status(view, context, model, name):
     archive_url = base + '?id=' + str(model.id) + '&status=archive'
     active = getattr(model, 'active', True)
     archived = getattr(model, 'archived', False)
+    scheduled_at = getattr(model, 'scheduled_at', None)
     if archived:
         status_tag = '<span class="admin-status-tag admin-status-archived">Archived</span>'
+    elif scheduled_at and scheduled_at > datetime.utcnow():
+        status_tag = '<span class="admin-status-tag admin-status-scheduled">Scheduled</span>'
     elif active:
         status_tag = '<span class="admin-status-tag admin-status-published">Published</span>'
     else:
@@ -4027,11 +4076,42 @@ def _format_announcement_status(view, context, model, name):
         '</select>'
     )
     tags = [status_tag, dropdown]
+    if scheduled_at and scheduled_at > datetime.utcnow():
+        tags.insert(1, '<span class="admin-schedule-time">' + str(escape(_format_scheduled_at_for_display(scheduled_at))) + '</span>')
     if getattr(model, 'superfeatured', False):
         tags.insert(1, '<span class="admin-status-tag admin-status-featured">Featured</span>')
     if getattr(model, 'show_in_banner', False):
         tags.insert(1, '<span class="admin-status-tag admin-status-banner">Banner</span>')
     return Markup('<span class="admin-status-wrap announcement-status-wrap">' + ' '.join(tags) + '</span>')
+
+
+def _format_announcement_title(view, context, model, name):
+    """Show a readable byline without exposing the raw database timestamp."""
+    posted_at = getattr(model, 'date_entered', None)
+    if posted_at:
+        posted_text = posted_at.strftime('%b %d, %Y at %I:%M %p').replace(' 0', ' ')
+        posted_datetime = posted_at.isoformat()
+    else:
+        posted_text = 'Date unavailable'
+        posted_datetime = ''
+
+    # Speaker is the content author when supplied; otherwise retain the
+    # original admin creator instead of replacing the byline on later edits.
+    author = (
+        getattr(model, 'speaker', None)
+        or getattr(model, 'created_by', None)
+        or getattr(model, 'updated_by', None)
+        or 'CPC New Haven'
+    )
+    return Markup(
+        '<div class="announcement-title-cell">'
+        '<div class="announcement-title-text">' + str(escape(model.title or 'Untitled announcement')) + '</div>'
+        '<div class="announcement-post-meta">'
+        '<span><b>Posted</b> <time datetime="' + str(escape(posted_datetime)) + '">' + str(escape(posted_text)) + '</time></span>'
+        '<span><b>Author</b> ' + str(escape(author)) + '</span>'
+        '<span><b>Post ID</b> ' + str(escape(model.id)) + '</span>'
+        '</div></div>'
+    )
 
 
 from flask_admin.form import rules
@@ -4122,7 +4202,8 @@ class AnnouncementView(AuthenticatedModelView):
     }
 
     column_formatters = {
-        'active': _format_announcement_status
+        'active': _format_announcement_status,
+        'title': _format_announcement_title,
     }
 
     def get_form(self):
@@ -4184,6 +4265,7 @@ class AnnouncementView(AuthenticatedModelView):
             if not model.date_entered:
                 model.date_entered = datetime.utcnow()
             model.id = next_global_id()
+            model.created_by = session.get('username') or None
         else:
             # Versioning: so editors know what is what
             model.updated_at = datetime.utcnow()
@@ -4219,6 +4301,7 @@ class AnnouncementView(AuthenticatedModelView):
             description = form_data.get('description', '').strip()
             event_date = None
             expiration_date = None
+            scheduled_at = None
             if not title:
                 errors.append('Title is required.')
             if not description:
@@ -4233,9 +4316,18 @@ class AnnouncementView(AuthenticatedModelView):
                     expiration_date = date.fromisoformat(form_data['expiration_date'])
                 except ValueError:
                     errors.append('Expiration date must be a valid date.')
+            if form_data.get('scheduled_at'):
+                try:
+                    scheduled_at = _parse_scheduled_at(form_data['scheduled_at'])
+                except ValueError:
+                    errors.append('Publish date and time must be valid.')
             expiration_preset = form_data.get('expiration_preset', 'never')
             if expiration_preset == 'specific' and not expiration_date:
                 errors.append('Choose an expiration date or select another expiration option.')
+            if '_schedule' in request.form and not scheduled_at:
+                errors.append('Choose a future publish date and time to schedule this announcement.')
+            if scheduled_at and '_schedule' in request.form and scheduled_at <= datetime.utcnow():
+                errors.append('Scheduled publish time must be in the future.')
             if not errors:
                 now = datetime.utcnow()
                 banner_type = form_data.get('banner_type', '').strip().lower()
@@ -4268,8 +4360,7 @@ class AnnouncementView(AuthenticatedModelView):
                     event_date=event_date,
                     event_start_time=form_data.get('event_start_time', '') or None,
                     event_end_time=form_data.get('event_end_time', '') or None,
-                    active=('_publish' in request.form or
-                            '_save_and_publish' in request.form),
+                    active=('_publish' in request.form or '_save_and_publish' in request.form or '_schedule' in request.form),
                     superfeatured=bool(form_data.get('superfeatured')),
                     show_in_banner=show_in_banner,
                     featured_image=featured_image,
@@ -4281,6 +4372,8 @@ class AnnouncementView(AuthenticatedModelView):
                     ),
                     archived=False,
                     date_entered=now,
+                    created_by=session.get('username') or None,
+                    scheduled_at=scheduled_at if '_schedule' in request.form else None,
                 )
                 db.session.add(ann)
                 db.session.commit()
@@ -4289,7 +4382,8 @@ class AnnouncementView(AuthenticatedModelView):
                     cache.clear()
                 except Exception:
                     pass
-                flash(f'"{title}" {"published" if ann.active else "saved as draft"}.', 'success')
+                outcome = 'scheduled' if ann.scheduled_at else ('published' if ann.active else 'saved as draft')
+                flash(f'"{title}" {outcome}.', 'success')
                 return redirect(return_url)
         return self.render('admin/announcement_direct_create.html',
                            is_editing=False,
@@ -4339,9 +4433,19 @@ class AnnouncementView(AuthenticatedModelView):
                     expiration_date = date.fromisoformat(form_data['expiration_date'])
                 except ValueError:
                     errors.append('Expiration date must be a valid date.')
+            scheduled_at = None
+            if form_data.get('scheduled_at'):
+                try:
+                    scheduled_at = _parse_scheduled_at(form_data['scheduled_at'])
+                except ValueError:
+                    errors.append('Publish date and time must be valid.')
             expiration_preset = form_data.get('expiration_preset', 'never')
             if expiration_preset == 'specific' and not expiration_date:
                 errors.append('Choose an expiration date or select another expiration option.')
+            if '_schedule' in request.form and not scheduled_at:
+                errors.append('Choose a future publish date and time to schedule this announcement.')
+            if scheduled_at and '_schedule' in request.form and scheduled_at <= datetime.utcnow():
+                errors.append('Scheduled publish time must be in the future.')
 
             if not errors:
                 now = datetime.utcnow()
@@ -4363,14 +4467,20 @@ class AnnouncementView(AuthenticatedModelView):
                     ann.show_in_banner = bool(form_data.get('show_in_banner'))
                     ann.type = type_val
 
-                if '_save_and_publish' in request.form or '_publish' in request.form:
+                if '_schedule' in request.form:
                     ann.active = True
                     ann.archived = False
+                    ann.scheduled_at = scheduled_at
+                elif '_save_and_publish' in request.form or '_publish' in request.form:
+                    ann.active = True
+                    ann.archived = False
+                    ann.scheduled_at = None
                 elif 'active' in request.form:
                     raw_act = str(request.form.get('active', '')).strip().lower()
                     ann.active = raw_act in ('1', 'y', 'yes', 'true', 'on')
                 elif '_save_draft' in request.form:
                     ann.active = False
+                    ann.scheduled_at = None
 
                 ann.superfeatured = bool(form_data.get('superfeatured'))
 
@@ -4428,6 +4538,7 @@ class AnnouncementView(AuthenticatedModelView):
                 'expiration_preset': 'specific' if ann.expires_at else 'never',
                 'expiration_date': ann.expires_at.isoformat() if ann.expires_at else '',
                 'active': '1' if ann.active else '',
+                'scheduled_at': _format_scheduled_at_for_input(ann.scheduled_at),
             }
 
         return self.render('admin/announcement_direct_create.html',
@@ -4457,12 +4568,15 @@ class AnnouncementView(AuthenticatedModelView):
         if status == 'publish':
             ann.active = True
             ann.archived = False
+            ann.scheduled_at = None
         elif status == 'draft':
             ann.active = False
             ann.archived = False
+            ann.scheduled_at = None
         else:
             ann.active = False
             ann.archived = True
+            ann.scheduled_at = None
         ann.updated_at = datetime.utcnow()
         ann.updated_by = session.get('username') or None
         ann.revision = (getattr(ann, 'revision', None) or 1) + 1
