@@ -398,22 +398,25 @@
             width: min(100%, 15rem);
         }
     }
-    /* Homepage highlights: every update has the same clear, clickable rhythm. */
+    /* Homepage highlights: clean, compact, scannable widgets */
     .home-highlights .highlights-grid {
         align-items: stretch;
     }
 
     .home-highlights .highlight-card {
-        min-height: 232px;
         background: rgba(255, 255, 255, 0.96) !important;
         border: 1px solid rgba(19, 62, 110, 0.12) !important;
-        box-shadow: 0 14px 30px rgba(4, 27, 55, 0.1) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 22px rgba(4, 27, 55, 0.08) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
     .home-highlights .highlight-card__link {
-        display: grid;
-        grid-template-rows: 48px minmax(0, 1fr);
-        min-height: 230px;
+        display: flex;
+        flex-direction: column;
         height: 100%;
         color: inherit;
         text-decoration: none;
@@ -421,15 +424,10 @@
 
     .home-highlights .highlight-card__media {
         position: relative;
+        height: 140px;
+        width: 100%;
         overflow: hidden;
-        background: linear-gradient(135deg, #0b478d, #2379c7);
-    }
-
-    .home-highlights .highlight-card__media::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(120deg, rgba(2, 23, 57, 0.1), rgba(2, 23, 57, 0.5));
+        background: #0b478d;
     }
 
     .home-highlights .highlight-card__media img {
@@ -437,74 +435,92 @@
         height: 100%;
         display: block;
         object-fit: cover;
+        transition: transform 0.3s ease;
     }
 
-    .home-highlights .highlight-card__fallback-icon {
-        position: absolute;
-        z-index: 1;
-        right: 1rem;
-        top: 50%;
-        display: grid;
-        width: 2.5rem;
-        height: 2.5rem;
-        place-items: center;
-        border: 1px solid rgba(255, 255, 255, 0.32);
-        border-radius: 50%;
-        color: #fff;
-        background: rgba(255, 255, 255, 0.14);
-        backdrop-filter: blur(8px);
-        transform: translateY(-50%);
+    .home-highlights .highlight-card:hover .highlight-card__media img {
+        transform: scale(1.03);
     }
 
     .home-highlights .highlight-card__content {
         display: flex;
         flex-direction: column;
-        min-height: 0;
-        padding: 0.95rem 1.2rem 1rem;
-    }
-
-    .home-highlights .highlight-card__badge {
-        align-self: flex-start;
-        padding: 0.28rem 0.58rem;
-        border-radius: 999px;
-        font-size: 0.68rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        flex: 1;
+        padding: 1.05rem 1.25rem 1.15rem;
     }
 
     .home-highlights .highlight-card__title {
-        margin: 0.62rem 0 0.35rem;
+        margin: 0 0 0.35rem;
         color: #142d4d !important;
-        font: 750 1.12rem/1.25 'Manrope', sans-serif;
+        font: 750 1.05rem/1.32 'Manrope', sans-serif;
+    }
+
+    .home-highlights .highlight-card__meta {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.45rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: #315b8c !important;
+        font-size: 0.8rem;
+        font-weight: 700;
+        line-height: 1.3;
     }
 
     .home-highlights .highlight-card__description {
         display: -webkit-box;
-        margin: 0;
+        margin: 0 0 0.6rem;
         overflow: hidden;
         color: #526278 !important;
-        font-size: 0.92rem;
-        line-height: 1.5;
+        font-size: 0.88rem;
+        line-height: 1.48;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
     }
-
-    .home-highlights .highlight-card__time {
-        margin: 0.45rem 0 0;
-        color: #5c6f88 !important;
-        font-size: 0.82rem;
+        color: #315b8c !important;
+        font-size: 0.8rem;
+        font-weight: 700;
+        line-height: 1.3;
     }
 
-    .home-highlights .highlight-card__date {
+    .home-highlights .highlight-card__meta-item {
         display: inline-flex;
         align-items: center;
-        gap: 0.38rem;
+        gap: 0.32rem;
+    }
+
+    .home-highlights .highlight-card__meta .meta-sep {
+        opacity: 0.45;
+        font-weight: 400;
+    }
+
+    .home-highlights .highlight-card__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
         align-self: flex-start;
-        margin: 0.48rem 0 0;
-        color: #315b8c !important;
-        font-size: 0.82rem;
-        font-weight: 750;
+        margin-top: auto;
+        padding-top: 0.45rem;
+        color: #0b61c3;
+        font: 750 0.82rem/1 'Manrope', sans-serif;
+        letter-spacing: 0.01em;
+        transition: gap 0.2s ease, color 0.2s ease;
+    }
+
+    .home-highlights .highlight-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(9, 100, 196, 0.32) !important;
+        box-shadow: 0 16px 32px rgba(4, 27, 55, 0.14) !important;
+    }
+
+    .home-highlights .highlight-card:hover .highlight-card__cta {
+        gap: 0.65rem;
+        color: #074ea1;
+    }
+
+    .home-highlights .highlight-card.superfeatured {
+        border-color: rgba(212, 160, 23, 0.5) !important;
     }
 
     .home-highlights .highlight-events-button {
@@ -525,32 +541,6 @@
         background: #084c9b;
         transform: translateY(-1px);
     }
-
-    .home-highlights .highlight-card__cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.45rem;
-        align-self: flex-start;
-        margin-top: 0.78rem;
-        padding: 0.52rem 0.76rem;
-        border-radius: 999px;
-        color: #fff;
-        background: #0b61c3;
-        font: 750 0.88rem/1 'Manrope', sans-serif;
-        box-shadow: 0 7px 16px rgba(5, 81, 166, 0.18);
-    }
-
-    .home-highlights .highlight-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(9, 100, 196, 0.34) !important;
-        box-shadow: 0 20px 38px rgba(4, 27, 55, 0.16) !important;
-    }
-
-    .home-highlights .highlight-card:hover .highlight-card__cta i {
-        transform: translateX(3px);
-    }
-
-    .home-highlights .highlight-card__cta i { transition: transform 0.18s ease; }
 
     /* Homepage utility cards: intentionally distinct surfaces in each theme. */
     .home-utility-section .latest-card {
@@ -691,20 +681,37 @@
     }
 
     body.theme-blue .home-highlights .highlight-card {
-        background: rgba(8, 32, 67, 0.9) !important;
-        border-color: rgba(177, 213, 255, 0.2) !important;
-        box-shadow: 0 16px 32px rgba(0, 12, 33, 0.24) !important;
+        background: rgba(8, 32, 67, 0.85) !important;
+        border-color: rgba(177, 213, 255, 0.18) !important;
+        box-shadow: 0 12px 28px rgba(0, 12, 33, 0.26) !important;
+        backdrop-filter: blur(14px);
+    }
+
+    body.theme-blue .home-highlights .highlight-card:hover {
+        background: rgba(11, 42, 85, 0.92) !important;
+        border-color: rgba(177, 213, 255, 0.36) !important;
+        box-shadow: 0 18px 36px rgba(0, 12, 33, 0.36) !important;
+    }
+
+    body.theme-blue .home-highlights .highlight-card.superfeatured {
+        border-color: rgba(255, 204, 0, 0.45) !important;
+        box-shadow: 0 12px 30px rgba(255, 196, 0, 0.08), 0 12px 28px rgba(0, 12, 33, 0.26) !important;
     }
 
     body.theme-blue .home-highlights .highlight-card__title { color: #fff !important; }
-    body.theme-blue .home-highlights .highlight-card__description { color: rgba(235, 244, 255, 0.78) !important; }
-    body.theme-blue .home-highlights .highlight-card__time,
-    body.theme-blue .home-highlights .highlight-card__date { color: #b6d4f7 !important; }
-    body.theme-blue .home-highlights .highlight-card__cta { color: #fff; background: #1575d1; }
+    body.theme-blue .home-highlights .highlight-card__description { color: rgba(230, 241, 255, 0.78) !important; }
+    body.theme-blue .home-highlights .highlight-card__meta { color: #93c5fd !important; }
+    body.theme-blue .home-highlights .highlight-card__cta {
+        color: #60a5fa !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    body.theme-blue .home-highlights .highlight-card:hover .highlight-card__cta {
+        color: #93c5fd !important;
+    }
 
     @media (max-width: 640px) {
-        .home-highlights .highlight-card,
-        .home-highlights .highlight-card__link { min-height: 220px; }
+        .home-highlights .highlight-card { min-height: 0; }
     }
 </style>
 {% endblock %}
@@ -976,14 +983,6 @@
         var INITIAL_COUNT = 6;
         var allActive = [];
 
-        function getTypeBadgeColor(type) {
-            var c = { 'event': 'rgba(0, 122, 255, 0.15)', 'announcement': 'rgba(255, 196, 0, 0.28)', 'ongoing': 'rgba(52, 199, 89, 0.15)', 'upcoming': 'rgba(255, 149, 0, 0.15)' };
-            return c[type] || 'rgba(255, 255, 255, 0.1)';
-        }
-        function getTypeBadgeTextColor(type) {
-            var c = { 'event': '#007AFF', 'announcement': '#8A5A00', 'ongoing': '#34C759', 'upcoming': '#FF9500' };
-            return c[type] || '#FFFFFF';
-        }
         function stripHtml(html) {
             var tmp = document.createElement('div');
             tmp.innerHTML = (html || '')
@@ -997,26 +996,69 @@
                 month: 'short', day: 'numeric', year: 'numeric'
             });
         }
+        function getStandardizedDescription(h) {
+            var raw = stripHtml(h.description || '').trim().replace(/\s+/g, ' ');
+
+            // Detect placeholder, stub, or test text
+            var isPlaceholder = !raw ||
+                /^(test|testing|none|n\/a|tbd|placeholder|-|–|—|\.+)$/i.test(raw) ||
+                raw.length < 6;
+
+            // Detect raw schedule dumps (e.g. "8:30am | Prayer... 9:30am | ...")
+            var isScheduleDump = /^\d{1,2}(:\d{2})?\s*(am|pm)\s*\|/i.test(raw);
+
+            if (isPlaceholder || isScheduleDump) {
+                var cleanTitle = (h.title || 'this update').split('|')[0].trim();
+                var type = (h.type || '').toLowerCase();
+
+                if (h.eventDate || type === 'event') {
+                    if (h.eventDate) {
+                        return 'Join us for ' + cleanTitle + ' on ' + formatHighlightDate(h.eventDate) + '. Open for event details and schedule.';
+                    }
+                    return 'Join us for ' + cleanTitle + '. Open for schedule, location, and details.';
+                } else if (type === 'ongoing' || /group|ministry|team|class/i.test(cleanTitle)) {
+                    return 'Learn more about ' + cleanTitle + ' and how to get connected with CPC.';
+                } else {
+                    return 'Open for full details, schedule, and updates from Christ Presbyterian Church.';
+                }
+            }
+
+            // Standardize narrative text: proper capitalization and clean punctuation
+            raw = raw.charAt(0).toUpperCase() + raw.slice(1);
+            raw = raw.replace(/[\s\-|–—]+$/, '');
+            if (!/[.!?…]$/.test(raw)) {
+                raw += '.';
+            }
+            return raw;
+        }
         function buildCard(h) {
             var card = document.createElement('div');
             card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
             var detailUrl = '/announcement/' + h.id;
-            var type = (h.type || 'Announcement').toLowerCase();
-            var icon = type === 'event' ? 'fa-calendar-days' : type === 'ongoing' ? 'fa-heart' : type === 'upcoming' ? 'fa-clock' : 'fa-bullhorn';
             var mediaHtml = h.featuredImage
                 ? '<div class="highlight-card__media"><img src="' + h.featuredImage + '" alt=""></div>'
-                : '<div class="highlight-card__media"><span class="highlight-card__fallback-icon"><i class="fas ' + icon + '"></i></span></div>';
-            var timeHtml = (h.eventStartTime || h.eventEndTime)
-                ? '<div class="highlight-card__time"><i class="fas fa-clock"></i> ' + (h.eventStartTime || '') + (h.eventEndTime ? ' - ' + h.eventEndTime : '') + '</div>'
                 : '';
-            var dateHtml = h.eventDate
-                ? '<div class="highlight-card__date"><i class="fas fa-calendar-day"></i> ' + formatHighlightDate(h.eventDate) + '</div>'
-                : '';
-            var description = stripHtml(h.description).trim();
-            if (!description || description === '-' || description === '–' || description === '—') {
-                description = 'Open this update for details.';
+
+            var metaItems = [];
+            if (h.eventDate) {
+                metaItems.push('<span class="highlight-card__meta-item"><i class="fas fa-calendar-day" aria-hidden="true"></i> ' + formatHighlightDate(h.eventDate) + '</span>');
             }
-            var contentHtml = '<div class="highlight-card__content"><span class="highlight-card__badge" style="background:' + getTypeBadgeColor(type) + ';color:' + getTypeBadgeTextColor(type) + ';">' + (h.type || 'Announcement') + '</span><h3 class="highlight-card__title">' + (h.title || 'CPC update') + '</h3><p class="highlight-card__description">' + description + '</p>' + dateHtml + timeHtml + '<span class="highlight-card__cta">View details <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>';
+            if (h.eventStartTime || h.eventEndTime) {
+                var timeStr = (h.eventStartTime || '') + (h.eventEndTime ? ' - ' + h.eventEndTime : '');
+                metaItems.push('<span class="highlight-card__meta-item"><i class="fas fa-clock" aria-hidden="true"></i> ' + timeStr + '</span>');
+            }
+            var metaHtml = metaItems.length
+                ? '<div class="highlight-card__meta">' + metaItems.join('<span class="meta-sep" aria-hidden="true">·</span>') + '</div>'
+                : '';
+
+            var description = getStandardizedDescription(h);
+
+            var contentHtml = '<div class="highlight-card__content">' +
+                '<h3 class="highlight-card__title">' + (h.title || 'CPC update') + '</h3>' +
+                metaHtml +
+                '<p class="highlight-card__description">' + description + '</p>' +
+                '<div class="highlight-card__cta"><span>View details</span> <i class="fas fa-arrow-right" aria-hidden="true"></i></div>' +
+                '</div>';
             card.innerHTML = '<a class="highlight-card__link" href="' + detailUrl + '" aria-label="View details: ' + (h.title || 'CPC update') + '">' + mediaHtml + contentHtml + '</a>';
             return card;
         }
