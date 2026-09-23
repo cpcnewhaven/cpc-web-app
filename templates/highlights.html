@@ -72,8 +72,9 @@
 
     .highlights-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+        align-items: stretch;
     }
 
     @media (max-width: 640px) {
@@ -83,70 +84,123 @@
     }
 
     .highlight-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        padding: 0.75rem;
-        transition: all 0.3s ease;
-    }
-
-    .highlight-card:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.96) !important;
+        border: 1px solid rgba(19, 62, 110, 0.12) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 22px rgba(4, 27, 55, 0.08) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
     .highlight-card.hidden {
-        display: none;
+        display: none !important;
     }
 
-    .highlight-card.featured {
-        border-color: rgba(255, 215, 0, 0.4);
-        border-width: 2px;
+    .highlight-card.featured,
+    .highlight-card.superfeatured {
+        border-color: rgba(212, 160, 23, 0.5) !important;
     }
 
-    .highlight-card h2 {
-        font-size: 1.1rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin: 0 0 0.5rem 0;
-        font-weight: 600;
-    }
-
-    .highlight-meta {
+    .highlight-card__link {
         display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        margin-bottom: 0.5rem;
-        font-size: 0.8rem;
+        flex-direction: column;
+        height: 100%;
+        color: inherit;
+        text-decoration: none;
     }
 
-    .highlight-badge {
-        padding: 0.25rem 0.5rem;
-        background: rgba(0, 82, 163, 0.3);
-        border-radius: 12px;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .highlight-badge.featured {
-        background: rgba(255, 215, 0, 0.3);
-        color: rgba(255, 255, 255, 0.95);
-    }
-
-    .highlight-image {
+    .highlight-card__media {
+        position: relative;
+        height: 160px;
         width: 100%;
-        max-width: 600px;
-        margin: 0.5rem auto;
-        display: block;
-        border-radius: 6px;
-        max-height: 300px;
-        object-fit: cover;
+        overflow: hidden;
+        background: #0b478d;
     }
 
-    .highlight-description {
-        font-size: 0.85rem;
-        line-height: 1.6;
-        color: rgba(255, 255, 255, 0.8);
-        margin: 0;
+    .highlight-card__media img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .highlight-card:hover .highlight-card__media img {
+        transform: scale(1.03);
+    }
+
+    .highlight-card__content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 1.05rem 1.25rem 1.15rem;
+    }
+
+    .highlight-card__title {
+        margin: 0 0 0.35rem;
+        color: #142d4d !important;
+        font: 750 1.05rem/1.32 'Manrope', sans-serif;
+    }
+
+    .highlight-card__meta {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.45rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: #315b8c !important;
+        font-size: 0.8rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .highlight-card__meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.32rem;
+    }
+
+    .highlight-card__meta .meta-sep {
+        opacity: 0.45;
+        font-weight: 400;
+    }
+
+    .highlight-card__description {
+        display: -webkit-box;
+        margin: 0 0 0.6rem;
+        overflow: hidden;
+        color: #526278 !important;
+        font-size: 0.88rem;
+        line-height: 1.48;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .highlight-card__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        align-self: flex-start;
+        margin-top: auto;
+        padding-top: 0.45rem;
+        color: #0b61c3;
+        font: 750 0.82rem/1 'Manrope', sans-serif;
+        letter-spacing: 0.01em;
+        transition: gap 0.2s ease, color 0.2s ease;
+    }
+
+    .highlight-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(9, 100, 196, 0.32) !important;
+        box-shadow: 0 16px 32px rgba(4, 27, 55, 0.14) !important;
+    }
+
+    .highlight-card:hover .highlight-card__cta {
+        gap: 0.65rem;
+        color: #074ea1;
     }
 
     .empty-state {
@@ -187,58 +241,53 @@
     }
 
     body.theme-white .highlight-card {
-        background: #fff;
-        border-color: rgba(27, 69, 113, 0.14);
-        box-shadow: 0 10px 26px rgba(16, 50, 85, 0.08);
+        background: #fff !important;
+        border-color: rgba(27, 69, 113, 0.14) !important;
+        box-shadow: 0 8px 22px rgba(16, 50, 85, 0.08) !important;
     }
 
     body.theme-white .highlight-card:hover {
-        background: #fff;
-        border-color: rgba(7, 93, 184, 0.32);
-        box-shadow: 0 14px 30px rgba(16, 50, 85, 0.12);
+        background: #fff !important;
+        border-color: rgba(7, 93, 184, 0.32) !important;
+        box-shadow: 0 14px 30px rgba(16, 50, 85, 0.12) !important;
     }
 
-    body.theme-white .highlight-card h2 { color: #1d2e42 !important; }
-    body.theme-white .highlight-card .highlight-description,
-    body.theme-white .highlight-card .highlight-description * {
-        color: #586c80 !important;
-    }
-    /* Blue theme: cards should belong to the dark shell, not look like
-       light-mode cards dropped onto a dark page. */
+    body.theme-white .highlight-card__title { color: #1d2e42 !important; }
+    body.theme-white .highlight-card__description { color: #586c80 !important; }
+    body.theme-white .highlight-card__meta { color: #1d5e99 !important; }
+    body.theme-white .highlight-card__cta { color: #0b61c3 !important; }
+
+    /* Blue theme: clean glass surfaces matching homepage */
     body.theme-blue .highlight-card {
-        background: rgba(5, 38, 76, 0.62) !important;
-        border-color: rgba(205, 228, 255, 0.18) !important;
-        box-shadow: 0 18px 36px rgba(0, 13, 32, 0.26) !important;
+        background: rgba(8, 32, 67, 0.85) !important;
+        border-color: rgba(177, 213, 255, 0.18) !important;
+        box-shadow: 0 12px 28px rgba(0, 12, 33, 0.26) !important;
+        backdrop-filter: blur(14px);
     }
 
     body.theme-blue .highlight-card:hover {
-        background: rgba(7, 47, 92, 0.74) !important;
-        border-color: rgba(205, 228, 255, 0.32) !important;
+        background: rgba(11, 42, 85, 0.92) !important;
+        border-color: rgba(177, 213, 255, 0.36) !important;
+        box-shadow: 0 18px 36px rgba(0, 12, 33, 0.36) !important;
     }
 
-    body.theme-blue .highlight-card h2,
-    body.theme-blue .highlight-card .highlight-description,
-    body.theme-blue .highlight-card .highlight-description * {
-        color: rgba(246, 249, 255, 0.92) !important;
+    body.theme-blue .highlight-card.featured,
+    body.theme-blue .highlight-card.superfeatured {
+        border-color: rgba(255, 204, 0, 0.45) !important;
+        box-shadow: 0 12px 30px rgba(255, 196, 0, 0.08), 0 12px 28px rgba(0, 12, 33, 0.26) !important;
     }
 
-    body.theme-blue .highlight-card h2 {
-        color: #f8fbff !important;
+    body.theme-blue .highlight-card__title { color: #ffffff !important; }
+    body.theme-blue .highlight-card__description { color: rgba(230, 241, 255, 0.78) !important; }
+    body.theme-blue .highlight-card__meta { color: #93c5fd !important; }
+    body.theme-blue .highlight-card__cta {
+        color: #60a5fa !important;
+        background: transparent !important;
+        box-shadow: none !important;
     }
-
-    body.theme-blue .highlight-badge {
-        background: rgba(155, 208, 255, 0.16) !important;
-        border: 1px solid rgba(155, 208, 255, 0.26);
-        color: #cfe7ff !important;
+    body.theme-blue .highlight-card:hover .highlight-card__cta {
+        color: #93c5fd !important;
     }
-
-    body.theme-blue .highlight-badge.featured {
-        background: rgba(255, 215, 0, 0.16) !important;
-        border-color: rgba(255, 215, 0, 0.3);
-        color: #ffe58a !important;
-    }
-    body.theme-white .highlight-badge { background: #dbeafe !important; color: #1d5e99 !important; }
-    body.theme-white .highlight-badge.featured { background: #fff0bf !important; color: #805b00 !important; }
     body.theme-white .empty-state { background: #fff; color: #627487; }
 </style>
 {% endblock %}
@@ -281,6 +330,54 @@
                 document.getElementById('highlights-container').innerHTML = '<div class="empty-state">Error loading highlights.</div>';
             });
 
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = (html || '')
+                .replace(/<br\s*\/?>(\r?\n)?/gi, ' ')
+                .replace(/<\/(p|div|li|h[1-6])>/gi, ' ');
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        function formatHighlightDate(iso) {
+            if (!iso) return '';
+            return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric'
+            });
+        }
+
+        function getStandardizedDescription(h) {
+            let raw = stripHtml(h.description || '').trim().replace(/\s+/g, ' ');
+
+            const isPlaceholder = !raw ||
+                /^(test|testing|none|n\/a|tbd|placeholder|-|–|—|\.+)$/i.test(raw) ||
+                raw.length < 6;
+
+            const isScheduleDump = /^\d{1,2}(:\d{2})?\s*(am|pm)\s*\|/i.test(raw);
+
+            if (isPlaceholder || isScheduleDump) {
+                const cleanTitle = (h.title || 'this update').split('|')[0].trim();
+                const type = (h.type || '').toLowerCase();
+
+                if (h.eventDate || type === 'event') {
+                    if (h.eventDate) {
+                        return 'Join us for ' + cleanTitle + ' on ' + formatHighlightDate(h.eventDate) + '. Open for event details and schedule.';
+                    }
+                    return 'Join us for ' + cleanTitle + '. Open for schedule, location, and details.';
+                } else if (type === 'ongoing' || /group|ministry|team|class/i.test(cleanTitle)) {
+                    return 'Learn more about ' + cleanTitle + ' and how to get connected with CPC.';
+                } else {
+                    return 'Open for full details, schedule, and updates from Christ Presbyterian Church.';
+                }
+            }
+
+            raw = raw.charAt(0).toUpperCase() + raw.slice(1);
+            raw = raw.replace(/[\s\-|–—]+$/, '');
+            if (!/[.!?…]$/.test(raw)) {
+                raw += '.';
+            }
+            return raw;
+        }
+
         function displayHighlights(highlights) {
             const container = document.getElementById('highlights-container');
             container.innerHTML = '';
@@ -293,30 +390,46 @@
             highlights.forEach(highlight => {
                 const card = document.createElement('div');
                 card.classList.add('highlight-card', 'show');
-                if (highlight.superfeatured) card.classList.add('featured');
-                card.dataset.type = highlight.type || '';
-                card.dataset.superfeatured = highlight.superfeatured || false;
+                if (highlight.superfeatured) {
+                    card.classList.add('featured', 'superfeatured');
+                }
+                const type = (highlight.type || 'announcement').toLowerCase();
+                card.dataset.type = type;
+                card.dataset.superfeatured = highlight.superfeatured ? 'true' : 'false';
 
                 let imgHtml = '';
                 if (highlight.featuredImage) {
-                    const imageClass = highlight.imageDisplayType === 'poster' ? 'object-contain bg-white' : 'object-cover';
-                    imgHtml = `<img src="${highlight.featuredImage}" alt="${highlight.title}" class="highlight-image ${imageClass}">`;
+                    imgHtml = `<div class="highlight-card__media"><img src="${highlight.featuredImage}" alt="" loading="lazy"></div>`;
                 }
 
                 const detailUrl = `/announcement/${highlight.id}`;
                 
-                let contentHtml = `<h2>${highlight.title}</h2>`;
-                contentHtml += '<div class="highlight-meta">';
-                if (highlight.type) {
-                    contentHtml += `<span class="highlight-badge">${highlight.type}</span>`;
+                const metaItems = [];
+                if (highlight.eventDate) {
+                    metaItems.push(`<span class="highlight-card__meta-item"><i class="fas fa-calendar-day" aria-hidden="true"></i> ${formatHighlightDate(highlight.eventDate)}</span>`);
                 }
-                if (highlight.superfeatured) {
-                    contentHtml += '<span class="highlight-badge featured">⭐ Featured</span>';
+                if (highlight.eventStartTime || highlight.eventEndTime) {
+                    const timeStr = (highlight.eventStartTime || '') + (highlight.eventEndTime ? ' - ' + highlight.eventEndTime : '');
+                    metaItems.push(`<span class="highlight-card__meta-item"><i class="fas fa-clock" aria-hidden="true"></i> ${timeStr}</span>`);
                 }
-                contentHtml += '</div>';
-                contentHtml += `<div class="highlight-description">${highlight.description}</div>`;
+                const metaHtml = metaItems.length
+                    ? `<div class="highlight-card__meta">${metaItems.join('<span class="meta-sep" aria-hidden="true">·</span>')}</div>`
+                    : '';
 
-                card.innerHTML = `<a href="${detailUrl}" style="text-decoration:none;display:block;height:100%;">${imgHtml}${contentHtml}</a>`;
+                const description = getStandardizedDescription(highlight);
+
+                const contentHtml = `
+                    <div class="highlight-card__content">
+                        <h2 class="highlight-card__title">${highlight.title || 'CPC update'}</h2>
+                        ${metaHtml}
+                        <p class="highlight-card__description">${description}</p>
+                        <div class="highlight-card__cta">
+                            <span>View details</span>
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        </div>
+                    </div>`;
+
+                card.innerHTML = `<a class="highlight-card__link" href="${detailUrl}" aria-label="View details: ${highlight.title || 'CPC update'}">${imgHtml}${contentHtml}</a>`;
                 container.appendChild(card);
             });
         }
