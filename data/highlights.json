@@ -241,7 +241,7 @@
       "category": "ongoing",
       "tag": "schedule",
       "superfeatured": false,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/CPC_AUTUMN_PHOTO.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/homepage/CPC_AUTUMN_PHOTO.jpg"
     },
     {
       "id": "2025-033",
@@ -286,7 +286,7 @@
       "category": "upcoming",
       "tag": "calendar",
       "superfeatured": true,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/26.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/26.jpg"
     },
     {
       "id": "2025-009",
@@ -297,7 +297,7 @@
       "type": "ongoing",
       "category": "ongoing",
       "tag": "groups",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/CPC-Lifegroups.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/CPC-Lifegroups.jpg"
     },
     {
       "id": "2025-010",
@@ -308,7 +308,7 @@
       "type": "ongoing",
       "category": "ongoing",
       "tag": "podcast",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/27.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/27.jpg"
     },
     {
       "id": "2025-012",
@@ -319,7 +319,7 @@
       "type": "ongoing",
       "category": "ongoing",
       "tag": "schedule",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/28.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/28.jpg"
     },
     {
       "id": "2025-013",
@@ -330,7 +330,7 @@
       "type": "ongoing",
       "category": "ongoing",
       "tag": "class",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/Intro-to-Spirituality-cpcPreRoll%20-%203-16-25.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/Intro-to-Spirituality-cpcPreRoll%20-%203-16-25.jpg"
     },
     {
       "id": "2025-014",
@@ -351,7 +351,7 @@
       "type": "event",
       "category": "event",
       "tag": "service",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/Spring%20Cleaning%20-%20FEATURED%20IMGS.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/Spring%20Cleaning%20-%20FEATURED%20IMGS.jpg"
     },
     {
       "id": "2025-016",
@@ -373,7 +373,7 @@
       "type": "event",
       "category": "event",
       "tag": "children",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/FEATURED%20IMGS-EASTER-EGG-2025.png"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/FEATURED%20IMGS-EASTER-EGG-2025.png"
     },
     {
       "id": "2025-018",
@@ -384,7 +384,7 @@
       "type": "event",
       "category": "event",
       "tag": "young-adults",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/Young%20Adults%20-%205-3-25.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/Young%20Adults%20-%205-3-25.jpg"
     },
     {
       "id": "2025-019",
@@ -396,7 +396,7 @@
       "category": "event",
       "tag": "worship",
       "superfeatured": true,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/Good%20Friday%20-%204-18-25-.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/Good%20Friday%20-%204-18-25-.jpg"
     },
     {
       "id": "2025-020",
@@ -408,7 +408,7 @@
       "category": "event",
       "tag": "meeting",
       "superfeatured": true,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/Congregational%20Meeting%20-%20May%204th.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/Congregational%20Meeting%20-%20May%204th.jpg"
     },
     {
       "id": "2025-021",
@@ -419,7 +419,7 @@
       "type": "event",
       "category": "event",
       "tag": "service",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/I%20heart%20%202.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/I%20heart%20%202.jpg"
     },
     {
       "id": "2025-023",
@@ -431,7 +431,7 @@
       "category": "event",
       "tag": "service",
       "superfeatured": true,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/highlights/I%20heart%20%202.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/highlights/I%20heart%20%202.jpg"
     },
     {
       "id": "2025-024",
@@ -567,7 +567,7 @@
       "category": "volunteer",
       "tag": "fellowship",
       "superfeatured": false,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/announcements/FOOD%20SERVICE%20NEEDS%20HELP.jpg",
+      "featuredImage": "https://files.cpcnewhaven.org/announcements/FOOD%20SERVICE%20NEEDS%20HELP.jpg",
       "imageDisplayType": "poster"
     },
     {
@@ -592,7 +592,7 @@
       "category": "event",
       "tag": "welcome",
       "superfeatured": true,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg"
     },
     {
       "id": "2025-046",
@@ -604,7 +604,7 @@
       "category": "event",
       "tag": "fellowship",
       "superfeatured": false,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/events/mensgroup/CPC%20FAMILY%20TAILGATE%20_%2001.jpg",
+      "featuredImage": "https://files.cpcnewhaven.org/events/mensgroup/CPC%20FAMILY%20TAILGATE%20_%2001.jpg",
       "imageDisplayType": "poster"
     },
     {
@@ -628,7 +628,7 @@
       "type": "announcement",
       "category": "announcement",
       "tag": "class",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/featuredIMGs/classes/ROOTS%20THE%20REFORMED%20-%20POSTER.jpg",
+      "featuredImage": "https://files.cpcnewhaven.org/featuredIMGs/classes/ROOTS%20THE%20REFORMED%20-%20POSTER.jpg",
       "superfeatured": true,
       "imageDisplayType": "poster"
     },
@@ -642,7 +642,7 @@
       "category": "event",
       "tag": "fellowship",
       "superfeatured": true,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/events/Thanksgiving%20Meals%202025/Thanksgiving%20Fellowship%20Meals.jpg",
+      "featuredImage": "https://files.cpcnewhaven.org/events/Thanksgiving%20Meals%202025/Thanksgiving%20Fellowship%20Meals.jpg",
       "imageDisplayType": "poster"
     },
     {
@@ -665,7 +665,7 @@
       "type": "event",
       "category": "event",
       "tag": "worship",
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/events/Christmas2025/CHRISTMAS%20DRAMA%20SAVE%20THE%20DATE.jpg",
+      "featuredImage": "https://files.cpcnewhaven.org/events/Christmas2025/CHRISTMAS%20DRAMA%20SAVE%20THE%20DATE.jpg",
       "superfeatured": true,
       "imageDisplayType": "poster"
     },
@@ -679,7 +679,7 @@
       "category": "announcement",
       "tag": "mercy",
       "superfeatured": false,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/highlights/MERCY%20FUND%20(1).jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/highlights/MERCY%20FUND%20(1).jpg"
     },
     {
       "id": "2025-054",
@@ -703,7 +703,7 @@
       "category": "event",
       "tag": "service",
       "superfeatured": true,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/highlights/CHILI%20SQUARE.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/highlights/CHILI%20SQUARE.jpg"
     },
     {
       "id": "2025-056",
@@ -715,7 +715,7 @@
       "category": "announcement",
       "tag": "arts",
       "superfeatured": false,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/events/Church%20Journal/CALL%20FOR%20WRTIERS.jpg",
+      "featuredImage": "https://files.cpcnewhaven.org/events/Church%20Journal/CALL%20FOR%20WRTIERS.jpg",
       "imageDisplayType": "poster"
     },
     {
@@ -740,7 +740,7 @@
       "category": "announcement",
       "tag": "fellowship",
       "superfeatured": false,
-      "featuredImage": "https://storage.googleapis.com/cpc-public-website/highlights/JOIN%20THE%20WHATSAPP.jpg"
+      "featuredImage": "https://files.cpcnewhaven.org/highlights/JOIN%20THE%20WHATSAPP.jpg"
     },
     {
       "id": "2025-059",

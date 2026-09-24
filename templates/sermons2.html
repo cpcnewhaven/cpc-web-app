@@ -4,7 +4,7 @@
 {% block meta_description %}Listen to Sunday sermons from Christ Presbyterian Church in New Haven, CT. 25 years of gospel-centered preaching.{% endblock %}
 {% block og_title %}Sunday Sermons — CPC New Haven{% endblock %}
 {% block og_description %}Listen to Sunday sermons from Christ Presbyterian Church in New Haven, CT. 25 years of gospel-centered preaching.{% endblock %}
-{% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg{% endblock %}
+{% block og_image %}https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/sermons{% endblock %}
 
 {% block head %}
@@ -15,7 +15,7 @@
 .sermons-hero {
     padding: 2.5rem 1rem;
     background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
-                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg') center/cover no-repeat;
+                url('https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg') center/cover no-repeat;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 1rem;
@@ -1085,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // HTML-escape helper for data attribute values
     function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
 
-    const SERMON_THUMBNAIL_FALLBACK = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg';
+    const SERMON_THUMBNAIL_FALLBACK = 'https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg';
 
     function resolveSermonThumbnail(sermon) {
         const raw = sermon && sermon.thumbnail ? String(sermon.thumbnail).trim() : '';

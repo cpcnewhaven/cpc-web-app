@@ -4,7 +4,7 @@
 {% block meta_description %}Listen to CPC New Haven podcasts - sermons, teaching, and conversations for everyday life.{% endblock %}
 {% block og_title %}Podcasts — CPC New Haven{% endblock %}
 {% block og_description %}Listen to CPC New Haven podcasts - sermons, teaching, and conversations for everyday life.{% endblock %}
-{% block og_image %}https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg{% endblock %}
+{% block og_image %}https://files.cpcnewhaven.org/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/podcasts{% endblock %}
 
 {% block head %}
@@ -32,7 +32,7 @@
     text-align: center;
     margin-bottom: 1rem;
     background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
-                url('https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg') center/cover no-repeat;
+                url('https://files.cpcnewhaven.org/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg') center/cover no-repeat;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1383,8 +1383,8 @@ function formatPodcastDuration(durationValue) {
     return totalMinutes ? `${totalMinutes} min` : '< 1 min';
 }
 
-const PODCAST_FALLBACK_ARTWORK = window.__PODCAST_FALLBACK_ARTWORK__ || 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg';
-const PODCAST_LATEST_ARTWORK = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png';
+const PODCAST_FALLBACK_ARTWORK = window.__PODCAST_FALLBACK_ARTWORK__ || 'https://files.cpcnewhaven.org/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg';
+const PODCAST_LATEST_ARTWORK = 'https://files.cpcnewhaven.org/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png';
 const podcastSeriesData = Array.isArray(window.__PODCAST_SERIES__) ? window.__PODCAST_SERIES__ : [];
 const podcastSeriesMap = new Map(podcastSeriesData.map(series => [String(series.id), series]));
 const podcastBeyond = window.__PODCAST_BEYOND__ || null;

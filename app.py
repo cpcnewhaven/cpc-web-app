@@ -515,7 +515,7 @@ def craig_luekens():
     return render_template('staff_profile.html', pastor={
         'name': 'Craig Luekens',
         'title': 'Senior Pastor',
-        'image': 'https://storage.googleapis.com/cpc-public-website/69.jpg',
+        'image': 'https://files.cpcnewhaven.org/69.jpg',
         'bio': [
             "Craig was born and raised in Indianapolis, IN, and was brought up in the Jewish faith through high school. In college - at Indiana University - he began asking deeper, more existential questions about purpose, meaning, and the existence of God. At the start of Sophomore year he committed his life to Christ. Having become convinced of the truth of Scripture, the Spirit convicted him that Jesus alone demands and deserves everything. In hopes of pursuing an academic career, he attended Yale Divinity School, completing a MDiv in 2008. God drew him to Christ Presbyterian Church and eventually to the ministry through CPC, where he also began work with Athletes in Action at Yale, a sports ministry for undergrad student-athletes. Craig was ordained as a Teaching Elder in the PCA in 2012 and completed a ThM in 2014 at Gordon Conwell Theological Seminary in Biblical Theology.",
             "Having begun his role as Senior Pastor in 2023, his primary responsibilities include preaching, teaching, pastoral counseling, and moderating the Session/WLB (Shepherd Leaders) and Servant Leadership Boards.",
@@ -529,7 +529,7 @@ def jerry_ornelas():
     return render_template('staff_profile.html', pastor={
         'name': 'Jerry Ornelas',
         'title': 'Assistant Pastor',
-        'image': 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/Jerry_OG.png',
+        'image': 'https://files.cpcnewhaven.org/2026/MISC%20WEBSITE%20GRAPHICS/Jerry_OG.png',
         'image_position': '28% center',
         'bio': [
             "Jerry was born in Pasadena, California. At nine years of age he and his family moved to Savannah Georgia where he spent the majority of his formative years. Being a high school football player offered him the opportunity to play at the college level at Trinity International in Deerfield, Illinois. After several injuries the Lord providentially took away the desire to play football and replaced it with a desire for ministry.",
@@ -888,11 +888,11 @@ def sermons():
 @app.route('/podcasts')
 def podcasts():
     series = PodcastSeries.query.order_by(PodcastSeries.title.asc()).all()
-    fallback_artwork = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg'
-    beyond_artwork = 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_LAYNEBOLES.jpg'
-    classes_artwork = 'https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_ACTION_A.jpg'
+    fallback_artwork = 'https://files.cpcnewhaven.org/podcast-thumbnails/walking/WALKING%20GRAPHIC%20_%20HOMEPAGE.jpg'
+    beyond_artwork = 'https://files.cpcnewhaven.org/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_LAYNEBOLES.jpg'
+    classes_artwork = 'https://files.cpcnewhaven.org/2026/MISC%20WEBSITE%20GRAPHICS/CPC_ACTION_A.jpg'
     series_artwork = {
-        'Walking with Jesus Through Sinai': 'https://storage.googleapis.com/cpc-public-website/web-assets/podcast-thumbnails/WALKING%20LOGO.jpg',
+        'Walking with Jesus Through Sinai': 'https://files.cpcnewhaven.org/web-assets/podcast-thumbnails/WALKING%20LOGO.jpg',
         'What We Believe': 'https://cpcnewhaven.org/assets/podcast-thumbnails/wwb.jpg',
         'What We Believe: Knowing and Loving Our Doctrines': 'https://cpcnewhaven.org/assets/podcast-thumbnails/wwb.jpg',
         'Confessional Theology': 'https://files.cpcnewhaven.org/podcast-thumbnails/confessional-theology.png',
@@ -983,7 +983,7 @@ def podcasts():
         series=series,
         podcast_series=podcast_series,
         podcast_fallback_artwork=fallback_artwork,
-        podcast_background_artwork='https://storage.googleapis.com/cpc-public-website/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg',
+        podcast_background_artwork='https://files.cpcnewhaven.org/2026/MISC%20WEBSITE%20GRAPHICS/CPC_PODCAST_B.jpg',
         podcast_beyond=beyond,
         podcast_shows=podcast_shows,
         podcast_classes=podcast_classes,
@@ -3697,7 +3697,7 @@ def admin_upload_gallery_image():
             blob.upload_from_file(f.stream, content_type=f.content_type)
             
             # The bucket is public as per screenshot. We can form the URL easily.
-            # E.g. https://storage.googleapis.com/cpc-public-website/cpc-web-app-gallery/...
+            # E.g. https://files.cpcnewhaven.org/cpc-web-app-gallery/...
             public_url = f"https://storage.googleapis.com/{bucket_name}/{destination_blob_name}"
             
             return jsonify({'url': public_url})

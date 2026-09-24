@@ -8,16 +8,16 @@ from datetime import datetime
 
 def populate_cookout():
     images = [
-        'https://storage.googleapis.com/cpc-public-website/web-assets/heros/%5BHERO%5D%5BComm%7D6.jpg',
-        'https://storage.googleapis.com/cpc-public-website/web-assets/heros/%5BHERO%5D%5BComm%7D5.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/2.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/3.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/4.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/5.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/6.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/7.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/8.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/9.jpg'
+        'https://files.cpcnewhaven.org/web-assets/heros/%5BHERO%5D%5BComm%7D6.jpg',
+        'https://files.cpcnewhaven.org/web-assets/heros/%5BHERO%5D%5BComm%7D5.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/2.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/3.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/4.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/5.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/6.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/7.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/8.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/9.jpg'
     ]
 
     with app.app_context():

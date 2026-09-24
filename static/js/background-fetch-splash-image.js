@@ -5,14 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Real church images from gallery
     const defaultImages = [
-        'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG',
-        'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/89c3ea3b-e196-4318-bee8-08b5e66e728d.JPG',
-        'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/IMG_3661.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Hill%20Christmas%20Store%202023/IMG_0244.JPG',
-        'https://storage.googleapis.com/cpc-public-website/events/Hill%20Christmas%20Store%202023/IMG_0251.JPG',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/2.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/3.jpg',
-        'https://storage.googleapis.com/cpc-public-website/events/Young%20Adults%20Cookout%20-%20September%202025/4.jpg'
+        'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG',
+        'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/89c3ea3b-e196-4318-bee8-08b5e66e728d.JPG',
+        'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/IMG_3661.jpg',
+        'https://files.cpcnewhaven.org/events/Hill%20Christmas%20Store%202023/IMG_0244.JPG',
+        'https://files.cpcnewhaven.org/events/Hill%20Christmas%20Store%202023/IMG_0251.JPG',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/2.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/3.jpg',
+        'https://files.cpcnewhaven.org/events/Young%20Adults%20Cookout%20-%20September%202025/4.jpg'
     ];
     
     function getRandomImage() {

@@ -22,7 +22,7 @@ IMAGES = [
     # ── Women's Fall Brunch 2024 ────────────────────────────────────────────
     {
         'name': "Women's Fall Brunch 2024 — Photo 1",
-        'url': 'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG',
+        'url': 'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/605c1ade-b21e-4713-ad4e-d9bb2d6709ad.JPG',
         'tags': ["women's ministry", 'brunch', 'fellowship', '2024'],
         'event': True,
         'location': 'New Haven, CT',
@@ -31,7 +31,7 @@ IMAGES = [
     },
     {
         'name': "Women's Fall Brunch 2024 — Photo 2",
-        'url': 'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/89c3ea3b-e196-4318-bee8-08b5e66e728d.JPG',
+        'url': 'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/89c3ea3b-e196-4318-bee8-08b5e66e728d.JPG',
         'tags': ["women's ministry", 'brunch', 'fellowship', '2024'],
         'event': True,
         'location': 'New Haven, CT',
@@ -40,7 +40,7 @@ IMAGES = [
     },
     {
         'name': "Women's Fall Brunch 2024 — Photo 3",
-        'url': 'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/IMG_3661.jpg',
+        'url': 'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/IMG_3661.jpg',
         'tags': ["women's ministry", 'brunch', 'fellowship', '2024'],
         'event': True,
         'location': 'New Haven, CT',
@@ -49,7 +49,7 @@ IMAGES = [
     },
     {
         'name': "Women's Fall Brunch 2024 — Photo 4",
-        'url': 'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/IMG_3672.jpg',
+        'url': 'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/IMG_3672.jpg',
         'tags': ["women's ministry", 'brunch', 'fellowship', '2024'],
         'event': True,
         'location': 'New Haven, CT',
@@ -58,7 +58,7 @@ IMAGES = [
     },
     {
         'name': "Women's Fall Brunch 2024 — Photo 5",
-        'url': 'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/IMG_3673.jpg',
+        'url': 'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/IMG_3673.jpg',
         'tags': ["women's ministry", 'brunch', 'fellowship', '2024'],
         'event': True,
         'location': 'New Haven, CT',
@@ -67,7 +67,7 @@ IMAGES = [
     },
     {
         'name': "Women's Fall Brunch 2024 — Photo 6",
-        'url': 'https://storage.googleapis.com/cpc-public-website/media-gallery/womans-fall-brunch-2024/ffa7bc41-31fb-49b5-aac6-f4ecd199a12a.JPG',
+        'url': 'https://files.cpcnewhaven.org/media-gallery/womans-fall-brunch-2024/ffa7bc41-31fb-49b5-aac6-f4ecd199a12a.JPG',
         'tags': ["women's ministry", 'brunch', 'fellowship', '2024'],
         'event': True,
         'location': 'New Haven, CT',
@@ -78,7 +78,7 @@ IMAGES = [
     # ── CPC Retreat 2025 ────────────────────────────────────────────────────
     {
         'name': 'CPC Retreat 2025 — Group Photo',
-        'url': 'https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg',
+        'url': 'https://files.cpcnewhaven.org/retreat2025/CPC%20Retreat%202025%20All.jpg',
         'tags': ['retreat', 'fellowship', 'community', '2025'],
         'event': True,
         'description': 'Full congregation group photo from CPC Retreat 2025',
@@ -88,7 +88,7 @@ IMAGES = [
     # ── Mission Trip 2025 ───────────────────────────────────────────────────
     {
         'name': 'Mission Trip 2025 — Atlantic City',
-        'url': 'https://storage.googleapis.com/cpc-public-website/events/Mission%20Trip%202025/cpcMissionTrip_ATLANTIC%20CITY.jpg',
+        'url': 'https://files.cpcnewhaven.org/events/Mission%20Trip%202025/cpcMissionTrip_ATLANTIC%20CITY.jpg',
         'tags': ['mission trip', 'outreach', 'service', '2025', 'atlantic city'],
         'event': True,
         'location': 'Atlantic City, NJ',
@@ -99,7 +99,7 @@ IMAGES = [
     # ── LifeGroups ──────────────────────────────────────────────────────────
     {
         'name': 'LifeGroups 2025',
-        'url': 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/CPC_Lifegroup_2025.jpg',
+        'url': 'https://files.cpcnewhaven.org/featuredIMGs/CPC_Lifegroup_2025.jpg',
         'tags': ['lifegroups', 'small groups', 'fellowship', '2025'],
         'event': False,
         'description': 'CPC LifeGroups — small group community 2025',
@@ -107,7 +107,7 @@ IMAGES = [
     },
     {
         'name': 'LifeGroup Photo',
-        'url': 'https://storage.googleapis.com/cpc-public-website/lifegroup-pics/cpc-lifegroup-2.jpeg',
+        'url': 'https://files.cpcnewhaven.org/lifegroup-pics/cpc-lifegroup-2.jpeg',
         'tags': ['lifegroups', 'small groups', 'fellowship'],
         'event': False,
         'description': 'CPC LifeGroup community gathering',
@@ -117,7 +117,7 @@ IMAGES = [
     # ── General Church Photos (53–69) ───────────────────────────────────────
     {
         'name': 'Church Photo 53',
-        'url': 'https://storage.googleapis.com/cpc-public-website/53.jpg',
+        'url': 'https://files.cpcnewhaven.org/53.jpg',
         'tags': ['congregation', 'church', 'worship'],
         'event': False,
         'description': 'CPC New Haven church photo',
@@ -125,7 +125,7 @@ IMAGES = [
     },
     {
         'name': 'Church Photo 54',
-        'url': 'https://storage.googleapis.com/cpc-public-website/54.jpg',
+        'url': 'https://files.cpcnewhaven.org/54.jpg',
         'tags': ['congregation', 'church', 'worship'],
         'event': False,
         'description': 'CPC New Haven church photo',
@@ -133,7 +133,7 @@ IMAGES = [
     },
     {
         'name': 'Church Photo 62',
-        'url': 'https://storage.googleapis.com/cpc-public-website/62.jpg',
+        'url': 'https://files.cpcnewhaven.org/62.jpg',
         'tags': ['congregation', 'church', 'worship'],
         'event': False,
         'description': 'CPC New Haven church photo',
@@ -141,7 +141,7 @@ IMAGES = [
     },
     {
         'name': 'Church Photo 63',
-        'url': 'https://storage.googleapis.com/cpc-public-website/63.jpg',
+        'url': 'https://files.cpcnewhaven.org/63.jpg',
         'tags': ['congregation', 'church', 'worship'],
         'event': False,
         'description': 'CPC New Haven church photo',
@@ -149,7 +149,7 @@ IMAGES = [
     },
     {
         'name': 'Church Photo 65',
-        'url': 'https://storage.googleapis.com/cpc-public-website/65.jpg',
+        'url': 'https://files.cpcnewhaven.org/65.jpg',
         'tags': ['congregation', 'church', 'worship'],
         'event': False,
         'description': 'CPC New Haven church photo',
@@ -157,7 +157,7 @@ IMAGES = [
     },
     {
         'name': 'Church Photo 67',
-        'url': 'https://storage.googleapis.com/cpc-public-website/67.jpg',
+        'url': 'https://files.cpcnewhaven.org/67.jpg',
         'tags': ['congregation', 'church', 'worship'],
         'event': False,
         'description': 'CPC New Haven church photo',
@@ -165,7 +165,7 @@ IMAGES = [
     },
     {
         'name': 'Church Photo 69',
-        'url': 'https://storage.googleapis.com/cpc-public-website/69.jpg',
+        'url': 'https://files.cpcnewhaven.org/69.jpg',
         'tags': ['congregation', 'church', 'worship'],
         'event': False,
         'description': 'CPC New Haven church photo',
@@ -175,7 +175,7 @@ IMAGES = [
     # ── Featured / Hero Images ──────────────────────────────────────────────
     {
         'name': 'New Haven Skyline — Featured',
-        'url': 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg',
+        'url': 'https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg',
         'tags': ['new haven', 'featured', 'hero', 'city'],
         'event': False,
         'description': 'New Haven skyline — homepage featured image',
@@ -183,7 +183,7 @@ IMAGES = [
     },
     {
         'name': 'Sermon — Featured',
-        'url': 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg',
+        'url': 'https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg',
         'tags': ['sermon', 'worship', 'featured', 'hero'],
         'event': False,
         'description': 'Sermon / worship service — homepage featured image',
@@ -191,7 +191,7 @@ IMAGES = [
     },
     {
         'name': 'Congregation — Featured',
-        'url': 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg',
+        'url': 'https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg',
         'tags': ['congregation', 'worship', 'featured', 'hero'],
         'event': False,
         'description': 'Congregation gathered for worship — homepage featured image',
@@ -199,7 +199,7 @@ IMAGES = [
     },
     {
         'name': 'Autumn Church Photo',
-        'url': 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/CPC_AUTUMN_PHOTO.jpg',
+        'url': 'https://files.cpcnewhaven.org/featuredIMGs/homepage/CPC_AUTUMN_PHOTO.jpg',
         'tags': ['autumn', 'fall', 'church', 'exterior', 'featured'],
         'event': False,
         'description': 'CPC New Haven autumn exterior photo',
@@ -207,7 +207,7 @@ IMAGES = [
     },
     {
         'name': 'About Page — Drone Shot',
-        'url': 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/%5BFEATURED%20IMAGE%5D%5BABOUT%20PAGE%5D%5BDrone%20Shot%5D-1.jpg',
+        'url': 'https://files.cpcnewhaven.org/featuredIMGs/%5BFEATURED%20IMAGE%5D%5BABOUT%20PAGE%5D%5BDrone%20Shot%5D-1.jpg',
         'tags': ['drone', 'aerial', 'exterior', 'about', 'featured'],
         'event': False,
         'description': 'Aerial drone shot of CPC New Haven — about page hero',
@@ -215,7 +215,7 @@ IMAGES = [
     },
     {
         'name': 'Live Page — Craig Luekens',
-        'url': 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/%5BFEATURED%20IMG%5D%5BLIVE%20PAGE%5D%5BCRAIG%5D-1.jpg',
+        'url': 'https://files.cpcnewhaven.org/featuredIMGs/%5BFEATURED%20IMG%5D%5BLIVE%20PAGE%5D%5BCRAIG%5D-1.jpg',
         'tags': ['pastor', 'live', 'craig luekens', 'sermon', 'featured'],
         'event': False,
         'description': 'Pastor Craig Luekens — live page featured image',
