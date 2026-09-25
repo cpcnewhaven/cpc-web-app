@@ -682,33 +682,36 @@
                 Podcasts
             </a>
             
-            <div class="pt-6 pb-2 px-4">
-                <div class="text-[9px] font-bold text-on-surface-variant/75 uppercase tracking-[0.2em]">More Features</div>
-            </div>
-
-            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/auto-announcement' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="{{ url_for('admin_auto_announcement') }}">
-                Auto announcement <span class="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] text-amber-800">Beta</span>
-            </a>
-            
-            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/teachingseries' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/teachingseries/">
-                Teaching Series
-            </a>
-            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/history' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/history/">
-                Activity Monitor
-            </a>
-            <a class="flex items-center justify-between px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/feedback' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="{{ url_for('feedback_review.index') }}">
-                <span>Feedback</span>
-                {% if new_feedback_count %}<span class="admin-feedback-badge">{{ new_feedback_count }}</span>{% endif %}
-            </a>
-            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/releases' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/releases/">
-                Releases
-            </a>
-            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/galleryimage' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/galleryimage/">
-                Gallery
-            </a>
-            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/page_editors' in request.path or '/admin/subpage-edit' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/page_editors/">
-                Page Editors
-            </a>
+            <details class="pt-6" {% if request.path.startswith('/admin/auto-announcement') or request.path.startswith('/admin/beta-features') or '/admin/teachingseries' in request.path or '/admin/history' in request.path or '/admin/feedback' in request.path or '/admin/releases' in request.path or '/admin/galleryimage' in request.path or '/admin/page_editors' in request.path or '/admin/subpage-edit' in request.path %}open{% endif %}>
+                <summary class="list-none cursor-pointer px-4 pb-2 text-[9px] font-bold text-on-surface-variant/75 uppercase tracking-[0.2em]">More</summary>
+                <div class="space-y-1">
+                    <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/auto-announcement' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="{{ url_for('admin_auto_announcement') }}">
+                        Auto announcement <span class="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] text-amber-800">Beta</span>
+                    </a>
+                    <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if request.path.startswith('/admin/beta-features') %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="{{ url_for('admin_beta_features') }}">
+                        Beta Features
+                    </a>
+                    <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/teachingseries' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/teachingseries/">
+                        Teaching Series
+                    </a>
+                    <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/history' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/history/">
+                        Activity Monitor
+                    </a>
+                    <a class="flex items-center justify-between px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/feedback' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="{{ url_for('feedback_review.index') }}">
+                        <span>Feedback</span>
+                        {% if new_feedback_count %}<span class="admin-feedback-badge">{{ new_feedback_count }}</span>{% endif %}
+                    </a>
+                    <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/releases' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/releases/">
+                        Releases
+                    </a>
+                    <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/galleryimage' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/galleryimage/">
+                        Gallery
+                    </a>
+                    <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/page_editors' in request.path or '/admin/subpage-edit' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/page_editors/">
+                        Page Editors
+                    </a>
+                </div>
+            </details>
         </nav>
 
         <div class="mt-auto px-6 space-y-4">
