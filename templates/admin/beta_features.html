@@ -1,0 +1,118 @@
+{% extends 'admin/master.html' %}
+
+{% block title %}Beta Features · CPC Admin{% endblock %}
+
+{% block body %}
+<div class="space-y-8">
+    <header class="bg-surface-container rounded-3xl p-8 lg:p-10 border border-outline-variant/10 shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div>
+                <div class="text-[10px] font-black text-primary-dim uppercase tracking-[0.2em]">More · Preview</div>
+                <h2 class="font-manrope text-3xl lg:text-4xl font-black text-primary tracking-tight mt-2">Beta Features</h2>
+                <p class="text-sm text-on-surface-variant mt-3 max-w-2xl">Preview tools that are still being developed. The Planning Center calendar connection and event sync are managed here.</p>
+            </div>
+            <span class="self-start px-3 py-1.5 rounded-lg bg-amber-100 text-amber-800 text-[9px] font-black uppercase tracking-widest">Beta</span>
+        </div>
+    </header>
+
+    <section class="bg-surface-container rounded-3xl border border-outline-variant/10 shadow-xl overflow-hidden">
+        <div class="px-6 lg:px-8 py-6 border-b border-outline-variant/10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <div class="text-[9px] font-black text-primary-dim uppercase tracking-[0.2em]">Calendar integration</div>
+                <h3 class="font-manrope text-xl font-extrabold text-on-surface mt-1">Planning Center Calendar</h3>
+            </div>
+            {% if connected %}
+                <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/10 text-secondary text-[9px] font-black uppercase tracking-widest"><span class="w-2 h-2 rounded-full bg-secondary"></span>Connected</span>
+            {% else %}
+                <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-on-surface-variant text-[9px] font-black uppercase tracking-widest"><span class="w-2 h-2 rounded-full bg-on-surface-variant/40"></span>Not connected</span>
+            {% endif %}
+        </div>
+
+        <div class="p-6 lg:p-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="rounded-xl bg-surface-container-low border border-outline-variant/10 p-4">
+                    <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Planning Center connection</div>
+                    <div class="mt-2 text-sm font-bold text-on-surface">{{ 'Connected' if connected else 'Needs authorization' }}</div>
+                </div>
+                <div class="rounded-xl bg-surface-container-low border border-outline-variant/10 p-4">
+                    <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Calendar scope</div>
+                    <div class="mt-2 text-sm font-bold text-on-surface">{{ 'Calendar ' ~ calendar_id if calendar_id else 'All accessible calendars' }}</div>
+                </div>
+                <div class="rounded-xl bg-surface-container-low border border-outline-variant/10 p-4">
+                    <div class="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">Webhook</div>
+                    <div class="mt-2 text-sm font-bold text-on-surface">{{ 'Secret configured' if webhook_configured else 'Not configured' }}</div>
+                </div>
+            </div>
+
+            {% if calendar_error %}
+                <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ calendar_error }}</div>
+            {% endif %}
+
+            <div class="flex flex-wrap gap-3">
+                {% if not connected %}
+                    <a href="{{ url_for('planning_center_connect') }}" class="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white hover:bg-primary-dim transition-colors">
+                        <span class="material-symbols-outlined text-base">link</span> Connect Planning Center
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('admin_beta_features') }}" class="inline-flex items-center gap-2 rounded-xl bg-surface-container-highest px-5 py-3 text-[10px] font-black uppercase tracking-widest text-on-surface hover:bg-surface-bright transition-colors">
+                        <span class="material-symbols-outlined text-base">refresh</span> Refresh events
+                    </a>
+                {% endif %}
+                {% if sync_configured %}
+                    <button id="syncCalendar" type="button" class="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/20 transition-colors">
+                        <span class="material-symbols-outlined text-base">sync</span> Sync events to announcements
+                    </button>
+                {% endif %}
+            </div>
+            <p id="syncStatus" class="text-sm text-on-surface-variant" role="status" aria-live="polite"></p>
+
+            {% if connected %}
+                <div class="border-t border-outline-variant/10 pt-6">
+                    <div class="flex items-center justify-between gap-4 mb-4">
+                        <h4 class="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em]">Upcoming calendar events</h4>
+                        <span class="text-[9px] font-bold text-on-surface-variant/60 uppercase tracking-widest">{{ events|length }} loaded</span>
+                    </div>
+                    {% if events %}
+                        <div class="divide-y divide-outline-variant/10">
+                            {% for event in events %}
+                                <article class="py-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                                    <div>
+                                        <h5 class="text-sm font-bold text-on-surface">{{ event.name }}</h5>
+                                        {% if event.description %}<p class="text-xs text-on-surface-variant mt-1 max-w-3xl">{{ event.description|striptags|truncate(240) }}</p>{% endif %}
+                                    </div>
+                                    <div class="text-[10px] font-bold text-on-surface-variant whitespace-nowrap">{{ event.starts_at or 'Date not supplied' }}</div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="rounded-xl bg-surface-container-low p-5 text-sm text-on-surface-variant">No upcoming events were returned for this calendar.</p>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="rounded-xl bg-surface-container-low p-5 text-sm text-on-surface-variant">Authorize this site with a Planning Center account that can read Calendar to preview events here. Configure the webhook secret to receive ongoing event updates.</p>
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+{% if sync_configured %}
+<script>
+document.getElementById('syncCalendar').addEventListener('click', async function () {
+    const button = this;
+    const status = document.getElementById('syncStatus');
+    button.disabled = true;
+    status.textContent = 'Syncing Planning Center events…';
+    try {
+        const response = await fetch('{{ url_for("planning_center_sync") }}', { method: 'POST' });
+        const result = await response.json();
+        if (!response.ok || result.status !== 'ok') throw new Error(result.error || 'Sync failed. Check the server log and connection settings.');
+        status.textContent = `${result.synced} events synced to announcements.`;
+    } catch (error) {
+        status.textContent = error.message;
+    } finally {
+        button.disabled = false;
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

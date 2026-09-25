@@ -1008,7 +1008,7 @@ def planning_center_connect():
 @require_auth
 def planning_center_callback():
     if request.args.get('error'):
-        return redirect(url_for('events'))
+        return redirect(url_for('admin_beta_features'))
     if not request.args.get('code') or not hmac.compare_digest(request.args.get('state', ''), session.pop('planning_center_oauth_state', '')):
         return jsonify({'error': 'invalid OAuth state'}), 400
     from planning_center import exchange_code
@@ -1018,7 +1018,7 @@ def planning_center_callback():
         db.session.add(SiteContent(key='planning_center_oauth_tokens', value=json.dumps(tokens)))
         db.session.commit()
         flash('Planning Center is connected.', 'success')
-        return redirect(url_for('events'))
+        return redirect(url_for('admin_beta_features'))
     except Exception:
         app.logger.exception('Planning Center OAuth callback failed')
         return jsonify({'error': 'Planning Center connection failed'}), 502
@@ -2157,6 +2157,46 @@ def planning_center_sync():
     events = upcoming_events(app.config.get("PLANNING_CENTER_CALENDAR_ID"))
     synced = [_upsert_pco_announcement(item).id for item in events]
     return jsonify({"status": "ok", "synced": len(synced), "announcement_ids": synced})
+
+
+@app.route('/admin/beta-features/')
+@require_auth
+def admin_beta_features():
+    """Show admin-only previews and status for features currently in beta."""
+    token_row = SiteContent.query.filter_by(key='planning_center_oauth_tokens').first()
+    connected = bool(token_row)
+    events = []
+    calendar_error = None
+    if token_row:
+        try:
+            token = json.loads(token_row.value).get('access_token')
+            if token:
+                from planning_center import upcoming_events_with_token
+                raw_events = upcoming_events_with_token(token, app.config.get('PLANNING_CENTER_CALENDAR_ID'))
+                for item in raw_events:
+                    attrs = item.get('attributes', {})
+                    events.append({
+                        'name': attrs.get('name') or 'Untitled event',
+                        'description': attrs.get('description') or attrs.get('summary') or '',
+                        'starts_at': attrs.get('starts_at'),
+                        'ends_at': attrs.get('ends_at'),
+                        'url': attrs.get('url'),
+                    })
+            else:
+                connected = False
+        except Exception:
+            app.logger.exception('Planning Center beta page could not load events')
+            calendar_error = 'Planning Center is connected, but events could not be loaded. Check the connection and try again.'
+    return render_template(
+        'admin/beta_features.html',
+        connected=connected,
+        events=events,
+        calendar_error=calendar_error,
+        sync_configured=bool(app.config.get('PLANNING_CENTER_CLIENT_ID') and app.config.get('PLANNING_CENTER_PERSONAL_ACCESS_TOKEN')),
+        webhook_configured=bool(app.config.get('PLANNING_CENTER_WEBHOOK_SECRET')),
+        calendar_id=app.config.get('PLANNING_CENTER_CALENDAR_ID'),
+        new_feedback_count=0,
+    )
 
 @app.route("/api/youtube")
 @cache.cached(timeout=900)
