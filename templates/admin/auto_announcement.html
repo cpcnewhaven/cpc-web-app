@@ -1,0 +1,119 @@
+{% extends 'admin/master.html' %}
+
+{% block title %}Auto announcement · CPC Admin{% endblock %}
+
+{% block body %}
+<style>
+  .auto-ann-page { max-width: 1100px; margin: 0 auto; color: var(--on-surface); }
+  .auto-ann-kicker { color: var(--primary-dim); font-size: .7rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  .auto-ann-page h2 { margin: .35rem 0 .5rem; color: var(--on-surface); font: 800 2rem/1.2 Manrope, sans-serif; }
+  .auto-ann-intro { max-width: 760px; color: var(--on-surface-variant); line-height: 1.65; }
+  .auto-ann-panel { margin-top: 1.5rem; padding: 1.35rem; border: 1px solid var(--outline-variant); border-radius: 1rem; background: var(--surface-container); box-shadow: 0 12px 28px rgba(54, 88, 116, .06); }
+  .auto-ann-panel label { display: block; margin-bottom: .5rem; color: var(--on-surface-variant); font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .auto-ann-panel textarea, .auto-ann-card input, .auto-ann-card textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--admin-input-border); border-radius: .6rem; padding: .8rem; color: var(--on-surface); background: var(--admin-input-bg); font-family: inherit; font-size: .92rem; line-height: 1.55; }
+  #emailText { min-height: 270px; resize: vertical; }
+  .auto-ann-actions { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1rem; }
+  .auto-ann-btn { border: 0; border-radius: .65rem; padding: .8rem 1.1rem; background: var(--primary); color: white; font-weight: 800; cursor: pointer; }
+  .auto-ann-btn:hover { background: var(--primary-dim); }
+  .auto-ann-btn.secondary { border: 1px solid var(--admin-border); background: var(--surface-container-high); color: var(--on-surface); }
+  .auto-ann-btn:disabled { opacity: .55; cursor: wait; }
+  .auto-ann-beta { display: inline-block; vertical-align: middle; padding: .28rem .55rem; border-radius: 99px; background: #fff1cf; color: #855c00; font-family: inherit; font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  #reviewSection[hidden] { display: none; }
+  .auto-ann-category { margin: 1.5rem 0 .6rem; color: var(--primary-dim); font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .auto-ann-card { margin: .75rem 0; padding: 1rem; border: 1px solid var(--admin-border); border-radius: .8rem; background: var(--surface-container-low); }
+  .auto-ann-card-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .7rem; color: var(--on-surface-variant); font-size: .7rem; font-weight: 700; }
+  .auto-ann-card textarea { min-height: 120px; resize: vertical; margin-top: .65rem; }
+  .auto-ann-card input { font-weight: 700; }
+  .auto-ann-remove { border: 0; background: transparent; color: #a33b3b; font-weight: 700; cursor: pointer; }
+  .auto-ann-notice { margin-top: 1rem; padding: .8rem 1rem; border-radius: .6rem; background: var(--surface-container-high); color: var(--on-surface-variant); }
+  @media(max-width: 650px) { .auto-ann-page h2 { font-size: 1.6rem; } }
+</style>
+
+<section class="auto-ann-page">
+  <div class="auto-ann-kicker">More Features · <span class="auto-ann-beta">Beta</span></div>
+  <h2>Auto announcement</h2>
+  <p class="auto-ann-intro">Paste the announcement copy from your Mailchimp email. We’ll split it by section and item so you can review and edit each draft before saving it to CPC Admin.</p>
+
+  <div class="auto-ann-panel">
+    <label for="emailText">Mailchimp announcement text</label>
+    <textarea id="emailText" placeholder="Paste the email text here, including section headings like Highlights and Ongoing…"></textarea>
+    <div class="auto-ann-actions"><button class="auto-ann-btn" id="parseButton" type="button">Sort into drafts</button></div>
+  </div>
+
+  <div id="reviewSection" class="auto-ann-panel" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+      <div><div class="auto-ann-kicker">Review before saving</div><strong id="draftCount"></strong></div>
+      <button class="auto-ann-btn secondary" id="parseAgain" type="button">Parse pasted text again</button>
+    </div>
+    <div id="draftList"></div>
+    <div class="auto-ann-notice">Drafts save as unpublished announcements. You can edit, preview, and publish them from the Announcements list.</div>
+    <div class="auto-ann-actions"><button class="auto-ann-btn" id="saveButton" type="button">Save drafts</button></div>
+  </div>
+</section>
+<script>
+(function(){
+  const input=document.getElementById('emailText'), list=document.getElementById('draftList');
+  const review=document.getElementById('reviewSection'), count=document.getElementById('draftCount');
+  const headings=new Set(['highlights','ongoing','this week','upcoming','events','ministries','announcements']);
+  const categoryFromHeading=value=>{
+    const normalized=normalize(value).toLowerCase().replace(/[\s:|!–—-]+$/g,'').replace(/^[\s:|!–—-]+/g,'');
+    if(normalized==='ongoing'||normalized.startsWith('ongoing announcements'))return 'Ongoing';
+    if(normalized==='highlights'||normalized.startsWith('highlights '))return 'Highlights';
+    return headings.has(normalized)?normalized.replace(/\b\w/g,c=>c.toUpperCase()):null;
+  };
+  const normalize=s=>(s||'').replace(/\u00a0/g,' ').trim();
+  function parse(){
+    const lines=input.value.replace(/\r/g,'').split('\n').map(normalize);
+    const rows=[]; let category='Announcements', current=null, paragraph=[];
+    const makeRow=(title,description='')=>({title,description,type:category.toLowerCase()==='ongoing'?'ongoing':'announcement',category});
+    function flushParagraph(){if(!paragraph.length)return;const body=paragraph.join(' ').replace(/\s+/g,' ').trim();paragraph=[];if(!body)return;
+      if(!current){current=makeRow(body.slice(0,100),body);rows.push(current);return;}
+      current.description += '\n\n'+body;
+    }
+    function flushItem(){flushParagraph();current=null;}
+    for(const line of lines){
+      if(!line){flushParagraph();continue;}
+      const clean=line.replace(/^[*#>\s]+|[*#\s]+$/g,'').trim();
+      const heading=categoryFromHeading(clean);
+      if(heading){flushItem();category=heading;continue;}
+      if(!current && line.includes('|')){const headingBeforePipe=categoryFromHeading(line.slice(0,line.indexOf('|')));if(headingBeforePipe){flushItem();category=headingBeforePipe;continue;}}
+      const split=line.match(/^(.{3,180}?)\s*\|\s*(.+)$/);
+      if(split){flushItem();const title=(split[1]+' | '+split[2]).replace(/\s+/g,' ').trim();current=makeRow(title);rows.push(current);continue;}
+      if(line.length<=100 && !/[.!?]$/.test(line) && !current){flushItem();current=makeRow(line);rows.push(current);continue;}
+      paragraph.push(line);
+    }
+    flushItem();
+    return rows.filter(r=>r.title&&r.description.trim());
+  }
+  function render(){
+    const drafts=parse(); list.replaceChildren();
+    if(!drafts.length){alert('No announcement items found yet. Use a section heading, then a title and description for each item.');return;}
+    let previous='';
+    drafts.forEach((draft,index)=>{
+      if(draft.category!==previous){const heading=document.createElement('div');heading.className='auto-ann-category';heading.textContent=draft.category;list.append(heading);previous=draft.category;}
+      const card=document.createElement('article');card.className='auto-ann-card';card.dataset.type=draft.type;
+      const top=document.createElement('div');top.className='auto-ann-card-top';
+      const label=document.createElement('span');label.textContent='Draft '+(index+1)+' · '+draft.type;
+      const remove=document.createElement('button');remove.type='button';remove.className='auto-ann-remove';remove.textContent='Remove';remove.onclick=()=>{card.remove();updateCount();};top.append(label,remove);
+      const title=document.createElement('input');title.setAttribute('aria-label','Announcement title');title.value=draft.title;
+      const description=document.createElement('textarea');description.setAttribute('aria-label','Announcement description');description.value=draft.description;
+      card.append(top,title,description);list.append(card);
+    });
+    review.hidden=false;updateCount();review.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function updateCount(){count.textContent=list.querySelectorAll('.auto-ann-card').length+' announcements ready to save';}
+  document.getElementById('parseButton').onclick=render;document.getElementById('parseAgain').onclick=render;
+  document.getElementById('saveButton').onclick=async function(){
+    const cards=[...list.querySelectorAll('.auto-ann-card')];
+    const announcements=cards.map(card=>({title:card.querySelector('input').value.trim(),description:card.querySelector('textarea').value.trim(),type:card.dataset.type}));
+    if(!announcements.length){alert('Keep at least one draft to save.');return;}
+    if(announcements.some(a=>!a.title||!a.description)){alert('Every draft needs a title and description.');return;}
+    const button=this;button.disabled=true;button.textContent='Saving drafts…';
+    try{const response=await fetch('{{ url_for("admin_auto_announcement") }}',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({announcements})});const result=await response.json();
+      if(!response.ok||!result.success)throw new Error(result.error||'Could not save drafts.');
+      window.location.href=result.url+'?auto_drafts='+result.count;
+    }catch(error){alert(error.message);button.disabled=false;button.textContent='Save drafts';}
+  };
+})();
+</script>
+{% endblock %}

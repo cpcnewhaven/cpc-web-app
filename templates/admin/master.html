@@ -685,6 +685,10 @@
             <div class="pt-6 pb-2 px-4">
                 <div class="text-[9px] font-bold text-on-surface-variant/75 uppercase tracking-[0.2em]">More Features</div>
             </div>
+
+            <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/auto-announcement' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="{{ url_for('admin_auto_announcement') }}">
+                Auto announcement <span class="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] text-amber-800">Beta</span>
+            </a>
             
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/teachingseries' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/teachingseries/">
                 Teaching Series
@@ -795,8 +799,10 @@
                 </button>
                 <div>
                     <h1 class="font-manrope text-xl font-extrabold text-primary tracking-tight">
-                        {% if admin_view.name %}
+                        {% if admin_view is defined and admin_view.name %}
                             {{ admin_view.name }}
+                        {% elif request.endpoint == 'admin_auto_announcement' %}
+                            Auto announcement
                         {% else %}
                             Dashboard
                         {% endif %}

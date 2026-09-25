@@ -3403,6 +3403,58 @@ def admin_export_announcements():
     from admin_utils import export_announcements_csv
     return export_announcements_csv()
 
+@app.route('/admin/auto-announcement/', methods=['GET', 'POST'])
+@require_auth
+def admin_auto_announcement():
+    """Turn pasted newsletter text into editable unpublished announcement drafts."""
+    if request.method == 'GET' and request.args.get('matches') == '1':
+        rows = Announcement.query.order_by(Announcement.date_entered.desc()).limit(500).all()
+        return jsonify({'announcements': [
+            {'id': row.id, 'title': row.title or '', 'description': row.description or '',
+             'type': row.type or 'announcement', 'active': bool(row.active),
+             'archived': bool(getattr(row, 'archived', False)),
+             'date_entered': row.date_entered.isoformat() if row.date_entered else None}
+            for row in rows
+        ]})
+    if request.method == 'POST':
+        payload = request.get_json(silent=True) or request.form
+        rows = payload.get('announcements', [])
+        if isinstance(rows, str):
+            try:
+                rows = json.loads(rows)
+            except (TypeError, ValueError):
+                rows = []
+        if not isinstance(rows, list) or not rows:
+            return jsonify({'success': False, 'error': 'Add at least one announcement.'}), 400
+        created = []
+        try:
+            for row in rows:
+                if not isinstance(row, dict):
+                    continue
+                title = re.sub(r'\s+', ' ', str(row.get('title') or '')).strip()
+                description = str(row.get('description') or '').strip()
+                if not title or not description:
+                    continue
+                kind = row.get('type') if row.get('type') in ('event', 'ongoing', 'announcement') else 'announcement'
+                ann = Announcement(
+                    id=next_global_id(), title=title[:200], description=description,
+                    type=kind, category='Email announcement', active=False, archived=False,
+                    created_by=session.get('username', 'admin'), revision=1,
+                )
+                db.session.add(ann)
+                created.append(ann)
+            if not created:
+                return jsonify({'success': False, 'error': 'Each draft needs a title and description.'}), 400
+            db.session.commit()
+            for ann in created:
+                _log_audit('created', ann)
+            return jsonify({'success': True, 'count': len(created), 'url': url_for('announcement.index_view')})
+        except Exception:
+            db.session.rollback()
+            app.logger.exception('Auto announcement save failed')
+            return jsonify({'success': False, 'error': 'Could not save drafts. Please try again.'}), 500
+    return render_template('admin/auto_announcement.html', new_feedback_count=0)
+
 @app.route('/admin/export/sermons')
 @require_auth
 def admin_export_sermons():
