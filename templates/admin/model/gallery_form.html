@@ -1,0 +1,181 @@
+{% extends 'admin/master.html' %}
+
+{% macro field_group(field, full=false) %}
+<div class="gallery-field{% if full %} gallery-field-full{% endif %}">
+  <label for="{{ field.id }}">{{ field.label.text }}</label>
+  {{ field(class='form-control', placeholder=(field.render_kw.placeholder if field.render_kw and field.render_kw.placeholder else '')) }}
+  {% if field.description %}<small>{{ field.description }}</small>{% endif %}
+  {% for error in field.errors %}<small class="gallery-error">{{ error }}</small>{% endfor %}
+</div>
+{% endmacro %}
+
+{% block body %}
+<main class="gallery-editor">
+  <header class="gallery-editor-header">
+    <div>
+      <a class="gallery-back" href="{{ return_url }}">← Back to gallery</a>
+      <h1>{{ 'Edit image' if '/edit' in request.path else 'Add an image' }}</h1>
+      <p>Upload a photo, add a few details, and save.</p>
+    </div>
+  </header>
+
+  <form action="{{ action }}" method="POST" enctype="multipart/form-data" id="admin-form" data-gallery-editor>
+    {{ form.hidden_tag() if form.hidden_tag }}
+    <div class="gallery-editor-layout">
+      <section class="gallery-panel gallery-image-panel">
+        <div class="gallery-panel-heading"><span class="gallery-step">1</span><div><h2>Image</h2><p>Upload a photo or paste an image URL.</p></div></div>
+        <div class="gallery-preview" id="gallery-preview-wrap">
+          <img id="gallery-preview-image" src="{{ form.url.data or '' }}" alt="Image preview" {% if not form.url.data %}hidden{% endif %}>
+          <div id="gallery-preview-empty" {% if form.url.data %}hidden{% endif %}><span aria-hidden="true">▧</span><strong>Your image preview</strong><small>It will appear here once you upload or paste a URL.</small></div>
+          <div id="gallery-preview-error" hidden>We couldn’t load this image. Check the URL and try again.</div>
+        </div>
+        <div class="gallery-upload" id="gallery-upload">
+          <input type="file" id="gallery-file" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+          <button type="button" class="gallery-upload-button" id="gallery-browse">Choose an image</button>
+          <span>or drag and drop it here</span>
+          <small>JPG, PNG, GIF, or WebP</small>
+          <div id="gallery-upload-status" role="status" aria-live="polite"></div>
+        </div>
+        {{ field_group(form.url, true) }}
+      </section>
+
+      <div class="gallery-editor-details">
+        <section class="gallery-panel">
+          <div class="gallery-panel-heading"><span class="gallery-step">2</span><div><h2>Photo details</h2><p>Give the image a clear name and useful context.</p></div></div>
+          <div class="gallery-field-grid">
+            {{ field_group(form.name, true) }}
+            {{ field_group(form.description, true) }}
+            {{ field_group(form.photographer) }}
+            {{ field_group(form.location) }}
+            {{ field_group(form.tags, true) }}
+            <div class="gallery-toggle">{{ form.event() }}<label for="{{ form.event.id }}">This is an event photo</label></div>
+          </div>
+        </section>
+        <details class="gallery-panel gallery-more" {% if form.size.errors or form.type.errors or form.created.errors or form.expiration_date.errors %}open{% endif %}>
+          <summary><span><strong>More details</strong><small>Optional size, type, date added, and expiration</small></span><span class="gallery-chevron">⌄</span></summary>
+          <div class="gallery-field-grid gallery-field-grid-more">
+            {{ field_group(form.size) }}
+            {{ field_group(form.type) }}
+            {{ field_group(form.created) }}
+            {{ field_group(form.expiration_preset) }}
+            {{ field_group(form.expiration_date, true) }}
+          </div>
+        </details>
+      </div>
+    </div>
+    <footer class="gallery-editor-actions">
+      <a href="{{ return_url }}">Cancel</a>
+      <button type="submit" name="_continue_editing" value="1" class="gallery-save-secondary">Save and keep editing</button>
+      <button type="submit" class="gallery-save-primary">Save image</button>
+    </footer>
+  </form>
+</main>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<style>
+  .gallery-editor { --ge-bg:#111b28; --ge-panel:#172535; --ge-border:rgba(180,205,230,.14); --ge-muted:#aab8c8; max-width:1120px; margin:0 auto; padding:12px 0 36px; color:#f5f8fc; }
+  .gallery-editor * { box-sizing:border-box; }
+  .gallery-editor-header { display:flex; justify-content:space-between; align-items:flex-end; margin:0 0 24px; }
+  .gallery-back { color:#a9c9e8; font-size:.9rem; text-decoration:none; }
+  .gallery-editor-header h1 { margin:10px 0 4px; color:#fff; font-size:1.8rem; }
+  .gallery-editor-header p,.gallery-panel-heading p { margin:0; color:var(--ge-muted); }
+  .gallery-editor-layout { display:grid; grid-template-columns:minmax(300px,.88fr) minmax(420px,1.12fr); gap:20px; align-items:start; }
+  .gallery-editor-details { display:grid; gap:20px; }
+  .gallery-panel { min-width:0; padding:22px; border:1px solid var(--ge-border); border-radius:16px; background:var(--ge-panel); box-shadow:0 10px 28px rgba(0,0,0,.12); }
+  .gallery-panel-heading { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .gallery-panel-heading h2 { margin:0 0 3px; color:#fff; font-size:1.08rem; }
+  .gallery-panel-heading p { font-size:.84rem; }
+  .gallery-step { display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:rgba(35,145,232,.18); color:#75c3ff; font-weight:700; }
+  .gallery-preview { display:grid; place-items:center; min-height:240px; overflow:hidden; border:1px solid var(--ge-border); border-radius:12px; background:#0c1520; }
+  .gallery-preview img { display:block; width:100%; max-height:360px; object-fit:contain; }
+  .gallery-preview img[hidden],.gallery-preview [hidden] { display:none !important; }
+  #gallery-preview-empty { display:flex; flex-direction:column; align-items:center; gap:9px; padding:28px; text-align:center; color:var(--ge-muted); }
+  #gallery-preview-empty span { color:#69baff; font-size:2.6rem; }
+  #gallery-preview-empty strong { color:#eaf2fa; }
+  #gallery-preview-empty small { max-width:250px; line-height:1.5; }
+  #gallery-preview-error { padding:20px; color:#ffc078; text-align:center; }
+  .gallery-upload { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0 18px; padding:14px; border:1px dashed rgba(115,186,242,.42); border-radius:12px; color:var(--ge-muted); font-size:.84rem; }
+  .gallery-upload.is-dragging { border-color:#65baff; background:rgba(40,140,220,.1); }
+  .gallery-upload small { flex-basis:100%; padding-left:2px; }
+  .gallery-upload-button { padding:9px 13px; border:0; border-radius:8px; background:#237fc0; color:white; font-weight:650; cursor:pointer; }
+  #gallery-upload-status { flex-basis:100%; min-height:1em; color:#a9ddb9; }
+  .gallery-field-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+  .gallery-field { min-width:0; }
+  .gallery-field-full { grid-column:1/-1; }
+  .gallery-field label { display:block; margin:0 0 6px; color:#cfdae5; font-size:.82rem; font-weight:650; }
+  .gallery-editor .gallery-field .form-control { width:100%; min-height:42px; border:1px solid rgba(180,205,230,.2); border-radius:9px; padding:10px 12px; background:#0e1925; color:#f5f8fc; box-shadow:none; }
+  .gallery-editor .gallery-field textarea.form-control { min-height:88px; resize:vertical; }
+  .gallery-field small { display:block; margin-top:5px; color:var(--ge-muted); font-size:.76rem; }
+  .gallery-field .gallery-error { color:#ff9b9b; }
+  .gallery-toggle { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--ge-border); border-radius:9px; color:#e3edf7; }
+  .gallery-toggle input { width:18px; height:18px; accent-color:#258bd0; }
+  .gallery-more { padding:0; }
+  .gallery-more summary { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:18px 22px; cursor:pointer; list-style:none; }
+  .gallery-more summary::-webkit-details-marker { display:none; }
+  .gallery-more summary span:first-child { display:grid; gap:4px; }
+  .gallery-more summary strong { color:#edf4fb; }
+  .gallery-more summary small { color:var(--ge-muted); }
+  .gallery-chevron { color:#a9c9e8; font-size:1.4rem; transition:transform .15s; }
+  .gallery-more[open] .gallery-chevron { transform:rotate(180deg); }
+  .gallery-field-grid-more { padding:0 22px 22px; }
+  .gallery-editor-actions { position:sticky; bottom:0; z-index:4; display:flex; justify-content:flex-end; align-items:center; gap:10px; margin-top:20px; padding:14px 0; background:linear-gradient(transparent,var(--admin-body-bg,#101820) 24%); }
+  .gallery-editor-actions a,.gallery-editor-actions button { display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:0 16px; border-radius:9px; font-weight:650; text-decoration:none; cursor:pointer; }
+  .gallery-editor-actions a { margin-right:auto; color:#bac8d8; }
+  .gallery-save-secondary { border:1px solid var(--ge-border); background:#1a2a3b; color:#edf4fb; }
+  .gallery-save-primary { border:1px solid #258bd0; background:#258bd0; color:#fff; }
+  @media(max-width:850px) { .gallery-editor-layout { grid-template-columns:1fr; } }
+  @media(max-width:560px) { .gallery-editor { padding-top:0; } .gallery-panel { padding:16px; } .gallery-field-grid { grid-template-columns:1fr; } .gallery-field-full { grid-column:auto; } .gallery-field-grid-more { padding:0 16px 16px; } .gallery-editor-actions { flex-wrap:wrap; } .gallery-editor-actions a { flex-basis:100%; } .gallery-editor-actions button { flex:1; padding:0 9px; font-size:.82rem; } }
+</style>
+<script>
+(function () {
+  const form = document.querySelector('[data-gallery-editor]');
+  if (!form) return;
+  const url = form.querySelector('[name="url"]');
+  const image = document.getElementById('gallery-preview-image');
+  const empty = document.getElementById('gallery-preview-empty');
+  const error = document.getElementById('gallery-preview-error');
+  const upload = document.getElementById('gallery-upload');
+  const file = document.getElementById('gallery-file');
+  const status = document.getElementById('gallery-upload-status');
+  const expirationPreset = form.querySelector('[name="expiration_preset"]');
+  const expirationDate = form.querySelector('[name="expiration_date"]');
+  function toggleExpirationDate() {
+    const group = expirationDate && expirationDate.closest('.gallery-field');
+    if (group && expirationPreset) group.hidden = expirationPreset.value !== 'specific';
+  }
+  let previewToken = 0;
+  function preview(value) {
+    const token = ++previewToken;
+    error.hidden = true;
+    if (!value) { image.hidden = true; image.removeAttribute('src'); empty.hidden = false; return; }
+    empty.hidden = true; image.hidden = false;
+    image.onload = function () { if (token === previewToken) error.hidden = true; };
+    image.onerror = function () { if (token === previewToken) { image.hidden = true; error.hidden = false; } };
+    image.src = value;
+  }
+  url.addEventListener('input', function () { preview(url.value.trim()); });
+  document.getElementById('gallery-browse').addEventListener('click', function () { file.click(); });
+  function uploadImage(selected) {
+    if (!selected) return;
+    if (!/^image\/(png|jpeg|gif|webp)$/.test(selected.type)) { status.textContent = 'Choose a JPG, PNG, GIF, or WebP image.'; return; }
+    status.textContent = 'Uploading…';
+    const payload = new FormData(); payload.append('file', selected);
+    fetch('{{ url_for("admin_upload_gallery_image") }}', { method:'POST', body:payload })
+      .then(function (response) { return response.json().then(function (data) { if (!response.ok) throw new Error(data.error || 'Upload failed.'); return data; }); })
+      .then(function (data) { if (!data.url) throw new Error('Upload did not return an image URL.'); url.value = data.url; url.dispatchEvent(new Event('input', {bubbles:true})); status.textContent = 'Image uploaded. Save to finish.'; })
+      .catch(function (err) { status.textContent = err.message || 'Upload failed. Please try again.'; });
+  }
+  file.addEventListener('change', function () { uploadImage(file.files[0]); file.value = ''; });
+  upload.addEventListener('dragover', function (event) { event.preventDefault(); upload.classList.add('is-dragging'); });
+  upload.addEventListener('dragleave', function () { upload.classList.remove('is-dragging'); });
+  upload.addEventListener('drop', function (event) { event.preventDefault(); upload.classList.remove('is-dragging'); uploadImage(event.dataTransfer.files[0]); });
+  if (url.value.trim()) preview(url.value.trim());
+  if (expirationPreset && expirationDate) {
+    expirationPreset.addEventListener('change', toggleExpirationDate);
+    toggleExpirationDate();
+  }
+})();
+</script>
+{% endblock %}
