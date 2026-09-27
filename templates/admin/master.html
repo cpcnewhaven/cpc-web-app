@@ -299,7 +299,7 @@
             // Image upload for media gallery (url field) - supports images
             var galleryUrlInput = form.querySelector('input[name="url"]');
             // Only add if this is a gallery image form (check if we're on galleryimage page)
-            if (galleryUrlInput && window.location.pathname.includes('galleryimage')) {
+            if (galleryUrlInput && window.location.pathname.includes('galleryimage') && !form.hasAttribute('data-gallery-editor')) {
                 var formGroup = galleryUrlInput.closest('.form-group');
                 if (formGroup) {
                     var dropWrap = document.createElement('div');
