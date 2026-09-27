@@ -144,9 +144,14 @@ if not database_url:
     database_url = 'sqlite:///cpc_newhaven.db'
     log.info("DATABASE_URL not set — using local SQLite for development")
 
-# Render provides postgres:// but SQLAlchemy 1.4+ requires postgresql://
+# Select the installed psycopg2 driver explicitly. SQLAlchemy 2.1 changed
+# the default driver for postgresql:// to psycopg (Psycopg 3).
 if database_url.startswith('postgres://'):
-    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    database_url = database_url.replace('postgres://', 'postgresql+psycopg2://', 1)
+elif database_url.startswith('postgresql://'):
+    database_url = database_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
+elif database_url.startswith('postgresql+psycopg://'):
+    database_url = database_url.replace('postgresql+psycopg://', 'postgresql+psycopg2://', 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
