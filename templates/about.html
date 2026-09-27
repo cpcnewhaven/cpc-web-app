@@ -197,17 +197,27 @@
         line-height: 1.7;
     }
 
-    /* Five Marks Grid */
-    .five-marks-grid {
-        display: grid;
+    /* Keep cards readable as the viewport narrows, then center the final card. */
+    .about-page .five-marks-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 20px;
     }
 
-    /* Five cards fit comfortably across the full-width About layout on wide screens. */
     @media (min-width: 1200px) {
-        .five-marks-grid {
+        .about-page .five-marks-grid {
             grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1199px) {
+        .about-page .five-marks-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .about-page .mark-card:last-child {
+            grid-column: 1 / -1;
+            width: calc(50% - 10px);
+            justify-self: center;
         }
     }
 
@@ -216,6 +226,7 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 16px;
         padding: 28px 24px;
+        min-width: 0;
     }
 
     .mark-card h3 {
