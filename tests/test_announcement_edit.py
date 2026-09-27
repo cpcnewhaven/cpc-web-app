@@ -14,6 +14,7 @@ from models import (  # noqa: E402
     Announcement,
     GalleryImage,
     PodcastEpisode,
+    PodcastSeries,
     Sermon,
     TeachingSeries,
     TeachingSeriesSession,
@@ -49,6 +50,7 @@ class AnnouncementEditTestCase(unittest.TestCase):
                     date_entered=datetime(2026, 9, 22, 11, 21),
                 )
             )
+            podcast_series = PodcastSeries(id=484, title="Beyond the Sunday Sermon")
             db.session.add_all([
                 Sermon(
                     id=482,
@@ -60,6 +62,7 @@ class AnnouncementEditTestCase(unittest.TestCase):
                     id=483,
                     title="Editable podcast",
                     date_added=date(2026, 9, 20),
+                    series=podcast_series,
                 ),
             ])
             db.session.commit()
@@ -107,6 +110,9 @@ class AnnouncementEditTestCase(unittest.TestCase):
                 self.assertIn(heading, body)
                 self.assertIn(section, body)
                 self.assertNotIn('id="bento-grid-form"', body)
+                if "podcastepisode" in path:
+                    self.assertRegex(body, r'<select id="series" name="series"')
+                    self.assertIn('<option value="484" selected>Beyond the Sunday Sermon</option>', body)
 
     def test_list_shows_human_readable_post_timestamp_and_author(self):
         body = self.client.get("/admin/announcement/").get_data(as_text=True)
