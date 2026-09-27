@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'admin/master.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit {{ config.title }} — CPC Admin</title>
-    <link rel="stylesheet" href="/static/css/admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+{% block title %}Edit {{ page_config.title }} · CPC Admin{% endblock %}
+
+{% block head %}
+    {{ super() }}
     <style>
         :root {
-            --cpc-blue: {{ config.color or '#0052a3' }};
-            --cpc-blue-light: {{ config.color or '#007aff' }};
+            --cpc-blue: {{ page_config.color or '#0052a3' }};
+            --cpc-blue-light: {{ page_config.color or '#007aff' }};
             --text-white: #fff;
             --bg-gradient: linear-gradient(135deg, #0a0f1e 0%, #0d1a35 50%, #0a0f1e 100%);
             --glass-bg: rgba(255, 255, 255, 0.06);
@@ -88,7 +85,7 @@
         .page-dropdown {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
+            color: var(--preview-text, rgba(255, 255, 255, 0.95));
             padding: 0.5rem 1rem;
             border-radius: var(--radius-lg);
             font-size: 0.95rem;
@@ -181,7 +178,7 @@
 
         .preview-hero p {
             margin: 0;
-            color: rgba(255, 255, 255, 0.78);
+            color: var(--preview-muted, rgba(255, 255, 255, 0.78));
             max-width: 38rem;
         }
 
@@ -401,21 +398,67 @@
             background: rgba(255, 255, 255, 0.14);
             color: #fff;
         }
+
+        /* Bring the page editor into the shared CPC Admin light workspace. */
+        body { background: #f6f8fb !important; color: #1d2a36 !important; font-family: Inter, sans-serif; }
+        .page-editor-page { max-width: 1040px; padding: 1.25rem 0 4rem; color: #1d2a36; }
+        .page-editor-header h2 { color: #1d2a36; font: 800 1.8rem/1.2 Manrope, sans-serif; }
+        .page-dropdown { background: #fff; border-color: #cbd8e3; color: #1d2a36; }
+        .page-dropdown option { background: #fff; color: #1d2a36; }
+        .page-subtitle { color: #687887; line-height: 1.6; }
+        .page-subtitle a { color: #2d6fa8 !important; }
+        .appearance-toolbar button { background: #fff; color: #2d6fa8; border-color: #d5e0e8; box-shadow: 0 2px 8px rgba(30,55,75,.05); }
+        .appearance-toolbar button:hover { background: #eaf4fb; color: #245d8e; }
+        .appearance-preview { background: linear-gradient(135deg, var(--preview-bg-start, #004080), var(--preview-bg-mid, #003366), var(--preview-bg-end, #0a0f1e)); border-color: #d9e1e8; box-shadow: 0 12px 28px rgba(30,55,75,.12); }
+        .editor-section { background: #fff; border-color: #d9e1e8; border-radius: 16px; padding: 1.35rem 1.5rem; box-shadow: 0 5px 18px rgba(30,55,75,.045); }
+        .editor-section:focus-within { background: #fff; border-color: #7ab4df; box-shadow: 0 0 0 3px rgba(63,142,208,.1); }
+        .editor-section label { color: #263b4c; }
+        .field-hint { color: #718292; line-height: 1.5; }
+        .field-hint a { color: #2d6fa8; }
+        .field-hint strong { color: #3b5467 !important; }
+        .editor-section textarea,
+        .editor-section input[type="text"],
+        .editor-section input[type="number"],
+        .editor-section input[type="color"],
+        .editor-section select {
+            background: #f9fbfd !important; border: 1px solid #cbd8e3 !important;
+            border-radius: 9px; color: #1d2a36 !important; font: 500 .9rem/1.55 Inter, sans-serif;
+        }
+        .editor-section textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+        .editor-section textarea:focus,
+        .editor-section input:focus,
+        .editor-section select:focus { border-color: #3f8ed0 !important; box-shadow: 0 0 0 3px rgba(63,142,208,.12); }
+        .color-swatch-label { color: #718292; }
+        .alert-success { background: #eaf6ef; border-color: #b8dfc7; color: #286744; }
+        .quick-switch { background: #fff; border: 1px solid #d9e1e8; border-radius: 16px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 5px 18px rgba(30,55,75,.045); }
+        .quick-switch-title { color: #687887; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 .85rem; }
+        .schedule-mode-btn { padding: .6rem 1rem; border: 1px solid #d5e0e8; border-radius: 9px; background: #f7fafc; color: #365368; font-size: .84rem; font-weight: 700; cursor: pointer; transition: all .15s; }
+        .schedule-mode-btn:hover { background: #eaf4fb; border-color: #9fc8e5; color: #245d8e; }
+        .quick-switch-note { color: #718292; font-size: .78rem; line-height: 1.6; margin: 0; }
+        .quick-switch-note strong { color: #3b5467 !important; }
+        #auto-date-range { background: #f2f8fc !important; border: 1px solid #c8ddeb !important; border-radius: 12px !important; }
+        #auto-date-range > p { color: #2d6fa8 !important; }
+        #auto-date-range label { color: #50697b !important; }
+        #auto-date-range input { background: #fff !important; border-color: #cbd8e3 !important; color: #1d2a36 !important; }
+        #auto-date-range div div { color: #718292 !important; }
+        .save-bar { display: none; }
+
+        @media (max-width: 760px) {
+            .page-editor-page { padding: .5rem 0 3rem; }
+            .page-editor-header { align-items: stretch; }
+            .page-editor-header h2 { font-size: 1.45rem; }
+            .page-dropdown { width: 100%; }
+            .editor-section { padding: 1rem; }
+            .preview-row { grid-template-columns: 1fr; }
+        }
     </style>
-</head>
+{% endblock %}
 
-<body>
-
-    <!-- Simple nav bar -->
-    <nav class="page-edit-nav">
-        <a href="/admin/dashboard/"><i class="fas fa-arrow-left"></i> Dashboard</a>
-        <a href="{{ config.url }}" target="_blank"><i class="fas fa-external-link-alt"></i> View Page</a>
-        <span class="nav-title">CPC Admin — Edit Subpages</span>
-    </nav>
+{% block body %}
 
     <div class="page-editor-page">
         <div class="page-editor-header">
-            <h2><i class="{{ config.icon }}" style="color:var(--cpc-blue-light); margin-right:0.5rem;"></i>Edit {{ config.title }}</h2>
+            <h2><span class="material-symbols-outlined" style="color:var(--cpc-blue-light); margin-right:0.35rem; vertical-align:-0.12em;">{{ page_config.icon }}</span>Edit {{ page_config.title }}</h2>
             <select class="page-dropdown" onchange="window.location.href='?page=' + this.value;">
                 {% for key, subconf in subpages.items() %}
                     <option value="{{ key }}" {% if active_page == key %}selected{% endif %}>{{ subconf.title }}</option>
@@ -424,8 +467,8 @@
         </div>
         
         <p class="page-subtitle">
-            Changes save immediately to the database and appear live on the public <a href="{{ config.url }}" target="_blank"
-                style="color:var(--cpc-blue-light);">{{ config.url }}</a> page.
+            Changes save to the database and appear live on the public <a href="{{ page_config.url }}" target="_blank"
+                style="color:var(--cpc-blue-light);">{{ page_config.url }}</a> page.
             Fields marked <span class="html-badge">HTML</span> support inline HTML tags.
             Fields marked <span class="json-badge">JSON</span> must be valid JSON arrays.
         </p>
@@ -468,32 +511,29 @@
         {% endif %}
 
         {% if active_page == 'service_times' %}
-        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
-            <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.5); margin:0 0 0.85rem;">Quick Switch</p>
+        <div class="quick-switch">
+            <p class="quick-switch-title">Quick Switch</p>
             <div style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1rem;">
-                <button type="button" id="btn-regular" onclick="setScheduleMode('regular')"
-                    style="padding:0.55rem 1.1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.85); font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                <button type="button" id="btn-regular" class="schedule-mode-btn" onclick="setScheduleMode('regular')">
                     <i class="fas fa-calendar-check" style="margin-right:0.4rem;"></i>Regular Schedule
                 </button>
-                <button type="button" id="btn-summer" onclick="setScheduleMode('summer')"
-                    style="padding:0.55rem 1.1rem; border-radius:8px; border:1px solid rgba(255,200,50,0.35); background:rgba(255,200,50,0.08); color:#ffd666; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                <button type="button" id="btn-summer" class="schedule-mode-btn" onclick="setScheduleMode('summer')">
                     <i class="fas fa-sun" style="margin-right:0.4rem;"></i>Summer Schedule
                 </button>
-                <button type="button" id="btn-auto" onclick="setScheduleMode('auto')"
-                    style="padding:0.55rem 1.1rem; border-radius:8px; border:1px solid rgba(100,200,255,0.3); background:rgba(100,200,255,0.07); color:#74c0fc; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                <button type="button" id="btn-auto" class="schedule-mode-btn" onclick="setScheduleMode('auto')">
                     <i class="fas fa-robot" style="margin-right:0.4rem;"></i>Auto (by date)
                 </button>
             </div>
-            <p style="font-size:0.78rem; color:rgba(255,255,255,0.42); margin:0;">
-                <strong style="color:rgba(255,255,255,0.6);">Regular</strong> — always show the regular times.
-                <strong style="color:#ffd666;">Summer</strong> — always show the summer times.
-                <strong style="color:#74c0fc;">Auto</strong> — auto-switches based on the month range you set below.
+            <p class="quick-switch-note">
+                <strong>Regular</strong> — always show the regular times.
+                <strong>Summer</strong> — always show the summer times.
+                <strong>Auto</strong> — auto-switches based on the month range you set below.
                 Clicking a button saves immediately.
             </p>
         </div>
         {% endif %}
 
-        <form method="POST" action="/admin/subpage-edit/?page={{ active_page }}" id="mainForm">
+        <form method="POST" action="/admin/subpage-edit/?page={{ active_page }}" id="admin-form">
             {% for field in fields %}
             {% if active_page == 'service_times' and field.key in ('schedule_mode', 'summer_start_month', 'summer_end_month', 'summer_end_day') %}
             {# These are controlled by the quick-switch buttons above; still include hidden inputs so they save #}
@@ -586,14 +626,6 @@
             </div>
             {% endif %}
 
-            <div class="save-bar">
-                <button type="submit" class="btn-save">
-                    <i class="fas fa-save"></i> Save Changes to {{ config.title }}
-                </button>
-                <a href="{{ config.url }}" target="_blank" class="btn-preview">
-                    <i class="fas fa-eye"></i> Preview List
-                </a>
-            </div>
         </form>
     </div>
 
@@ -663,6 +695,9 @@
             function applyVars() {
                 if (!preview) return;
                 const map = {
+                    '--preview-bg-start': getField('appearance_bg_start'),
+                    '--preview-bg-mid': getField('appearance_bg_mid'),
+                    '--preview-bg-end': getField('appearance_bg_end'),
                     '--preview-primary': getField('appearance_primary_color'),
                     '--preview-primary-dark': getField('appearance_primary_dark'),
                     '--preview-surface': getField('appearance_surface_bg'),
@@ -742,10 +777,8 @@
                 modeInput.value = mode;
                 highlight(mode);
                 // Submit the form immediately so the change persists
-                document.getElementById('mainForm').submit();
+                document.getElementById('admin-form').submit();
             };
         })();
     </script>
-</body>
-
-</html>
+{% endblock %}
