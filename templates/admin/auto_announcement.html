@@ -24,6 +24,13 @@
   .auto-ann-card-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .7rem; color: var(--on-surface-variant); font-size: .7rem; font-weight: 700; }
   .auto-ann-card textarea { min-height: 120px; resize: vertical; margin-top: .65rem; }
   .auto-ann-card input { font-weight: 700; }
+  .auto-ann-match { margin: .8rem 0; padding: 1rem; border: 1px solid #e7c76f; border-radius: .7rem; background: #fff9e8; }
+  .auto-ann-match-title { color: #765500; font-size: .8rem; font-weight: 800; }
+  .auto-ann-change-summary { margin: .6rem 0; padding: .7rem; border-radius: .5rem; background: #fff; color: #3c5262; font-size: .85rem; line-height: 1.5; }
+  .auto-ann-change-summary strong { color: #203f55; }
+  .auto-ann-copy-label { margin-top: .55rem; color: #687d8d; font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .auto-ann-old-copy { max-height: 100px; overflow: auto; margin-top: .3rem; white-space: pre-wrap; color: #627486; font-size: .8rem; }
+  .auto-ann-new-copy { margin-top: .3rem; white-space: pre-wrap; color: #214f3b; font-size: .8rem; }
   .auto-ann-remove { border: 0; background: transparent; color: #a33b3b; font-weight: 700; cursor: pointer; }
   .auto-ann-notice { margin-top: 1rem; padding: .8rem 1rem; border-radius: .6rem; background: var(--surface-container-high); color: var(--on-surface-variant); }
   @media(max-width: 650px) { .auto-ann-page h2 { font-size: 1.6rem; } }
@@ -46,7 +53,7 @@
       <button class="auto-ann-btn secondary" id="parseAgain" type="button">Parse pasted text again</button>
     </div>
     <div id="draftList"></div>
-    <div class="auto-ann-notice">Drafts save as unpublished announcements. You can edit, preview, and publish them from the Announcements list.</div>
+    <div class="auto-ann-notice">Possible repeats include a quick wording comparison. You can edit each draft before saving; saved drafts stay unpublished until you publish them.</div>
     <div class="auto-ann-actions"><button class="auto-ann-btn" id="saveButton" type="button">Save drafts</button></div>
   </div>
 </section>
@@ -54,6 +61,7 @@
 (function(){
   const input=document.getElementById('emailText'), list=document.getElementById('draftList');
   const review=document.getElementById('reviewSection'), count=document.getElementById('draftCount');
+  let existingAnnouncements=[];
   const headings=new Set(['highlights','ongoing','this week','upcoming','events','ministries','announcements']);
   const categoryFromHeading=value=>{
     const normalized=normalize(value).toLowerCase().replace(/[\s:|!–—-]+$/g,'').replace(/^[\s:|!–—-]+/g,'');
@@ -65,7 +73,7 @@
   function parse(){
     const lines=input.value.replace(/\r/g,'').split('\n').map(normalize);
     const rows=[]; let category='Announcements', current=null, paragraph=[];
-    const makeRow=(title,description='')=>({title,description,type:category.toLowerCase()==='ongoing'?'ongoing':'announcement',category});
+    const makeRow=(title,description='')=>({title,description,type:category.toLowerCase()==='ongoing'?'ongoing':['events','upcoming'].includes(category.toLowerCase())?'event':'announcement',category});
     function flushParagraph(){if(!paragraph.length)return;const body=paragraph.join(' ').replace(/\s+/g,' ').trim();paragraph=[];if(!body)return;
       if(!current){current=makeRow(body.slice(0,100),body);rows.push(current);return;}
       current.description += '\n\n'+body;
@@ -78,13 +86,32 @@
       if(heading){flushItem();category=heading;continue;}
       if(!current && line.includes('|')){const headingBeforePipe=categoryFromHeading(line.slice(0,line.indexOf('|')));if(headingBeforePipe){flushItem();category=headingBeforePipe;continue;}}
       const split=line.match(/^(.{3,180}?)\s*\|\s*(.+)$/);
-      if(split){flushItem();const title=(split[1]+' | '+split[2]).replace(/\s+/g,' ').trim();current=makeRow(title);rows.push(current);continue;}
+      if(split){flushItem();const title=normalize(split[1]).replace(/\s+/g,' ');const description=normalize(split[2]).replace(/\s+/g,' ');current=makeRow(title,description);rows.push(current);continue;}
       if(line.length<=100 && !/[.!?]$/.test(line) && !current){flushItem();current=makeRow(line);rows.push(current);continue;}
       paragraph.push(line);
     }
     flushItem();
     return rows.filter(r=>r.title&&r.description.trim());
   }
+  function titleSimilarity(a,b){
+    const words=value=>new Set(normalize(value).toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').split(/\s+/).filter(w=>w.length>2));
+    const left=words(a),right=words(b);if(!left.size||!right.size)return 0;
+    return [...left].filter(word=>right.has(word)).length/Math.min(left.size,right.size);
+  }
+  function changeSummary(oldText,newText){
+    const words=value=>(value||'').toLowerCase().match(/[a-z0-9']+/g)||[];
+    const oldWords=words(oldText),newWords=words(newText),oldSet=new Set(oldWords),newSet=new Set(newWords);
+    const added=[...new Set(newWords.filter(word=>!oldSet.has(word)))];
+    const removed=[...new Set(oldWords.filter(word=>!newSet.has(word)))];
+    if(!added.length&&!removed.length)return 'The wording looks very similar. Review the pasted copy for detail or date changes.';
+    const parts=[];
+    if(added.length)parts.push('New or changed wording includes '+added.slice(0,12).join(', ')+(added.length>12?'…':'')+'.');
+    if(removed.length)parts.push('Wording no longer present includes '+removed.slice(0,8).join(', ')+(removed.length>8?'…':'')+'.');
+    if(newWords.length>oldWords.length*1.25)parts.push('The pasted version is longer.');
+    else if(oldWords.length>newWords.length*1.25)parts.push('The pasted version is shorter.');
+    return parts.join(' ');
+  }
+  async function fetchExisting(){try{const response=await fetch('{{ url_for("admin_auto_announcement", matches=1) }}');if(!response.ok)throw new Error('Could not load existing announcements');const data=await response.json();existingAnnouncements=data.announcements||[];}catch(_){existingAnnouncements=[];}}
   function render(){
     const drafts=parse(); list.replaceChildren();
     if(!drafts.length){alert('No announcement items found yet. Use a section heading, then a title and description for each item.');return;}
@@ -97,12 +124,30 @@
       const remove=document.createElement('button');remove.type='button';remove.className='auto-ann-remove';remove.textContent='Remove';remove.onclick=()=>{card.remove();updateCount();};top.append(label,remove);
       const title=document.createElement('input');title.setAttribute('aria-label','Announcement title');title.value=draft.title;
       const description=document.createElement('textarea');description.setAttribute('aria-label','Announcement description');description.value=draft.description;
-      card.append(top,title,description);list.append(card);
+      const matches=document.createElement('div');
+      function renderMatch(){
+        matches.replaceChildren();
+        const possible=existingAnnouncements.map(old=>({old,score:titleSimilarity(title.value,old.title)})).filter(x=>x.score>=.55).sort((a,b)=>b.score-a.score).slice(0,1);
+        possible.forEach(({old})=>{
+          const match=document.createElement('div');match.className='auto-ann-match';
+          const heading=document.createElement('div');heading.className='auto-ann-match-title';heading.textContent='Possible repeat: '+old.title;
+          const summary=document.createElement('div');summary.className='auto-ann-change-summary';summary.innerHTML='<strong>What changed:</strong> ';
+          summary.append(document.createTextNode(changeSummary(old.description,description.value)));
+          const oldLabel=document.createElement('div');oldLabel.className='auto-ann-copy-label';oldLabel.textContent='Existing CPC copy';
+          const oldCopy=document.createElement('div');oldCopy.className='auto-ann-old-copy';oldCopy.textContent=old.description;
+          const newLabel=document.createElement('div');newLabel.className='auto-ann-copy-label';newLabel.textContent='Draft copy · this is the version saved';
+          const newCopy=document.createElement('div');newCopy.className='auto-ann-new-copy';newCopy.textContent=description.value;
+          match.append(heading,summary,oldLabel,oldCopy,newLabel,newCopy);matches.append(match);
+        });
+      }
+      title.addEventListener('input',renderMatch);description.addEventListener('input',renderMatch);
+      renderMatch();
+      card.append(top,title,matches,description);list.append(card);
     });
     review.hidden=false;updateCount();review.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function updateCount(){count.textContent=list.querySelectorAll('.auto-ann-card').length+' announcements ready to save';}
-  document.getElementById('parseButton').onclick=render;document.getElementById('parseAgain').onclick=render;
+  document.getElementById('parseButton').onclick=async function(){await fetchExisting();render();};document.getElementById('parseAgain').onclick=async function(){await fetchExisting();render();};
   document.getElementById('saveButton').onclick=async function(){
     const cards=[...list.querySelectorAll('.auto-ann-card')];
     const announcements=cards.map(card=>({title:card.querySelector('input').value.trim(),description:card.querySelector('textarea').value.trim(),type:card.dataset.type}));
