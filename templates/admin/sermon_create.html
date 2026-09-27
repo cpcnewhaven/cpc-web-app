@@ -4,6 +4,12 @@
 {% macro field_control(field) %}
   {% if field.type == 'BooleanField' %}
     <label class="sermon-toggle">{{ field(class="sr-only") }}<span>{{ field.label.text }}</span><b></b></label>
+  {% elif field.type == 'QuerySelectField' %}
+    <select id="{{ field.id }}" name="{{ field.name }}" class="sermon-input sermon-select">
+      {% for value, label, selected in field.iter_choices() %}
+      <option value="{{ value }}"{% if selected %} selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
   {% elif field.type in ['SelectField', 'Select2Field', 'DatalistField'] %}
     {{ field(class="sermon-input sermon-select") }}
   {% elif field.type in ['DatePickerField', 'DateField'] %}

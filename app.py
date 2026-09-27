@@ -5233,6 +5233,7 @@ class PodcastEpisodeView(AuthenticatedModelView):
         ('Visibility & Expiration', {'fields': ('expiration_preset', 'expiration_date')})
     )
     form_columns = ('series', 'number', 'title', 'link', 'listen_url', 'handout_url', 'guest', 'date_added', 'season', 'scripture', 'podcast_thumbnail_url', 'expiration_preset', 'expiration_date')
+    form_args = {'series': {'get_label': 'title'}}
     form_extra_fields = {
         'scripture': TextAreaField('Scripture', widget=TextArea()),
         'link': URLField('Episode Link', validators=[Optional(), URL()]),
