@@ -15,6 +15,12 @@
   {% endif %}
 {% endmacro %}
 
+{% macro render_errors(errors) %}
+  {% if errors %}
+    {% for error in errors %}<small class="sermon-error">{{ error }}</small>{% endfor %}
+  {% endif %}
+{% endmacro %}
+
 {% block body %}
 {% set is_editing = request.path.rstrip('/').endswith('/edit') %}
 {% set content_name = 'Podcast episode' if admin_view.endpoint == 'podcastepisode' else 'Sermon' %}
@@ -23,7 +29,14 @@
   <h2>{% if is_editing %}Edit {{ content_name }}{% else %}New {{ content_name }}{% endif %}</h2>
   <p class="sermon-intro">{% if is_editing %}Update the details, resources, and publishing settings.{% else %}Add the details, resources, and publishing settings.{% endif %}</p>
   <form action="{{ action }}" method="POST" enctype="multipart/form-data" id="admin-form">
-    {{ form.hidden_tag() if form.hidden_tag }}
+    {% for field in form if field.type == 'HiddenField' %}{{ field() }}{% endfor %}
+    {% set form_errors = form.form_errors if form.form_errors is defined else [] %}
+    {% if form_errors %}
+    <div class="sermon-error-summary" role="alert" aria-live="polite">
+      <strong>We couldn’t save this sermon. Check the following:</strong>
+      {{ render_errors(form_errors) }}
+    </div>
+    {% endif %}
     {% for name, opts in admin_view.form_fieldsets %}
     <section class="sermon-section">
       <h3>{{ name }}</h3>
@@ -34,7 +47,7 @@
           <div class="sermon-field">
             <label for="{{ field.id }}">{{ field.label.text }}</label>
             {{ field_control(field) }}
-            {% for error in field.errors %}<small class="sermon-error">{{ error }}</small>{% endfor %}
+            {{ render_errors(field.errors) }}
           </div>
           {% endif %}
         {% endfor %}
@@ -72,6 +85,9 @@
   .sermon-toggle input:checked + span + b { background:#35a8f2; }
   .sermon-toggle input:checked + span + b:after { left:1.3rem; }
   .sermon-error { color:#f87171; display:block; margin-top:.35rem; }
+  .sermon-error-summary { margin:0 0 1.25rem; padding:1rem 1.1rem; border:1px solid #dc6a6a; border-radius:.55rem; background:#fff0f0; color:#8b2525; }
+  .sermon-error-summary strong { display:block; }
+  .sermon-error-summary .sermon-error { color:#8b2525; }
   .sermon-actions { display:flex; justify-content:flex-end; gap:.7rem; padding-top:1.5rem; border-top:1px solid #cbd6df; }
   .sermon-actions a, .sermon-actions button { border:1px solid #9eb2c0; border-radius:.55rem; padding:.8rem 1.15rem; color:#27475d; background:#fff; font-weight:700; text-decoration:none; }
   .sermon-actions .primary { background:#2d6fa8; border-color:#2d6fa8; color:#fff; }
@@ -88,6 +104,8 @@
   body.theme-blue .sermon-input, body.theme-blue .sermon-toggle { background:#102c45 !important; border-color:#5c819b !important; color:#fff !important; }
   body.theme-blue .sermon-input::placeholder { color:#b9d0df; }
   body.theme-blue .sermon-toggle b { background:#7292a8; }
+  body.theme-blue .sermon-error-summary { background:#512a32; border-color:#e38c92; color:#fff0f0; }
+  body.theme-blue .sermon-error-summary .sermon-error { color:#ffd9dc; }
   body.theme-blue .sermon-actions a, body.theme-blue .sermon-actions button { background:#173a58; border-color:#6a8ba1; color:#fff; }
   body.theme-blue .sermon-actions .primary { background:#5aace4; border-color:#5aace4; color:#102c45; }
   @media (max-width: 700px) { .sermon-editor { padding: 0 .25rem 4rem; } .scripture-fields { grid-template-columns:1fr; } .scripture-fields .sermon-field:first-child { grid-column:auto; } .sermon-actions { flex-direction:column-reverse; } .sermon-actions a, .sermon-actions button { width:100%; text-align:center; } }
