@@ -875,12 +875,16 @@ def admin_subpage_edit():
             field_dict['options'] = sermon_series_options
         fields.append(field_dict)
 
-    return render_template('admin/subpage_edit.html',
-                           fields=fields,
-                           saved=saved,
-                           active_page=active_page,
-                           subpages=SUBPAGE_CONFIGS,
-                           config=config)
+    return admin.index_view.render(
+        'admin/subpage_edit.html',
+        fields=fields,
+        saved=saved,
+        active_page=active_page,
+        subpages=SUBPAGE_CONFIGS,
+        page_config=config,
+        page_editor_title='Page Editors',
+        return_url=url_for('page_editors.index'),
+    )
 
 @app.route('/about/what-we-believe')
 def what_we_believe():
