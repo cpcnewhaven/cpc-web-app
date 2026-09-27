@@ -3448,7 +3448,9 @@ def admin_export_announcements():
 def admin_auto_announcement():
     """Turn pasted newsletter text into editable unpublished announcement drafts."""
     if request.method == 'GET' and request.args.get('matches') == '1':
-        rows = Announcement.query.order_by(Announcement.date_entered.desc()).limit(500).all()
+        rows = Announcement.query.filter_by(active=True, archived=False).order_by(
+            Announcement.date_entered.desc()
+        ).limit(500).all()
         return jsonify({'announcements': [
             {'id': row.id, 'title': row.title or '', 'description': row.description or '',
              'type': row.type or 'announcement', 'active': bool(row.active),
@@ -3493,7 +3495,10 @@ def admin_auto_announcement():
             db.session.rollback()
             app.logger.exception('Auto announcement save failed')
             return jsonify({'success': False, 'error': 'Could not save drafts. Please try again.'}), 500
-    return render_template('admin/auto_announcement.html', new_feedback_count=0)
+    return admin.index_view.render(
+        'admin/auto_announcement.html',
+        new_feedback_count=0,
+    )
 
 @app.route('/admin/export/sermons')
 @require_auth
