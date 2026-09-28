@@ -253,6 +253,65 @@
     object-fit: cover;
 }
 
+.sermon-thumbnail.btn-play-mp3 {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    cursor: pointer;
+    background: none;
+}
+
+.sermon-thumbnail.btn-play-mp3 img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: filter 0.2s ease;
+}
+
+.sermon-thumbnail.btn-play-mp3 .play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    transition: background 0.2s ease;
+}
+
+.sermon-thumbnail.btn-play-mp3 .play-overlay i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: #222;
+    font-size: 1.3rem;
+    padding-left: 3px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sermon-thumbnail.btn-play-mp3:hover img {
+    filter: brightness(0.5);
+}
+
+.sermon-thumbnail.btn-play-mp3:hover .play-overlay {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.sermon-thumbnail.btn-play-mp3:hover .play-overlay i {
+    opacity: 1;
+    transform: scale(1);
+}
+
 .sermon-content {
     flex: 1;
     display: flex;
@@ -1085,7 +1144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // HTML-escape helper for data attribute values
     function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
 
-    const SERMON_THUMBNAIL_FALLBACK = 'https://files.cpcnewhaven.org/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg';
+    const SERMON_THUMBNAIL_FALLBACK = 'https://files.cpcnewhaven.org/sermons/TheSundaySermon.jpg';
 
     function resolveSermonThumbnail(sermon) {
         const raw = sermon && sermon.thumbnail ? String(sermon.thumbnail).trim() : '';
@@ -1124,9 +1183,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
             card.innerHTML = `
                 ${thumbnailSrc ? `
-                    <div class="sermon-thumbnail">
-                        <img src="${thumbnailSrc}" alt="${sermon.title}" loading="lazy" onerror="this.onerror=null;this.src='${SERMON_THUMBNAIL_FALLBACK}'">
-                    </div>
+                    ${audioSrc ? `
+                        <button class="sermon-thumbnail btn-play-mp3"
+                            data-play-audio="${esc(audioSrc)}"
+                            data-play-title="${esc(sermon.title)}"
+                            data-play-img="${esc(thumbnailSrc)}"
+                            data-play-subtitle="${esc(sermon.speaker || '')}"
+                            title="Play sermon audio">
+                            <img src="${esc(thumbnailSrc)}"
+                                alt="Play ${esc(sermon.title)}"
+                                loading="lazy"
+                                onerror="this.onerror=null;this.src='${SERMON_THUMBNAIL_FALLBACK}'">
+                            <span class="play-overlay">
+                                <i class="fas fa-play"></i>
+                            </span>
+                        </button>
+                    ` : `
+                        <div class="sermon-thumbnail">
+                            <img src="${esc(thumbnailSrc)}"
+                                alt="${esc(sermon.title)}"
+                                loading="lazy"
+                                onerror="this.onerror=null;this.src='${SERMON_THUMBNAIL_FALLBACK}'">
+                        </div>
+                    `}
                 ` : ''}
                 <div class="sermon-content">
                     <div class="sermon-topline">
@@ -1163,14 +1242,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <i class="fab fa-apple"></i> Apple
                                 </a>
                             ` : ''}
-                            ${audioSrc && !hasStreamingLinks ? `
-                                <button class="btn-play-mp3"
-                                    data-play-audio="${esc(audioSrc)}"
-                                    data-play-title="${esc(sermon.title)}"
-                                    data-play-img="${esc(thumbnailSrc)}"
-                                    data-play-subtitle="${esc(sermon.speaker || '')}">
-                                    <i class="fas fa-play"></i> Play
-                                </button>
+                            ${audioSrc ? `
                                 <a href="${esc(audioSrc)}" download class="btn-download-mp3" title="Download sermon audio">
                                     <i class="fas fa-download"></i> Download
                                 </a>
