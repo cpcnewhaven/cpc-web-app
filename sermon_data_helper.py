@@ -48,7 +48,8 @@ class SermonDataHelper:
     def get_all_sermons(self) -> List[Dict]:
         """Get all active sermons from the database."""
         try:
-            sermons = Sermon.query.filter_by(active=True, archived=False).order_by(Sermon.date.desc()).all()
+            from sqlalchemy.orm import joinedload
+            sermons = Sermon.query.options(joinedload(Sermon.series)).filter_by(active=True, archived=False).order_by(Sermon.date.desc()).all()
             return [self._sermon_to_dict(s) for s in sermons]
         except Exception as e:
             logger.error(f"Error fetching sermons from database: {e}")
@@ -118,20 +119,20 @@ class SermonDataHelper:
             logger.error(f"Error fetching archived sermons: {e}")
             return []
     
-    def get_latest_luke_chapter(self) -> Optional[Dict]:
-        """Find the latest Luke chapter from all sermons."""
+    def get_latest_book_chapter(self, book_name: str = 'Acts') -> Optional[Dict]:
+        """Find the latest chapter for a given book (e.g. Acts, Luke) from all sermons."""
         import re
         all_sermons = self.get_all_sermons()
-        luke_sermons = []
-        luke_pattern = re.compile(r'luke\s+(\d+)[:\.]', re.IGNORECASE)
+        book_sermons = []
+        book_pattern = re.compile(rf'{re.escape(book_name)}\s+(\d+)[:\.]', re.IGNORECASE)
         
         for sermon in all_sermons:
             scripture = sermon.get('scripture', '').strip()
             if scripture:
-                match = luke_pattern.search(scripture)
+                match = book_pattern.search(scripture)
                 if match:
                     chapter = int(match.group(1))
-                    luke_sermons.append({
+                    book_sermons.append({
                         'chapter': chapter,
                         'reference': scripture,
                         'date': sermon['date'],
@@ -139,14 +140,15 @@ class SermonDataHelper:
                         'sermon': sermon
                     })
         
-        if not luke_sermons:
+        if not book_sermons:
             return None
             
-        luke_sermons.sort(key=lambda x: (x['date'], -x['chapter']), reverse=True)
-        latest = luke_sermons[0]
-        max_chapter_sermon = max(luke_sermons, key=lambda x: x['chapter'])
+        book_sermons.sort(key=lambda x: (x['date'], -x['chapter']), reverse=True)
+        latest = book_sermons[0]
+        max_chapter_sermon = max(book_sermons, key=lambda x: x['chapter'])
         
         return {
+            'book': book_name,
             'latest_by_date': {
                 'chapter': latest['chapter'],
                 'reference': latest['reference'],
@@ -159,8 +161,12 @@ class SermonDataHelper:
                 'date': max_chapter_sermon['date'],
                 'title': max_chapter_sermon['title']
             },
-            'total_luke_sermons': len(luke_sermons)
+            'total_sermons': len(book_sermons)
         }
+
+    def get_latest_luke_chapter(self) -> Optional[Dict]:
+        """Find the latest Luke chapter from all sermons."""
+        return self.get_latest_book_chapter('Luke')
 
 # Global instance
 _sermon_helper = None

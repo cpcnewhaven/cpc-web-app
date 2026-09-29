@@ -124,7 +124,7 @@
                 <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6">
                     <h3 class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em]">Featured on Homepage</h3>
                     <div class="space-y-4">
-                        <div class="text-3xl font-manrope font-black text-on-surface">{{ current_teaching_series or 'Luke' }}</div>
+                        <div class="text-3xl font-manrope font-black text-on-surface">{{ current_teaching_series or 'Acts' }}</div>
                         <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Appears in the right sidebar "Current Teaching Series" box.</p>
                         <a href="{{ url_for('admin_subpage_edit', page='homepage') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">
                             <i class="fas fa-pencil"></i> Edit Series
@@ -144,7 +144,13 @@
                 <!-- Teaching Series Spotlight -->
                 <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 space-y-6">
                     <h3 class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em]">Curriculum Active</h3>
-                    {% if latest_luke %}
+                    {% if latest_series_chapter %}
+                        <div class="space-y-4">
+                            <div class="text-3xl font-manrope font-black text-on-surface">{{ latest_series_chapter.book }} {{ latest_series_chapter.latest_by_date.chapter }}</div>
+                            <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Most recently updated chapter in the {{ latest_series_chapter.book }} teaching series library{% if latest_series_chapter.book != 'Luke' %} (previous: Luke){% endif %}.</p>
+                        <a href="{{ url_for('sermon.index_view') }}" class="inline-flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:gap-3 transition-all">Browse Scripture</a>
+                    </div>
+                    {% elif latest_luke %}
                         <div class="space-y-4">
                             <div class="text-3xl font-manrope font-black text-on-surface">Luke {{ latest_luke.latest_by_date.chapter }}</div>
                             <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed">Most recently updated chapter in the Luke teaching series library.</p>

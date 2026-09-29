@@ -508,7 +508,14 @@ def index():
     """Homepage with highlights"""
     highlights = _get_home_announcements()
     site_content = {r.key: r.value for r in SiteContent.query.all()}
-    return render_template('index.html', highlights=highlights, site_content=site_content)
+    spotlight_sermon, spotlight_beyond = _get_home_teaching_spotlight()
+    return render_template(
+        'index.html',
+        highlights=highlights,
+        site_content=site_content,
+        spotlight_sermon=spotlight_sermon,
+        spotlight_beyond=spotlight_beyond,
+    )
 
 @app.route('/about')
 def about():
@@ -746,7 +753,8 @@ SUBPAGE_CONFIGS = {
         'icon': 'home',
         'color': '#f97316',
         'keys': [
-            ('current_teaching_series_title', 'Current Teaching Series Title', 'Luke', 'select_sermon_series'),
+            ('current_teaching_series_title', 'Current Teaching Series Title', 'Acts', 'select_sermon_series'),
+            ('previous_teaching_series_title', 'Previous Teaching Series Title', 'Luke', 'select_sermon_series'),
             ('current_teaching_series_subtitle', 'Current Teaching Series Subtitle', 'The Sunday Sermon Podcast', 'text'),
         ]
     }
@@ -1651,6 +1659,145 @@ def _get_home_announcements():
         return _snapshot_announcements(active_only=True)[:10]
 
 
+def _get_home_teaching_spotlight():
+    """Fetch the latest Sunday sermon and corresponding Beyond the Sunday Sermon podcast episode."""
+    latest_sermon = None
+    latest_beyond = None
+    default_sermon_thumb = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'
+    default_beyond_art = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png'
+
+    try:
+        sermon = Sermon.query.filter(
+            Sermon.active == True,
+            Sermon.archived == False,
+            Sermon.title.isnot(None),
+            Sermon.title != '',
+            Sermon.title != 'TBA',
+        ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).first()
+
+        if sermon:
+            series_title = sermon.series.title if sermon.series else None
+            series_img = sermon.series.image_url if sermon.series else None
+            thumb = sermon.podcast_thumbnail_url or series_img or default_sermon_thumb
+
+            latest_sermon = {
+                'id': sermon.id,
+                'title': sermon.title,
+                'speaker': sermon.display_speaker,
+                'scripture': sermon.scripture or '',
+                'date': sermon.date.strftime('%B %-d, %Y') if sermon.date else '',
+                'date_iso': sermon.date.strftime('%Y-%m-%d') if sermon.date else '',
+                'series_title': series_title,
+                'thumbnail_url': thumb,
+                'youtube_url': sermon.youtube_url or '',
+                'spotify_url': sermon.spotify_url or '',
+                'apple_podcasts_url': sermon.apple_podcasts_url or '',
+                'audio_url': sermon.audio_file_url,
+                'video_url': sermon.video_file_url,
+                'has_linked_beyond': sermon.beyond_episode is not None,
+            }
+
+            if sermon.beyond_episode:
+                ep = sermon.beyond_episode
+                beyond_artwork = ep.podcast_thumbnail_url or default_beyond_art
+                latest_beyond = {
+                    'id': ep.id,
+                    'title': ep.title,
+                    'guest': ep.guest or '',
+                    'scripture': ep.scripture or '',
+                    'date': ep.date_added.strftime('%B %-d, %Y') if ep.date_added else '',
+                    'link': ep.link or ep.listen_url or '',
+                    'listen_url': ep.listen_url or ep.link or '',
+                    'handout_url': ep.handout_url,
+                    'season': ep.season,
+                    'number': ep.number,
+                    'artwork': beyond_artwork,
+                    'audio_url': ep.listen_url if (ep.listen_url and ep.listen_url.endswith('.mp3')) else None,
+                    'is_direct_companion': True,
+                }
+    except Exception as e:
+        log.warning("Error fetching spotlight sermon from DB: %s", e)
+
+    # If no beyond episode is directly linked to the latest sermon, find the latest episode of Beyond the Sunday Sermon
+    if not latest_beyond:
+        try:
+            beyond_series = PodcastSeries.query.filter(PodcastSeries.title.ilike('%Beyond%')).first()
+            if beyond_series:
+                ep = PodcastEpisode.query.filter_by(series_id=beyond_series.id)\
+                    .filter(_not_expired(PodcastEpisode))\
+                    .order_by(PodcastEpisode.date_added.desc(), PodcastEpisode.number.desc()).first()
+                if ep:
+                    beyond_artwork = ep.podcast_thumbnail_url or default_beyond_art
+                    latest_beyond = {
+                        'id': ep.id,
+                        'title': ep.title,
+                        'guest': ep.guest or '',
+                        'scripture': ep.scripture or '',
+                        'date': ep.date_added.strftime('%B %-d, %Y') if ep.date_added else '',
+                        'link': ep.link or ep.listen_url or '',
+                        'listen_url': ep.listen_url or ep.link or '',
+                        'handout_url': ep.handout_url,
+                        'season': ep.season,
+                        'number': ep.number,
+                        'artwork': beyond_artwork,
+                        'audio_url': ep.listen_url if (ep.listen_url and ep.listen_url.endswith('.mp3')) else None,
+                        'is_direct_companion': False,
+                    }
+        except Exception as e:
+            log.warning("Error fetching latest beyond episode from DB: %s", e)
+
+    # Fallback to local sermons.json if DB had no sermon (e.g. offline dev environment)
+    if not latest_sermon:
+        try:
+            sermons_path = os.path.join(app.root_path, 'data', 'sermons.json')
+            if os.path.exists(sermons_path):
+                with open(sermons_path, 'r', encoding='utf-8') as f:
+                    sermons_list = json.load(f).get('sermons', [])
+                if sermons_list:
+                    s = max(sermons_list, key=lambda x: x.get('date') or '', default=None)
+                    if s:
+                        raw_title = s.get('title') or 'Sunday Sermon'
+                        clean_title = raw_title.split('|')[0].strip()
+                        thumb = s.get('podcast_thumbnail_url') or default_sermon_thumb
+                        latest_sermon = {
+                            'id': s.get('id'),
+                            'title': clean_title,
+                            'speaker': s.get('author') or s.get('speaker', ''),
+                            'scripture': s.get('scripture', ''),
+                            'date': s.get('date', ''),
+                            'date_iso': s.get('date', ''),
+                            'series_title': s.get('series', 'The Sunday Sermon'),
+                            'thumbnail_url': thumb,
+                            'youtube_url': s.get('youtube_url', ''),
+                            'spotify_url': s.get('spotify_url', '') or s.get('link', ''),
+                            'apple_podcasts_url': s.get('apple_podcasts_url', ''),
+                            'audio_url': None,
+                            'video_url': None,
+                            'has_linked_beyond': False,
+                        }
+        except Exception as e:
+            log.warning("Error loading fallback sermon for spotlight: %s", e)
+
+    if not latest_beyond:
+        latest_beyond = {
+            'id': None,
+            'title': 'Beyond the Sunday Sermon',
+            'guest': 'CPC Pastors',
+            'scripture': '',
+            'date': '',
+            'link': '/podcasts',
+            'listen_url': '/podcasts',
+            'handout_url': None,
+            'season': None,
+            'number': None,
+            'artwork': default_beyond_art,
+            'audio_url': None,
+            'is_direct_companion': False,
+        }
+
+    return latest_sermon, latest_beyond
+
+
 @app.route('/api/announcements')
 @cache.cached(timeout=60)
 def api_announcements():
@@ -1835,6 +1982,36 @@ def api_papers_latest():
 def api_latest_sermon():
     """Return the newest maintained sermon without waiting on the archive query."""
     try:
+        sermon = Sermon.query.filter(
+            Sermon.active == True,
+            Sermon.archived == False,
+            Sermon.title.isnot(None),
+            Sermon.title != '',
+            Sermon.title != 'TBA',
+        ).filter(_not_expired(Sermon)).order_by(Sermon.date.desc()).first()
+        if sermon:
+            episode = {
+                'id': sermon.id,
+                'title': sermon.title,
+                'speaker': sermon.display_speaker,
+                'author': sermon.display_speaker,
+                'scripture': sermon.scripture or '',
+                'date': sermon.date.strftime('%Y-%m-%d') if sermon.date else '',
+                'spotify_url': sermon.spotify_url or '',
+                'youtube_url': sermon.youtube_url or '',
+                'apple_podcasts_url': sermon.apple_podcasts_url or '',
+                'link': sermon.spotify_url or sermon.youtube_url or sermon.apple_podcasts_url or '',
+                'podcast_thumbnail_url': sermon.podcast_thumbnail_url or (sermon.series.image_url if sermon.series else ''),
+                'audio_file': sermon.audio_file_url,
+                'video_file': sermon.video_file_url,
+            }
+            if sermon.series:
+                episode['series'] = {'id': sermon.series.id, 'title': sermon.series.title}
+            return jsonify({'episode': episode, 'source': 'database'})
+    except Exception as e:
+        log.warning("DB read in api_latest_sermon failed: %s", e)
+
+    try:
         sermons_path = os.path.join(app.root_path, 'data', 'sermons.json')
         with open(sermons_path, 'r', encoding='utf-8') as sermons_file:
             sermons = json.load(sermons_file).get('sermons', [])
@@ -1843,6 +2020,16 @@ def api_latest_sermon():
     except (OSError, ValueError, AttributeError) as e:
         print(f"Error loading latest sermon: {e}")
         return jsonify({'episode': None, 'source': 'unavailable'}), 503
+
+@app.route('/api/spotlight')
+@cache.cached(timeout=120)
+def api_spotlight():
+    """Return the paired Sunday Sermon and Beyond Podcast spotlight data."""
+    sermon, beyond = _get_home_teaching_spotlight()
+    return jsonify({
+        'sermon': sermon,
+        'beyond': beyond,
+    })
 
 @app.route('/api/sermons')
 @cache.cached(timeout=120)
@@ -6207,24 +6394,27 @@ class DashboardView(BaseView):
         recent_sermons = Sermon.query.order_by(Sermon.date.desc()).limit(5).all()
         today = datetime.now()
         
-        # Get latest Luke chapter information
+        # Get current teaching series for featured display
+        current_teaching_series = SiteContent.query.filter_by(key='current_teaching_series_title').first()
+        current_series_title = current_teaching_series.value if current_teaching_series else 'Acts'
+
+        # Get latest series chapter information
+        latest_series_chapter = None
         latest_luke = None
         try:
             from sermon_data_helper import get_sermon_helper
             helper = get_sermon_helper()
+            latest_series_chapter = helper.get_latest_book_chapter(current_series_title)
             latest_luke = helper.get_latest_luke_chapter()
         except Exception as e:
-            print(f"Error getting latest Luke chapter: {e}")
-
-        # Get current teaching series for featured display
-        current_teaching_series = SiteContent.query.filter_by(key='current_teaching_series_title').first()
-        current_series_title = current_teaching_series.value if current_teaching_series else 'Luke'
+            print(f"Error getting latest series chapter: {e}")
 
         return self.render('admin/dashboard.html',
                          stats=stats,
                          recent_announcements=recent_announcements,
                          recent_sermons=recent_sermons,
                          today=today,
+                         latest_series_chapter=latest_series_chapter,
                          latest_luke=latest_luke,
                          user_xp=user_xp,
                          admin_level=admin_level,

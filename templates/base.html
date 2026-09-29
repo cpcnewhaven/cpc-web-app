@@ -421,12 +421,12 @@
                 <a href="{{ url_for('plan_a_visit') }}" class="cta" style="display:inline-block; margin-top:0.65rem; color:var(--surface-accent);">Plan Your Visit →</a>
             </div>
         </div>
-        <div class="dashboard-section" id="luke-chapter-section">
+        <div class="dashboard-section" id="teaching-series-section">
             <div class="dashboard-title">Current Teaching Series</div>
-            <div class="dashboard-note" id="luke-chapter-content">
-                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Luke') }}</div>
+            <div class="dashboard-note" id="teaching-series-content">
+                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Acts') }}</div>
                 <div class="study-date" style="margin-top: 0.25rem;">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
-                <a href="{{ url_for('teaching_series') }}?q={{ site_content.get('current_teaching_series_title', 'Luke') | urlencode }}"
+                <a href="{{ url_for('teaching_series') }}?q={{ site_content.get('current_teaching_series_title', 'Acts') | urlencode }}"
                     class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">View Series →</a>
             </div>
         </div>

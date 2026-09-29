@@ -1105,9 +1105,28 @@
     <!-- Compact Hero -->
     <div class="compact-hero" style="grid-column: 1 / -1; margin-bottom: 0.5rem;">
         <p class="compact-hero__eyebrow">Teaching Series</p>
-        <h1>Adult Sunday Studies</h1>
-        <p>Explore CPC’s Sunday courses, with class materials and recordings gathered in one place.</p>
+        <h1>Teaching Series &amp; Sunday Studies</h1>
+        <p>Explore CPC’s current preaching series, Sunday courses, and sermon archives gathered in one place.</p>
     </div>
+
+    <!-- Current Preaching Series Spotlight -->
+    <article class="adult-study-feature current-teaching-series-feature" style="margin-bottom: 1.25rem; background: linear-gradient(135deg, rgba(0, 82, 163, .35), var(--series-surface)); border: 1px solid var(--series-border);">
+        <div>
+            <p class="adult-study-feature__eyebrow" style="color: var(--series-accent);">Current Preaching Series</p>
+            <h2>{{ site_content.get('current_teaching_series_title', 'Acts') }}</h2>
+            <p>{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }} — Preaching through the Acts of the Apostles.</p>
+            <div style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+                <a class="adult-study-link" href="{{ url_for('sermons') }}?series=54" style="background: var(--series-surface-hover); color: var(--series-accent); font-weight: 800;">Browse Acts Sermons →</a>
+                <span style="font-size: 0.85rem; color: var(--series-muted);">Previous series: <a href="{{ url_for('sermons') }}?series=30" style="color: var(--series-accent); text-decoration: underline;">Luke</a></span>
+            </div>
+        </div>
+        <div class="adult-study-feature__marks" aria-label="Current series details">
+            <span>Preaching Series: Acts</span>
+            <span>Sundays 10:30am</span>
+            <span>The Sunday Sermon</span>
+            <span>Previous: Luke</span>
+        </div>
+    </article>
 
     <div class="adult-studies">
         <div class="adult-studies__intro">Adult Sunday Studies meet around Scripture, doctrine, and life together. Choose a course to explore its full class material, handouts, and recordings.</div>
@@ -1220,9 +1239,16 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const query = urlParams.get('q');
                 if (query) {
+                    const mainContainer = document.querySelector('.main-container');
+                    if (mainContainer) {
+                        mainContainer.style.display = 'grid';
+                    }
                     activeFilters.search = query.toLowerCase();
                     document.getElementById('search-input').value = query;
                     applyFilters();
+                    setTimeout(() => {
+                        mainContainer && mainContainer.scrollIntoView({ behavior: 'smooth' });
+                    }, 200);
                 } else {
                     renderSeries();
                 }
