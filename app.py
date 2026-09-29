@@ -2198,7 +2198,7 @@ def admin_beta_features():
         except Exception:
             app.logger.exception('Planning Center beta page could not load events')
             calendar_error = 'Planning Center is connected, but events could not be loaded. Check the connection and try again.'
-    return render_template(
+    return admin.index_view.render(
         'admin/beta_features.html',
         connected=connected,
         events=events,
@@ -3316,11 +3316,36 @@ def _seed_pastor_teaching_sample():
     db.session.commit()
 
 
+class AnonymousUser:
+    is_authenticated = False
+    is_active = False
+    is_anonymous = True
+    username = None
+    full_name = None
+
+    def __bool__(self):
+        return False
+
+
+class AuthenticatedSessionUser:
+    is_authenticated = True
+    is_active = True
+    is_anonymous = False
+
+    def __init__(self, username):
+        self.username = username
+        self.full_name = username
+        self.last_login_at = None
+
+    def __bool__(self):
+        return True
+
+
 def get_authenticated_user():
     """Return the currently authenticated admin user or None."""
     if not is_authenticated():
         return None
-    username = session.get('username')
+    username = session.get('username') or session.get('user')
     if not username:
         return None
     return User.query.filter_by(username=username).first()
@@ -3338,6 +3363,10 @@ def get_git_revision_short_hash():
 def inject_current_user_metadata():
     """Expose authenticated-user metadata, app version, and git commit to templates."""
     user = get_authenticated_user()
+    if not user and is_authenticated():
+        session_user = session.get('username') or session.get('user') or 'admin'
+        user = AuthenticatedSessionUser(session_user)
+    current_user = user or AnonymousUser()
     app_version = 'unknown'
     try:
         with open(os.path.join(os.path.dirname(__file__), 'VERSION'), 'r') as f:
@@ -3351,7 +3380,8 @@ def inject_current_user_metadata():
         new_feedback_count = 0
         
     return {
-        'current_user_last_login': user.last_login_at if user else None,
+        'current_user': current_user,
+        'current_user_last_login': user.last_login_at if hasattr(user, 'last_login_at') else None,
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),

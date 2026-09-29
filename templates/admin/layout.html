@@ -1,4 +1,5 @@
 {% macro menu() -%}
+  {% if admin_view is defined and admin_view and admin_view.admin %}
   {# Render top-level items (no category) first #}
   {% for item in admin_view.admin._views %}
     {% if not item.category %}
@@ -27,6 +28,7 @@
         {% endfor %}
       </ul>
     </li>
+  {% endif %}
   {% endif %}
 {%- endmacro %}
 

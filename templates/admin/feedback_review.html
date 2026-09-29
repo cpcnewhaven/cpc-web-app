@@ -34,7 +34,7 @@
     <article class="feedback-card status-{{ item.status }}">
       <div class="feedback-card-top">
         <span class="feedback-kind kind-{{ item.kind }}">{{ {'love':'❤️ Like this','confusing':'🤔 Confusing','broken':'🛠 Broken','idea':'💡 Idea','note':'Note'}.get(item.kind, item.kind) }} · CPC-{{ item.id }}</span>
-        <time datetime="{{ item.created_at.isoformat() if item.created_at else '' }}">{{ item.created_at.strftime('%b %d, %Y · %-I:%M %p') if item.created_at else 'Unknown time' }}</time>
+        <time datetime="{{ item.created_at.isoformat() if item.created_at else '' }}">{{ item.created_at.strftime('%b %d, %Y · %I:%M %p') if item.created_at else 'Unknown time' }}</time>
       </div>
       <p class="feedback-message">{{ item.message }}</p>
       <div class="feedback-context">
