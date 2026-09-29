@@ -18,10 +18,19 @@
   .auto-ann-btn.secondary { border: 1px solid var(--admin-border); background: var(--surface-container-high); color: var(--on-surface); }
   .auto-ann-btn:disabled { opacity: .55; cursor: wait; }
   .auto-ann-beta { display: inline-block; vertical-align: middle; padding: .28rem .55rem; border-radius: 99px; background: #fff1cf; color: #855c00; font-family: inherit; font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  #reviewSection[hidden] { display: none; }
+  #sourceSection[hidden], #reviewSection[hidden], #previewSection[hidden] { display: none; }
+  .auto-ann-panel input[type="text"], .auto-ann-card select { width:100%; padding:.7rem; border:1px solid var(--admin-input-border); border-radius:.6rem; background:var(--admin-input-bg); color:var(--on-surface); }
+  .auto-ann-card-top { flex-wrap:wrap; }
+  .auto-ann-choice { margin-top:.8rem; }
+  .auto-ann-preview-copy { white-space:pre-wrap; line-height:1.65; color:var(--on-surface) !important; }
+  .admin-body .auto-ann-preview h3 { color:var(--on-surface) !important; font-size:1.1rem; font-weight:800; margin:.5rem 0; }
   .auto-ann-category { margin: 1.5rem 0 .6rem; color: var(--primary-dim); font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
   .auto-ann-card { margin: .75rem 0; padding: 1rem; border: 1px solid var(--admin-border); border-radius: .8rem; background: var(--surface-container-low); }
   .auto-ann-card-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .7rem; color: var(--on-surface-variant); font-size: .7rem; font-weight: 700; }
+  .auto-ann-include { display:flex !important; align-items:center; gap:.5rem; margin:0 !important; cursor:pointer; }
+  .auto-ann-card .auto-ann-include input { width:18px; height:18px; margin:0; accent-color:var(--primary); }
+  .auto-ann-card.excluded { background:var(--surface-container); border-style:dashed; }
+  .auto-ann-card.excluded > input, .auto-ann-card.excluded > textarea, .auto-ann-card.excluded > div:not(.auto-ann-card-top) { opacity:.55; }
   .auto-ann-card textarea { min-height: 120px; resize: vertical; margin-top: .65rem; }
   .auto-ann-card input { font-weight: 700; }
   .auto-ann-match { margin: .8rem 0; padding: 1rem; border: 1px solid #e7c76f; border-radius: .7rem; background: #fff9e8; }
@@ -41,8 +50,10 @@
   <h2>Auto announcement</h2>
   <p class="auto-ann-intro">Paste the announcement copy from your Mailchimp email. We’ll split it by section and item so you can review and edit each draft before saving it to CPC Admin.</p>
 
-  <div class="auto-ann-panel">
-    <label for="emailText">Mailchimp announcement text</label>
+  <div class="auto-ann-panel" id="sourceSection">
+    <label for="batchName">Batch name</label>
+    <input id="batchName" type="text" maxlength="160" placeholder="September 29 Weekly">
+    <label for="emailText" style="margin-top:1rem">Mailchimp announcement text</label>
     <textarea id="emailText" placeholder="Paste the email text here, including section headings like Highlights and Ongoing…"></textarea>
     <div class="auto-ann-actions"><button class="auto-ann-btn" id="parseButton" type="button">Sort into drafts</button></div>
   </div>
@@ -53,15 +64,32 @@
       <button class="auto-ann-btn secondary" id="parseAgain" type="button">Parse pasted text again</button>
     </div>
     <div id="draftList"></div>
-    <div class="auto-ann-notice">Possible repeats include a quick wording comparison. You can edit each draft before saving; saved drafts stay unpublished until you publish them.</div>
-    <div class="auto-ann-actions"><button class="auto-ann-btn" id="saveButton" type="button">Save drafts</button></div>
+    <div class="auto-ann-notice">Uncheck “Include in this batch” to leave an item out. Possible repeats include a quick wording comparison. You can edit each draft before saving; new drafts stay unpublished until you publish them. Updates replace existing copy and keep its current status, so changes to published announcements become live when you save.</div>
+    <div class="auto-ann-actions"><button class="auto-ann-btn" id="previewButton" type="button">Preview selected announcements</button></div>
+  </div>
+  <div id="previewSection" class="auto-ann-panel" hidden>
+    <div class="auto-ann-kicker">Final review</div>
+    <h2 id="previewName"></h2>
+    <div id="previewSummary" class="auto-ann-notice"></div>
+    <div id="previewList"></div>
+    <div class="auto-ann-actions">
+      <button class="auto-ann-btn secondary" id="backButton" type="button">Back to editing</button>
+      <button class="auto-ann-btn" id="saveButton" type="button">Save batch</button>
+    </div>
   </div>
 </section>
 <script>
 (function(){
   const input=document.getElementById('emailText'), list=document.getElementById('draftList');
   const review=document.getElementById('reviewSection'), count=document.getElementById('draftCount');
-  let existingAnnouncements=[];
+  let existingAnnouncements=[], pendingAnnouncements=[];
+  const preview=document.getElementById('previewSection'), batchName=document.getElementById('batchName');
+  batchName.value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric'})+' Weekly';
+  function clutterReason(title){
+    if(/^\d{1,2}[:.]\d{2}\s*(?:a\.?m\.?|p\.?m\.?)$/i.test(title.trim()))return 'Looks like a service time rather than an announcement.';
+    if(/^(?:view (?:this )?email in (?:your )?browser|unsubscribe|update (?:your )?(?:preferences|profile)|manage (?:your )?preferences|copyright|all rights reserved|forward (?:this|to a friend)|home|contact us|follow us|view (?:our )?website|website|facebook|instagram)(?:\b|$)/i.test(title.trim()))return 'Looks like email navigation or footer text.';
+    return '';
+  }
   const headings=new Set(['highlights','ongoing','this week','upcoming','events','ministries','announcements']);
   const categoryFromHeading=value=>{
     const normalized=normalize(value).toLowerCase().replace(/[\s:|!–—-]+$/g,'').replace(/^[\s:|!–—-]+/g,'');
@@ -81,6 +109,7 @@
     function flushItem(){flushParagraph();current=null;}
     for(const line of lines){
       if(!line){flushParagraph();continue;}
+      if(clutterReason(line)){flushItem();rows.push({...makeRow(line,''),clutter:clutterReason(line)});continue;}
       const clean=line.replace(/^[*#>\s]+|[*#\s]+$/g,'').trim();
       const heading=categoryFromHeading(clean);
       if(heading){flushItem();category=heading;continue;}
@@ -91,7 +120,7 @@
       paragraph.push(line);
     }
     flushItem();
-    return rows.filter(r=>r.title&&r.description.trim());
+    return rows.filter(r=>r.title&&(r.description.trim()||r.clutter));
   }
   function titleSimilarity(a,b){
     const words=value=>new Set(normalize(value).toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').split(/\s+/).filter(w=>w.length>2));
@@ -111,24 +140,53 @@
     else if(oldWords.length>newWords.length*1.25)parts.push('The pasted version is shorter.');
     return parts.join(' ');
   }
-  async function fetchExisting(){try{const response=await fetch('{{ url_for("admin_auto_announcement", matches=1) }}');if(!response.ok)throw new Error('Could not load existing announcements');const data=await response.json();existingAnnouncements=data.announcements||[];}catch(_){existingAnnouncements=[];}}
+  async function fetchExisting(){try{const response=await fetch('{{ url_for("admin_auto_announcement", matches=1) }}');if(!response.ok)throw new Error('Could not load existing announcements');const data=await response.json();existingAnnouncements=data.announcements||[];}catch(_){existingAnnouncements=[];alert('Existing announcements could not be loaded. Repeat checking is unavailable; review carefully before creating new drafts.');}}
   function render(){
-    const drafts=parse(); list.replaceChildren();
+    const drafts=parse(); list.replaceChildren();preview.hidden=true;
     if(!drafts.length){alert('No announcement items found yet. Use a section heading, then a title and description for each item.');return;}
     let previous='';
     drafts.forEach((draft,index)=>{
+      draft.clutter=draft.clutter||clutterReason(draft.title);
       if(draft.category!==previous){const heading=document.createElement('div');heading.className='auto-ann-category';heading.textContent=draft.category;list.append(heading);previous=draft.category;}
       const card=document.createElement('article');card.className='auto-ann-card';card.dataset.type=draft.type;
       const top=document.createElement('div');top.className='auto-ann-card-top';
       const label=document.createElement('span');label.textContent='Draft '+(index+1)+' · '+draft.type;
+      const includeLabel=document.createElement('label');includeLabel.className='auto-ann-include';
+      const include=document.createElement('input');include.type='checkbox';include.className='auto-ann-include-check';include.checked=!draft.clutter;card.classList.toggle('excluded',!include.checked);
+      include.setAttribute('aria-label','Include draft '+(index+1)+' in this batch');
+      includeLabel.append(include,document.createTextNode('Include in this batch'));
+      include.addEventListener('change',()=>{card.classList.toggle('excluded',!include.checked);if(include.checked&&action.value==='skip')action.value='create';updateCount();});
       const remove=document.createElement('button');remove.type='button';remove.className='auto-ann-remove';remove.textContent='Remove';remove.onclick=()=>{card.remove();updateCount();};top.append(label,remove);
+      top.insertBefore(includeLabel,remove);
       const title=document.createElement('input');title.setAttribute('aria-label','Announcement title');title.value=draft.title;
       const description=document.createElement('textarea');description.setAttribute('aria-label','Announcement description');description.value=draft.description;
       const matches=document.createElement('div');
+      const choices=document.createElement('div');choices.className='auto-ann-choice';
+      const actionLabel=document.createElement('label');actionLabel.textContent='What should happen to this item?';
+      const action=document.createElement('select');action.className='auto-ann-action';action.setAttribute('aria-label','Action for draft '+(index+1));
+      [['create','Create a new draft'],['update','Update an existing announcement'],['skip','Skip this item']].forEach(([value,text])=>{const option=document.createElement('option');option.value=value;option.textContent=text;action.append(option);});
+      const target=document.createElement('select');target.className='auto-ann-target';target.setAttribute('aria-label','Existing announcement for draft '+(index+1));target.hidden=true;
+      const state=document.createElement('div');state.className='auto-ann-notice';state.hidden=true;
+      actionLabel.append(action);choices.append(actionLabel,target,state);
+      if(draft.clutter){const flag=document.createElement('div');flag.className='auto-ann-notice';flag.textContent='Excluded suggestion: '+draft.clutter+' Check Include in this batch if you want to keep it.';choices.prepend(flag);}
+      function refreshAction(){
+        target.hidden=action.value!=='update';state.hidden=action.value!=='update';
+        const old=existingAnnouncements.find(item=>String(item.id)===target.value);
+        if(old)state.textContent=old.published?'This announcement is published. Saving replaces its live copy; publication and placement stay the same.':'Saving updates this announcement’s copy and keeps its current draft or scheduled status.';
+      }
+      action.addEventListener('change',()=>{if(action.value==='skip'){include.checked=false;card.classList.add('excluded');}refreshAction();updateCount();});
+      target.addEventListener('change',renderMatch);
       function renderMatch(){
         matches.replaceChildren();
-        const possible=existingAnnouncements.map(old=>({old,score:titleSimilarity(title.value,old.title)})).filter(x=>x.score>=.55).sort((a,b)=>b.score-a.score).slice(0,1);
-        possible.forEach(({old})=>{
+        const oldTarget=target.value;
+        const possible=existingAnnouncements.map(old=>({old,score:titleSimilarity(title.value,old.title)})).filter(x=>x.score>=.55).sort((a,b)=>b.score-a.score).slice(0,3);
+        target.replaceChildren();
+        possible.forEach(({old})=>{const option=document.createElement('option');option.value=old.id;option.textContent=old.title+' · '+(old.published?'Published':'Draft or scheduled');target.append(option);});
+        if(possible.some(({old})=>String(old.id)===oldTarget))target.value=oldTarget;
+        action.querySelector('option[value="update"]').disabled=!possible.length;
+        if(!possible.length&&action.value==='update')action.value='create';
+        refreshAction();
+        possible.filter(({old})=>String(old.id)===target.value).slice(0,1).forEach(({old})=>{
           const match=document.createElement('div');match.className='auto-ann-match';
           const heading=document.createElement('div');heading.className='auto-ann-match-title';heading.textContent='Possible repeat: '+old.title;
           const summary=document.createElement('div');summary.className='auto-ann-change-summary';summary.innerHTML='<strong>What changed:</strong> ';
@@ -142,22 +200,51 @@
       }
       title.addEventListener('input',renderMatch);description.addEventListener('input',renderMatch);
       renderMatch();
-      card.append(top,title,matches,description);list.append(card);
+      card.append(top,title,matches,description,choices);list.append(card);
     });
     review.hidden=false;updateCount();review.scrollIntoView({behavior:'smooth',block:'start'});
   }
-  function updateCount(){count.textContent=list.querySelectorAll('.auto-ann-card').length+' announcements ready to save';}
+  function updateCount(){
+    const total=list.querySelectorAll('.auto-ann-card').length;
+    const selected=list.querySelectorAll('.auto-ann-include-check:checked').length;
+    count.textContent=selected+' of '+total+' announcements included · '+(total-selected)+' excluded';
+    document.getElementById('previewButton').disabled=selected===0;
+  }
   document.getElementById('parseButton').onclick=async function(){await fetchExisting();render();};document.getElementById('parseAgain').onclick=async function(){await fetchExisting();render();};
+  document.getElementById('previewButton').onclick=function(){
+    const cards=[...list.querySelectorAll('.auto-ann-card')].filter(card=>card.querySelector('.auto-ann-include-check').checked);
+    pendingAnnouncements=cards.map(card=>{
+      const action=card.querySelector('.auto-ann-action').value;
+      const old=existingAnnouncements.find(item=>String(item.id)===card.querySelector('.auto-ann-target').value);
+      return {title:card.querySelector('input:not([type="checkbox"])').value.trim(),description:card.querySelector('textarea').value.trim(),type:card.dataset.type,action,
+        existing_id:action==='update'&&old?old.id:null,revision:action==='update'&&old?old.revision:null};
+    });
+    if(!pendingAnnouncements.length){alert('Include at least one announcement.');return;}
+    if(pendingAnnouncements.some(item=>!item.title||!item.description)){alert('Every included item needs a title and description.');return;}
+    if(pendingAnnouncements.some(item=>item.action==='update'&&!item.existing_id)){alert('Choose an existing announcement for each update.');return;}
+    const targets=pendingAnnouncements.filter(item=>item.action==='update').map(item=>item.existing_id);
+    if(new Set(targets).size!==targets.length){alert('Two items update the same announcement. Include only one version.');return;}
+    const previewList=document.getElementById('previewList');previewList.replaceChildren();
+    document.getElementById('previewName').textContent=batchName.value.trim()||'Weekly announcements';
+    const updates=pendingAnnouncements.filter(item=>item.action==='update');
+    const live=updates.filter(item=>existingAnnouncements.find(old=>old.id===item.existing_id)?.published).length;
+    document.getElementById('previewSummary').textContent=(pendingAnnouncements.length-updates.length)+' new draft'+(pendingAnnouncements.length-updates.length===1?'':'s')+' · '+updates.length+' update'+(updates.length===1?'':'s')+' · '+(list.querySelectorAll('.auto-ann-card').length-pendingAnnouncements.length)+' excluded. '+(live?live+' published announcement'+(live===1?'':'s')+' will change immediately when you save.':'New drafts stay unpublished.');
+    pendingAnnouncements.forEach(item=>{
+      const card=document.createElement('article');card.className='auto-ann-card auto-ann-preview';
+      const label=document.createElement('div');label.className='auto-ann-kicker';label.textContent=item.action==='update'?'Update existing announcement':'Create unpublished draft';
+      const title=document.createElement('h3');title.textContent=item.title;
+      const copy=document.createElement('div');copy.className='auto-ann-preview-copy';copy.textContent=item.description;
+      card.append(label,title,copy);previewList.append(card);
+    });
+    document.getElementById('sourceSection').hidden=true;review.hidden=true;preview.hidden=false;preview.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  document.getElementById('backButton').onclick=()=>{document.getElementById('sourceSection').hidden=false;preview.hidden=true;review.hidden=false;review.scrollIntoView({behavior:'smooth',block:'start'});};
   document.getElementById('saveButton').onclick=async function(){
-    const cards=[...list.querySelectorAll('.auto-ann-card')];
-    const announcements=cards.map(card=>({title:card.querySelector('input').value.trim(),description:card.querySelector('textarea').value.trim(),type:card.dataset.type}));
-    if(!announcements.length){alert('Keep at least one draft to save.');return;}
-    if(announcements.some(a=>!a.title||!a.description)){alert('Every draft needs a title and description.');return;}
-    const button=this;button.disabled=true;button.textContent='Saving drafts…';
-    try{const response=await fetch('{{ url_for("admin_auto_announcement") }}',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({announcements})});const result=await response.json();
-      if(!response.ok||!result.success)throw new Error(result.error||'Could not save drafts.');
-      window.location.href=result.url+'?auto_drafts='+result.count;
-    }catch(error){alert(error.message);button.disabled=false;button.textContent='Save drafts';}
+    const button=this;button.disabled=true;button.textContent='Saving batch…';
+    try{const response=await fetch('{{ url_for("admin_auto_announcement") }}',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({batch_name:batchName.value.trim(),announcements:pendingAnnouncements})});const result=await response.json();
+      if(!response.ok||!result.success)throw new Error(result.error||'Could not save batch.');
+      window.location.href=result.url;
+    }catch(error){alert(error.message);button.disabled=false;button.textContent='Save batch';}
   };
 })();
 </script>

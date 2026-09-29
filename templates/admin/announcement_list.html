@@ -5,6 +5,31 @@
   <div><span class="new-entry-eyebrow">Announcements</span><strong>Create something new</strong></div>
   <a class="content-new-entry" href="{{ url_for('announcement.create_view', url='/admin/announcement/') }}">New announcement</a>
 </div>
+{% if import_batches %}
+<section class="announcement-batch-panel" aria-label="Bulk imports">
+  <div class="new-entry-eyebrow">Bulk imports</div>
+  <form method="get" action="{{ url_for('announcement.index_view') }}">
+    <label for="announcementBatch">Review an import</label>
+    <select id="announcementBatch" name="batch">
+      <option value="">All announcements</option>
+      {% for batch in import_batches %}
+      <option value="{{ batch.id }}" {% if selected_batch == batch.id %}selected{% endif %}>{{ batch.label }} · {{ batch.author }} · {{ batch.count }} announcement{{ 's' if batch.count != 1 else '' }}</option>
+      {% endfor %}
+    </select>
+    <button class="announcement-bulk-actions" type="submit">Open</button>
+  </form>
+  {% if selected_batch %}
+    {% for batch in import_batches if batch.id == selected_batch %}
+    <p><strong>{{ batch.count }} announcement{{ 's' if batch.count != 1 else '' }} in this import.</strong> Review, edit, or select these announcements for a bulk action.</p>
+    {% endfor %}
+    <a href="{{ url_for('announcement.index_view') }}">Back to all announcements</a>
+  {% else %}
+    <p>Each bulk import stays together. Open an import to review only its announcements.</p>
+  {% endif %}
+</section>
+{% elif selected_batch %}
+<p>This import has no announcements remaining. <a href="{{ url_for('announcement.index_view') }}">Back to all announcements</a></p>
+{% endif %}
 <div class="advanced-toggle-section">
   <button class="advanced-toggle-btn" id="advancedToggle">Show Advanced Fields</button>
 </div>
@@ -75,7 +100,7 @@
       const match = dateCell && dateCell.textContent.match(/(20\d{2})-(\d{2})-(\d{2})/);
       return match && quarterFor(Number(match[1]), Number(match[2])) === currentGroup;
     });
-    if (!hasCurrentQuarter && dataRows.length) {
+    if (!{{ 'true' if selected_batch else 'false' }} && !hasCurrentQuarter && dataRows.length) {
       const divider = document.createElement('tr');
       divider.className = 'announcement-quarter-row announcement-quarter-current';
       const cell = document.createElement('th');
@@ -99,6 +124,7 @@
 
     let previousGroup = null;
     Array.from(table.querySelectorAll('tr')).slice(1).forEach(function(row) {
+      if ({{ 'true' if selected_batch else 'false' }}) return;
       const dateCell = row.querySelector('.col-date_entered');
       if (!dateCell && !row.querySelector('.col-title')) return;
       const match = dateCell && dateCell.textContent.match(/(20\d{2})-(\d{2})-(\d{2})/);
@@ -154,6 +180,17 @@
 {% block tail %}
 {{ super() }}
 <style>
+  .announcement-batch-panel { margin-bottom:1.2rem; padding:1.25rem 1.5rem; border:1px solid #b9dff3; border-radius:14px; background:#edf8fe; color:#36546a; }
+  .announcement-batch-panel form { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; }
+  .announcement-batch-panel label { margin:0; font-weight:700; }
+  .announcement-batch-panel select { flex:1; min-width:180px; max-width:100%; padding:.65rem; height:auto; border:1px solid #b9dff3; border-radius:8px; background:white; color:#12354f; }
+  .admin-body .announcement-batch-panel p, .admin-body .announcement-batch-panel p strong { margin:.8rem 0 .4rem; color:#36546a !important; }
+  /* Give the content column the remaining width instead of equal narrow columns. */
+  #announcementTable.admin-list { table-layout:auto; }
+  #announcementTable .list-checkbox-column { width:42px; }
+  #announcementTable .list-buttons-column { width:100px; }
+  #announcementTable .col-title { width:auto; }
+  #announcementTable .col-active { width:170px; }
   .advanced-toggle-section { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
   .announcement-bulk-bar { display:flex; align-items:center; gap:.8rem 1rem; flex-wrap:wrap; margin:.85rem 0 1rem; padding:.9rem 1.1rem; border:1px solid #b9dff3; border-radius:14px; background:#edf8fe; color:#36546a; box-shadow:0 8px 18px rgba(54,88,116,.06); }
   .announcement-bulk-bar[hidden] { display:none; }

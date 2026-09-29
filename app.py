@@ -195,6 +195,7 @@ migrate.init_app(app, db)
 
 # Import models after db initialization
 from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent, LifeGroup, SiteFeedback
+from models import AnnouncementImportBatch, AnnouncementImportItem
 
 def ensure_db_columns():
     """Add any missing columns to existing tables (SQLite and PostgreSQL).
@@ -222,6 +223,7 @@ def ensure_db_columns():
             ('scheduled_at', 'DATETIME', 'TIMESTAMP'),
             ('revision', 'INTEGER DEFAULT 1', 'INTEGER DEFAULT 1'),
             ('created_by', 'VARCHAR(80)', 'VARCHAR(80)'),
+            ('import_batch_id', 'VARCHAR(36)', 'VARCHAR(36)'),
             ('updated_at', 'DATETIME', 'TIMESTAMP'),
             ('updated_by', 'VARCHAR(80)', 'VARCHAR(80)'),
         ],
@@ -3457,13 +3459,15 @@ def admin_export_announcements():
 def admin_auto_announcement():
     """Turn pasted newsletter text into editable unpublished announcement drafts."""
     if request.method == 'GET' and request.args.get('matches') == '1':
-        rows = Announcement.query.filter_by(active=True, archived=False).order_by(
+        rows = Announcement.query.filter_by(archived=False).order_by(
             Announcement.date_entered.desc()
         ).limit(500).all()
         return jsonify({'announcements': [
             {'id': row.id, 'title': row.title or '', 'description': row.description or '',
              'type': row.type or 'announcement', 'active': bool(row.active),
              'archived': bool(getattr(row, 'archived', False)),
+             'revision': row.revision,
+             'published': bool(row.active and (not row.scheduled_at or row.scheduled_at <= datetime.utcnow())),
              'date_entered': row.date_entered.isoformat() if row.date_entered else None}
             for row in rows
         ]})
@@ -3477,29 +3481,73 @@ def admin_auto_announcement():
                 rows = []
         if not isinstance(rows, list) or not rows:
             return jsonify({'success': False, 'error': 'Add at least one announcement.'}), 400
-        created = []
+        plans = []
+        update_ids = set()
+        for row in rows:
+            if not isinstance(row, dict):
+                return jsonify(success=False, error='Each item must be an announcement.'), 400
+            if row.get('included') is False or row.get('action') == 'skip':
+                continue
+            action = row.get('action', 'create')
+            title = re.sub(r'\s+', ' ', str(row.get('title') or '')).strip()
+            description = str(row.get('description') or '').strip()
+            if action not in ('create', 'update') or not title or not description:
+                return jsonify(success=False, error='Each included item needs a title, description, and valid action.'), 400
+            existing = None
+            if action == 'update':
+                try:
+                    target_id = int(row.get('existing_id'))
+                    revision = int(row.get('revision'))
+                except (ValueError, TypeError):
+                    return jsonify(success=False, error='Choose an existing announcement to update.'), 400
+                existing = Announcement.query.filter_by(id=target_id).with_for_update().first()
+                if not existing or existing.archived:
+                    return jsonify(success=False, error='An announcement to update is no longer available. Review the batch again.'), 409
+                if existing.revision != revision:
+                    return jsonify(success=False, error='An announcement changed since your review. Parse the pasted text again before updating it.'), 409
+                if target_id in update_ids:
+                    return jsonify(success=False, error='Two items update the same announcement. Include only one version.'), 400
+                update_ids.add(target_id)
+            plans.append((row, action, title, description, existing))
+        if not plans:
+            return jsonify(success=False, error='Include at least one announcement to save.'), 400
+        saved = []
+        batch_id = str(uuid.uuid4())
+        imported_at = datetime.utcnow()
+        batch_name = re.sub(r'\s+', ' ', str(payload.get('batch_name') or '')).strip()[:160]
+        if not batch_name:
+            batch_name = 'Weekly announcements · ' + _format_scheduled_at_for_display(imported_at)
         try:
-            for row in rows:
-                if not isinstance(row, dict):
-                    continue
-                title = re.sub(r'\s+', ' ', str(row.get('title') or '')).strip()
-                description = str(row.get('description') or '').strip()
-                if not title or not description:
-                    continue
+            db.session.add(AnnouncementImportBatch(id=batch_id, name=batch_name,
+                created_at=imported_at, created_by=session.get('username', 'admin')))
+            db.session.flush()
+            for row, action, title, description, existing in plans:
                 kind = row.get('type') if row.get('type') in ('event', 'ongoing', 'announcement') else 'announcement'
-                ann = Announcement(
-                    id=next_global_id(), title=title[:200], description=description,
-                    type=kind, category='Email announcement', active=False, archived=False,
-                    created_by=session.get('username', 'admin'), revision=1,
-                )
-                db.session.add(ann)
-                created.append(ann)
-            if not created:
-                return jsonify({'success': False, 'error': 'Each draft needs a title and description.'}), 400
+                if existing:
+                    # Update copy only; retain placement, scheduling, authorship and publication state.
+                    ann = existing
+                    ann.title, ann.description = title[:200], description
+                    ann.revision += 1
+                    ann.updated_at, ann.updated_by = imported_at, session.get('username', 'admin')
+                else:
+                    ann = Announcement(
+                        id=next_global_id(), title=title[:200], description=description,
+                        type=kind, category='Email announcement', active=False, archived=False,
+                        created_by=session.get('username', 'admin'), revision=1,
+                        import_batch_id=batch_id, date_entered=imported_at,
+                    )
+                    db.session.add(ann)
+                db.session.flush()
+                db.session.add(AnnouncementImportItem(batch_id=batch_id, announcement_id=ann.id))
+                saved.append((action, ann))
             db.session.commit()
-            for ann in created:
-                _log_audit('created', ann)
-            return jsonify({'success': True, 'count': len(created), 'url': url_for('announcement.index_view')})
+            cache.clear()
+            for action, ann in saved:
+                _log_audit('edited' if action == 'update' else 'created', ann)
+            return jsonify({'success': True, 'count': len(saved), 'batch_id': batch_id,
+                            'created': sum(action == 'create' for action, _ in saved),
+                            'updated': sum(action == 'update' for action, _ in saved),
+                            'url': url_for('announcement.index_view', batch=batch_id)})
         except Exception:
             db.session.rollback()
             app.logger.exception('Auto announcement save failed')
@@ -4159,10 +4207,10 @@ ANNOUNCEMENT_CATEGORY_CHOICES = [
 
 def _format_announcement_status(view, context, model, name):
     from flask import url_for
-    base = url_for('announcement.set_status')
-    publish_url = base + '?id=' + str(model.id) + '&status=publish'
-    draft_url = base + '?id=' + str(model.id) + '&status=draft'
-    archive_url = base + '?id=' + str(model.id) + '&status=archive'
+    batch = request.args.get('batch')
+    publish_url = str(escape(url_for('announcement.set_status', id=model.id, status='publish', batch=batch)))
+    draft_url = str(escape(url_for('announcement.set_status', id=model.id, status='draft', batch=batch)))
+    archive_url = str(escape(url_for('announcement.set_status', id=model.id, status='archive', batch=batch)))
     active = getattr(model, 'active', True)
     archived = getattr(model, 'archived', False)
     scheduled_at = getattr(model, 'scheduled_at', None)
@@ -4312,6 +4360,50 @@ class AnnouncementView(AuthenticatedModelView):
         'active': _format_announcement_status,
         'title': _format_announcement_title,
     }
+
+    def _scope_to_batch(self, query):
+        batch_id = request.args.get('batch')
+        if batch_id:
+            members = db.session.query(AnnouncementImportItem.announcement_id).filter_by(batch_id=batch_id)
+            return query.filter(db.or_(Announcement.import_batch_id == batch_id, Announcement.id.in_(members)))
+        return query
+
+    def get_query(self):
+        return self._scope_to_batch(super().get_query())
+
+    def get_count_query(self):
+        return self._scope_to_batch(super().get_count_query())
+
+    def render(self, template, **kwargs):
+        if template == self.list_template:
+            from sqlalchemy import func
+            batches = db.session.query(
+                Announcement.import_batch_id.label('id'),
+                func.min(Announcement.date_entered).label('created_at'),
+                func.max(Announcement.created_by).label('author'),
+                func.count(Announcement.id).label('count'),
+            ).filter(Announcement.import_batch_id.isnot(None)).group_by(
+                Announcement.import_batch_id
+            ).order_by(func.min(Announcement.date_entered).desc()).all()
+            kwargs['import_batches'] = [
+                {'id': batch.id, 'label': 'Bulk import · ' +
+                 (batch.created_at.strftime('%b %d, %Y at %I:%M %p').replace(' 0', ' ')
+                  if batch.created_at else 'Undated'),
+                 'author': batch.author or 'Admin', 'count': batch.count}
+                for batch in batches
+            ]
+            named_batches = db.session.query(AnnouncementImportBatch,
+                func.count(Announcement.id)).join(AnnouncementImportItem,
+                    AnnouncementImportItem.batch_id == AnnouncementImportBatch.id).join(
+                    Announcement, Announcement.id == AnnouncementImportItem.announcement_id).group_by(
+                    AnnouncementImportBatch.id).order_by(AnnouncementImportBatch.created_at.desc()).all()
+            named_ids = {batch.id for batch, _ in named_batches}
+            named = [{'id': batch.id, 'label': batch.name,
+                      'author': batch.created_by or 'Admin', 'count': count}
+                     for batch, count in named_batches]
+            kwargs['import_batches'] = named + [batch for batch in kwargs['import_batches'] if batch['id'] not in named_ids]
+            kwargs['selected_batch'] = request.args.get('batch', '')
+        return super().render(template, **kwargs)
 
     def get_form(self):
         form = super().get_form()
@@ -4664,14 +4756,15 @@ class AnnouncementView(AuthenticatedModelView):
         if not is_authenticated():
             return redirect(url_for('admin_login'))
         id_val = request.args.get('id', type=int)
+        return_url = url_for('announcement.index_view', batch=request.args.get('batch'))
         status = request.args.get('status')
         if not id_val or status not in ('publish', 'draft', 'archive'):
             flash('Invalid request.', 'error')
-            return redirect(url_for('announcement.index_view'))
+            return redirect(return_url)
         ann = Announcement.query.get(id_val)
         if not ann:
             flash('Not found.', 'error')
-            return redirect(url_for('announcement.index_view'))
+            return redirect(return_url)
         if status == 'publish':
             ann.active = True
             ann.archived = False
@@ -4697,7 +4790,7 @@ class AnnouncementView(AuthenticatedModelView):
         except Exception:
             pass
         flash('Status updated.', 'success')
-        return redirect(url_for('announcement.index_view'))
+        return redirect(return_url)
 
     @action('toggle_active', 'Toggle Active Status', 'Are you sure you want to toggle the active status of selected items?')
     def toggle_active(self, ids):

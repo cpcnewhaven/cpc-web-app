@@ -121,8 +121,23 @@ class Announcement(db.Model):
     # Versioning: so editors know what is what
     revision = db.Column(db.Integer, default=1, nullable=False)  # incremented on each edit
     created_by = db.Column(db.String(80), nullable=True)  # username who originally created the post
+    import_batch_id = db.Column(db.String(36), nullable=True)  # shared by drafts from one bulk import
     updated_at = db.Column(db.DateTime, nullable=True)  # set on edit; NULL = never edited
     updated_by = db.Column(db.String(80), nullable=True)  # username who last edited
+
+class AnnouncementImportBatch(db.Model):
+    __tablename__ = 'announcement_import_batches'
+    id = db.Column(db.String(36), primary_key=True)
+    name = db.Column(db.String(160), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created_by = db.Column(db.String(80), nullable=True)
+
+
+class AnnouncementImportItem(db.Model):
+    __tablename__ = 'announcement_import_items'
+    batch_id = db.Column(db.String(36), db.ForeignKey('announcement_import_batches.id', ondelete='CASCADE'), primary_key=True)
+    announcement_id = db.Column(db.Integer, db.ForeignKey('announcements.id', ondelete='CASCADE'), primary_key=True)
+
 
 class Sermon(db.Model):
     __tablename__ = 'sermons'
