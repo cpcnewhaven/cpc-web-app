@@ -18,12 +18,15 @@
   .auto-ann-btn.secondary { border: 1px solid var(--admin-border); background: var(--surface-container-high); color: var(--on-surface); }
   .auto-ann-btn:disabled { opacity: .55; cursor: wait; }
   .auto-ann-beta { display: inline-block; vertical-align: middle; padding: .28rem .55rem; border-radius: 99px; background: #fff1cf; color: #855c00; font-family: inherit; font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  #sourceSection[hidden], #reviewSection[hidden], #previewSection[hidden] { display: none; }
+  #sourceSection[hidden], #reviewSection[hidden], #previewSection[hidden], #reparseConfirm[hidden] { display: none; }
   .auto-ann-panel input[type="text"], .auto-ann-card select { width:100%; padding:.7rem; border:1px solid var(--admin-input-border); border-radius:.6rem; background:var(--admin-input-bg); color:var(--on-surface); }
   .auto-ann-card-top { flex-wrap:wrap; }
   .auto-ann-choice { margin-top:.8rem; }
   .auto-ann-preview-copy { white-space:pre-wrap; line-height:1.65; color:var(--on-surface) !important; }
   .admin-body .auto-ann-preview h3 { color:var(--on-surface) !important; font-size:1.1rem; font-weight:800; margin:.5rem 0; }
+  .auto-ann-section-toggle { display:flex !important; align-items:center; gap:.6rem; cursor:pointer; }
+  .auto-ann-section-toggle input { width:18px; height:18px; margin:0; accent-color:var(--primary); }
+  .auto-ann-progress { margin-top:.8rem; color:var(--on-surface-variant); font-size:.8rem; }
   .auto-ann-category { margin: 1.5rem 0 .6rem; color: var(--primary-dim); font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
   .auto-ann-card { margin: .75rem 0; padding: 1rem; border: 1px solid var(--admin-border); border-radius: .8rem; background: var(--surface-container-low); }
   .auto-ann-card-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .7rem; color: var(--on-surface-variant); font-size: .7rem; font-weight: 700; }
@@ -56,12 +59,20 @@
     <label for="emailText" style="margin-top:1rem">Mailchimp announcement text</label>
     <textarea id="emailText" placeholder="Paste the email text here, including section headings like Highlights and Ongoing…"></textarea>
     <div class="auto-ann-actions"><button class="auto-ann-btn" id="parseButton" type="button">Sort into drafts</button></div>
+    <div class="auto-ann-progress" id="progressStatus" role="status">Unfinished work is saved on this browser.</div>
   </div>
 
   <div id="reviewSection" class="auto-ann-panel" hidden>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
       <div><div class="auto-ann-kicker">Review before saving</div><strong id="draftCount"></strong></div>
       <button class="auto-ann-btn secondary" id="parseAgain" type="button">Parse pasted text again</button>
+    </div>
+    <div id="reparseConfirm" class="auto-ann-notice" role="alert" hidden>
+      <strong>Replace your reviewed drafts?</strong> Parsing again will replace your edits and selections with the pasted text.
+      <div class="auto-ann-actions">
+        <button type="button" id="keepEditing" class="auto-ann-btn secondary">Keep editing</button>
+        <button type="button" id="confirmReparse" class="auto-ann-btn">Replace drafts and parse again</button>
+      </div>
     </div>
     <div id="draftList"></div>
     <div class="auto-ann-notice">Uncheck “Include in this batch” to leave an item out. Possible repeats include a quick wording comparison. You can edit each draft before saving; new drafts stay unpublished until you publish them. Updates replace existing copy and keep its current status, so changes to published announcements become live when you save.</div>
@@ -82,9 +93,29 @@
 (function(){
   const input=document.getElementById('emailText'), list=document.getElementById('draftList');
   const review=document.getElementById('reviewSection'), count=document.getElementById('draftCount');
-  let existingAnnouncements=[], pendingAnnouncements=[];
+  let existingAnnouncements=[], pendingAnnouncements=[], restoringProgress=false;
   const preview=document.getElementById('previewSection'), batchName=document.getElementById('batchName');
   batchName.value=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric'})+' Weekly';
+  const progressKey='cpc-announcement-wizard-v1:'+{{ (session.get('username') or 'admin')|tojson }};
+  const progressStatus=document.getElementById('progressStatus');
+  function draftSnapshot(){
+    return [...list.querySelectorAll('.auto-ann-card')].map(card=>({
+      title:card.querySelector('input:not([type="checkbox"])').value,
+      description:card.querySelector('textarea').value,
+      type:card.dataset.type,category:card.dataset.category,clutter:card.dataset.clutter,
+      included:card.querySelector('.auto-ann-include-check').checked,
+      action:card.querySelector('.auto-ann-action').value,
+      target_id:card.querySelector('.auto-ann-target').value
+    }));
+  }
+  function saveProgress(){
+    if(restoringProgress)return;
+    try{
+      localStorage.setItem(progressKey,JSON.stringify({version:1,batchName:batchName.value,text:input.value,drafts:draftSnapshot(),existing:existingAnnouncements}));
+      progressStatus.textContent='Progress saved on this browser.';
+    }catch(_){progressStatus.textContent='This browser could not save progress. Keep this page open until you save the batch.';}
+  }
+  const sameCopy=(a,b)=>normalize(a).replace(/\s+/g,' ')===normalize(b).replace(/\s+/g,' ');
   function clutterReason(title){
     if(/^\d{1,2}[:.]\d{2}\s*(?:a\.?m\.?|p\.?m\.?)$/i.test(title.trim()))return 'Looks like a service time rather than an announcement.';
     if(/^(?:view (?:this )?email in (?:your )?browser|unsubscribe|update (?:your )?(?:preferences|profile)|manage (?:your )?preferences|copyright|all rights reserved|forward (?:this|to a friend)|home|contact us|follow us|view (?:our )?website|website|facebook|instagram)(?:\b|$)/i.test(title.trim()))return 'Looks like email navigation or footer text.';
@@ -141,18 +172,30 @@
     return parts.join(' ');
   }
   async function fetchExisting(){try{const response=await fetch('{{ url_for("admin_auto_announcement", matches=1) }}');if(!response.ok)throw new Error('Could not load existing announcements');const data=await response.json();existingAnnouncements=data.announcements||[];}catch(_){existingAnnouncements=[];alert('Existing announcements could not be loaded. Repeat checking is unavailable; review carefully before creating new drafts.');}}
-  function render(){
-    const drafts=parse(); list.replaceChildren();preview.hidden=true;
+  function render(drafts=parse(), restored=false){
     if(!drafts.length){alert('No announcement items found yet. Use a section heading, then a title and description for each item.');return;}
+    list.replaceChildren();preview.hidden=true;
     let previous='';
     drafts.forEach((draft,index)=>{
       draft.clutter=draft.clutter||clutterReason(draft.title);
-      if(draft.category!==previous){const heading=document.createElement('div');heading.className='auto-ann-category';heading.textContent=draft.category;list.append(heading);previous=draft.category;}
-      const card=document.createElement('article');card.className='auto-ann-card';card.dataset.type=draft.type;
+      if(draft.category!==previous){
+        const heading=document.createElement('div');heading.className='auto-ann-category';
+        const sectionLabel=document.createElement('label');sectionLabel.className='auto-ann-section-toggle';
+        const sectionCheck=document.createElement('input');sectionCheck.type='checkbox';sectionCheck.className='auto-ann-section-check';sectionCheck.dataset.category=draft.category;
+        sectionCheck.setAttribute('aria-label','Include all '+draft.category+' announcements');
+        sectionLabel.append(sectionCheck,document.createTextNode(draft.category));heading.append(sectionLabel);list.append(heading);
+        sectionCheck.addEventListener('change',()=>{
+          const includeSection=sectionCheck.checked;
+          [...list.querySelectorAll('.auto-ann-card')].filter(card=>card.dataset.category===draft.category).forEach(card=>{
+            const check=card.querySelector('.auto-ann-include-check');check.checked=includeSection;check.dispatchEvent(new Event('change'));
+          });updateCount();
+        });previous=draft.category;
+      }
+      const card=document.createElement('article');card.className='auto-ann-card';card.dataset.type=draft.type;card.dataset.category=draft.category;card.dataset.clutter=draft.clutter||'';
       const top=document.createElement('div');top.className='auto-ann-card-top';
       const label=document.createElement('span');label.textContent='Draft '+(index+1)+' · '+draft.type;
       const includeLabel=document.createElement('label');includeLabel.className='auto-ann-include';
-      const include=document.createElement('input');include.type='checkbox';include.className='auto-ann-include-check';include.checked=!draft.clutter;card.classList.toggle('excluded',!include.checked);
+      const include=document.createElement('input');include.type='checkbox';include.className='auto-ann-include-check';const unchanged=existingAnnouncements.some(old=>sameCopy(old.title,draft.title)&&sameCopy(old.description,draft.description));include.checked=restored?draft.included:!draft.clutter&&!unchanged;card.classList.toggle('excluded',!include.checked);
       include.setAttribute('aria-label','Include draft '+(index+1)+' in this batch');
       includeLabel.append(include,document.createTextNode('Include in this batch'));
       include.addEventListener('change',()=>{card.classList.toggle('excluded',!include.checked);if(include.checked&&action.value==='skip')action.value='create';updateCount();});
@@ -178,7 +221,7 @@
       target.addEventListener('change',renderMatch);
       function renderMatch(){
         matches.replaceChildren();
-        const oldTarget=target.value;
+        const oldTarget=target.value||draft.target_id;
         const possible=existingAnnouncements.map(old=>({old,score:titleSimilarity(title.value,old.title)})).filter(x=>x.score>=.55).sort((a,b)=>b.score-a.score).slice(0,3);
         target.replaceChildren();
         possible.forEach(({old})=>{const option=document.createElement('option');option.value=old.id;option.textContent=old.title+' · '+(old.published?'Published':'Draft or scheduled');target.append(option);});
@@ -188,9 +231,9 @@
         refreshAction();
         possible.filter(({old})=>String(old.id)===target.value).slice(0,1).forEach(({old})=>{
           const match=document.createElement('div');match.className='auto-ann-match';
-          const heading=document.createElement('div');heading.className='auto-ann-match-title';heading.textContent='Possible repeat: '+old.title;
+          const heading=document.createElement('div');heading.className='auto-ann-match-title';heading.textContent=(sameCopy(old.title,title.value)&&sameCopy(old.description,description.value)?'Same as existing: ':'Possible repeat: ')+old.title;
           const summary=document.createElement('div');summary.className='auto-ann-change-summary';summary.innerHTML='<strong>What changed:</strong> ';
-          summary.append(document.createTextNode(changeSummary(old.description,description.value)));
+          summary.append(document.createTextNode(sameCopy(old.title,title.value)&&sameCopy(old.description,description.value)?'This copy is unchanged. It starts unchecked; include it if you need another draft.':changeSummary(old.description,description.value)));
           const oldLabel=document.createElement('div');oldLabel.className='auto-ann-copy-label';oldLabel.textContent='Existing CPC copy';
           const oldCopy=document.createElement('div');oldCopy.className='auto-ann-old-copy';oldCopy.textContent=old.description;
           const newLabel=document.createElement('div');newLabel.className='auto-ann-copy-label';newLabel.textContent='Draft copy · this is the version saved';
@@ -200,17 +243,39 @@
       }
       title.addEventListener('input',renderMatch);description.addEventListener('input',renderMatch);
       renderMatch();
+      if(restored){action.value=draft.action||'create';refreshAction();}
       card.append(top,title,matches,description,choices);list.append(card);
     });
-    review.hidden=false;updateCount();review.scrollIntoView({behavior:'smooth',block:'start'});
+    review.hidden=false;updateCount();if(!restored)review.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function updateCount(){
     const total=list.querySelectorAll('.auto-ann-card').length;
     const selected=list.querySelectorAll('.auto-ann-include-check:checked').length;
     count.textContent=selected+' of '+total+' announcements included · '+(total-selected)+' excluded';
     document.getElementById('previewButton').disabled=selected===0;
+    list.querySelectorAll('.auto-ann-section-check').forEach(check=>{
+      const items=[...list.querySelectorAll('.auto-ann-card')].filter(card=>card.dataset.category===check.dataset.category);
+      const included=items.filter(card=>card.querySelector('.auto-ann-include-check').checked).length;
+      check.checked=items.length>0&&included===items.length;check.indeterminate=included>0&&included<items.length;
+    });
+    saveProgress();
   }
-  document.getElementById('parseButton').onclick=async function(){await fetchExisting();render();};document.getElementById('parseAgain').onclick=async function(){await fetchExisting();render();};
+  async function parsePastedText(){
+    const drafts=parse();
+    if(!drafts.length){alert("No announcement items found yet. Keep your reviewed drafts or add a title and description to the pasted text.");return;}
+    await fetchExisting();render(drafts);document.getElementById('reparseConfirm').hidden=true;
+  }
+  function requestParse(){
+    if(!list.querySelector('.auto-ann-card')){parsePastedText();return;}
+    const confirmation=document.getElementById('reparseConfirm');confirmation.hidden=false;
+    confirmation.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  document.getElementById('parseButton').onclick=requestParse;
+  document.getElementById('parseAgain').onclick=requestParse;
+  document.getElementById('keepEditing').onclick=()=>{document.getElementById('reparseConfirm').hidden=true;};
+  document.getElementById('confirmReparse').onclick=parsePastedText;
+  input.addEventListener('input',saveProgress);batchName.addEventListener('input',saveProgress);
+  list.addEventListener('input',saveProgress);list.addEventListener('change',saveProgress);
   document.getElementById('previewButton').onclick=function(){
     const cards=[...list.querySelectorAll('.auto-ann-card')].filter(card=>card.querySelector('.auto-ann-include-check').checked);
     pendingAnnouncements=cards.map(card=>{
@@ -243,9 +308,22 @@
     const button=this;button.disabled=true;button.textContent='Saving batch…';
     try{const response=await fetch('{{ url_for("admin_auto_announcement") }}',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({batch_name:batchName.value.trim(),announcements:pendingAnnouncements})});const result=await response.json();
       if(!response.ok||!result.success)throw new Error(result.error||'Could not save batch.');
+      try{localStorage.removeItem(progressKey);}catch(_){}
       window.location.href=result.url;
     }catch(error){alert(error.message);button.disabled=false;button.textContent='Save batch';}
   };
+  try{
+    const saved=JSON.parse(localStorage.getItem(progressKey)||'null');
+    if(saved&&saved.version===1){
+      restoringProgress=true;
+      batchName.value=typeof saved.batchName==='string'?saved.batchName:batchName.value;
+      input.value=typeof saved.text==='string'?saved.text:'';
+      existingAnnouncements=Array.isArray(saved.existing)?saved.existing:[];
+      if(Array.isArray(saved.drafts)&&saved.drafts.length)render(saved.drafts,true);
+      restoringProgress=false;
+      progressStatus.textContent='Restored your unfinished work from this browser. Review it before saving.';
+    }
+  }catch(_){restoringProgress=false;progressStatus.textContent='Saved progress could not be restored. Paste your announcement copy to start again.';}
 })();
 </script>
 {% endblock %}
