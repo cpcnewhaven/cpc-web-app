@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}Media Hub - CPC New Haven{% endblock %}
-{% block meta_description %}Browse sermons, podcasts, teaching series, photo archives, and pastor teaching resources from CPC New Haven.{% endblock %}
+{% block meta_description %}Browse sermons, podcasts, Adult Sunday Studies, and photo archives from CPC New Haven.{% endblock %}
 {% block og_title %}Media Hub - CPC New Haven{% endblock %}
-{% block og_description %}Browse sermons, podcasts, teaching series, photo archives, and pastor teaching resources from CPC New Haven.{% endblock %}
+{% block og_description %}Browse sermons, podcasts, Adult Sunday Studies, and photo archives from CPC New Haven.{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/media{% endblock %}
 
 {% block head %}
@@ -489,8 +489,7 @@ body.theme-white .media-page .media-card:focus-visible h3 {
                     </div>
                     <h1>Everything we publish, archive, and record in one place.</h1>
                     <p>
-                        Use this page as the umbrella for sermons, podcasts, teaching series, pastor-led study
-                        materials, and our visual archives. It is the quickest place to jump into the media spaces
+                        Use this page as the umbrella for sermons, podcasts, Adult Sunday Studies, and our visual archives. It is the quickest place to jump into the media spaces
                         that already exist on the site.
                     </p>
                 </div>
@@ -498,8 +497,8 @@ body.theme-white .media-page .media-card:focus-visible h3 {
                 <aside class="media-panel">
                     <h2>Featured now</h2>
                     <div class="media-panel-card">
-                        <div class="label">Current teaching series</div>
-                        <h3>{{ site_content.get('current_teaching_series_title', 'Acts') }}</h3>
+                        <div class="label">Current sermon series</div>
+                        <h3>{{ site_content.get('current_teaching_series_title', 'Luke') }}</h3>
                         <p>{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</p>
                     </div>
                     <div class="media-panel-card">
@@ -535,16 +534,9 @@ body.theme-white .media-page .media-card:focus-visible h3 {
 
             <a href="{{ url_for('teaching_series') }}" class="media-card media-card--teaching">
                 <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-chalkboard-teacher"></i></span></div>
-                <h3>Teaching Series</h3>
-                <p>Find sermon series and Sunday school series, with a focus on the teaching journeys we are in now.</p>
-                <span class="media-card-link">Open teaching series <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <a href="{{ url_for('pastor_teaching') }}" class="media-card media-card--pdfs">
-                <div class="media-card-thumb"><span class="media-card-icon-overlay"><i class="fas fa-file-pdf"></i></span></div>
-                <h3>Pastor Teaching PDFs</h3>
-                <p>Access downloadable handouts, lesson notes, and PDF resources for pastor-led teaching.</p>
-                <span class="media-card-link">Open PDFs <i class="fas fa-arrow-right"></i></span>
+                <h3>Adult Sunday Studies</h3>
+                <p>Explore Adult Sunday Studies, with class descriptions, recordings, handouts, and study materials together.</p>
+                <span class="media-card-link">Open studies <i class="fas fa-arrow-right"></i></span>
             </a>
 
             <a href="{{ url_for('gallery') }}" class="media-card media-card--gallery">

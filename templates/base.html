@@ -274,7 +274,7 @@
                     <p class="text-xs font-semibold text-blue-100 mb-1 uppercase tracking-wider">Watch &amp; Listen</p>
                     <a href="{{ url_for('sermons') }}" class="block py-1 text-sm font-medium text-white hover:text-blue-200">Sermons</a>
                     <a href="{{ url_for('podcasts') }}" class="block py-1 text-sm font-medium text-white hover:text-blue-200">Podcasts</a>
-                    <a href="{{ url_for('teaching_series') }}" class="block py-1 text-sm font-medium text-white hover:text-blue-200">Teaching Series</a>
+                    <a href="{{ url_for('teaching_series') }}" class="block py-1 text-sm font-medium text-white hover:text-blue-200">Adult Sunday Studies</a>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-blue-100 mb-1 uppercase tracking-wider">Community</p>
@@ -325,7 +325,7 @@
             </a>
             <a href="{{ url_for('teaching_series') }}" class="dash-row dash-row--last">
                 <i class="fas fa-layer-group dash-row__icon" aria-hidden="true"></i>
-                <span class="dash-row__label">Teaching Series</span>
+                <span class="dash-row__label">Adult Sunday Studies</span>
                 <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
             </a>
         </div>
@@ -371,9 +371,9 @@
         <div class="dash-follow">
             <span class="dash-follow__label">Follow along</span>
             <div class="dash-follow__icons">
-                <a href="https://www.facebook.com/caboruschurch" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.facebook.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                 <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.youtube.com/@caboruschurch" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://www.youtube.com/@cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
                 <a href="https://open.spotify.com/show/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Spotify"><i class="fa-brands fa-spotify"></i></a>
             </div>
         </div>
@@ -382,6 +382,25 @@
     <!-- Fixed Right Dashboard (Desktop) -->
     <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''"
         x-show="$store.dash.showRightSidebar">
+        <div class="dashboard-section" id="luke-chapter-section">
+            <div class="dashboard-title">Current Sermon Series</div>
+            <div class="dashboard-note" id="luke-chapter-content">
+                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Luke') }}</div>
+                <div class="study-date" style="margin-top: 0.25rem;">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
+                <a href="{{ url_for('sermons') }}"
+                    class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">Browse Sermons →</a>
+            </div>
+        </div>
+        <div class="dashboard-section">
+            <div class="dashboard-title">Adult Sunday Studies</div>
+            <div class="dashboard-note">
+                <div class="study-title" style="font-size: 1rem; font-weight: 700;">The Wonders of Communal Worship</div>
+                <div class="study-date" style="margin-top: 0.25rem;">9:30am · Fellowship Hall</div>
+                <div class="study-date" style="margin-top: 0.25rem;">Next week: Class 5 of 6</div>
+                <a href="{{ url_for('teaching_series_detail', slug='wonders-of-communal-worship') }}"
+                    class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">View class →</a>
+            </div>
+        </div>
         <div class="dashboard-section">
             <div class="dashboard-title">Now</div>
             <div class="dashboard-note">
@@ -419,15 +438,6 @@
                     <span>{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</span>
                 </a>
                 <a href="{{ url_for('plan_a_visit') }}" class="cta" style="display:inline-block; margin-top:0.65rem; color:var(--surface-accent);">Plan Your Visit →</a>
-            </div>
-        </div>
-        <div class="dashboard-section" id="teaching-series-section">
-            <div class="dashboard-title">Current Teaching Series</div>
-            <div class="dashboard-note" id="teaching-series-content">
-                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Acts') }}</div>
-                <div class="study-date" style="margin-top: 0.25rem;">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
-                <a href="{{ url_for('teaching_series') }}?q={{ site_content.get('current_teaching_series_title', 'Acts') | urlencode }}"
-                    class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">View Series →</a>
             </div>
         </div>
     </aside>

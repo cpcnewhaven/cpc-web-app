@@ -1239,6 +1239,9 @@ def sitemap():
     urls = []
     for path, priority, freq in static_pages:
         urls.append(f'  <url><loc>{base}{path}</loc><changefreq>{freq}</changefreq><priority>{priority}</priority></url>')
+    with open(os.path.join(os.path.dirname(__file__), 'data', 'adult_sunday_studies.json'), encoding='utf-8') as f:
+        for course in json.load(f).get('courses', []):
+            urls.append(f'  <url><loc>{base}/teaching-series/{course["slug"]}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>')
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     xml += '\n'.join(urls)
     xml += '\n</urlset>'
@@ -1353,14 +1356,107 @@ def suggest_event():
 
 @app.route('/teaching-series')
 def teaching_series():
-    """Teaching series page showing sermon series and Sunday school series"""
-    return render_template('teaching-series.html')
+    """Unified public directory for Adult Sunday Studies courses."""
+    with open(os.path.join(os.path.dirname(__file__), 'data', 'adult_sunday_studies.json'), encoding='utf-8') as f:
+        catalog = json.load(f).get('courses', [])
+
+    known_slugs = {course['slug'] for course in catalog}
+    known_titles = {course['title'].casefold() for course in catalog}
+    extra_courses = []
+    for series in TeachingSeries.query.filter_by(active=True).filter(_not_expired(TeachingSeries)).order_by(
+        TeachingSeries.sort_order.asc(), TeachingSeries.date_entered.desc()
+    ).all():
+        slug = re.sub(r'[^a-z0-9]+', '-', series.title.casefold()).strip('-')
+        if slug in known_slugs or series.title.casefold() in known_titles:
+            continue
+        extra_courses.append({
+            'slug': slug,
+            'title': series.title,
+            'nav_title': series.title,
+            'status': 'Additional course',
+            'summary': series.description or series.event_info or 'Explore class sessions and materials.',
+            'image_url': series.image_url or '',
+            'sessions': [
+                {
+                    'number': session.number,
+                    'title': session.title,
+                    'date': session.session_date.strftime('%B %d, %Y').replace(' 0', ' ') if session.session_date else '',
+                    'description': session.description or '',
+                    'resources': [{'label': 'Handout', 'url': session.pdf_url}] if session.pdf_url else [],
+                }
+                for session in sorted(series.sessions, key=lambda item: item.number or 999)
+            ],
+        })
+    courses = catalog + extra_courses
+    featured_course = next((course for course in catalog if course['slug'] == 'wonders-of-communal-worship'), None)
+    nav_titles = {
+        'wonders-of-communal-worship': 'Communal Worship',
+        'emotions-spirituality': 'Emotions & Spirituality',
+        'mission-study': 'Mission Study',
+        'walking-through-sinai': 'Walking Through Sinai',
+        'what-we-believe': 'What We Believe',
+        'confessional-theology': 'Confessional Theology',
+        'biblical-interpretation': 'Biblical Interpretation',
+    }
+    for course in courses:
+        course.setdefault('nav_title', nav_titles.get(course['slug'], course['title']))
+    return render_template('teaching-series.html', courses=courses, featured_course=featured_course)
+
+
+@app.route('/teaching-series/<slug>')
+def teaching_series_detail(slug):
+    """Shared course detail page for archived and admin-managed study series."""
+    with open(os.path.join(os.path.dirname(__file__), 'data', 'adult_sunday_studies.json'), encoding='utf-8') as f:
+        catalog = json.load(f).get('courses', [])
+    course = next((item for item in catalog if item['slug'] == slug), None)
+    if course is None:
+        series = next((item for item in TeachingSeries.query.filter_by(active=True).filter(
+            _not_expired(TeachingSeries)
+        ).all() if re.sub(r'[^a-z0-9]+', '-', item.title.casefold()).strip('-') == slug), None)
+        if series is None:
+            abort(404)
+        course = {
+            'slug': slug,
+            'title': series.title,
+            'nav_title': series.title,
+            'status': series.event_info or 'Adult Sunday Studies',
+            'summary': series.description or 'Explore class sessions and materials.',
+            'image_url': series.image_url or '',
+            'sessions': [
+                {
+                    'number': session.number,
+                    'title': session.title,
+                    'date': session.session_date.strftime('%B %d, %Y').replace(' 0', ' ') if session.session_date else '',
+                    'description': session.description or '',
+                    'resources': [{'label': 'Handout', 'url': session.pdf_url}] if session.pdf_url else [],
+                }
+                for session in sorted(series.sessions, key=lambda item: item.number or 999)
+            ],
+        }
+        catalog.append(course)
+    course_slugs = {item['slug'] for item in catalog}
+    for series in TeachingSeries.query.filter_by(active=True).filter(_not_expired(TeachingSeries)).all():
+        extra_slug = re.sub(r'[^a-z0-9]+', '-', series.title.casefold()).strip('-')
+        if extra_slug not in course_slugs:
+            catalog.append({'slug': extra_slug, 'title': series.title, 'nav_title': series.title})
+            course_slugs.add(extra_slug)
+    return render_template('teaching-series-detail.html', course=course, courses=catalog)
+
+
+@app.route('/sunday-studies/<slug>.html')
+def legacy_adult_study(slug):
+    """Keep existing Adult Sunday Studies URLs working after the redesign."""
+    with open(os.path.join(os.path.dirname(__file__), 'data', 'adult_sunday_studies.json'), encoding='utf-8') as f:
+        slugs = {item['slug'] for item in json.load(f).get('courses', [])}
+    if slug not in slugs:
+        abort(404)
+    return redirect(url_for('teaching_series_detail', slug=slug), code=301)
 
 
 @app.route('/pastor-teaching')
 def pastor_teaching():
-    """Public page for pastor-led teaching series (e.g. Total Christ) with PDFs."""
-    return render_template('pastor-teaching.html')
+    """Legacy alias for the unified Adult Sunday Studies directory."""
+    return redirect(url_for('teaching_series'), code=301)
 
 
 @app.route('/api/pastor-teaching-series')
@@ -3155,7 +3251,7 @@ def api_search():
                 })
 
             # Teaching Series (including sessions)
-            q = TeachingSeries.query.filter(TeachingSeries.active == True)
+            q = TeachingSeries.query.filter(TeachingSeries.active == True).filter(_not_expired(TeachingSeries))
 
             if query:
                 q = q.filter(db.or_(
@@ -3174,7 +3270,7 @@ def api_search():
                 seen_ts_ids = {ts.id for ts in teaching_hits}
                 for sess in session_matches:
                     ts = sess.series
-                    if ts and ts.active and ts.id not in seen_ts_ids:
+                    if ts and ts.active and ts.id not in seen_ts_ids and (not ts.expires_at or ts.expires_at >= date.today()):
                         teaching_hits.append(ts)
                         seen_ts_ids.add(ts.id)
 
@@ -3184,7 +3280,7 @@ def api_search():
                     'title': ts.title,
                     'description': ts.description[:200] if ts.description else '',
                     'date': ts.date_entered.strftime('%Y-%m-%d') if ts.date_entered else None,
-                    'url': url_for('teaching_series') + f"?q={ts.title}"
+                    'url': url_for('teaching_series_detail', slug=re.sub(r'[^a-z0-9]+', '-', ts.title.casefold()).strip('-'))
                 })
 
         if content_type == 'podcasts':

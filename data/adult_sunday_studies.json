@@ -1,0 +1,1743 @@
+{
+  "courses": [
+    {
+      "slug": "wonders-of-communal-worship",
+      "title": "The Wonders of Communal Worship",
+      "status": "Current study · Fall 2026",
+      "summary": "9:30am · A new Adult Sunday Study on the gift and practice of worshiping together. Class recordings and PDF handouts will live here as they become available.",
+      "roadmap": [
+        {
+          "number": "01",
+          "title": "Overall Theology of Worship",
+          "description": "God-centered worship, worship in general and communal worship, and the Sabbath and Lord’s Day."
+        },
+        {
+          "number": "02",
+          "title": "Distinctives of Communal Worship",
+          "description": "Elements and forms, God’s presence, the regulative principle, and Trinitarian worship."
+        },
+        {
+          "number": "03",
+          "title": "The Purposes of Communal Worship",
+          "description": "Communion with God in Christ across cultures, incarnation & ascension paradigms, and gospel-shaped styles and forms."
+        },
+        {
+          "number": "04",
+          "title": "The Structure of Communal Worship",
+          "description": "Biblical patterns of worship, entering God’s presence, the covenantal gospel arc, and the logic of liturgy."
+        },
+        {
+          "number": "05",
+          "title": "The Word & The Lord’s Supper",
+          "description": "The preaching of the Word, the purpose and vision of the Supper, and their communion in Christ."
+        },
+        {
+          "number": "06",
+          "title": "Coronation & Benediction",
+          "description": "Christ’s kingship, biblical blessing, course review, and sending the church out in mission."
+        }
+      ],
+      "curriculum_url": "",
+      "image_url": "https://storage.googleapis.com/cpc-public-website/adult-studies/fall2026/THE%20WONDERS%20OF%20COMMUNAL%20WORSHIP.jpg",
+      "description": "A study of the theology, practices, and gospel-shaped movements of worship, from gathering to benediction.",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Overall Theology of Worship",
+          "date": "September 13, 2026",
+          "description": "Laying the foundation: worship starts and ends with God. God-centered worship reflects who God is, creation's purpose to worship Him, Old Testament temple presence fulfilled in Christ and the Church, and why the Sabbath rest points toward the new creation as an eschatological sign.",
+          "resources": [
+            {
+              "label": "Listen on Spotify",
+              "url": "https://open.spotify.com/episode/0wKxmVxWaDIJX9XmTx6AlL?si=57zIjHO5QD2TaBvggMnVBg"
+            },
+            {
+              "label": "Handout #1 (PDF)",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_1_Intro_Theology_2026.pdf"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "The Distinctives of Communal Worship",
+          "date": "September 20, 2026",
+          "description": "The when, how, and what of worship. Examining why we worship on the Lord’s Day, the 7 core principles of communal worship, the regulative principle (Word-prescribed elements: songs/prayers, Word, sacraments, fellowship), and distinguishing God's prescribed elements from culturally directed forms. Jesus is our elder brother, high priest, and true Worship Leader.",
+          "resources": [
+            {
+              "label": "Listen on Spotify",
+              "url": "https://open.spotify.com/episode/0o3ooNOg20VrOmHJaZhkYN?si=EQlnDXaqR0i9BfypEABMDQ"
+            },
+            {
+              "label": "Handout #2 (PDF)",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_2_Distinctives_2026.pdf"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "The Purposes of Communal Worship",
+          "date": "September 27, 2026",
+          "description": "Expanding on how the Word becomes flesh with the purpose of drawing all people into communion with God in Christ by the Spirit. Contrasting true communion against revivalism/decisionism and duty/works-based worship, understanding the incarnation and ascension paradigms, and considering gospel priorities for culture, language, and doxological evangelism.",
+          "resources": [
+            {
+              "label": "Listen on Spotify",
+              "url": "https://open.spotify.com/episode/4I2ZY2RsmbZVAA7KRcx8hr?si=LzdGyDgOQoONzHWDZuRBAA"
+            },
+            {
+              "label": "Handout #3 (PDF)",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_3_Purpose_2026.pdf"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "The Structure of Communal Worship",
+          "date": "October 4, 2026",
+          "description": "What happens when people enter God’s presence? Examining the biblical patterns of worship (Isaiah 6, 1 Kings 8, Nehemiah 8–11, Revelation 4–5), the gospel arc (Praising God’s Glory, Confession of Sin & Pardon, God Speaks, Communion with Christ, Coronation of Christ our King), and how liturgy trains our hearts for communion with the living God.",
+          "resources": [
+            {
+              "label": "Handout #4 (PDF)",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_4_Structure_2026.pdf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "emotions-spirituality",
+      "title": "HEART | Emotions & Spirituality",
+      "status": "Spring 2026",
+      "summary": "A 4-week Adult Sunday class exploring the connection between our faith and our feelings. We’ll discuss shame, coping, relationships, Christian transformation, and emotionally healthy spirituality. Sundays, April 26–May 17 at 9:30am in the Fellowship Hall.",
+      "description": "What do my emotions have to do with my faith? Does God care about my feelings? Should I always have positive feelings for God, and what should I do when I don't? This class will discuss emotionally healthy spirituality, Christian transformation, and sanctification. All are welcome.",
+      "image_url": "https://cpcnewhaven.org/assets/web-assets/emotions-class.png",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Introduction and Why?",
+          "date": "April 26",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4IdMJVPZC9a0PHVV2RT6nZ?si=R0OzoQcGQEms8WIg6VKZJQ"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Shame, its monsters, and healing from it",
+          "date": "May 3",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/1lLak9HWI50MhvrTmSMxkk?si=4b647f8b909e47db"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Facing all our emotions and how we cope with them",
+          "date": "May 10",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/038pLwmjHEo8EZPKfhHQUC?si=77038e0c6da145b6"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Emotions and relationships",
+          "date": "May 17",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4XHb1jZYa6aKDghCf8BdxY?si=316c7aa638d94f5b"
+            }
+          ]
+        }
+      ],
+      "roadmap": [],
+      "curriculum_url": ""
+    },
+    {
+      "slug": "mission-study",
+      "title": "MISSION | Living Missionally in our Neighborhoods",
+      "status": "Spring 2026",
+      "summary": "MISSION | Living Missionally in our Neighborhoods — CPC Spring 2026. For more on our theology of mission, see Total Christ class #2, Missional.",
+      "description": "What does it mean to live missionally in our neighborhoods, relationships, and God-given spheres? This class explores a theology of mission and practical ways to practice hospitality, presence, and gospel witness in New Haven. For more on our theology of mission, see Total Christ class #2, Missional .",
+      "image_url": "https://cpcnewhaven.org/static/img/mission-study.png",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Introduction to a Theology of Mission and Missional Living",
+          "date": "Mar 15",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/7sQEr5K27BSdey4oSWnBb2"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Practices of Missional Living and Hospitality",
+          "date": "Mar 22",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4SvX0rViIKJyJJlV4Lkjdi"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Special Guest: Matthew Denney (Jubilee New Haven)",
+          "date": "Apr 12",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0wbYwxYm9WklMcce4xY528?si=Z9mG8ZmKQv-DFruhh-OtIg"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Colleen & Tyler Rice - Missional Practices in Neighborhood & Spheres",
+          "date": "Apr 19",
+          "resources": []
+        }
+      ],
+      "roadmap": [],
+      "curriculum_url": ""
+    },
+    {
+      "slug": "total-christ",
+      "title": "Total Christ: The Full Vision for His Church",
+      "status": "Fall 2025",
+      "summary": "Fall 2025 - An exploration of the comprehensive work of Christ in salvation through the “Five Marks” framework: gospel-centered, missional, confessional, sacramental, and communal.",
+      "description": "Fall 2025 - An exploration of the comprehensive work of Christ in salvation, examining how His person and work encompasses all aspects of our redemption and Christian life through the \"Five Marks\" framework.",
+      "image_url": "https://cpcnewhaven.org/static/img/total_Christ_Graphic.jpg",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Introduction to Total Christ & the Five Marks",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/totalchrist/1_TC.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/1yGyMNjbapGXc0vdFzUowe?si=06efdc383caf4313"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Gospel-Centered: The Covenant of God sealed in Jesus Christ",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/totalchrist/2_TC.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5auc75SaappbwbHAO4WKEk?si=07a628db8ab94fb1"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Missional: The Presence of God in Jesus Christ through the global Holy Spirit",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/totalchrist/3_TC.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5YR7Ca7flEq8ZVjpcG0hfn?si=f60087cb87864362"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Confessional: Christ our Prophet",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/totalchrist/4_TC.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4x5DUdqWw4rLUy8vV1O2sy?si=b8cffa2943c54f2e"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Sacramental: Christ our Priest",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/totalchrist/5_TC.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3AUSDDZvbgpHLb1Hsx2sSh?si=02e5de10bbd04e61"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Communal: Christ our King",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4XhsZFmsK8QPvSL3tSzUnQ?si=e22c24d8b37a4ec1"
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Seeing the Big Picture, Experiencing the Fullness of Christ",
+          "date": "",
+          "resources": []
+        }
+      ],
+      "roadmap": [],
+      "curriculum_url": ""
+    },
+    {
+      "slug": "walking-through-sinai",
+      "title": "Walking with Jesus Through Sinai",
+      "status": "Adult Sunday Studies",
+      "summary": "Seeking Moral Clarity in an Age of Chaos with the 10 Commandments. Explore what the Bible says about social justice, relationships, and living a flourishing life before God.",
+      "description": "What is the good life? How should I treat my neighbor? What does the Bible say about social justice, adultery, covetousness, or slander? Does the Sabbath matter anymore? To answer these questions and more, this year we're \"Walking with Jesus Thru Sinai.\" More than a badge to prove our self-righteousness or a burden to leave us in guilt, the 10 Commandments are summaries of what a flourishing life before God is meant to look like. It shows us how we are made and how we ought to live. This class will be an opportunity to discuss all sorts of crucial issues, from idolatry and worship to moral virtues and political beliefs. Grounded in the grace of Christ, the law becomes a beautiful vision for all our lives. All are welcome! We meet in the Fellowship Hall.",
+      "image_url": "https://storage.googleapis.com/cpc-public-website/web-assets/podcast-thumbnails/WALKING%20LOGO.jpg",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Christ & the Law",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0yn4EIVBmgM9dL3xPAA4Yb?si=f3f33b1f16cb4c3c"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_1_Intro_Christ%20and%20the%20Law%20(2).pdf"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Law and Gospel",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6o3BgrdbEfckzzW5Dtu6Fg?si=a9eda3b2cd7e4d11"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_2_Intro_Law%20and%20Gospel.pdf"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Interpreting the 10C & Ps. 119",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4ejCoVwKApiidgQo31P7iI?si=31944017bf55442f"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_3_Intro_on%20the%2010.pdf"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "The First Commandment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_4_First%20Commandment%201.pdf"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "title": "First Commandment, part 2",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_5_First%20Commandment%20part%202%20(1).pdf"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "title": "First Commandment, part 3",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_6_First%20Commandment%20part%203.pdf"
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Second Commandment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_7_Second%20Commandment.pdf"
+            }
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Second Commandment, part 2",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_8_Second%20Commandment%2C%20part%202.pdf"
+            }
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Second Commandment, part 3",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_9_Second%20Commandment%2C%20part%203%20(1).pdf"
+            }
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Third Commandment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_10_Third%20Commandment.pdf"
+            }
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Third Commandment, part 2",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5aBcD4eF6G7h8iJ9kL0mN1?si=1234567890abcdef"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_11_Third%20Commandment%2C%20part%202.pdf"
+            }
+          ]
+        },
+        {
+          "number": 12,
+          "title": "Fourth Commandment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_12_Fourth%20Commandment.pdf"
+            }
+          ]
+        },
+        {
+          "number": 13,
+          "title": "Fourth Commandment, part 2",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0wrKMFvv3UndOWvG5RfKPG?si=73651e0493234df0"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_13_Fourth%20Commandment%2C%20part%202.pdf"
+            }
+          ]
+        },
+        {
+          "number": 14,
+          "title": "Fourth Commandment, part 3",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4u0cE0DCYGRdzbemVdOhMe?si=6384d46be69343fd"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_14_Fourth%20Commandment%2C%20part%203.pdf"
+            }
+          ]
+        },
+        {
+          "number": 15,
+          "title": "Fifth Commandment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4SBdQsyx6n5srRCwibPoS7?si=c32b9758f5d347e1"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_15_Fifth%20Commandment.pdf"
+            }
+          ]
+        },
+        {
+          "number": 16,
+          "title": "Fifth Commandment, part 2",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/611Qh332PzdaEwkF6c3GdN?si=ecc214de222e4a0e"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_16_Fifth%20Commandment%2C%20part%202%20(1).pdf"
+            }
+          ]
+        },
+        {
+          "number": 17,
+          "title": "Fifth Commandment, part 3",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/1D7ShdxjIl7HtH8TnA6Wt1?si=e01ea64faf61481a"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_17_Fifth%20Commandment%2C%20part%203.pdf"
+            }
+          ]
+        },
+        {
+          "number": 18,
+          "title": "Fifth Commandment, part 4",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6dv6HGn7ekzdw6T97kay60?si=7c412a8bec0448ea"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_18_Fifth%20Commandment%2C%20part%204.pdf"
+            }
+          ]
+        },
+        {
+          "number": 19,
+          "title": "Fifth Commandment, part 5",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/15U7unz3v0Adp1aVSaEdTx?si=5a34e07c4b054ffc"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_19_Fifth%20Commandment%2C%20part%205.pdf"
+            }
+          ]
+        },
+        {
+          "number": 20,
+          "title": "Sixth Commandment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2eRlF15LZ3hZDfHfSLNg3v?si=a423774d40de4a22"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_20_Sixth%20Commandment.pdf"
+            }
+          ]
+        },
+        {
+          "number": 21,
+          "title": "Sixth Commandment, part 2",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0wiMoklGs3FsRHyOg9JZe9?si=ad91826b6bd04319"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_21_Sixth%20Commandment%2C%20part%202.pdf"
+            }
+          ]
+        },
+        {
+          "number": 22,
+          "title": "Sixth Commandment, part 3",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3ijPn2tLLi5btUZK8VnJy8?si=a8a4eb902f6e4dc3"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_22_Sixth%20Commandment%2C%20part%203.pdf"
+            }
+          ]
+        },
+        {
+          "number": 23,
+          "title": "Sixth Commandment, part 4",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/15U7unz3v0Adp1aVSaEdTx?si=5a34e07c4b054ffc"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_23_Sixth%20Commandment%2C%20part%204.pdf"
+            }
+          ]
+        },
+        {
+          "number": 24,
+          "title": "Seventh Commandment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/15U7unz3v0Adp1aVSaEdTx?si=5a34e07c4b054ffc"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_24_Seventh%20Commandment.pdf"
+            }
+          ]
+        },
+        {
+          "number": 25,
+          "title": "Seventh Commandment, part 2",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/15U7unz3v0Adp1aVSaEdTx?si=5a34e07c4b054ffc"
+            },
+            {
+              "label": "Handout",
+              "url": "https://storage.googleapis.com/cpc-public-website/handouts/walking-handouts/10%20Comm_25_Seventh%20Commandment%2C%20part%202.pdf"
+            }
+          ]
+        }
+      ],
+      "roadmap": [],
+      "curriculum_url": ""
+    },
+    {
+      "slug": "what-we-believe",
+      "title": "What We Believe",
+      "status": "Adult Sunday Studies",
+      "summary": "A comprehensive exploration of Christian doctrine and Reformed theology, examining everything from the nature of God to contemporary issues in theology.",
+      "image_url": "https://cpcnewhaven.org/assets/podcast-thumbnails/wwb.jpg",
+      "description": "A comprehensive exploration of Christian doctrine and Reformed theology, examining everything from the nature of God to contemporary issues in theology.",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Intro, Prologomena, Epistemology",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb1.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4wuTCTahdpHDaOWExsHElf?si=pw-z6esxQqS8nU0QicXylA"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Revelation - General and Special",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb2.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3L0HjN4B4NcBi0j1s6NkcR?si=bMOOirIpQGCFQooBbW4Bew"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Special Revelation, Biblical Interpretation",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb3.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6j2MNzMzUWhz5SA70cFC6h?si=qVDWRhcNTeaeU4COFO2Wlw"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Biblical Interpretation, cont.",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb4.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/1GaU4LEoWCyVaTRa6r8mvb?si=pC4LJPPnTKmWVK0SroxRTg"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Doctrine of God - Attributes & Trinity",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb5.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2ghgHW4dCbPEgQF6Re5XmY?si=8Ln_fOTXSsKlZDIGZdlUEQ"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Doctrine of God - Attributes & Trinity, cont.",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb6.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0pXqsOS1XgJCnVmk7N5gcZ?si=d61f13cfc4e74c14"
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Doctrine of God",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb7.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3ucwt1S0lhGRDvEVivP4EP?si=f6aGsvdATuqXHw7om1_uFw"
+            }
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Creation & Providence",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb8.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/65F2fMWuETd1DkrjbaRPbQ?si=458b73b1746a420c"
+            }
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Humanity",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb9.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://cpcnewhaven.org#"
+            }
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Original Sin",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb10.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://cpcnewhaven.org#"
+            }
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Original Sin, cont.",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb11.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://cpcnewhaven.org#"
+            }
+          ]
+        },
+        {
+          "number": 12,
+          "title": "Review & Preview thru Biblical Covenants",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb12.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/17R7z1wbFrvwKHGWuOYCi2?si=121d2efbf4cc4220"
+            }
+          ]
+        },
+        {
+          "number": 13,
+          "title": "Person of Christ",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb13.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/7rGLZeDmBByr0AjwLfOYkw?si=RtqHfCdmQS2E7sq4a69XKA"
+            }
+          ]
+        },
+        {
+          "number": 14,
+          "title": "Person of Christ, cont.",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb14.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6AJ8BnXcesE8hs8k45SqUv?si=UtXEBw5lQvOUuKvlUJSCnw"
+            }
+          ]
+        },
+        {
+          "number": 15,
+          "title": "Work of Christ (Incar. and Atonement)",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb15.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4Sa5kxbQTB5JnvfNWac28Y?si=pMT0owPmQ4GzWOxNhV8GUQ"
+            }
+          ]
+        },
+        {
+          "number": 16,
+          "title": "Work of Christ, cont. (Resurrection and Ascension)",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb16.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3U9h0qPb45xJppKKsTNb1o?si=VUJGyFAzS6yARDkTj_J2eg"
+            }
+          ]
+        },
+        {
+          "number": 17,
+          "title": "Consummation & Judgment",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb17.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0FG5uAavmxEDpkASDPP4KI?si=ee1ea4502efc4258"
+            }
+          ]
+        },
+        {
+          "number": 18,
+          "title": "Means of Grace - Total Christ & the Church",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb18.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/38KKosVGmz292X4fUyfjSP?si=znlTx3T9QKyqI1fJrYqX-g"
+            }
+          ]
+        },
+        {
+          "number": 19,
+          "title": "Means of Grace - Church as Communion & Institution",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb19.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6YuRw9bCxoHxRqVLL1EF3A?si=omLxpysdQZqDhGHVJa8OnQ"
+            }
+          ]
+        },
+        {
+          "number": 20,
+          "title": "Means of Grace - Church Power",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb20.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://cpcnewhaven.org#"
+            }
+          ]
+        },
+        {
+          "number": 21,
+          "title": "Means of Grace - Sacraments",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb21.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/7c3HXIemx3kAZJMDWkkLcq?si=bknTCI_xRZuCX8ZcN9jOKA"
+            }
+          ]
+        },
+        {
+          "number": 22,
+          "title": "Effectual Calling & Regeneration",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb22.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3YyfasnAaNVaKrqaetWIzA?si=f2LB5MR4QqCaKFph30BdXQ"
+            }
+          ]
+        },
+        {
+          "number": 23,
+          "title": "Saving Faith & Repentance",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb23.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6HsBPJCo0A2o5iCDmC06ln?si=1b78ac806b144dfc"
+            }
+          ]
+        },
+        {
+          "number": 24,
+          "title": "Justification & Adoption",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb24.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4GSiIh5nnK2kRArI32Rzme?si=TLmW-Ec7RJ-onYynNFVkRQ"
+            }
+          ]
+        },
+        {
+          "number": 25,
+          "title": "Sanctification",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb25.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6NtmDhbvNkyBXFXbCE0NV0?si=F1fP9BiBTf2Dsjws3NAWbg"
+            }
+          ]
+        },
+        {
+          "number": 26,
+          "title": "Assurance & Perseverance",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb26.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5DRvPbCE9WuJ2jzlFZgHYn?si=21C4F502SxG6TL3nW6inkw"
+            }
+          ]
+        },
+        {
+          "number": 27,
+          "title": "Good Works, the Law of God, Christian Liberty, Prayer",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb27.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0X1t6U8BhFWP6NVKOzK2mQ?si=x6gGECfHSTulUoi2Gpc7BA"
+            }
+          ]
+        },
+        {
+          "number": 28,
+          "title": "Calling & Spheres; Church & State issues",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb28.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6pa26ZoIBb7lpp10ZLReYD?si=IkAgT-0xRhqbD2nZvsY3Vg"
+            }
+          ]
+        },
+        {
+          "number": 29,
+          "title": "Sexuality & Gender",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb29.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/65cuxutVdsrdcDOZPzaZz7?si=jEGDaxICTV-kD5EDA-Xc6w"
+            }
+          ]
+        },
+        {
+          "number": 30,
+          "title": "Sexuality & Gender, cont.",
+          "date": "",
+          "resources": [
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/wwb/wwb30.pdf"
+            },
+            {
+              "label": "Listen",
+              "url": "https://cpcnewhaven.org#"
+            }
+          ]
+        }
+      ],
+      "roadmap": [],
+      "curriculum_url": ""
+    },
+    {
+      "slug": "confessional-theology",
+      "title": "Confessional Theology",
+      "status": "Adult Sunday Studies",
+      "summary": "An in-depth study of historical confessions and their relevance for contemporary Christian life and thought.",
+      "description": " The primary aim of this course in confessional theology is to assist the student (seeker and/or believer) in constructing that kind of holistic worldview that is thoroughly informed by what the Christian scriptures principally teach. Our method is confessional. The confessional method is distinguished from systematic, historical, philosophical, or even social theologies, if also sharing in some elements inherent to each of them. It is at the end an exercise of faith formation that will consider the related topics as from the vantage point of divine revelation intended for people of faith. It therefore involves reading the bible communally as revealed not only to individuals, but to that organic body of Christ described as the “pillar and bulwark of the truth” (1 Timothy 3:15). Such communal interpretation has the advantage of transcending any one geo-political/historical expression. It is an attempt to understand God’s revelation in scripture aided by that consensus of the church across the ages. Our primary source will be within Westminster Confession of Faith (WCF), one historical expression of the catholic faith.",
+      "image_url": "https://files.cpcnewhaven.org/podcast-thumbnails/confessional-theology.png",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Introduction",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/1GxLk8CIZHfMtjDAGDXywe"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/UDPIE8M5FBk"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-1-intro-to-confess.pdf"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "General Revelation and Apologetics",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4mwh2wGQzTjkYicgDNbfCG"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/Nldh4fAr9NE?t=1592"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-2-general-revelation-apologetics.pdf"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Holy Scripture",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/491iTj1c5BE0UOPyFE2Rns"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/Ktp2Rkjr-es"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-3-holyscripture.pdf"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "The Doctrine of God and Holy Trinity",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2Dcukn7hiTvn8YJ7aH3GVm"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/tTTw71l81dc"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-4-the-doctrine-of-god.pdf"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "title": "God's Sovereign Decrees and Human Freedom Applied to Evangelism",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0LoX9MJJdO7qTNahV5uGQZ"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/X7Z7hG2feGw"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-5-gods-decress-human-freedom-suffering-and-prayer.pdf"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "title": "God's Providence Applied to Suffering",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3ip39ctOT4PNzgD8zL5qLE"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/fMoUqzQ-3Yw"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-5b-suffering.pdf"
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "title": "God's Creation and the Issue of Faith and Science",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/7JpIzS78hDN4wtQCGH05cG"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/4YSoOE4JZJg"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-7-doctrine-of-creation.pdf"
+            }
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Anthropology and the Fall Unto Sin",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/00Au9wU39ElqwtrH75br0P"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/72hTqlUhOkw"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-8-anthropology-and-o.pdf"
+            }
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Effectual Calling",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3htD7z70luXt4NTeO2upKc"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/TIiergbO-pw"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-9-effectual-and-conversion.pdf"
+            }
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Conversion",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5KiaHgwv2o0VujRXsWkWUi"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/HrDsRHbp5ww"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-10-christian-conversion.pdf"
+            }
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Christology",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2FnSoqdgvQmviQGHWdtRng"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/IDC3HtABG4Y"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-11-mediator2.pdf"
+            }
+          ]
+        },
+        {
+          "number": 12,
+          "title": "Justification and Adoption",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2TGbg9cn4zSJChNF2UwcTX"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/wGShjJqhbVc"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-11-justification.pdf"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/adoption.pdf"
+            }
+          ]
+        },
+        {
+          "number": 13,
+          "title": "Perseverance and Assurance",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5KralwN0v4IpqNgtkcGrhv"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/ek4OYgaXYkE"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-12-pers-assur.pdf"
+            }
+          ]
+        },
+        {
+          "number": 14,
+          "title": "Sanctification and Good Works",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2uvf35Y4FHREqFsqZipuCI"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/TtscQj2wf2k"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-13-sanctification.pdf"
+            }
+          ]
+        },
+        {
+          "number": 15,
+          "title": "Covenant Theology",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/3bXg3Uq3YB22vIzYpjmzGQ"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/psQffuFc7_I"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-14-cov-theology.pdf"
+            }
+          ]
+        },
+        {
+          "number": 16,
+          "title": "Christian Liberty and the Issue of Church and State",
+          "date": "",
+          "resources": [
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/GUl4a6eo4ws"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/15-christian-liberty-and-church-and-state.pdf"
+            }
+          ]
+        },
+        {
+          "number": 17,
+          "title": "Communion of Saints and Church",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/55mElM3vcslpzcyWmVDh7n"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/uH8Nx2k9GJ8"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-16-church-s.pdf"
+            }
+          ]
+        },
+        {
+          "number": 18,
+          "title": "Christian Worship and Sabbath",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/6RqtFTajpE3AsnFRa1vfJJ"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/AAe2AeWyyjM"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-18-worship-and-sabbath.pdf"
+            }
+          ]
+        },
+        {
+          "number": 19,
+          "title": "Sacraments and Sacramental Spirituality",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5Kq8tSZNHDvxUXVfrKxfqQ"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/X9adODKAYQ8"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/sacraments.pdf"
+            }
+          ]
+        },
+        {
+          "number": 20,
+          "title": "Church Government",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/0KP6wXPAdErrrKdwUJlWTl"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/nehL_R9cub4"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-20-govt.pdf"
+            }
+          ]
+        },
+        {
+          "number": 21,
+          "title": "Eschatology, Death, Heaven, and Hell",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4FN7qo00z7c8Jckc8felOm"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/ZIn6KjG0xdA"
+            },
+            {
+              "label": "Handout",
+              "url": "https://files.cpcnewhaven.org/handouts/confessional-theology/-21-escatology.pdf"
+            }
+          ]
+        }
+      ],
+      "roadmap": [],
+      "curriculum_url": ""
+    },
+    {
+      "slug": "biblical-interpretation",
+      "title": "Biblical Interpretation",
+      "status": "Adult Sunday Studies",
+      "summary": "Learn the principles and methods for understanding and applying Scripture in its proper context.",
+      "description": "Within an awareness of the present post-enlightenment and post Christian skepticism concerning the reliability and usability of the Christian Bible, the objective of this class is to provide the student with an introductory level of confidence in the Reliability and Usability of the Christian Scriptures such as to adopt as a matter of Christian faith and application the following confessions:",
+      "image_url": "https://files.cpcnewhaven.org/podcast-thumbnails/biblical-interp.jpg",
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Textual Criticism and Challenges to Historicity",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/5nJa1hlYGmVF44aKaFE3bm"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/0uiWj9iSRdw"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/the-reliability-and-usability-of-scripture-lesson-1.pptx"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "The Modern Challenge to Divine Inspiration, Textual Perspicuity, and Reliability",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/11LyFKv1aQOFHUDdLbsgIE"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/ZlMXp8UkVs0"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/the-reliability-and-usability-of-scripture-lesson-2.pdf"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Confusion Concerning Revelation vs Illumination",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/1RJ0KWrbyDaMaDQc6n6aZh"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/L4keLia9SPI"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/reliability-sufficience-and-usability-lesson-3b.pptx"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "title": "The Bible As Redemptive History and a Convenantal Method of Interpretation",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/7wCDkpyfmQIZ9BRfeTHRzn"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/Os-Cgtlf7MA"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/biblical-interp-4b.pdf"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "title": "The Literary Method of Interpretation Explained and Basic Methodology in Biblical Interpretation",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/615LoIHTNCE4EAjQLoxsbM"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/BXLoG0I4tww"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/biblical-interp-5.pdf"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "title": "A Literary Method of Interpretation Applied",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/4IYtfssvDqEHFYKYnfXFIT"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/4PdrmM1c5hI"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/biblical-interp-6.pdf"
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "title": "A Literary Method of Interpretation Applied (Part 2)",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2vDkRFbwBScERn9GY42qRG"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/NUDsLwQPrL4"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/biblical-interp-7.pdf"
+            }
+          ]
+        },
+        {
+          "number": 8,
+          "title": "The Use of the Bible",
+          "date": "",
+          "resources": [
+            {
+              "label": "Listen",
+              "url": "https://open.spotify.com/episode/2Ygo8xSwMPbkrZ2sDX4v0i"
+            },
+            {
+              "label": "Watch",
+              "url": "https://youtu.be/XvKuhQTJ-a0"
+            },
+            {
+              "label": "Slides",
+              "url": "https://files.cpcnewhaven.org/handouts/biblical-interpretation/biblical-interp-8.pdf"
+            }
+          ]
+        }
+      ],
+      "roadmap": [],
+      "curriculum_url": "",
+      "intro_points": [
+        "Concerning Reliability:… an high and reverent esteem of the Holy Scripture… whereby it doth abundantly evidence itself to be the Word of God. (WCF 1.4)",
+        "Concerning Usability: …[That] in a due use of the ordinary means, [we] may attain unto a sufficient understanding of them. (WCF 1.5)",
+        "[Wherein] the whole counsel of God concerning all things necessary for his own glory, man's salvation, faith and life, is either expressly set down in Scripture, or by good and necessary consequence may be deduced from Scripture: unto which nothing at any time is to be added, whether by new revelations of the Spirit, or traditions of men. (WCF 1.6)"
+      ]
+    }
+  ]
+}

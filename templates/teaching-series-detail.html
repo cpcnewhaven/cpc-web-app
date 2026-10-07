@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} | Adult Sunday Studies{% endblock %}
+{% block meta_description %}{{ course.summary|striptags|truncate(155, True, '…') }}{% endblock %}
+{% block og_title %}{{ course.title }} | CPC New Haven{% endblock %}
+{% block og_description %}{{ course.summary|striptags|truncate(200, True, '…') }}{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/teaching-series/{{ course.slug }}{% endblock %}
+
+{% block head %}
+<style>
+    .study-detail-page { --detail-ink:var(--surface-text); --detail-muted:var(--surface-muted); --detail-border:var(--surface-border); --detail-surface:var(--surface-bg); --detail-raised:var(--surface-bg-hover); max-width:1080px; margin:0 auto; }
+    .study-back { display:inline-flex; align-items:center; gap:.5rem; min-height:42px; margin:0 0 .9rem; color:var(--surface-accent); font-size:.9rem; font-weight:750; text-decoration:none; }
+    .study-back:hover { color:var(--detail-ink); }
+    .study-course-nav { display:flex; gap:.5rem; overflow-x:auto; padding:.2rem .1rem .85rem; margin-bottom:.8rem; scrollbar-width:thin; }
+    .study-course-nav a { flex:0 0 auto; padding:.55rem .75rem; border:1px solid var(--detail-border); border-radius:999px; color:var(--detail-muted); background:var(--detail-surface); font-size:.8rem; font-weight:700; text-decoration:none; }
+    .study-course-nav a[aria-current="page"],.study-course-nav a:hover { border-color:var(--surface-accent); color:var(--detail-ink); background:var(--detail-raised); }
+    .study-detail-hero { position:relative; display:flex; align-items:flex-end; min-height:290px; padding:clamp(1.5rem,5vw,3rem); border:1px solid rgba(168,208,255,.24); border-radius:21px; overflow:hidden; color:#fff; background:linear-gradient(90deg,rgba(0,25,58,.92),rgba(0,52,103,.6)),url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center 42%/cover; box-shadow:0 18px 38px rgba(0,16,40,.2); }
+    .study-detail-hero__copy { max-width:800px; }
+    .study-detail-hero__eyebrow { margin:0 0 .55rem; color:#c0dcfb; font-size:.73rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    .study-detail-hero h1 { margin:0 0 .75rem; color:#fff!important; font:800 clamp(2rem,5vw,3.3rem)/1.07 Manrope,sans-serif; letter-spacing:-.04em; text-shadow:0 2px 18px rgba(0,12,32,.28); }
+    .study-detail-hero p:last-child { margin:0; color:rgba(255,255,255,.9); font-size:1rem; line-height:1.7; }
+    .study-detail-image { display:block; width:100%; max-height:520px; margin:1rem 0; border:1px solid var(--detail-border); border-radius:18px; object-fit:cover; box-shadow:var(--surface-shadow); }
+    .study-description { margin:1rem 0; padding:clamp(1.1rem,3vw,1.7rem); border:1px solid var(--detail-border); border-radius:16px; color:var(--detail-ink); background:var(--detail-surface); box-shadow:var(--surface-shadow); font-size:.98rem; line-height:1.8; }
+    .study-description p { margin:0; }
+    .study-description ul { display:grid; gap:.6rem; margin:.8rem 0 0; padding-left:1.25rem; }
+    .study-sessions-heading { margin:1.7rem 0 .8rem; color:var(--detail-ink); font:750 clamp(1.3rem,3vw,1.8rem)/1.2 Manrope,sans-serif; letter-spacing:-.025em; }
+    .study-session-list { display:grid; gap:.7rem; }
+    .study-session { display:grid; grid-template-columns:48px minmax(0,1fr); gap:.9rem; padding:1rem; border:1px solid var(--detail-border); border-radius:14px; background:var(--detail-surface); box-shadow:var(--surface-shadow); }
+    .study-session__number { display:grid; place-items:center; width:42px; height:42px; border-radius:50%; color:var(--surface-accent); background:var(--surface-accent-soft); font-weight:800; }
+    .study-session h3 { margin:.1rem 0 .3rem; color:var(--detail-ink); font:750 1rem/1.4 Manrope,sans-serif; }
+    .study-session__date { color:var(--detail-muted); font-size:.8rem; }
+    .study-session__description { margin:.45rem 0 0; color:var(--detail-muted); font-size:.9rem; line-height:1.65; }
+    .study-session__resources { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.7rem; }
+    .study-resource { display:inline-flex; align-items:center; gap:.4rem; min-height:38px; padding:.45rem .7rem; border:1px solid var(--detail-border); border-radius:8px; color:var(--surface-accent); background:var(--detail-raised); font-size:.8rem; font-weight:800; text-decoration:none; }
+    .study-resource:hover { border-color:var(--surface-accent); color:var(--detail-ink); }
+    .study-roadmap { display:grid; gap:.7rem; margin:1rem 0 1.6rem; }
+    .study-roadmap__item { display:grid; grid-template-columns:38px minmax(0,1fr); gap:.75rem; padding:.9rem 1rem; border:1px solid var(--detail-border); border-radius:12px; background:var(--detail-surface); }
+    .study-roadmap__number { color:var(--surface-accent); font-size:.82rem; font-weight:850; }
+    .study-roadmap h3 { margin:0; color:var(--detail-ink); font:750 .95rem/1.4 Manrope,sans-serif; }
+    .study-roadmap p { margin:.25rem 0 0; color:var(--detail-muted); font-size:.85rem; line-height:1.6; }
+    .study-empty { padding:1.2rem; border:1px solid var(--detail-border); border-radius:14px; background:var(--detail-surface); color:var(--detail-muted); line-height:1.6; }
+    .study-back:focus-visible,.study-course-nav a:focus-visible,.study-resource:focus-visible { outline:3px solid var(--surface-accent); outline-offset:3px; }
+    @media(max-width:600px) { .study-detail-hero { min-height:230px; border-radius:16px; } .study-session { grid-template-columns:36px minmax(0,1fr); gap:.65rem; padding:.8rem; } .study-session__number { width:34px; height:34px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="study-detail-page" aria-labelledby="study-title">
+    <a class="study-back" href="{{ url_for('teaching_series') }}"><span aria-hidden="true">←</span> All Adult Sunday Studies</a>
+    <nav class="study-course-nav" aria-label="Adult Sunday Studies courses">
+        {% for item in courses %}
+        <a href="{{ url_for('teaching_series_detail', slug=item.slug) }}" {% if item.slug == course.slug %}aria-current="page"{% endif %}>{{ item.nav_title or item.title }}</a>
+        {% endfor %}
+    </nav>
+
+    <header class="study-detail-hero">
+        <div class="study-detail-hero__copy">
+            <p class="study-detail-hero__eyebrow">Adult Sunday Studies · {{ course.status }}</p>
+            <h1 id="study-title">{{ course.title }}</h1>
+            <p>{{ course.summary }}</p>
+        </div>
+    </header>
+
+    {% if course.description and course.description != course.summary %}<div class="study-description"><p>{{ course.description }}</p>{% if course.intro_points %}<ul>{% for point in course.intro_points %}<li>{{ point }}</li>{% endfor %}</ul>{% endif %}</div>{% endif %}
+    {% if course.image_url %}<img class="study-detail-image" src="{{ course.image_url }}" alt="{{ course.title }}" loading="lazy">{% endif %}
+    {% if course.roadmap %}
+    <h2 class="study-sessions-heading">A six-week roadmap</h2>
+    <div class="study-roadmap">
+        {% for lesson in course.roadmap %}
+        <article class="study-roadmap__item"><span class="study-roadmap__number">{{ lesson.number }}</span><div><h3>{{ lesson.title }}</h3>{% if lesson.description %}<p>{{ lesson.description }}</p>{% endif %}</div></article>
+        {% endfor %}
+    </div>
+    {% if course.curriculum_url %}<a class="study-resource" href="{{ course.curriculum_url }}" target="_blank" rel="noopener noreferrer">Download full curriculum schedule</a>{% endif %}
+    {% endif %}
+    <h2 class="study-sessions-heading">Class recordings &amp; materials</h2>
+    {% if course.sessions %}
+    <div class="study-session-list">
+        {% for session in course.sessions %}
+        <article class="study-session">
+            <span class="study-session__number" aria-label="Session {{ session.number }}">{{ '%02d'|format(session.number|int) }}</span>
+            <div>
+                <h3>{{ session.title }}</h3>
+                {% if session.date %}<div class="study-session__date">{{ session.date }}</div>{% endif %}
+                {% if session.description %}<p class="study-session__description">{{ session.description }}</p>{% endif %}
+                {% if session.resources %}
+                <div class="study-session__resources">
+                    {% for resource in session.resources %}
+                    <a class="study-resource" href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">{{ resource.label }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="study-empty">Class recordings and handouts will be added here as they become available.</p>
+    {% endif %}
+    <a class="study-back" href="{{ url_for('teaching_series') }}"><span aria-hidden="true">←</span> Back to all studies</a>
+</section>
+{% endblock %}
