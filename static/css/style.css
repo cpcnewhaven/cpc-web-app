@@ -1019,6 +1019,17 @@ body.theme-white .community-hero p {
     color: rgba(255, 255, 255, 0.86) !important;
 }
 
+/* These photo heroes also need to stay white in light mode. */
+body.theme-white .contact-hero h1,
+body.theme-white .give-hero h1 {
+    color: #fff !important;
+}
+
+body.theme-white .contact-hero p,
+body.theme-white .give-hero p {
+    color: rgba(255, 255, 255, 0.86) !important;
+}
+
 /* General page content white theme */
 body.theme-white h1,
 body.theme-white h2,
