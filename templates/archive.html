@@ -13,6 +13,8 @@
         min-height: calc(100vh - 200px);
         padding: 0;
         margin: 0;
+        --archive-muted: rgba(255, 255, 255, 0.8);
+        --archive-divider: rgba(255, 255, 255, 0.18);
     }
 
     .archive-container {
@@ -247,6 +249,70 @@
         font-weight: 300;
     }
 
+    body.theme-white .archive-page {
+        --archive-muted: #445265;
+        --archive-divider: rgba(27, 69, 113, 0.18);
+        color: #1b2738;
+    }
+
+    body.theme-white .archive-header h1,
+    body.theme-white .section-title,
+    body.theme-white .archive-item-title,
+    body.theme-white .empty-state h2 {
+        color: #1b2738;
+    }
+
+    body.theme-white .archive-header p,
+    body.theme-white .section-count,
+    body.theme-white .archive-item-meta,
+    body.theme-white .archive-item-description,
+    body.theme-white .loading,
+    body.theme-white .empty-state {
+        color: #445265;
+    }
+
+    body.theme-white .filter-tabs,
+    body.theme-white .archive-section,
+    body.theme-white .archive-item,
+    body.theme-white .filter-tab,
+    body.theme-white .year-button,
+    body.theme-white .loading,
+    body.theme-white .empty-state {
+        background: rgba(255, 255, 255, 0.78);
+        border-color: rgba(27, 69, 113, 0.16);
+    }
+
+    body.theme-white .archive-item:hover,
+    body.theme-white .filter-tab:hover,
+    body.theme-white .year-button:hover {
+        background: #f1f6fd;
+        border-color: rgba(7, 93, 184, 0.28);
+    }
+
+    body.theme-white .filter-tab,
+    body.theme-white .year-button,
+    body.theme-white .archive-item-link {
+        color: #1b2738;
+    }
+
+    body.theme-white .filter-tab.active,
+    body.theme-white .filter-tab.active:hover,
+    body.theme-white .year-button.active,
+    body.theme-white .archive-item-link:hover {
+        background: #e8f2ff;
+        color: #075db8;
+        border-color: rgba(7, 93, 184, 0.28);
+    }
+
+    body.theme-white .archive-item-link {
+        background: #f1f6fd;
+        border-color: rgba(27, 69, 113, 0.16);
+    }
+
+    body.theme-white .section-header {
+        border-color: rgba(27, 69, 113, 0.16);
+    }
+
     @media (max-width: 768px) {
         .archive-header h1 {
             font-size: 2.2rem;
@@ -410,10 +476,10 @@
                 html += `
                     <div style="margin: 0 0 1.25rem 0;">
                         <div style="display:flex; align-items:center; gap: 0.75rem; margin: 0.25rem 0 0.75rem 0;">
-                            <div style="font-size: 0.95rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.8);">
+                            <div style="font-size: 0.95rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--archive-muted);">
                                 ${capitalizeFirst(type)}
                             </div>
-                            <div style="flex:1; height:1px; background: linear-gradient(to right, rgba(255,255,255,0.18), transparent);"></div>
+                            <div style="flex:1; height:1px; background: linear-gradient(to right, var(--archive-divider), transparent);"></div>
                         </div>
                 `;
 

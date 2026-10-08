@@ -6571,3 +6571,96 @@ body.theme-white .events-page .evt-calendar-menu summary {
     background: var(--surface-accent-soft) !important;
     border-color: var(--surface-accent) !important;
 }
+
+/* Legacy page panels: keep light mode readable when older templates use
+   white text and translucent dark-theme surfaces. Heroes remain dark/photo
+   surfaces on purpose; these rules only cover content cards and controls. */
+body.theme-white .search-page .search-section,
+body.theme-white .search-page .filter-tab,
+body.theme-white .search-page .result-card,
+body.theme-white .search-page #advancedFiltersToggle,
+body.theme-white .search-page #advancedFiltersPanel,
+body.theme-white .announcements-page .announcement-card,
+body.theme-white .announcements-page .empty-state,
+body.theme-white .give-page .give-section,
+body.theme-white .give-page .giving-option,
+body.theme-white .give-page .giving-info,
+body.theme-white .pastor-teaching-page .series-card-pastor,
+body.theme-white .pastor-teaching-page .empty-state-pastor,
+body.theme-white .pastors-book-page .book-info-card {
+    background: rgba(255, 255, 255, 0.86) !important;
+    border-color: rgba(27, 69, 113, 0.16) !important;
+    color: var(--surface-text) !important;
+}
+
+body.theme-white .search-page .search-section label,
+body.theme-white .search-page .filter-tab,
+body.theme-white .search-page .result-card h3,
+body.theme-white .search-page .result-card p,
+body.theme-white .announcements-page .announcement-card h3,
+body.theme-white .announcements-page .announcement-description,
+body.theme-white .give-page .giving-option h3,
+body.theme-white .give-page .giving-option p,
+body.theme-white .give-page .giving-info h3,
+body.theme-white .give-page .giving-info li,
+body.theme-white .pastor-teaching-page .series-card-pastor h2,
+body.theme-white .pastor-teaching-page .series-card-pastor .event-info,
+body.theme-white .pastor-teaching-page .series-card-pastor .series-desc,
+body.theme-white .pastor-teaching-page .sessions-list h3,
+body.theme-white .pastor-teaching-page .session-item .title,
+body.theme-white .pastors-book-page .book-author,
+body.theme-white .pastors-book-page .book-description,
+body.theme-white .pastors-book-page .book-info-card h3,
+body.theme-white .pastors-book-page .book-info-card p {
+    color: var(--surface-text) !important;
+}
+
+body.theme-white .search-page .search-section input,
+body.theme-white .search-page .search-section button,
+body.theme-white .gallery-page input,
+body.theme-white .gallery-page select,
+body.theme-white .gallery-page .view-btn,
+body.theme-white .gallery-page .sermon-controls,
+body.theme-white .announcements-page .announcement-filter-bar button {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(27, 69, 113, 0.18) !important;
+    color: var(--surface-text) !important;
+}
+
+body.theme-white .search-page .search-section input::placeholder,
+body.theme-white .gallery-page input::placeholder {
+    color: #68798c !important;
+}
+
+body.theme-white .search-page .filter-tab.active,
+body.theme-white .search-page .filter-tab:hover,
+body.theme-white .gallery-page .view-btn.active,
+body.theme-white .announcements-page .announcement-badge,
+body.theme-white .give-page .btn {
+    background: var(--surface-accent-soft) !important;
+    color: var(--surface-accent) !important;
+    border-color: rgba(7, 93, 184, 0.28) !important;
+}
+
+body.theme-white .pastor-teaching-page .sessions-list,
+body.theme-white .pastor-teaching-page .session-item {
+    border-color: rgba(27, 69, 113, 0.16) !important;
+}
+
+body.theme-white .pastor-teaching-page .session-item .no-pdf,
+body.theme-white .pastor-teaching-page .loading-pastor,
+body.theme-white .pastor-teaching-page .empty-state-pastor p,
+body.theme-white .announcements-page .announcement-date,
+body.theme-white .announcements-page .announcement-filter-bar {
+    color: #5d7186 !important;
+}
+
+body.theme-white .search-page #clearSearchBtn,
+body.theme-white .gallery-page #gallery-container > div[style*="text-align: center"] {
+    color: var(--surface-muted) !important;
+}
+
+body.theme-white .pastors-book-page .book-content h1,
+body.theme-white .pastors-book-page .book-info-card h3 {
+    color: var(--surface-text) !important;
+}
