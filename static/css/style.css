@@ -1001,11 +1001,25 @@ body.theme-white .empty-state {
     color: #666 !important;
 }
 
-body.theme-white .compact-hero h1 {
+body.theme-white .archive-header.compact-hero h1,
+body.theme-white .gallery-hero.compact-hero h1,
+body.theme-white .search-hero.compact-hero h1,
+body.theme-white .announcements-hero.compact-hero h1,
+body.theme-white .highlights-hero.compact-hero h1,
+body.theme-white .newsletter-hero.compact-hero h1,
+body.theme-white .live-hero.compact-hero h1,
+body.theme-white .pastor-teaching-hero.compact-hero h1 {
     color: #1a1a1a !important;
 }
 
-body.theme-white .compact-hero p {
+body.theme-white .archive-header.compact-hero p,
+body.theme-white .gallery-hero.compact-hero p,
+body.theme-white .search-hero.compact-hero p,
+body.theme-white .announcements-hero.compact-hero p,
+body.theme-white .highlights-hero.compact-hero p,
+body.theme-white .newsletter-hero.compact-hero p,
+body.theme-white .live-hero.compact-hero p,
+body.theme-white .pastor-teaching-hero.compact-hero p {
     color: #555 !important;
 }
 
