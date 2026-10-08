@@ -1009,6 +1009,16 @@ body.theme-white .compact-hero p {
     color: #555 !important;
 }
 
+/* Community uses its own photo hero rather than the generic compact hero.
+   Keep its title treatment identical in both themes. */
+body.theme-white .community-hero h1 {
+    color: #fff !important;
+}
+
+body.theme-white .community-hero p {
+    color: rgba(255, 255, 255, 0.86) !important;
+}
+
 /* General page content white theme */
 body.theme-white h1,
 body.theme-white h2,

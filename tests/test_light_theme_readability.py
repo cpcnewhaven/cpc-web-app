@@ -35,3 +35,5 @@ def test_community_hero_has_one_readable_treatment_in_both_themes():
     assert ".community-hero h1" in COMMUNITY
     assert "color: #fff;" in COMMUNITY
     assert "body.theme-white .community-hero" not in COMMUNITY
+    assert "body.theme-white .community-hero h1" in STYLE
+    assert "body.theme-white .community-hero p" in STYLE
