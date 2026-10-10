@@ -51,7 +51,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Unified Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=git_rev or app_version) }}">
     <style>
         :root {
             --cpc-blue: #0052a3;
@@ -678,9 +678,9 @@
     </footer>
 
     <!-- Keep all your existing JavaScript files -->
-    <script src="{{ url_for('static', filename='js/dynamic-banner.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/background-parallax-magic.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/scrollbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dynamic-banner.js', v=git_rev or app_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/background-parallax-magic.js', v=git_rev or app_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/scrollbar.js', v=git_rev or app_version) }}"></script>
 
     <!-- Dropdown Navigation JavaScript -->
     <script>
@@ -1289,10 +1289,10 @@
         </div>
         <button id="cpc-player-close" aria-label="Close player">×</button>
     </div>
-    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/player.js', v=git_rev or app_version) }}"></script>
 
     {% if feedback_mode %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css', v=git_rev or app_version) }}">
     <button class="cpc-feedback-tab" id="cpcFeedbackOpen" type="button" aria-controls="cpcFeedbackPanel" aria-expanded="false">
         <span aria-hidden="true">✦</span> Feedback
     </button>
@@ -1352,7 +1352,7 @@
             <p id="cpcFeedbackTrackStatus" class="cpc-feedback-status" role="status"></p>
         </div>
     </section>
-    <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/feedback.js', v=git_rev or app_version) }}"></script>
     {% endif %}
 
 </body>
