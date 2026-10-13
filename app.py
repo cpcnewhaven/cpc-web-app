@@ -2224,8 +2224,8 @@ def _get_podcast_episodes(series_title):
 
 @app.route('/api/podcasts/beyond-podcast')
 def api_beyond_podcast():
-    """API endpoint for Beyond the Sunday Sermon podcast sourced from database."""
-    episodes = _get_podcast_episodes('Beyond the Sunday Sermon')
+    """Show current Beyond episodes from the CPC feed, with a database fallback."""
+    episodes = _get_beyond_feed_episodes() or _get_podcast_episodes('Beyond the Sunday Sermon')
     return jsonify({
         'title': 'Beyond the Sunday Sermon',
         'description': 'Extended conversations and deeper dives into biblical topics.',
@@ -2294,7 +2294,7 @@ def api_gallery():
         print(f"Error loading gallery: {e}")
         return jsonify({'images': [], 'total': 0, 'error': str(e)})
 
-def _fetch_podcast(feed_url: str) -> dict:
+def _fetch_podcast(feed_url: str, limit: int | None = 50) -> dict:
     r = requests.get(
         feed_url,
         timeout=10,
@@ -2312,7 +2312,7 @@ def _fetch_podcast(feed_url: str) -> dict:
     }
 
     episodes = []
-    for e in parsed.entries[:50]:
+    for e in parsed.entries[:limit]:
         audio = None
         for enc in e.get("enclosures", []):
             if (enc.get("type") or "").startswith("audio"):
@@ -2325,10 +2325,57 @@ def _fetch_podcast(feed_url: str) -> dict:
             "summary": e.get("summary"),
             "audio": audio,
             "duration": e.get("itunes_duration"),
-            "image": (e.get("itunes_image", {}) or {}).get("href"),
+            "image": (e.get("image", {}) or e.get("itunes_image", {}) or {}).get("href"),
             "guid": e.get("id") or e.get("guid")
         })
     return {"channel": channel, "episodes": episodes}
+
+
+@cache.memoize(timeout=900)
+def _get_beyond_feed_episodes():
+    """Filter the shared CPC RSS feed to Beyond the Sunday Sermon episodes."""
+    from email.utils import parsedate_to_datetime
+
+    feed_url = app.config["PODCAST_FEEDS"].get("beyond")
+    if not feed_url:
+        return []
+    try:
+        feed = _fetch_podcast(feed_url, limit=None)
+    except (requests.RequestException, ValueError) as exc:
+        log.warning("Beyond RSS unavailable; using database episodes: %s", exc)
+        return []
+
+    episodes = []
+    for item in feed["episodes"]:
+        full_title = (item.get("title") or "").strip()
+        if not full_title.casefold().startswith("beyond the sunday sermon"):
+            continue
+        title_parts = [part.strip() for part in full_title.split("|")]
+        title = " | ".join(title_parts[1:]) if len(title_parts) > 1 else full_title
+        try:
+            published = parsedate_to_datetime(item["published"]).date().isoformat()
+        except (KeyError, TypeError, ValueError):
+            published = None
+        guest = ""
+        for part in reversed(full_title.split("|")):
+            match = re.match(r"\s*with\s+(?:guest\s+)?(.+)", part, re.IGNORECASE)
+            if match:
+                guest = match.group(1).strip()
+                if len(title_parts) > 2 and title_parts[-1] == part.strip():
+                    title = " | ".join(title_parts[1:-1])
+                break
+        episodes.append({
+            "title": title,
+            "link": item.get("link") or "",
+            "listen_url": item.get("link") or "",
+            "audio_url": (item.get("audio") or {}).get("url") or "",
+            "date_added": published,
+            "guest": guest,
+            "podcast_thumbnail_url": item.get("image") or "",
+            "duration": item.get("duration") or "",
+            "guid": item.get("guid") or "",
+        })
+    return episodes
 
 @app.route("/api/podcast/<series_key>")
 @cache.cached(timeout=900)

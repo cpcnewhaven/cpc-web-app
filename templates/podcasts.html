@@ -1274,9 +1274,9 @@ body.theme-blue .podcasts-page .podcast-episode .episode-details { color: #b9d0e
                 <div class="rss-episodes-header">
                     <div>
                         <p class="rss-episodes-kicker">From CPC</p>
-                        <h2>Latest Episodes</h2>
+                        <h2>Latest Beyond Episodes</h2>
                     </div>
-                    <p class="rss-episodes-subtitle">Recent sermons and conversations from our church family.</p>
+                    <p class="rss-episodes-subtitle">Recent conversations from Beyond the Sunday Sermon.</p>
                 </div>
                 <ul id="episodes" class="divide-y"></ul>
                 <div id="latestEpisodesPagination" class="latest-episodes-pagination" hidden>
@@ -1538,15 +1538,6 @@ async function showAllEpisodes(seriesId, seriesTitle) {
     
     episodesTitle.textContent = seriesTitle || 'Episodes';
     
-    if (series && series.episodes) {
-        renderFullEpisodes({
-            title: series.title,
-            description: series.description,
-            episodes: series.episodes
-        });
-        return;
-    }
-
     if (seriesTitle === 'Beyond the Sunday Sermon') {
         try {
             const response = await fetch('/api/podcasts/beyond-podcast', { cache: 'no-store' });
@@ -1558,6 +1549,15 @@ async function showAllEpisodes(seriesId, seriesTitle) {
         } catch (error) {
             console.error('Error loading Beyond the Sunday Sermon episodes:', error);
         }
+    }
+
+    if (series && series.episodes) {
+        renderFullEpisodes({
+            title: series.title,
+            description: series.description,
+            episodes: series.episodes
+        });
+        return;
     }
 
     episodesContainer.innerHTML = '<div class="error-message">No episodes found for this series.</div>';
@@ -1619,6 +1619,7 @@ function renderFullEpisodes(data) {
                     </div>
                 </div>
                 <div class="episode-actions">
+                    ${episode.audio_url ? `<button type="button" class="podcast-btn podcast-btn-primary" data-play-audio="${escAttr(episode.audio_url)}" data-play-title="${escAttr(episode.title || 'Untitled Episode')}" data-play-img="${escAttr(artwork)}" data-play-subtitle="Beyond the Sunday Sermon">Play</button>` : ''}
                     ${episode.listen_url ? `<a href="${escAttr(episode.listen_url)}" target="_blank" rel="noopener" class="podcast-btn podcast-btn-primary">Listen</a>` : ''}
                     ${episode.link && !episode.listen_url ? `<a href="${escAttr(episode.link)}" target="_blank" rel="noopener" class="podcast-btn podcast-btn-primary">Listen</a>` : ''}
                     ${episode.handout_url ? `<a href="${escAttr(episode.handout_url)}" target="_blank" rel="noopener" class="podcast-btn">Handout</a>` : ''}
@@ -1652,7 +1653,7 @@ function renderLatestEpisodes() {
         const image = ep.image || ep.podcast_thumbnail_url || PODCAST_LATEST_ARTWORK;
         const date = ep.date_added || ep.published || '';
         const duration = formatPodcastDuration(ep.duration);
-        const detail = ep.guest ? `With ${ep.guest}` : ep.scripture || 'The Sunday Sermon';
+        const detail = ep.guest ? `With ${ep.guest}` : ep.scripture || '';
         li.innerHTML = `
             <div class="podcast-latest-row">
                 ${image ? `<img src="${escAttr(image)}" alt="" class="podcast-latest-artwork">` : ''}
@@ -1662,7 +1663,7 @@ function renderLatestEpisodes() {
                         ${date ? `<span class="podcast-latest-date"><i class="far fa-calendar" aria-hidden="true"></i>${escHtml(formatPodcastDate(date))}</span>` : ''}
                         ${duration ? `<span class="podcast-latest-duration"><i class="far fa-clock" aria-hidden="true"></i>${escHtml(duration)}</span>` : ''}
                     </div>
-                    <div class="podcast-latest-detail"><a href="/sermons" aria-label="Browse The Sunday Sermon">The Sunday Sermon <span aria-hidden="true">→</span></a>${detail !== 'The Sunday Sermon' ? `<span>· ${escHtml(detail)}</span>` : ''}</div>
+                    <div class="podcast-latest-detail"><span>Beyond the Sunday Sermon</span>${detail ? `<span>· ${escHtml(detail)}</span>` : ''}</div>
                 </div>
                 ${audioUrl ? `<button class="btn-play-mp3" data-play-audio="${escAttr(audioUrl)}" data-play-title="${escAttr(ep.title ?? 'Untitled')}" data-play-img="${escAttr(image)}" data-play-subtitle="Beyond the Sunday Sermon"><i class="fas fa-play"></i> Play</button>` : listenUrl ? `<a class="podcast-btn" href="${escAttr(listenUrl)}" target="_blank" rel="noopener">Listen on Spotify</a>` : ''}
             </div>
@@ -1679,10 +1680,9 @@ function renderLatestEpisodes() {
 // Load podcast from RSS feed.
 async function loadPodcast() {
     try {
-        // The current feed is the public Beyond the Sunday Sermon Spotify/Anchor RSS feed.
         let episodes = [];
         try {
-            const response = await fetch('/api/podcast/beyond', { cache: 'no-store' });
+            const response = await fetch('/api/podcasts/beyond-podcast', { cache: 'no-store' });
             const data = await response.json();
             if (response.ok && Array.isArray(data.episodes)) episodes = data.episodes;
         } catch (error) {
@@ -1690,6 +1690,11 @@ async function loadPodcast() {
         }
 
         latestPodcastEpisodes = episodes.length ? episodes : (podcastBeyond?.episodes || []);
+        if (podcastBeyond && episodes.length) {
+            podcastBeyond.episodes = episodes;
+            podcastBeyond.episode_count = episodes.length;
+            podcastBeyond.latest_episode = episodes[0];
+        }
         latestVisibleEpisodeCount = LATEST_EPISODES_PAGE_SIZE;
         renderLatestEpisodes();
     } catch (error) {
