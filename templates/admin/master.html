@@ -74,6 +74,129 @@
     }
     /* Ensure select option text is readable */
     option { background-color: #ffffff; color: #1d2a36; }
+
+  /* Global table styles for all list views to match Announcement/Content lists */
+  table.model-list { width:100%; table-layout:auto; border-collapse:separate; border-spacing:0; border:1px solid #d9e5ee; border-radius:18px; overflow:hidden; background:#fff !important; box-shadow:0 16px 34px rgba(54,88,116,.08); }
+  table.model-list thead th { padding:1rem 1.1rem !important; background:#eef5fa !important; color:#5f7486 !important; border-bottom:1px solid #d9e5ee !important; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800; border-top:none !important; }
+  table.model-list tbody tr td { padding:1.2rem 1.1rem !important; min-height:84px; background:#fff !important; color:#304254 !important; border-bottom:1px solid #e7eef3 !important; vertical-align:middle; border-top:none !important; }
+  table.model-list tbody tr:hover td { background:#f7fbfe !important; }
+  table.model-list th, table.model-list td { overflow:hidden; text-overflow:ellipsis; }
+
+  .admin-body table.model-list tbody tr td { background:#fff !important; }
+  .admin-body table.model-list tbody tr:hover td { background:#f7fbfe !important; }
+
+  /* Flask-Admin supplied icon-only edit and delete controls */
+  table.model-list .list-buttons-column { white-space:nowrap; width:100px; }
+  table.model-list .list-buttons-column > a.icon,
+  table.model-list .list-buttons-column > form.icon { display:inline-flex; vertical-align:middle; margin:0 .35rem 0 0; }
+  table.model-list .list-buttons-column > a.icon,
+  table.model-list .list-buttons-column > form.icon button { width:34px !important; min-width:34px !important; height:34px !important; box-sizing:border-box; align-items:center; justify-content:center; border:1px solid #9bc9e3 !important; border-radius:9px !important; background:#eaf5fb !important; color:#1f6c97 !important; font-size:.9rem !important; line-height:1 !important; text-decoration:none; cursor:pointer; transition:all .16s ease; }
+  table.model-list .list-buttons-column > a.icon .fa,
+  table.model-list .list-buttons-column > form.icon button .fa { color:inherit !important; }
+  table.model-list .list-buttons-column > form.icon button { border-color:#e6b2b2 !important; background:#fff1f1 !important; color:#a72d2d !important; }
+  table.model-list .list-buttons-column > a.icon:hover { border-color:#237fab !important; background:#237fab !important; color:#fff !important; box-shadow:0 4px 10px rgba(35,127,171,.22); transform:translateY(-1px); }
+  table.model-list .list-buttons-column > form.icon button:hover { border-color:#a72d2d !important; background:#a72d2d !important; color:#fff !important; box-shadow:0 4px 10px rgba(167,45,45,.18); transform:translateY(-1px); }
+
+  @media (max-width: 1200px) {
+    table.model-list th:nth-child(n+6), table.model-list td:nth-child(n+6) { display:none; }
+    table.model-list { font-size:.82rem; }
+  }
+  @media (max-width: 760px) {
+    table.model-list { display:block; border:0; border-radius:0; box-shadow:none; background:transparent !important; overflow:visible; }
+    table.model-list thead { display:none; }
+    table.model-list tbody { display:block; background:#edf4f8; border-radius:18px; padding:.25rem; }
+    table.model-list tbody tr {
+        display:grid;
+        grid-template-columns:2.75rem minmax(0,1fr) minmax(7.5rem, 9rem);
+        grid-template-areas:
+          "select title status"
+          ". title status"
+          ". actions status";
+        align-items:center;
+        margin:0 0 1rem;
+        border:1px solid #d9e5ee;
+        border-radius:18px;
+        overflow:hidden;
+        background:#fff;
+        box-shadow:0 12px 26px rgba(54,88,116,.08);
+        width:100%;
+    }
+    table.model-list td {
+        display:block !important;
+        min-height:0;
+        padding:.8rem 1rem !important;
+        border:0 !important;
+        background:#fff !important;
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip;
+    }
+    table.model-list td:nth-child(1) { grid-area:select; padding-right:0 !important; }
+    table.model-list td.list-buttons-column { grid-area:actions; align-self:end; display:flex !important; flex-direction:row; gap:.45rem; padding:.15rem 1rem 1rem !important; }
+    table.model-list td:nth-child(3) { grid-area:title; align-self:stretch; display:flex !important; align-items:center; padding:1.15rem 1rem .7rem !important; color:#1d2a36 !important; font-size:1rem; font-weight:750; line-height:1.4; }
+    table.model-list td.col-active, table.model-list td.col-status { grid-area:status; align-self:stretch; padding:1.15rem .75rem !important; border-left:1px solid #edf2f5 !important; }
+    table.model-list td:not(:nth-child(1)):not(.list-buttons-column):not(:nth-child(3)):not(.col-active):not(.col-status) { display:none !important; }
+  }
+
+
+  /* Light-theme status badges for white tables */
+  .admin-body .admin-status-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.65rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 999px !important;
+    border: 1px solid transparent !important;
+    margin: 0;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .admin-body table.model-list .admin-status-tag {
+      margin: 0;
+  }
+
+  .admin-body .admin-status-published,
+  table.model-list .col-active .admin-status-published {
+    background: #edfcf1 !important;
+    color: #1a7f37 !important;
+    border-color: #a3e6b5 !important;
+  }
+
+  .admin-body .admin-status-draft,
+  table.model-list .col-active .admin-status-draft {
+    background: #f6f8fa !important;
+    color: #57606a !important;
+    border-color: #d0d7de !important;
+  }
+
+  .admin-body .admin-status-archived,
+  table.model-list .col-active .admin-status-archived {
+    background: #24292f !important;
+    color: #ffffff !important;
+    border-color: #24292f !important;
+  }
+
+  .admin-body .admin-status-scheduled,
+  table.model-list .col-active .admin-status-scheduled {
+    background: #fff8c5 !important;
+    color: #9a6700 !important;
+    border-color: #e5c05c !important;
+  }
+
+  .admin-body .admin-status-featured,
+  .admin-body .admin-status-banner,
+  table.model-list .col-active .admin-status-featured,
+  table.model-list .col-active .admin-status-banner {
+    background: #f3f0ff !important;
+    color: #6e40c9 !important;
+    border-color: #dcb8ff !important;
+  }
+
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-wysiwyg.css') }}">
@@ -86,8 +209,8 @@
         }
         document.addEventListener('DOMContentLoaded', function () {
             // Only target creation/edit forms (avoid list view bulk action form)
-            if (!window.location.pathname.includes('/new') && 
-                !window.location.pathname.includes('/edit') && 
+            if (!window.location.pathname.includes('/new') &&
+                !window.location.pathname.includes('/edit') &&
                 !window.location.pathname.includes('/create')) return;
 
             var form = document.querySelector('#admin-form, form.admin-form, form');
@@ -659,7 +782,7 @@
         <div class="px-6 mb-10">
             <div class="text-lg font-black text-primary font-manrope uppercase tracking-tight">CPC Admin</div>
         </div>
-        
+
         <nav class="flex-1 space-y-1 overflow-y-auto px-2">
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest" href="/" target="_blank">
                 View Live Site
@@ -667,7 +790,7 @@
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/dashboard' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/dashboard/">
                 Dashboard
             </a>
-            
+
             <div class="pt-6 pb-2 px-4">
                 <div class="text-[9px] font-bold text-on-surface-variant/75 uppercase tracking-[0.2em]">Primary Content</div>
             </div>
@@ -681,7 +804,7 @@
             <a class="flex items-center px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-300 font-manrope text-xs font-semibold uppercase tracking-widest {% if '/admin/podcastepisode' in request.path %}bg-surface-container-high text-primary border-l-4 border-primary{% endif %}" href="/admin/podcastepisode/">
                 Podcasts
             </a>
-            
+
             <details class="pt-6" {% if request.path.startswith('/admin/auto-announcement') or request.path.startswith('/admin/beta-features') or '/admin/teachingseries' in request.path or '/admin/history' in request.path or '/admin/feedback' in request.path or '/admin/releases' in request.path or '/admin/galleryimage' in request.path or '/admin/page_editors' in request.path or '/admin/subpage-edit' in request.path %}open{% endif %}>
                 <summary class="list-none cursor-pointer px-4 pb-2 text-[9px] font-bold text-on-surface-variant/75 uppercase tracking-[0.2em]">More</summary>
                 <div class="space-y-1">
@@ -741,7 +864,7 @@
             <div class="absolute inset-0 flex items-center justify-center p-6">
                 <div class="w-full max-w-2xl bg-surface-container rounded-3xl p-10 shadow-2xl border border-outline-variant/20 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary via-secondary to-tertiary"></div>
-                    
+
                     <div class="flex items-center justify-between mb-10">
                         <div>
                             <h2 class="font-manrope text-3xl font-black text-primary tracking-tight">Create New Entry</h2>
@@ -751,7 +874,7 @@
                             <span class="material-symbols-outlined">close</span>
                         </button>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <a href="/admin/announcement/create/" class="group p-6 bg-surface-container-highest hover:bg-surface-bright rounded-2xl transition-all border border-outline-variant/10 flex flex-col items-center text-center gap-4 active:scale-[0.98]">
                             <div class="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -862,7 +985,7 @@
         <div class="mt-20 p-8 lg:p-12 w-full max-w-[1600px] mx-auto pb-96 {% if ('create' not in request.path and 'edit' not in request.path) or request.path.startswith('/admin/page_editors') %}admin-list-page{% endif %} {% if request.endpoint == 'dashboard.index' %}dashboard-page{% endif %}">
             {{ super() }}
         </div>
-        
+
         <!-- Sticky Footer for Primary Actions (Only visible on create/edit pages) -->
         {% if ('create' in request.path or 'edit' in request.path) and not request.path.startswith('/admin/announcement/create') and not request.path.startswith('/admin/sermon/new') and not request.path.startswith('/admin/page_editors') %}
         <div class="fixed bottom-0 right-0 left-64 h-24 bg-background/90 backdrop-blur-md flex items-center justify-end px-12 gap-6 z-[5001] border-t border-outline-variant/10">
@@ -1091,6 +1214,129 @@
         color: rgba(255, 255, 255, 0.4) !important;
         font-size: 0.8rem !important;
     }
+
+  /* Global table styles for all list views to match Announcement/Content lists */
+  table.model-list { width:100%; table-layout:auto; border-collapse:separate; border-spacing:0; border:1px solid #d9e5ee; border-radius:18px; overflow:hidden; background:#fff !important; box-shadow:0 16px 34px rgba(54,88,116,.08); }
+  table.model-list thead th { padding:1rem 1.1rem !important; background:#eef5fa !important; color:#5f7486 !important; border-bottom:1px solid #d9e5ee !important; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800; border-top:none !important; }
+  table.model-list tbody tr td { padding:1.2rem 1.1rem !important; min-height:84px; background:#fff !important; color:#304254 !important; border-bottom:1px solid #e7eef3 !important; vertical-align:middle; border-top:none !important; }
+  table.model-list tbody tr:hover td { background:#f7fbfe !important; }
+  table.model-list th, table.model-list td { overflow:hidden; text-overflow:ellipsis; }
+
+  .admin-body table.model-list tbody tr td { background:#fff !important; }
+  .admin-body table.model-list tbody tr:hover td { background:#f7fbfe !important; }
+
+  /* Flask-Admin supplied icon-only edit and delete controls */
+  table.model-list .list-buttons-column { white-space:nowrap; width:100px; }
+  table.model-list .list-buttons-column > a.icon,
+  table.model-list .list-buttons-column > form.icon { display:inline-flex; vertical-align:middle; margin:0 .35rem 0 0; }
+  table.model-list .list-buttons-column > a.icon,
+  table.model-list .list-buttons-column > form.icon button { width:34px !important; min-width:34px !important; height:34px !important; box-sizing:border-box; align-items:center; justify-content:center; border:1px solid #9bc9e3 !important; border-radius:9px !important; background:#eaf5fb !important; color:#1f6c97 !important; font-size:.9rem !important; line-height:1 !important; text-decoration:none; cursor:pointer; transition:all .16s ease; }
+  table.model-list .list-buttons-column > a.icon .fa,
+  table.model-list .list-buttons-column > form.icon button .fa { color:inherit !important; }
+  table.model-list .list-buttons-column > form.icon button { border-color:#e6b2b2 !important; background:#fff1f1 !important; color:#a72d2d !important; }
+  table.model-list .list-buttons-column > a.icon:hover { border-color:#237fab !important; background:#237fab !important; color:#fff !important; box-shadow:0 4px 10px rgba(35,127,171,.22); transform:translateY(-1px); }
+  table.model-list .list-buttons-column > form.icon button:hover { border-color:#a72d2d !important; background:#a72d2d !important; color:#fff !important; box-shadow:0 4px 10px rgba(167,45,45,.18); transform:translateY(-1px); }
+
+  @media (max-width: 1200px) {
+    table.model-list th:nth-child(n+6), table.model-list td:nth-child(n+6) { display:none; }
+    table.model-list { font-size:.82rem; }
+  }
+  @media (max-width: 760px) {
+    table.model-list { display:block; border:0; border-radius:0; box-shadow:none; background:transparent !important; overflow:visible; }
+    table.model-list thead { display:none; }
+    table.model-list tbody { display:block; background:#edf4f8; border-radius:18px; padding:.25rem; }
+    table.model-list tbody tr {
+        display:grid;
+        grid-template-columns:2.75rem minmax(0,1fr) minmax(7.5rem, 9rem);
+        grid-template-areas:
+          "select title status"
+          ". title status"
+          ". actions status";
+        align-items:center;
+        margin:0 0 1rem;
+        border:1px solid #d9e5ee;
+        border-radius:18px;
+        overflow:hidden;
+        background:#fff;
+        box-shadow:0 12px 26px rgba(54,88,116,.08);
+        width:100%;
+    }
+    table.model-list td {
+        display:block !important;
+        min-height:0;
+        padding:.8rem 1rem !important;
+        border:0 !important;
+        background:#fff !important;
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip;
+    }
+    table.model-list td:nth-child(1) { grid-area:select; padding-right:0 !important; }
+    table.model-list td.list-buttons-column { grid-area:actions; align-self:end; display:flex !important; flex-direction:row; gap:.45rem; padding:.15rem 1rem 1rem !important; }
+    table.model-list td:nth-child(3) { grid-area:title; align-self:stretch; display:flex !important; align-items:center; padding:1.15rem 1rem .7rem !important; color:#1d2a36 !important; font-size:1rem; font-weight:750; line-height:1.4; }
+    table.model-list td.col-active, table.model-list td.col-status { grid-area:status; align-self:stretch; padding:1.15rem .75rem !important; border-left:1px solid #edf2f5 !important; }
+    table.model-list td:not(:nth-child(1)):not(.list-buttons-column):not(:nth-child(3)):not(.col-active):not(.col-status) { display:none !important; }
+  }
+
+
+  /* Light-theme status badges for white tables */
+  .admin-body .admin-status-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.65rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 999px !important;
+    border: 1px solid transparent !important;
+    margin: 0;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .admin-body table.model-list .admin-status-tag {
+      margin: 0;
+  }
+
+  .admin-body .admin-status-published,
+  table.model-list .col-active .admin-status-published {
+    background: #edfcf1 !important;
+    color: #1a7f37 !important;
+    border-color: #a3e6b5 !important;
+  }
+
+  .admin-body .admin-status-draft,
+  table.model-list .col-active .admin-status-draft {
+    background: #f6f8fa !important;
+    color: #57606a !important;
+    border-color: #d0d7de !important;
+  }
+
+  .admin-body .admin-status-archived,
+  table.model-list .col-active .admin-status-archived {
+    background: #24292f !important;
+    color: #ffffff !important;
+    border-color: #24292f !important;
+  }
+
+  .admin-body .admin-status-scheduled,
+  table.model-list .col-active .admin-status-scheduled {
+    background: #fff8c5 !important;
+    color: #9a6700 !important;
+    border-color: #e5c05c !important;
+  }
+
+  .admin-body .admin-status-featured,
+  .admin-body .admin-status-banner,
+  table.model-list .col-active .admin-status-featured,
+  table.model-list .col-active .admin-status-banner {
+    background: #f3f0ff !important;
+    color: #6e40c9 !important;
+    border-color: #dcb8ff !important;
+  }
+
 </style>
 <script>
     function toggleNewEntryOverlay() {
@@ -1109,7 +1355,7 @@
         if (createBtn) {
             createBtn.addEventListener('click', toggleNewEntryOverlay);
         }
-        
+
         // Close on ESC
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
