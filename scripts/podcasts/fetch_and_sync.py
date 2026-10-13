@@ -1,35 +1,21 @@
 #!/usr/bin/env python3
-"""
-Fetch latest podcast episodes from Anchor/Spotify and sync into the database.
-This is the script called by the Render cron service.
-"""
+"""Import Beyond the Sunday Sermon from the public CPC RSS feed into the DB."""
 
 import logging
+import os
+import sys
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from app import app, sync_beyond_episodes
+
 
 def main():
-    try:
-        from podcast_fetcher import PodcastFetcher
-        from populate_podcasts import populate_podcasts
+    with app.app_context():
+        result = sync_beyond_episodes()
+    logging.info("Beyond podcast sync: %s", result)
 
-        logger.info("Starting podcast fetch and sync...")
 
-        # 1. Fetch latest episodes from Anchor RSS and Spotify
-        logger.info("Fetching episodes from configured sources...")
-        fetcher = PodcastFetcher()
-        fetcher.fetch_all_podcasts()
-
-        # 2. Sync fetched episodes into the database
-        logger.info("Syncing episodes into database...")
-        populate_podcasts()
-
-        logger.info("Podcast fetch and sync completed successfully!")
-
-    except Exception as e:
-        logger.error(f"Podcast sync failed: {e}", exc_info=True)
-        exit(1)
-
-if __name__ == "__main__":
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     main()

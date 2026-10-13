@@ -194,7 +194,7 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # Import models after db initialization
-from models import Announcement, Sermon, PodcastEpisode, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent, LifeGroup, SiteFeedback
+from models import Announcement, Sermon, PodcastEpisode, PodcastEpisodeSuppression, PodcastSeries, GalleryImage, OngoingEvent, Paper, User, GlobalIDCounter, next_global_id, AuditLog, TeachingSeries, TeachingSeriesSession, BibleBook, BibleChapter, SermonSeries, SiteContent, LifeGroup, SiteFeedback
 from models import AnnouncementImportBatch, AnnouncementImportItem
 
 def ensure_db_columns():
@@ -932,7 +932,7 @@ def podcasts():
             PodcastEpisode.season,
             PodcastEpisode.scripture,
             PodcastEpisode.podcast_thumbnail_url,
-        ).filter_by(series_id=s.id)\
+        ).filter_by(series_id=s.id).filter(_not_expired(PodcastEpisode))\
             .order_by(PodcastEpisode.date_added.desc(), PodcastEpisode.number.desc()).all()
 
         episode_items = []
@@ -1812,6 +1812,7 @@ def _get_home_teaching_spotlight():
                     'guest': ep.guest or '',
                     'scripture': ep.scripture or '',
                     'date': ep.date_added.strftime('%B %-d, %Y') if ep.date_added else '',
+                    'date_iso': ep.date_added.isoformat() if ep.date_added else '',
                     'link': ep.link or ep.listen_url or '',
                     'listen_url': ep.listen_url or ep.link or '',
                     'handout_url': ep.handout_url,
@@ -1824,22 +1825,22 @@ def _get_home_teaching_spotlight():
     except Exception as e:
         log.warning("Error fetching spotlight sermon from DB: %s", e)
 
-    # If no beyond episode is directly linked to the latest sermon, find the latest episode of Beyond the Sunday Sermon
-    if not latest_beyond:
-        try:
-            beyond_series = PodcastSeries.query.filter(PodcastSeries.title.ilike('%Beyond%')).first()
-            if beyond_series:
-                ep = PodcastEpisode.query.filter_by(series_id=beyond_series.id)\
-                    .filter(_not_expired(PodcastEpisode))\
-                    .order_by(PodcastEpisode.date_added.desc(), PodcastEpisode.number.desc()).first()
-                if ep:
-                    beyond_artwork = ep.podcast_thumbnail_url or default_beyond_art
-                    latest_beyond = {
+    # A linked companion is useful, but a newer Beyond episode should lead the homepage.
+    try:
+        beyond_series = PodcastSeries.query.filter(PodcastSeries.title.ilike('%Beyond%')).first()
+        if beyond_series:
+            ep = PodcastEpisode.query.filter_by(series_id=beyond_series.id)\
+                .filter(_not_expired(PodcastEpisode))\
+                .order_by(PodcastEpisode.date_added.desc(), PodcastEpisode.number.desc()).first()
+            if ep and (not latest_beyond or (ep.date_added and ep.date_added.isoformat() > latest_beyond.get('date_iso', ''))):
+                beyond_artwork = ep.podcast_thumbnail_url or default_beyond_art
+                latest_beyond = {
                         'id': ep.id,
                         'title': ep.title,
                         'guest': ep.guest or '',
                         'scripture': ep.scripture or '',
                         'date': ep.date_added.strftime('%B %-d, %Y') if ep.date_added else '',
+                        'date_iso': ep.date_added.isoformat() if ep.date_added else '',
                         'link': ep.link or ep.listen_url or '',
                         'listen_url': ep.listen_url or ep.link or '',
                         'handout_url': ep.handout_url,
@@ -1848,9 +1849,9 @@ def _get_home_teaching_spotlight():
                         'artwork': beyond_artwork,
                         'audio_url': ep.listen_url if (ep.listen_url and ep.listen_url.endswith('.mp3')) else None,
                         'is_direct_companion': False,
-                    }
-        except Exception as e:
-            log.warning("Error fetching latest beyond episode from DB: %s", e)
+                }
+    except Exception as e:
+        log.warning("Error fetching latest beyond episode from DB: %s", e)
 
     # Fallback to local sermons.json if DB had no sermon (e.g. offline dev environment)
     if not latest_sermon:
@@ -2205,11 +2206,12 @@ def _get_podcast_episodes(series_title):
     if not series:
         return []
     
-    episodes = PodcastEpisode.query.filter_by(series_id=series.id)\
+    episodes = PodcastEpisode.query.filter_by(series_id=series.id).filter(_not_expired(PodcastEpisode))\
         .order_by(PodcastEpisode.date_added.desc()).all()
     
     return [
         {
+            'id': ep.id,
             'number': ep.number,
             'title': ep.title,
             'link': ep.link,
@@ -2218,14 +2220,15 @@ def _get_podcast_episodes(series_title):
             'date_added': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
             'season': ep.season,
             'scripture': ep.scripture,
-            'podcast_thumbnail_url': ep.podcast_thumbnail_url
+            'podcast_thumbnail_url': ep.podcast_thumbnail_url,
+            'audio_url': ep.listen_url if (ep.listen_url or '').lower().split('?')[0].endswith('.mp3') else None,
         } for ep in episodes
     ]
 
 @app.route('/api/podcasts/beyond-podcast')
 def api_beyond_podcast():
-    """Show current Beyond episodes from the CPC feed, with a database fallback."""
-    episodes = _get_beyond_feed_episodes() or _get_podcast_episodes('Beyond the Sunday Sermon')
+    """Show editable Beyond episodes from the database."""
+    episodes = _get_podcast_episodes('Beyond the Sunday Sermon')
     return jsonify({
         'title': 'Beyond the Sunday Sermon',
         'description': 'Extended conversations and deeper dives into biblical topics.',
@@ -2376,6 +2379,85 @@ def _get_beyond_feed_episodes():
             "guid": item.get("guid") or "",
         })
     return episodes
+
+
+def sync_beyond_episodes():
+    """Import new Beyond RSS episodes while preserving all admin edits."""
+    feed_episodes = _get_beyond_feed_episodes()
+    if not feed_episodes:
+        raise RuntimeError('Beyond RSS returned no episodes; database was left unchanged')
+
+    series = PodcastSeries.query.filter_by(title='Beyond the Sunday Sermon').first()
+    if not series:
+        series = PodcastSeries(id=next_global_id(), title='Beyond the Sunday Sermon',
+                               description='Discussions with Pastors about the Sunday Sermon.')
+        db.session.add(series)
+        db.session.flush()
+
+    existing = PodcastEpisode.query.filter_by(series_id=series.id).all()
+    by_guid = {ep.original_id: ep for ep in existing if ep.original_id}
+    by_link = {ep.link: ep for ep in existing if ep.link}
+    suppressed = {row.original_id for row in PodcastEpisodeSuppression.query.all()}
+    added = matched = skipped = 0
+
+    try:
+        for item in feed_episodes:
+            guid = item.get('guid') or item.get('link')
+            if not guid:
+                skipped += 1
+                continue
+            if guid in suppressed:
+                skipped += 1
+                continue
+
+            episode = by_guid.get(guid) or by_link.get(item.get('link'))
+            if episode is None:
+                # Match older hand-entered rows once, before assigning their RSS GUID.
+                # Feed publish dates can differ by a day from the admin date.
+                try:
+                    published = date.fromisoformat(item['date_added'])
+                except (TypeError, ValueError):
+                    published = None
+                candidates = [ep for ep in existing
+                              if not ep.original_id
+                              and ep.title.strip().casefold() == (item.get('title') or '').strip().casefold()
+                              and published and ep.date_added
+                              and abs((ep.date_added - published).days) <= 2]
+                if len(candidates) == 1:
+                    episode = candidates[0]
+
+            if episode is not None:
+                if not episode.original_id:
+                    episode.original_id = guid
+                    by_guid[guid] = episode
+                matched += 1
+                continue
+
+            try:
+                published = date.fromisoformat(item['date_added'])
+            except (TypeError, ValueError):
+                published = None
+            audio_url = item.get('audio_url') or ''
+            episode = PodcastEpisode(
+                id=next_global_id(), series_id=series.id,
+                title=(item.get('title') or 'Beyond the Sunday Sermon')[:200],
+                link=(item.get('link') or '')[:500],
+                listen_url=(audio_url or item.get('listen_url') or '')[:500],
+                guest=(item.get('guest') or '')[:100],
+                date_added=published,
+                podcast_thumbnail_url=(item.get('podcast_thumbnail_url') or '')[:500],
+                source='anchor_rss', original_id=guid[:200],
+            )
+            db.session.add(episode)
+            existing.append(episode)
+            by_guid[guid] = episode
+            added += 1
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        raise
+    return {'added': added, 'matched': matched, 'skipped': skipped,
+            'feed_total': len(feed_episodes)}
 
 @app.route("/api/podcast/<series_key>")
 @cache.cached(timeout=900)
@@ -5755,6 +5837,10 @@ class PodcastEpisodeView(AuthenticatedModelView):
         specific = getattr(getattr(form, 'expiration_date', None), 'data', None)
         base = model.date_added or date.today()
         model.expires_at = _compute_expires_at(preset, specific, base)
+
+    def on_model_delete(self, model):
+        if model.original_id and not PodcastEpisodeSuppression.query.filter_by(original_id=model.original_id).first():
+            db.session.add(PodcastEpisodeSuppression(original_id=model.original_id))
     
     @action('bulk_delete', 'Delete Selected', 'Are you sure you want to delete the selected podcast episodes?')
     def bulk_delete(self, ids):
@@ -5763,6 +5849,7 @@ class PodcastEpisodeView(AuthenticatedModelView):
             for id in ids:
                 episode = PodcastEpisode.query.get(id)
                 if episode:
+                    self.on_model_delete(episode)
                     try:
                         _log_audit('deleted', episode)
                     except:

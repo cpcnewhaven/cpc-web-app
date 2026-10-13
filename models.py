@@ -210,6 +210,15 @@ class PodcastEpisode(db.Model):
 
     series = db.relationship('PodcastSeries', back_populates='episodes')
 
+
+class PodcastEpisodeSuppression(db.Model):
+    """Feed episodes removed in admin must stay removed on the next sync."""
+    __tablename__ = 'podcast_episode_suppressions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    original_id = db.Column(db.String(200), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
 class PodcastSeries(db.Model):
     __tablename__ = 'podcast_series'
 

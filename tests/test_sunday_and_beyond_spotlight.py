@@ -2,14 +2,15 @@ import os
 import tempfile
 import unittest
 from datetime import datetime, date
+from unittest.mock import patch
 
 _database_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
 _database_file.close()
 os.environ["DATABASE_URL"] = f"sqlite:///{_database_file.name}"
 os.environ["SECRET_KEY"] = "spotlight-test-key"
 
-from app import app, db, _get_home_teaching_spotlight  # noqa: E402
-from models import Sermon, PodcastEpisode, PodcastSeries, SermonSeries  # noqa: E402
+from app import app, db, _get_home_teaching_spotlight, sync_beyond_episodes  # noqa: E402
+from models import Sermon, PodcastEpisode, PodcastEpisodeSuppression, PodcastSeries, SermonSeries  # noqa: E402
 
 
 class SundayAndBeyondSpotlightTestCase(unittest.TestCase):
@@ -99,6 +100,41 @@ class SundayAndBeyondSpotlightTestCase(unittest.TestCase):
             self.assertEqual(beyond['title'], "Acts 2 Discussion")
             self.assertTrue(beyond['is_direct_companion'])
             self.assertIn("Craig Luekens", beyond['guest'])
+
+    def test_feed_sync_preserves_admin_edits_and_deletions(self):
+        feed = [
+            {'guid': 'legacy-guid', 'title': 'Acts 2 Discussion', 'guest': 'Feed guest',
+             'date_added': '2026-09-27', 'link': 'https://example.org/legacy',
+             'audio_url': 'https://example.org/legacy.mp3', 'podcast_thumbnail_url': ''},
+            {'guid': 'new-guid', 'title': 'Acts 3 Discussion', 'guest': 'New guest',
+             'date_added': '2026-10-06', 'link': 'https://example.org/new',
+             'audio_url': 'https://example.org/new.mp3', 'podcast_thumbnail_url': ''},
+        ]
+        with app.app_context(), patch('app._get_beyond_feed_episodes', return_value=feed):
+            first = sync_beyond_episodes()
+            self.assertEqual(first['added'], 1)
+            self.assertEqual(first['matched'], 1)
+            original = db.session.get(PodcastEpisode, 101)
+            self.assertEqual(original.original_id, 'legacy-guid')
+            self.assertEqual(original.guest, 'Rev. Craig Luekens & Alex Gonzalez')
+
+            imported = PodcastEpisode.query.filter_by(original_id='new-guid').one()
+            self.assertEqual(imported.listen_url, 'https://example.org/new.mp3')
+            _, homepage_beyond = _get_home_teaching_spotlight()
+            self.assertEqual(homepage_beyond['title'], 'Acts 3 Discussion')
+            self.assertFalse(homepage_beyond['is_direct_companion'])
+            imported.title = 'Admin edited title'
+            db.session.commit()
+            self.assertEqual(sync_beyond_episodes()['added'], 0)
+            self.assertEqual(imported.title, 'Admin edited title')
+            public_titles = [ep['title'] for ep in self.client.get('/api/podcasts/beyond-podcast').json['episodes']]
+            self.assertIn('Admin edited title', public_titles)
+
+            db.session.add(PodcastEpisodeSuppression(original_id='new-guid'))
+            db.session.delete(imported)
+            db.session.commit()
+            self.assertEqual(sync_beyond_episodes()['added'], 0)
+            self.assertIsNone(PodcastEpisode.query.filter_by(original_id='new-guid').first())
 
     def test_homepage_renders_sunday_and_beyond_section(self):
         """Verify the homepage renders the Sunday & Beyond section and action buttons."""
