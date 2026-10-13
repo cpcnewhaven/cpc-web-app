@@ -1219,8 +1219,6 @@
         <div id="highlights" class="highlights-grid">
             <div class="highlights-status" style="grid-column: 1/-1; text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">Loading highlights...</div>
         </div>
-        <div id="highlights-extra" class="highlights-grid highlights-extra" style="display: none; margin-top: 1rem;">
-        </div>
         <div id="new-content-actions"
             style="text-align: center; margin-top: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
             <button type="button" id="show-all-highlights-btn" class="btn btn-secondary" style="display: none;">Show
@@ -1627,7 +1625,7 @@
     })();
 </script>
 <script>
-    // Highlights grid: latest 6, then "Show all highlights" reveals rest as previews
+    // Highlights grid: latest 6, then "Show all highlights" continues the same grid
     document.addEventListener('DOMContentLoaded', function () {
         var INITIAL_COUNT = 6;
         var allActive = [];
@@ -1721,7 +1719,6 @@
 
         fetch('/api/highlights').then(function (r) { return r.json(); }).then(function (data) {
             var container = document.getElementById('highlights');
-            var extraContainer = document.getElementById('highlights-extra');
             var btn = document.getElementById('show-all-highlights-btn');
             if (!container) return;
 
@@ -1741,19 +1738,19 @@
             var rest = allActive.slice(INITIAL_COUNT);
             renderItems(container, initial);
 
-            if (rest.length > 0 && extraContainer && btn) {
-                renderItems(extraContainer, rest);
+            if (rest.length > 0 && btn) {
                 btn.style.display = 'inline-block';
                 btn.textContent = 'Show all highlights';
+                var isExpanded = false;
                 btn.addEventListener('click', function () {
-                    var isExpanded = extraContainer.style.display === 'grid';
                     if (isExpanded) {
-                        extraContainer.style.display = 'none';
+                        renderItems(container, initial);
                         btn.textContent = 'Show all highlights';
                     } else {
-                        extraContainer.style.display = 'grid';
+                        renderItems(container, allActive);
                         btn.textContent = 'Show less';
                     }
+                    isExpanded = !isExpanded;
                 });
             }
         }).catch(function () {
