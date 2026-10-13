@@ -1145,7 +1145,17 @@ def display():
 @app.route('/plan-a-visit')
 def plan_a_visit():
     site_content = get_site_content()
-    return render_template('plan-a-visit.html', site_content=site_content)
+    latest_bulletin = Paper.query.filter(
+        Paper.active.is_(True),
+        Paper.category.in_(['bulletin', 'Bulletin']),
+        Paper.file_url.isnot(None),
+        Paper.file_url != '',
+    ).order_by(Paper.date_entered.desc()).first()
+    return render_template(
+        'plan-a-visit.html',
+        site_content=site_content,
+        latest_bulletin=latest_bulletin,
+    )
 
 @app.route('/give')
 def give():
