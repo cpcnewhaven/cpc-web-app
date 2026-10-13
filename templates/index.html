@@ -744,9 +744,9 @@
 
     .spotlight-card {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: stretch;
-        gap: 1.25rem;
+        gap: 1.1rem;
         padding: 1.5rem;
         border-radius: 18px;
         background: rgba(255, 255, 255, 0.95);
@@ -765,8 +765,9 @@
 
     .spotlight-card__media {
         position: relative;
-        width: 140px;
-        flex: 0 0 140px;
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        flex: none;
         border-radius: 14px;
         overflow: hidden;
         background: linear-gradient(135deg, rgba(0, 82, 163, 0.15), rgba(0, 41, 87, 0.25));
@@ -779,7 +780,7 @@
     .spotlight-thumb {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         display: block;
         transition: transform 0.4s ease;
     }
@@ -882,11 +883,6 @@
         line-height: 1.3;
         color: #142d4d;
         margin: 0 0 0.55rem 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
     }
 
     .spotlight-card__meta {
@@ -1156,13 +1152,10 @@
 
     @media (max-width: 600px) {
         .spotlight-card {
-            flex-direction: column;
             padding: 1.25rem;
         }
         .spotlight-card__media {
-            width: 100%;
-            height: 180px;
-            flex: 0 0 180px;
+            aspect-ratio: 1 / 1;
         }
         .spotlight-actions {
             flex-direction: column;
