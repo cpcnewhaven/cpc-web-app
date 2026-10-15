@@ -101,6 +101,30 @@ class SundayAndBeyondSpotlightTestCase(unittest.TestCase):
             self.assertTrue(beyond['is_direct_companion'])
             self.assertIn("Craig Luekens", beyond['guest'])
 
+    def test_beyond_page_and_search_expose_playback_and_handout(self):
+        with app.app_context():
+            episode = db.session.get(PodcastEpisode, 101)
+            episode.listen_url = 'https://files.cpcnewhaven.org/beyond/acts2.mp3?download=1'
+            episode.handout_url = 'https://files.cpcnewhaven.org/beyond/acts2.pdf'
+            db.session.commit()
+
+        page = self.client.get('/podcasts')
+        self.assertEqual(page.status_code, 200)
+        self.assertIn(b'Beyond the Sunday Sermon', page.data)
+
+        beyond = self.client.get('/api/podcasts/beyond-podcast')
+        self.assertEqual(beyond.status_code, 200)
+        episode = beyond.json['episodes'][0]
+        self.assertEqual(episode['audio_url'], 'https://files.cpcnewhaven.org/beyond/acts2.mp3?download=1')
+        self.assertEqual(episode['handout_url'], 'https://files.cpcnewhaven.org/beyond/acts2.pdf')
+
+        search = self.client.get('/api/search?type=podcasts&q=Acts+2')
+        self.assertEqual(search.status_code, 200)
+        result = search.json['results'][0]
+        self.assertEqual(result['audio_url'], episode['audio_url'])
+        self.assertEqual(result['handout_url'], episode['handout_url'])
+        self.assertEqual(result['podcast_thumbnail_url'], episode['podcast_thumbnail_url'])
+
     def test_feed_sync_preserves_admin_edits_and_deletions(self):
         feed = [
             {'guid': 'legacy-guid', 'title': 'Acts 2 Discussion', 'guest': 'Feed guest',

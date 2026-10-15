@@ -916,6 +916,8 @@ def podcasts():
         'What We Believe: Knowing and Loving Our Doctrines': 'https://cpcnewhaven.org/assets/podcast-thumbnails/wwb.jpg',
         'Confessional Theology': 'https://files.cpcnewhaven.org/podcast-thumbnails/confessional-theology.png',
         'Biblical Interpretation': 'https://files.cpcnewhaven.org/podcast-thumbnails/biblical-interp.jpg',
+        "Smokin' Theologians": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST2LxMH0DnG5kwUi4RX76efpAyDCeGa61oM8RhlXlNTg&s',
+        'Smoking Theologians': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST2LxMH0DnG5kwUi4RX76efpAyDCeGa61oM8RhlXlNTg&s',
     }
     podcast_series = []
 
@@ -2216,6 +2218,7 @@ def _get_podcast_episodes(series_title):
             'title': ep.title,
             'link': ep.link,
             'listen_url': ep.listen_url,
+            'handout_url': ep.handout_url,
             'guest': ep.guest,
             'date_added': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
             'season': ep.season,
@@ -3273,7 +3276,15 @@ def api_search():
                     'series_id': ep.series_id,
                     'season': getattr(ep, 'season', None),
                     'date': ep.date_added.strftime('%Y-%m-%d') if ep.date_added else None,
-                    'url': ep.link or getattr(ep, 'listen_url', None)
+                    'url': ep.link or ep.listen_url,
+                    'listen_url': ep.listen_url,
+                    'handout_url': ep.handout_url,
+                    'audio_url': ep.listen_url if (ep.listen_url or '').lower().split('?')[0].endswith('.mp3') else None,
+                    'podcast_thumbnail_url': ep.podcast_thumbnail_url or (
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST2LxMH0DnG5kwUi4RX76efpAyDCeGa61oM8RhlXlNTg&s'
+                        if getattr(ep, 'series', None) and 'smokin' in ep.series.title.lower()
+                        else None
+                    ),
                 })
 
         # Search events
