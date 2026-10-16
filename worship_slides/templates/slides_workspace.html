@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1f35">
+  <title>Worship slides · CPC New Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('worship_slides.static', filename='slides.css') }}">
+</head>
+<body data-csrf="{{ csrf_token }}" data-pco="{{ '1' if pco_connected else '0' }}" data-google="{{ '1' if google_connected else '0' }}">
+  <header class="topbar">
+    <a class="brand" href="/slides"><span class="brand-mark">C</span><span>CPC <small>WORSHIP WORKSPACE</small></span></a>
+    <nav><a href="/">Church site</a><a href="/admin/dashboard/">Admin</a><span class="staff-pill">STAFF WORKSPACE</span></nav>
+  </header>
+  <main class="shell">
+    <section class="intro">
+      <div class="eyebrow"><span></span> SUNDAY PREPARATION</div>
+      <h1>Worship, ready to share.</h1>
+      <p>Bring a Planning Center service plan into one workspace. Review the content, then create the projected slides and a service document in Google Drive.</p>
+    </section>
+
+    <section class="connections" aria-label="Connected services">
+      <article class="connection-card">
+        <div class="connection-icon pco-icon">P</div><div class="connection-copy"><strong>Planning Center</strong><small id="pco-status">{{ 'Services connected' if pco_connected else 'Connect Services to load plans' }}</small></div>
+        {% if pco_connected %}<form method="post" action="{{ url_for('worship_slides.disconnect', provider='planning-center') }}" class="disconnect"><button class="quiet-button" type="submit" data-csrf-form>Disconnect</button></form>{% else %}<a class="connect-link" href="{{ url_for('worship_slides.connect_planning_center') }}">Connect <span>↗</span></a>{% endif %}
+      </article>
+      <article class="connection-card">
+        <div class="connection-icon google-icon">G</div><div class="connection-copy"><strong>Google Drive</strong><small id="google-status">{% if google_connected %}Ready to create files{% elif google_configured %}Connect to create documents{% else %}Google OAuth setup required{% endif %}</small></div>
+        {% if google_connected %}<form method="post" action="{{ url_for('worship_slides.disconnect', provider='google') }}" class="disconnect"><button class="quiet-button" type="submit" data-csrf-form>Disconnect</button></form>{% elif google_configured %}<a class="connect-link" href="{{ url_for('worship_slides.connect_google') }}">Connect <span>↗</span></a>{% else %}<span class="setup-pill">SETUP NEEDED</span>{% endif %}
+      </article>
+    </section>
+
+    <div id="notice" class="notice" role="status" hidden></div>
+    {% if request.args.get('setup') == 'google' and not google_configured %}<div class="notice setup-notice">Add <code>SLIDES_GOOGLE_CLIENT_ID</code> and <code>SLIDES_GOOGLE_CLIENT_SECRET</code> to the app environment, then register <code>{{ url_for('worship_slides.google_callback', _external=True) }}</code> as an authorized redirect URI in Google Cloud.</div>{% endif %}
+    {% if request.args.get('setup') == 'planning-center' and not pco_connected %}<div class="notice setup-notice">Planning Center OAuth needs <code>PLANNING_CENTER_CLIENT_ID</code> and <code>PLANNING_CENTER_CLIENT_SECRET</code>. Add <code>services</code> to the app's allowed OAuth scopes and register <code>{{ url_for('worship_slides.planning_center_callback', _external=True) }}</code> as a redirect URI.</div>{% endif %}
+    {% if request.args.get('connected') %}<div class="notice success-notice">{{ 'Planning Center Services is connected.' if request.args.get('connected') == 'planning-center' else 'Google Drive is connected.' }}</div>{% endif %}
+
+    <section class="builder" aria-labelledby="builder-title">
+      <div class="section-head"><div><div class="eyebrow">SERVICE BUILDER</div><h2 id="builder-title">Choose a service plan</h2></div><div class="step-count"><span>01</span> SELECT <i></i><span>02</span> REVIEW <i></i><span>03</span> CREATE</div></div>
+      <div class="selectors">
+        <label>Service type<select id="service-type" {% if not pco_connected %}disabled{% endif %}><option value="">{% if pco_connected %}Loading service types…{% else %}Connect Planning Center first{% endif %}</option></select></label>
+        <label>Service plan<select id="service-plan" disabled><option value="">Choose a service type first</option></select></label>
+      </div>
+      <div id="empty-state" class="empty-state"><div class="empty-icon">↗</div><strong>Your next service starts here</strong><span>Connect Planning Center Services, then choose a service type and plan.</span></div>
+      <div id="editor" hidden>
+        <div class="editor-heading"><div><label class="field-label" for="document-title">File name</label><input id="document-title" class="title-input" maxlength="160" placeholder="Sunday Worship · October 18"></div><div class="item-summary"><b id="item-count">0</b><span>service items</span></div></div>
+        <div id="items" class="items-list"></div>
+        <div class="publish-row"><div class="output-choice"><span class="field-label">CREATE IN GOOGLE DRIVE</span><label class="check-option"><input type="checkbox" id="make-slides" checked><span class="fake-check"></span>Google Slides</label><label class="check-option"><input type="checkbox" id="make-doc" checked><span class="fake-check"></span>Google Doc</label></div><button id="create-button" class="create-button" {% if not google_connected %}disabled{% endif %}><span>Create files</span><span class="button-arrow">→</span></button></div>
+        {% if not google_connected %}<p class="inline-hint">Connect Google Drive above to enable file creation.</p>{% endif %}
+        <div id="created-links" class="created-links" hidden></div>
+      </div>
+    </section>
+    <footer>Worship workspace <span>·</span> Planning Center content is reviewed here before any Google files are created.</footer>
+  </main>
+  <script src="{{ url_for('worship_slides.static', filename='slides.js') }}" defer></script>
+</body>
+</html>

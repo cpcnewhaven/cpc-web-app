@@ -97,6 +97,7 @@ except Exception as e:
 from json_api import json_api
 from port_finder import find_available_port
 from google_drive_routes import google_drive_bp
+from worship_slides import worship_slides_bp
 
 load_dotenv()
 
@@ -119,6 +120,7 @@ cache = Cache(app)
 
 app.register_blueprint(json_api)
 app.register_blueprint(google_drive_bp)
+app.register_blueprint(worship_slides_bp)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
