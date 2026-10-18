@@ -133,6 +133,109 @@
         background: #0a1628;
     }
 
+    .home-live-alert {
+        display: none;
+        position: relative;
+        min-height: 420px;
+        margin-bottom: 1.25rem;
+        overflow: hidden;
+        padding: 2.5rem clamp(1.25rem, 4vw, 3rem);
+        color: #fff;
+        background: #071b2d;
+        border-bottom: 1px solid rgba(255,255,255,.12);
+        border-radius: 18px;
+        box-shadow: 0 18px 44px rgba(5,19,35,.16);
+        transition: box-shadow .45s ease;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .home-live-alert::before, .home-live-alert::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+    .home-live-alert::before {
+        background:
+            linear-gradient(90deg, rgba(5,19,35,.96) 0%, rgba(5,19,35,.88) 38%, rgba(5,19,35,.3) 100%),
+            linear-gradient(0deg, rgba(5,19,35,.48), transparent 52%),
+            url("https://yt3.googleusercontent.com/iYyRLNq4kFAkoUb5ZG1G9j82NoqLky-c-57FxqRhx77VLbONqXegbbquOhp1bw-WHrtuzdSYwA=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-rj") center 53% / cover no-repeat;
+        opacity: .98;
+    }
+    .home-live-alert::after { background: linear-gradient(180deg, rgba(62,214,221,.07), transparent 38%); }
+    .home-live-alert.is-streaming {
+        box-shadow: 0 0 0 1px rgba(104,238,232,.42), 0 0 34px rgba(69,220,225,.24), 0 22px 52px rgba(5,19,35,.26);
+    }
+    .home-live-alert.is-streaming::after {
+        background: radial-gradient(ellipse at 50% 52%, rgba(69,220,225,.2), transparent 60%), linear-gradient(180deg, rgba(62,214,221,.08), transparent 38%);
+        animation: live-widget-glow 3.8s ease-in-out infinite alternate;
+    }
+    .home-live-alert.is-visible { display: flex; }
+    .home-live-alert__inner {
+        position: relative; z-index: 1;
+        width: min(100%, 1080px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.45rem;
+        text-align: center;
+    }
+    .home-live-alert:not(.is-compact) .home-live-alert__copy { display: grid; justify-items: center; gap: 1.35rem; }
+    .home-live-alert__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .42rem;
+        flex: 0 0 auto;
+        padding: .48rem .78rem;
+        border-radius: 999px;
+        background: rgba(69,220,225,.13);
+        color: #a6f2f1;
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .12em;
+    }
+    .home-live-alert__pulse { width: 7px; height: 7px; border-radius: 50%; background: #55e1df; box-shadow: 0 0 0 4px rgba(85,225,223,.16); }
+    .home-live-alert.is-streaming .home-live-alert__badge { background: rgba(255,49,61,.17); color: #ffc0c3; }
+    .home-live-alert.is-streaming .home-live-alert__pulse { background: #ff3948; box-shadow: 0 0 0 4px rgba(255,57,72,.2); animation: live-dot-pulse 1.8s ease-out infinite; }
+    .home-live-alert__signal { display: none; align-items: flex-end; gap: 2px; height: 11px; margin-left: .1rem; }
+    .home-live-alert__signal i { display: block; width: 2px; height: 35%; border-radius: 2px; background: currentColor; animation: live-signal .75s ease-in-out infinite alternate; }
+    .home-live-alert__signal i:nth-child(2) { height: 75%; animation-delay: .2s; }
+    .home-live-alert__signal i:nth-child(3) { height: 48%; animation-delay: .4s; }
+    .home-live-alert.is-streaming .home-live-alert__signal { display: inline-flex; }
+    .home-live-alert__text { display: block; min-width: 0; }
+    .home-live-alert__title { display: block; max-width: 850px; color: #fff; font-size: clamp(1.9rem, 4.2vw, 3.1rem); font-weight: 750; line-height: 1.1; letter-spacing: -.04em; text-wrap: balance; }
+    .home-live-alert__subtitle { display: block; margin-top: .7rem; color: rgba(228,245,249,.8); font-size: 1rem; }
+    .home-live-alert__button {
+        display: inline-flex; align-items: center; gap: .55rem; flex: 0 0 auto;
+        padding: .82rem 1.2rem; border-radius: 999px; background: #b7f4f0; color: #092437;
+        font-size: .9rem; font-weight: 800; text-decoration: none; transition: transform .2s, background .2s;
+    }
+    .home-live-alert__button:hover { transform: translateY(-1px); background: #fff; color: #092437; }
+    .home-live-alert.is-compact {
+        min-height: 0; margin-bottom: 1rem; padding: .8rem 1rem; text-align: left; justify-content: stretch;
+        background: linear-gradient(105deg, #111827, #17374b 60%, #111827);
+        border-radius: 14px;
+    }
+    .home-live-alert.is-compact::before, .home-live-alert.is-compact::after { display: none; }
+    .home-live-alert.is-compact .home-live-alert__inner { width: min(100%, 1120px); flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; }
+    .home-live-alert.is-compact .home-live-alert__copy { display: flex; align-items: center; gap: .85rem; min-width: 0; }
+    .home-live-alert.is-compact .home-live-alert__badge { padding: .36rem .62rem; font-size: .67rem; }
+    .home-live-alert.is-compact .home-live-alert__title { font-size: .95rem; line-height: 1.25; letter-spacing: 0; }
+    .home-live-alert.is-compact .home-live-alert__subtitle { margin-top: .12rem; font-size: .78rem; }
+    .home-live-alert.is-compact .home-live-alert__button { padding: .64rem .95rem; font-size: .82rem; }
+    @keyframes live-widget-glow { from { opacity: .48; } to { opacity: 1; } }
+    @keyframes live-dot-pulse { 0% { box-shadow: 0 0 0 0 rgba(255,57,72,.42); } 80%, 100% { box-shadow: 0 0 0 7px rgba(255,57,72,0); } }
+    @keyframes live-signal { from { transform: scaleY(.45); } to { transform: scaleY(1); } }
+    @media (prefers-reduced-motion: reduce) {
+        .home-live-alert, .home-live-alert.is-streaming::after { transition: none; animation: none; }
+        .home-live-alert.is-streaming .home-live-alert__pulse, .home-live-alert__signal i { animation: none; }
+    }
+    @media (max-width: 540px) {
+        .home-live-alert { min-height: 360px; margin-bottom: 1rem; padding: 2rem 1rem; border-radius: 14px; }
+        .home-live-alert.is-compact .home-live-alert__copy { gap: .6rem; }
+        .home-live-alert.is-compact .home-live-alert__badge { padding: .34rem .5rem; font-size: .6rem; }
+        .home-live-alert.is-compact .home-live-alert__subtitle { display: none; }
+        .home-live-alert.is-compact .home-live-alert__button { padding: .62rem .75rem; font-size: .76rem; }
+    }
+
     .hero-banner .banner-slide {
         position: absolute;
         inset: 0;
@@ -1264,6 +1367,18 @@
                     <div class="spotlight-card__meta">
                         {% if spotlight_sermon.scripture %}
                         <span class="spotlight-meta-item">
+<aside class="home-live-alert" id="home-live-alert" aria-live="polite" aria-label="Sunday worship at CPC">
+    <div class="home-live-alert__inner">
+        <div class="home-live-alert__copy">
+            <span class="home-live-alert__badge"><span class="home-live-alert__pulse" aria-hidden="true"></span><span id="home-live-badge">SUNDAY WORSHIP</span><span class="home-live-alert__signal" aria-hidden="true"><i></i><i></i><i></i></span></span>
+            <span class="home-live-alert__text">
+                <span class="home-live-alert__title" id="home-live-title">Sunday worship,<br>from New Haven.</span>
+                <span class="home-live-alert__subtitle" id="home-live-subtitle">A place for grace. Sundays at 10:30 a.m.</span>
+            </span>
+        </div>
+        <a class="home-live-alert__button" id="home-live-button" href="{{ url_for('live') }}">Watch the service <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+</aside>
                             <i class="fas fa-book-bible" aria-hidden="true"></i> {{ spotlight_sermon.scripture }}
                         </span>
                         {% endif %}
@@ -1610,6 +1725,50 @@
                 var url = latest.youtube_url || latest.spotify_url || latest.link || latest.apple_podcasts_url;
                 if (link && url) {
                     link.href = url;
+<script>
+(() => {
+    const alert = document.getElementById('home-live-alert');
+    if (!alert) return;
+    const title = document.getElementById('home-live-title');
+    const subtitle = document.getElementById('home-live-subtitle');
+    const badge = document.getElementById('home-live-badge');
+    const button = document.getElementById('home-live-button');
+    let isLive = false;
+    let liveTitle = '';
+    const updateSchedule = () => {
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        }).formatToParts(new Date());
+        const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+        const isSunday = values.weekday === 'Sun';
+        const minutes = Number(values.hour) * 60 + Number(values.minute);
+        const serviceWindow = isSunday && minutes >= 630 && minutes < 720;
+        alert.classList.toggle('is-visible', isSunday);
+        alert.classList.toggle('is-compact', isSunday && !serviceWindow);
+        alert.classList.toggle('is-streaming', isLive && serviceWindow);
+        if (!isSunday) return;
+        badge.textContent = isLive && serviceWindow ? 'LIVE NOW' : (serviceWindow ? 'SUNDAY WORSHIP' : 'SUNDAY AT CPC');
+        if (isLive && serviceWindow) title.textContent = liveTitle || 'CPC is live on YouTube';
+        else title.innerHTML = serviceWindow ? 'Sunday worship,<br>from New Haven.' : 'A place for grace.';
+        subtitle.textContent = serviceWindow ? 'Join CPC New Haven live · Sundays at 10:30 a.m.' : 'Sunday worship · New Haven, Connecticut';
+        button.innerHTML = (isLive && serviceWindow ? 'Watch the service' : 'Open CPC Live') + ' <i class="fas fa-arrow-right" aria-hidden="true"></i>';
+    };
+    const checkLive = async () => {
+        try {
+            const response = await fetch('/api/youtube/live', { cache: 'no-store' });
+            if (!response.ok) return;
+            const status = await response.json();
+            isLive = status.is_live === true;
+            liveTitle = isLive && status.title ? status.title : '';
+            updateSchedule();
+        } catch (_) { /* Keep the homepage quiet when YouTube cannot be reached. */ }
+    };
+    updateSchedule();
+    checkLive();
+    window.setInterval(updateSchedule, 15000);
+    window.setInterval(checkLive, 60000);
+})();
+</script>
                     link.setAttribute('target', '_blank');
                     link.setAttribute('rel', 'noopener');
                 }

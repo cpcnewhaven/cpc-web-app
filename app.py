@@ -519,6 +519,33 @@ def index():
         spotlight_beyond=spotlight_beyond,
     )
 
+@app.route('/api/youtube/live')
+@cache.cached(timeout=60)
+def youtube_live_status():
+    """Return the current public live broadcast for CPC's YouTube channel."""
+    try:
+        response = requests.get(
+            'https://www.youtube.com/@CPCNewHaven/live',
+            timeout=8,
+            headers={'User-Agent': 'Mozilla/5.0 (compatible; CPCWebsite/1.0)'},
+        )
+        response.raise_for_status()
+        match = re.search(r'ytInitialPlayerResponse\s*=\s*(\{.*?\})\s*;', response.text)
+        if not match:
+            return jsonify({'is_live': False}), 200
+        player = json.loads(match.group(1))
+        details = player.get('videoDetails', {})
+        broadcast = player.get('microformat', {}).get('playerMicroformatRenderer', {}).get('liveBroadcastDetails', {})
+        is_live = bool(broadcast.get('isLiveNow'))
+        return jsonify({
+            'is_live': is_live,
+            'video_id': details.get('videoId') if is_live else None,
+            'title': details.get('title') if is_live else None,
+        })
+    except (requests.RequestException, ValueError, TypeError):
+        app.logger.exception('Could not check CPC YouTube live status')
+        return jsonify({'is_live': False}), 200
+
 @app.route('/about')
 def about():
     # Load editable content from the DB; fall back gracefully if row doesn't exist
