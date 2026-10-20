@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('worship_slides.static', filename='slides.css') }}">
 </head>
-<body data-csrf="{{ csrf_token }}" data-pco="{{ '1' if pco_connected else '0' }}" data-google="{{ '1' if google_connected else '0' }}">
+<body data-csrf="{{ csrf_token }}" data-pco="{{ '1' if pco_connected else '0' }}" data-google="{{ '1' if google_connected else '0' }}" data-default-template="{{ default_template_url }}" data-default-bulletin="{{ default_bulletin_url }}">
   <header class="topbar">
     <a class="brand" href="/slides"><span class="brand-mark">C</span><span>CPC <small>WORSHIP WORKSPACE</small></span></a>
     <nav><a href="/">Church site</a><a href="/admin/dashboard/">Admin</a><span class="staff-pill">STAFF WORKSPACE</span></nav>
@@ -18,41 +18,225 @@
     <section class="intro">
       <div class="eyebrow"><span></span> SUNDAY PREPARATION</div>
       <h1>Worship, ready to share.</h1>
-      <p>Bring a Planning Center service plan into one workspace. Review the content, then create the projected slides and a service document in Google Drive.</p>
+      <p>Convert your Sunday bulletin Google Doc into a standardized Google Slides presentation. Review lyrics and liturgy, optionally pipe in Planning Center arrangements, and publish directly to Google Drive.</p>
     </section>
 
     <section class="connections" aria-label="Connected services">
       <article class="connection-card">
-        <div class="connection-icon pco-icon">P</div><div class="connection-copy"><strong>Planning Center</strong><small id="pco-status">{{ 'Services connected' if pco_connected else 'Connect Services to load plans' }}</small></div>
-        {% if pco_connected %}<form method="post" action="{{ url_for('worship_slides.disconnect', provider='planning-center') }}" class="disconnect"><button class="quiet-button" type="submit" data-csrf-form>Disconnect</button></form>{% else %}<a class="connect-link" href="{{ url_for('worship_slides.connect_planning_center') }}">Connect <span>↗</span></a>{% endif %}
+        <div class="connection-icon google-icon">G</div>
+        <div class="connection-copy">
+          <strong>Google Drive & Workspace</strong>
+          <small id="google-status">{% if google_connected %}Ready to read bulletins & create slides{% elif google_configured %}Connect to read docs & create slides{% else %}Google OAuth setup required{% endif %}</small>
+        </div>
+        {% if google_connected %}
+          <form method="post" action="{{ url_for('worship_slides.disconnect', provider='google') }}" class="disconnect">
+            <button class="quiet-button" type="submit" data-csrf-form>Disconnect</button>
+          </form>
+        {% elif google_configured %}
+          <a class="connect-link" href="{{ url_for('worship_slides.connect_google') }}">Connect <span>↗</span></a>
+        {% else %}
+          <span class="setup-pill">SETUP NEEDED</span>
+        {% endif %}
       </article>
+
       <article class="connection-card">
-        <div class="connection-icon google-icon">G</div><div class="connection-copy"><strong>Google Drive</strong><small id="google-status">{% if google_connected %}Ready to create files{% elif google_configured %}Connect to create documents{% else %}Google OAuth setup required{% endif %}</small></div>
-        {% if google_connected %}<form method="post" action="{{ url_for('worship_slides.disconnect', provider='google') }}" class="disconnect"><button class="quiet-button" type="submit" data-csrf-form>Disconnect</button></form>{% elif google_configured %}<a class="connect-link" href="{{ url_for('worship_slides.connect_google') }}">Connect <span>↗</span></a>{% else %}<span class="setup-pill">SETUP NEEDED</span>{% endif %}
+        <div class="connection-icon pco-icon">P</div>
+        <div class="connection-copy">
+          <strong>Planning Center Services</strong>
+          <small id="pco-status">{{ 'Services connected' if pco_connected else 'Connect Services to pipe song lyrics' }}</small>
+        </div>
+        {% if pco_connected %}
+          <form method="post" action="{{ url_for('worship_slides.disconnect', provider='planning-center') }}" class="disconnect">
+            <button class="quiet-button" type="submit" data-csrf-form>Disconnect</button>
+          </form>
+        {% else %}
+          <a class="connect-link" href="{{ url_for('worship_slides.connect_planning_center') }}">Connect <span>↗</span></a>
+        {% endif %}
       </article>
     </section>
 
     <div id="notice" class="notice" role="status" hidden></div>
-    {% if request.args.get('setup') == 'google' and not google_configured %}<div class="notice setup-notice">Add <code>SLIDES_GOOGLE_CLIENT_ID</code> and <code>SLIDES_GOOGLE_CLIENT_SECRET</code> to the app environment, then register <code>{{ url_for('worship_slides.google_callback', _external=True) }}</code> as an authorized redirect URI in Google Cloud.</div>{% endif %}
-    {% if request.args.get('setup') == 'planning-center' and not pco_connected %}<div class="notice setup-notice">Planning Center OAuth needs <code>PLANNING_CENTER_CLIENT_ID</code> and <code>PLANNING_CENTER_CLIENT_SECRET</code>. Add <code>services</code> to the app's allowed OAuth scopes and register <code>{{ url_for('worship_slides.planning_center_callback', _external=True) }}</code> as a redirect URI.</div>{% endif %}
-    {% if request.args.get('connected') %}<div class="notice success-notice">{{ 'Planning Center Services is connected.' if request.args.get('connected') == 'planning-center' else 'Google Drive is connected.' }}</div>{% endif %}
+    {% if request.args.get('setup') == 'google' and not google_configured %}
+      <div class="notice setup-notice">Add <code>SLIDES_GOOGLE_CLIENT_ID</code> and <code>SLIDES_GOOGLE_CLIENT_SECRET</code> to your app environment, then register <code>{{ url_for('worship_slides.google_callback', _external=True) }}</code> as an authorized redirect URI in Google Cloud with Drive, Docs, and Slides APIs enabled.</div>
+    {% endif %}
+    {% if request.args.get('setup') == 'planning-center' and not pco_connected %}
+      <div class="notice setup-notice">Planning Center OAuth needs <code>PLANNING_CENTER_CLIENT_ID</code> and <code>PLANNING_CENTER_CLIENT_SECRET</code>. Add <code>services</code> to the app's allowed OAuth scopes and register <code>{{ url_for('worship_slides.planning_center_callback', _external=True) }}</code> as a redirect URI.</div>
+    {% endif %}
+    {% if request.args.get('connected') %}
+      <div class="notice success-notice">{{ 'Planning Center Services is connected.' if request.args.get('connected') == 'planning-center' else 'Google Drive is connected.' }}</div>
+    {% endif %}
 
     <section class="builder" aria-labelledby="builder-title">
-      <div class="section-head"><div><div class="eyebrow">SERVICE BUILDER</div><h2 id="builder-title">Choose a service plan</h2></div><div class="step-count"><span>01</span> SELECT <i></i><span>02</span> REVIEW <i></i><span>03</span> CREATE</div></div>
-      <div class="selectors">
-        <label>Service type<select id="service-type" {% if not pco_connected %}disabled{% endif %}><option value="">{% if pco_connected %}Loading service types…{% else %}Connect Planning Center first{% endif %}</option></select></label>
-        <label>Service plan<select id="service-plan" disabled><option value="">Choose a service type first</option></select></label>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">SERVICE BUILDER</div>
+          <h2 id="builder-title">Choose service source</h2>
+        </div>
+        <div class="step-count"><span>01</span> IMPORT <i></i><span>02</span> REVIEW <i></i><span>03</span> POPULATE</div>
       </div>
-      <div id="empty-state" class="empty-state"><div class="empty-icon">↗</div><strong>Your next service starts here</strong><span>Connect Planning Center Services, then choose a service type and plan.</span></div>
+
+      <!-- Source selection tabs -->
+      <div class="source-tabs" role="tablist">
+        <button class="source-tab active" data-tab="bulletin" type="button" role="tab">
+          <span class="tab-icon">📄</span> Bulletin (Google Doc)
+        </button>
+        <button class="source-tab" data-tab="planning-center" type="button" role="tab">
+          <span class="tab-icon">📅</span> Planning Center Plan
+        </button>
+        <button class="source-tab" data-tab="combine" type="button" role="tab">
+          <span class="tab-icon">⚡</span> Combine Bulletin + PCO
+        </button>
+      </div>
+
+      <!-- Tab 1: Bulletin Google Doc -->
+      <div id="tab-bulletin" class="tab-panel active">
+        <div class="doc-input-grid">
+          <label class="field-label">
+            Bulletin Google Doc URL or ID
+            <input type="text" id="bulletin-url" class="text-input" value="{{ default_bulletin_url }}" placeholder="https://docs.google.com/document/d/..." />
+          </label>
+          <div class="action-btn-row">
+            <button type="button" id="fetch-bulletin-btn" class="action-button primary-btn">
+              <span>Import Bulletin Doc</span>
+              <span class="button-arrow">↓</span>
+            </button>
+            <button type="button" id="toggle-paste-btn" class="action-button quiet-btn">
+              <span>Or paste bulletin text</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="paste-box" class="paste-box" hidden>
+          <label class="field-label">
+            Paste bulletin text (Order of Worship)
+            <textarea id="bulletin-paste-text" rows="6" placeholder="Paste your Sunday bulletin text here (Call to Worship, Hymns, Scripture, Sermon, etc.)..."></textarea>
+          </label>
+          <button type="button" id="parse-pasted-btn" class="action-button secondary-btn">
+            <span>Parse Pasted Text</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 2: Planning Center Services -->
+      <div id="tab-planning-center" class="tab-panel" hidden>
+        <div class="selectors">
+          <label class="field-label">
+            Service type
+            <select id="service-type" {% if not pco_connected %}disabled{% endif %}>
+              <option value="">{% if pco_connected %}Loading service types…{% else %}Connect Planning Center first{% endif %}</option>
+            </select>
+          </label>
+          <label class="field-label">
+            Service plan
+            <select id="service-plan" disabled>
+              <option value="">Choose a service type first</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tab 3: Combine Bulletin + Planning Center -->
+      <div id="tab-combine" class="tab-panel" hidden>
+        <p class="tab-hint">Import liturgy and readings from your bulletin Google Doc, and automatically pipe in song lyrics and arrangements from Planning Center.</p>
+        <div class="combine-grid">
+          <label class="field-label">
+            Bulletin Google Doc
+            <input type="text" id="combine-bulletin-url" class="text-input" value="{{ default_bulletin_url }}" />
+          </label>
+          <div class="selectors combine-selectors">
+            <label class="field-label">
+              PCO Service type
+              <select id="combine-service-type" {% if not pco_connected %}disabled{% endif %}>
+                <option value="">{% if pco_connected %}Loading service types…{% else %}Connect Planning Center first{% endif %}</option>
+              </select>
+            </label>
+            <label class="field-label">
+              PCO Service plan
+              <select id="combine-service-plan" disabled>
+                <option value="">Choose a service type first</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <button type="button" id="combine-btn" class="action-button primary-btn" style="margin-top: 14px;">
+          <span>Import Bulletin & Pipe PCO Lyrics</span>
+          <span class="button-arrow">⚡</span>
+        </button>
+      </div>
+
+      <!-- Template Configuration Row -->
+      <div class="template-config-row">
+        <label class="field-label">
+          Standardized Google Slides Template
+          <div class="template-input-wrap">
+            <input type="text" id="template-url" class="text-input template-input" value="{{ default_template_url }}" placeholder="https://docs.google.com/presentation/d/..." />
+            <a id="preview-template-link" href="{{ default_template_url }}" target="_blank" rel="noopener" class="preview-template-link" title="Open template in Google Slides">
+              Open Template ↗
+            </a>
+          </div>
+        </label>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">↗</div>
+        <strong>Ready to build your Sunday slides</strong>
+        <span>Click <em>Import Bulletin Doc</em> or select a Planning Center plan above to begin.</span>
+      </div>
+
+      <!-- Review / Editor Section -->
       <div id="editor" hidden>
-        <div class="editor-heading"><div><label class="field-label" for="document-title">File name</label><input id="document-title" class="title-input" maxlength="160" placeholder="Sunday Worship · October 18"></div><div class="item-summary"><b id="item-count">0</b><span>service items</span></div></div>
+        <div class="editor-heading">
+          <div>
+            <label class="field-label" for="document-title">Presentation Title</label>
+            <input id="document-title" class="title-input" maxlength="160" placeholder="Sunday Worship · October 18">
+          </div>
+          <div class="item-summary">
+            <b id="item-count">0</b><span>items</span>
+            <span class="summary-sep">·</span>
+            <b id="slide-count">0</b><span>slides</span>
+          </div>
+        </div>
+
+        <div id="pipe-banner" class="pipe-banner" hidden>
+          <span>Planning Center lyrics piped into your bulletin songs.</span>
+        </div>
+
         <div id="items" class="items-list"></div>
-        <div class="publish-row"><div class="output-choice"><span class="field-label">CREATE IN GOOGLE DRIVE</span><label class="check-option"><input type="checkbox" id="make-slides" checked><span class="fake-check"></span>Google Slides</label><label class="check-option"><input type="checkbox" id="make-doc" checked><span class="fake-check"></span>Google Doc</label></div><button id="create-button" class="create-button" {% if not google_connected %}disabled{% endif %}><span>Create files</span><span class="button-arrow">→</span></button></div>
-        {% if not google_connected %}<p class="inline-hint">Connect Google Drive above to enable file creation.</p>{% endif %}
+
+        <div class="editor-actions">
+          <button type="button" id="add-item-btn" class="action-button secondary-btn small-btn">
+            <span>+ Add Service Item</span>
+          </button>
+        </div>
+
+        <div class="publish-row">
+          <div class="output-choice">
+            <span class="field-label">CREATE IN GOOGLE DRIVE</span>
+            <label class="check-option">
+              <input type="checkbox" id="make-slides" checked>
+              <span class="fake-check"></span>
+              Google Slides (from Standardized Template)
+            </label>
+            <label class="check-option">
+              <input type="checkbox" id="make-doc">
+              <span class="fake-check"></span>
+              Google Doc
+            </label>
+          </div>
+          <button id="create-button" class="create-button" {% if not google_connected %}disabled{% endif %}>
+            <span>Populate Google Slides</span>
+            <span class="button-arrow">→</span>
+          </button>
+        </div>
+        {% if not google_connected %}
+          <p class="inline-hint">Connect Google Drive above to populate the slides in your account.</p>
+        {% endif %}
         <div id="created-links" class="created-links" hidden></div>
       </div>
     </section>
-    <footer>Worship workspace <span>·</span> Planning Center content is reviewed here before any Google files are created.</footer>
+
+    <footer>Worship workspace · Bulletin content is parsed and reviewed here before slides are populated in Google Drive.</footer>
   </main>
   <script src="{{ url_for('worship_slides.static', filename='slides.js') }}" defer></script>
 </body>

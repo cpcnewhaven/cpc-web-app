@@ -31,7 +31,7 @@
     submit.disabled=true;status.textContent='Sending…';status.className='cpc-feedback-status';
     const devices=[...document.querySelectorAll('input[name="feedbackDevice"]:checked')].map(input=>input.value);
     const submittedMessage=devices.length ? `[Device: ${devices.join(', ')}]\n\n${text}` : text;
-    try{const response=await fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,message:submittedMessage,name:document.getElementById('cpcFeedbackName').value,email:document.getElementById('cpcFeedbackEmail').value,page_url:locationSelect.value || location.pathname+location.search,page_title:document.title})});
+    try{const response=await fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,message:submittedMessage,name:document.getElementById('cpcFeedbackName').value,email:document.getElementById('cpcFeedbackEmail').value,website:document.getElementById('cpcFeedbackWebsite')?document.getElementById('cpcFeedbackWebsite').value:'',page_url:locationSelect.value || location.pathname+location.search,page_title:document.title})});
       if(!response.ok) throw new Error();
       const result=await response.json(); message.value=''; submit.disabled=false; status.textContent=`Thank you — your tracking code is ${result.tracking_code}.`;trackCode.value=result.tracking_code;panel.querySelectorAll('[data-kind]').forEach(b=>b.classList.remove('selected'));kind='note';
       setTimeout(hide,1800);

@@ -51,8 +51,23 @@ python migrate_data.py
 LIVE_DATABASE_URL='postgresql://...' python sync_db.py
 ```
 
-### No Test Suite
-This project has **no automated tests**. Changes should be verified manually in the browser.
+### Automated Test Suite
+Run the test suite using Python's built-in `unittest`:
+```bash
+python -m unittest discover -s tests -p 'test_*.py'
+
+# Or run individual test files
+python -m unittest tests/test_security_fixes.py
+python -m unittest tests/test_admin_views.py
+python -m unittest tests/test_sunday_and_beyond_spotlight.py
+```
+Always verify that tests pass before committing or proposing changes.
+
+### Security Guidelines
+- **Admin Access Control**: All administrative views and blueprints (`/admin/*`, `/admin/google-drive/*`, worship slides) must enforce authentication (`@require_auth`, `is_authenticated()`, or a `before_request` hook).
+- **Redirects**: Never pass unvalidated external inputs to `redirect()`. Always ensure `next` parameter starts with `/` and not `//`.
+- **Public Inputs**: Public submissions (such as suggestions or feedback) must be sanitized and HTML-escaped. Never render unescaped user input with `| safe` or unescaped in dynamic `innerHTML`.
+- **Cookies & Headers**: Security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`) and cookie flags (`HttpOnly`, `SameSite=Lax`) are enforced globally.
 
 ### Development vs Production
 

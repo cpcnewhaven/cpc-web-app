@@ -2,6 +2,7 @@
 
 import hmac
 import json
+import logging
 import os
 import time
 import uuid
@@ -10,21 +11,33 @@ from functools import wraps
 from flask import abort, current_app, jsonify, redirect, render_template, request, session, url_for
 
 from . import worship_slides_bp
+from .bulletin_parser import (
+    DEFAULT_BULLETIN_DOC_ID,
+    DEFAULT_SLIDES_TEMPLATE_ID,
+    extract_google_id,
+    merge_pco_with_bulletin,
+    parse_bulletin_text,
+)
 from .integrations import (
     IntegrationError,
     create_google_doc,
     create_google_presentation,
     exchange_google_code,
+    get_google_doc,
+    get_plan_items,
     google_access_token,
     google_authorize_url,
     google_configured,
     list_plans,
     list_service_types,
-    get_plan_items,
 )
+
+logger = logging.getLogger(__name__)
 
 PCO_TOKEN_KEY = "worship_slides_pco_tokens"
 GOOGLE_TOKEN_KEY = "worship_slides_google_tokens"
+TEMPLATE_ID_KEY = "worship_slides_template_id"
+LAST_BULLETIN_KEY = "worship_slides_last_bulletin_id"
 
 
 def staff_only(view):
@@ -55,6 +68,22 @@ def _save_token(key, token):
 def _delete_token(key):
     from app import SiteContent, db
     SiteContent.query.filter_by(key=key).delete()
+    db.session.commit()
+
+
+def _get_setting(key, default=""):
+    from app import SiteContent
+    row = SiteContent.query.filter_by(key=key).first()
+    return row.value if row and row.value else default
+
+
+def _save_setting(key, value):
+    from app import SiteContent, db
+    row = SiteContent.query.filter_by(key=key).first()
+    if row:
+        row.value = str(value)
+    else:
+        db.session.add(SiteContent(key=key, value=str(value)))
     db.session.commit()
 
 
@@ -94,12 +123,23 @@ def _pco_access_token():
 def workspace():
     if "slides_csrf" not in session:
         session["slides_csrf"] = uuid.uuid4().hex
+
+    template_id = _get_setting(TEMPLATE_ID_KEY, DEFAULT_SLIDES_TEMPLATE_ID)
+    bulletin_id = _get_setting(LAST_BULLETIN_KEY, DEFAULT_BULLETIN_DOC_ID)
+
+    default_template_url = f"https://docs.google.com/presentation/d/{template_id}/edit"
+    default_bulletin_url = f"https://docs.google.com/document/d/{bulletin_id}/edit"
+
     return render_template(
         "slides_workspace.html",
         csrf_token=session["slides_csrf"],
         pco_connected=bool(_get_token(PCO_TOKEN_KEY)),
         google_connected=bool(_get_token(GOOGLE_TOKEN_KEY)),
         google_configured=google_configured(),
+        default_template_url=default_template_url,
+        default_bulletin_url=default_bulletin_url,
+        template_id=template_id,
+        bulletin_id=bulletin_id,
     )
 
 
@@ -223,6 +263,107 @@ def api_plan(service_type_id, plan_id):
         return jsonify({"error": str(exc)}), 400
 
 
+@worship_slides_bp.route("/api/parse-bulletin", methods=["POST"])
+@staff_only
+def api_parse_bulletin():
+    if not _csrf_ok():
+        abort(400)
+    payload = request.get_json(silent=True) or {}
+    doc_id_or_url = (payload.get("doc_id_or_url") or "").strip()
+    raw_text = (payload.get("text") or "").strip()
+
+    if not doc_id_or_url and not raw_text:
+        return jsonify({"error": "Provide a Google Doc link or paste bulletin text."}), 400
+
+    # If raw text was supplied directly, parse it without requiring Google OAuth
+    if raw_text and not doc_id_or_url:
+        items = parse_bulletin_text(raw_text)
+        return jsonify({
+            "title": "Worship Service",
+            "items": items,
+            "slide_count": sum(len(it.get("slides", [])) for it in items),
+            "source": "text",
+        })
+
+    # Fetch from Google Docs API
+    token = _get_token(GOOGLE_TOKEN_KEY)
+    if not token:
+        if raw_text:
+            items = parse_bulletin_text(raw_text)
+            return jsonify({
+                "title": "Worship Service",
+                "items": items,
+                "slide_count": sum(len(it.get("slides", [])) for it in items),
+                "source": "text",
+                "notice": "Google Drive is not connected yet, so pasted text was used.",
+            })
+        return jsonify({
+            "error": "Connect Google Drive to fetch documents directly, or paste bulletin text below."
+        }), 400
+
+    try:
+        token = google_access_token(token)
+        doc_result = get_google_doc(token, doc_id_or_url)
+        _save_token(GOOGLE_TOKEN_KEY, token)
+
+        clean_id = extract_google_id(doc_id_or_url)
+        if clean_id:
+            _save_setting(LAST_BULLETIN_KEY, clean_id)
+
+        items = doc_result["items"]
+        return jsonify({
+            "title": doc_result["title"],
+            "doc_id": doc_result["id"],
+            "url": doc_result["url"],
+            "text": doc_result["text"],
+            "items": items,
+            "slide_count": sum(len(it.get("slides", [])) for it in items),
+            "source": "google_doc",
+        })
+    except IntegrationError as exc:
+        _save_token(GOOGLE_TOKEN_KEY, token)
+        # If fetch fails but raw text was also provided, fall back gracefully
+        if raw_text:
+            items = parse_bulletin_text(raw_text)
+            return jsonify({
+                "title": "Worship Service",
+                "items": items,
+                "slide_count": sum(len(it.get("slides", [])) for it in items),
+                "source": "text",
+                "notice": f"Could not fetch from Google Doc ({exc}). Pasted text was parsed instead.",
+            })
+        return jsonify({"error": str(exc)}), 502
+
+
+@worship_slides_bp.route("/api/pipe-pco", methods=["POST"])
+@staff_only
+def api_pipe_pco():
+    """Pipe Planning Center plan items (e.g. lyrics from arrangements) into bulletin items."""
+    if not _csrf_ok():
+        abort(400)
+    payload = request.get_json(silent=True) or {}
+    service_type_id = payload.get("service_type_id")
+    plan_id = payload.get("plan_id")
+    bulletin_items = payload.get("bulletin_items")
+
+    if not service_type_id or not plan_id:
+        return jsonify({"error": "Select a Planning Center service type and plan to pipe."}), 400
+    if not isinstance(bulletin_items, list):
+        return jsonify({"error": "No bulletin items provided to pipe into."}), 400
+
+    try:
+        pco_items = get_plan_items(_pco_access_token(), service_type_id, plan_id)
+        merged = merge_pco_with_bulletin(bulletin_items, pco_items)
+        synced_count = sum(1 for it in merged if it.get("pco_synced"))
+        return jsonify({
+            "items": merged,
+            "slide_count": sum(len(it.get("slides", [])) for it in merged),
+            "synced_count": synced_count,
+        })
+    except IntegrationError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
 @worship_slides_bp.route("/api/create", methods=["POST"])
 @staff_only
 def api_create():
@@ -232,30 +373,46 @@ def api_create():
     title = (payload.get("title") or "").strip()[:160]
     items = payload.get("items")
     outputs = payload.get("outputs")
+    template_id = (payload.get("template_id") or "").strip() or DEFAULT_SLIDES_TEMPLATE_ID
+
     if not title or not isinstance(items, list) or not items or len(items) > 100:
         return jsonify({"error": "Add a title and at least one service item."}), 400
+
     safe_items = []
     for item in items:
         if not isinstance(item, dict):
             continue
-        safe_items.append({"title": str(item.get("title", ""))[:300], "content": str(item.get("content", ""))[:10000]})
+        safe_items.append({
+            "title": str(item.get("title", ""))[:300],
+            "content": str(item.get("content", ""))[:10000],
+            "slides": item.get("slides") if isinstance(item.get("slides"), list) else None,
+            "category": str(item.get("category", "liturgy")),
+        })
+
     if not safe_items:
         return jsonify({"error": "There are no usable service items to publish."}), 400
     if not isinstance(outputs, list) or not outputs or any(x not in ("slides", "doc") for x in outputs):
         return jsonify({"error": "Choose Google Slides, Google Docs, or both."}), 400
+
     token = _get_token(GOOGLE_TOKEN_KEY)
     if not token:
         return jsonify({"error": "Connect Google Drive before creating files."}), 400
+
     created = {}
+    clean_template_id = extract_google_id(template_id)
+    if clean_template_id:
+        _save_setting(TEMPLATE_ID_KEY, clean_template_id)
+
     try:
         token = google_access_token(token)
         for output in outputs:
             created[output] = (
-                create_google_presentation(token, title, safe_items)
+                create_google_presentation(token, title, safe_items, template_id=clean_template_id)
                 if output == "slides" else create_google_doc(token, title, safe_items)
             )
         _save_token(GOOGLE_TOKEN_KEY, token)
     except IntegrationError as exc:
         _save_token(GOOGLE_TOKEN_KEY, token)
         return jsonify({"error": str(exc), "created": created}), 502
+
     return jsonify({"created": created})

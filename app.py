@@ -124,11 +124,23 @@ app.register_blueprint(worship_slides_bp)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
+# Baseline cookie and request limits
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB max request body
+
 # Session cookie security — enforce HTTPS-only cookies in production
 if os.getenv('FLASK_ENV') == 'production' or os.getenv('RENDER'):
     app.config['SESSION_COOKIE_SECURE'] = True
-    app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    if app.config.get('SECRET_KEY') == 'your-secret-key-here':
+        log.warning("SECURITY WARNING: Using insecure default SECRET_KEY in production!")
+
+@app.after_request
+def set_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    return response
 
 # ---------------------------------------------------------------------------
 # Database URL — require DATABASE_URL in production, allow SQLite for local dev
@@ -359,6 +371,25 @@ def require_auth(f):
     return decorated_function
 
 
+def require_admin_csrf(f):
+    """Ensure mutating admin requests originate from the same site (CSRF defense)."""
+    from functools import wraps
+    from urllib.parse import urlparse
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        origin = request.headers.get('Origin')
+        if origin and urlparse(origin).netloc != request.host:
+            return jsonify({'error': 'Cross-origin request blocked'}), 403
+        referrer = request.headers.get('Referer')
+        if referrer and urlparse(referrer).netloc != request.host:
+            return jsonify({'error': 'Cross-origin request blocked'}), 403
+        sec_fetch_site = request.headers.get('Sec-Fetch-Site')
+        if sec_fetch_site and sec_fetch_site not in ('same-origin', 'same-site', 'none'):
+            return jsonify({'error': 'Cross-origin request blocked'}), 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 # ---------------------------------------------------------------------------
 # Health check — lightweight DB liveness probe for Render
 # ---------------------------------------------------------------------------
@@ -372,7 +403,7 @@ def healthz():
         return jsonify({"status": "ok", "database": "connected"}), 200
     except Exception as exc:
         log.error("Health check FAILED: %s", exc)
-        return jsonify({"status": "error", "database": str(exc)}), 503
+        return jsonify({"status": "error", "database": "unavailable"}), 503
 
 # ---------------------------------------------------------------------------
 # Log 500 errors with full traceback (so Render logs show the real cause)
@@ -410,6 +441,10 @@ def feedback_preview(token):
 def submit_site_feedback():
     """Accept short feedback from an active tester session."""
     payload = request.get_json(silent=True) or {}
+
+    # Honeypot bot protection
+    if payload.get('website'):
+        return jsonify({'ok': True, 'id': 0, 'tracking_code': 'CPC-0'})
     kind = str(payload.get('kind', 'note')).strip().lower()
     allowed_kinds = {'love', 'confusing', 'broken', 'idea', 'note'}
     if kind not in allowed_kinds:
@@ -457,6 +492,7 @@ def track_site_feedback(tracking_code):
 # Admin status: last content change — uses audit log so it matches Activity History
 # ---------------------------------------------------------------------------
 @app.route('/api/admin/last-change')
+@require_auth
 def api_admin_last_change():
     """Return the single most-recent content change (for the admin status bar).
     Uses AuditLog so the navbar matches Activity History."""
@@ -1363,6 +1399,15 @@ def suggest_event():
         # Honeypot bot protection
         if request.form.get('website'):
             return redirect(url_for('index'))
+
+        # Sanitize public submissions to prevent stored XSS
+        import html
+        title = html.escape(title)
+        description = html.escape(description)
+        if name:
+            name = html.escape(name)
+        if email:
+            email = html.escape(email)
 
         # Embed submitter info in description so admins can see who sent it
         submitter_line = f"\n\n— Suggested by: {name} ({email})" if name else ""
@@ -2737,6 +2782,11 @@ def api_mailchimp():
 @app.route("/webhooks/mailchimp", methods=["POST"])
 def mailchimp_webhook():
     """Handle Mailchimp webhook for campaign sent events"""
+    secret = os.getenv("MAILCHIMP_WEBHOOK_SECRET") or app.config.get("MAILCHIMP_WEBHOOK_SECRET")
+    if secret:
+        supplied = request.args.get("secret") or request.headers.get("X-Mailchimp-Secret") or ""
+        if not hmac.compare_digest(supplied, secret):
+            return jsonify({"error": "invalid webhook secret"}), 401
     try:
         # Parse webhook payload
         payload = request.form or request.json or {}
@@ -3847,6 +3897,7 @@ def inject_current_user_metadata():
         'app_version': app_version,
         'git_rev': get_git_revision_short_hash(),
         'now': datetime.utcnow(),
+        'today': datetime.utcnow(),
         # Public feedback is available to every visitor in every environment.
         # This is deliberately unrelated to a client IP or preview session.
         'feedback_mode': os.getenv('FEEDBACK_ENABLED', '1').lower() not in ('0', 'false', 'no', 'off') or bool(session.get('feedback_mode')),
@@ -3901,6 +3952,8 @@ def admin_login():
                 session['authenticated'] = True
                 session['username'] = username
                 next_url = request.args.get('next', '/admin/dashboard/')
+                if not next_url or not next_url.startswith('/') or next_url.startswith('//'):
+                    next_url = '/admin/dashboard/'
                 return redirect(next_url)
             else:
                 flash('Invalid username or password', 'error')
@@ -4072,6 +4125,7 @@ def admin_setup_podcast_series():
 
 @app.route('/admin/bulk/announcements', methods=['POST'])
 @require_auth
+@require_admin_csrf
 def admin_bulk_announcements():
     """Bulk operations on announcements"""
     data = request.get_json()
@@ -4091,6 +4145,7 @@ def admin_bulk_announcements():
 
 @app.route('/admin/events/reorder', methods=['POST'])
 @require_auth
+@require_admin_csrf
 def admin_events_reorder():
     """Save drag-and-drop order of events. Body: JSON { \"order\": [\"id1\", \"id2\", ...] }"""
     try:
@@ -4109,6 +4164,7 @@ def admin_events_reorder():
 
 @app.route('/admin/teaching-series/reorder-sessions', methods=['POST'])
 @require_auth
+@require_admin_csrf
 def admin_sessions_reorder():
     """Save drag-and-drop order of sessions in a series. Body: JSON { \"order\": [\"id1\", \"id2\", ...] }"""
     try:
@@ -4127,6 +4183,7 @@ def admin_sessions_reorder():
 
 @app.route('/admin/bulk/sermons', methods=['POST'])
 @require_auth
+@require_admin_csrf
 def admin_bulk_sermons():
     """Bulk operations on sermons"""
     data = request.get_json()
@@ -4150,6 +4207,7 @@ def admin_banner_alert_new():
 
 @app.route('/admin/banners/reorder', methods=['POST'])
 @require_auth
+@require_admin_csrf
 def admin_banners_reorder():
     """Save banner order (announcements with show_in_banner=True)."""
     try:
@@ -4169,6 +4227,7 @@ def admin_banners_reorder():
 
 @app.route('/admin/banners/<int:aid>/expiration', methods=['POST'])
 @require_auth
+@require_admin_csrf
 def admin_banner_update_expiration(aid):
     """Update expiration date for a banner announcement."""
     try:
@@ -6049,9 +6108,11 @@ class GalleryImageView(AuthenticatedModelView):
             return False
 
 @app.route('/api/admin/reorder-gallery', methods=['POST'])
+@require_auth
+@require_admin_csrf
 def api_admin_reorder_gallery():
     """Admin only: Save changes to gallery image display order."""
-    if 'username' not in session:
+    if not is_authenticated():
         return jsonify({'error': 'Unauthorized'}), 401
     
     data = request.json
@@ -6074,9 +6135,11 @@ def api_admin_reorder_gallery():
 
 
 @app.route('/api/admin/podcast-episode/<int:episode_id>/thumbnail', methods=['POST'])
+@require_auth
+@require_admin_csrf
 def api_admin_set_podcast_episode_thumbnail(episode_id):
     """Admin only: Set podcast_thumbnail_url for a podcast episode."""
-    if 'username' not in session:
+    if not is_authenticated():
         return jsonify({'error': 'Unauthorized'}), 401
     data = request.get_json() or {}
     url = (data.get('url') or '').strip()

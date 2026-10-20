@@ -3,7 +3,7 @@ Google Drive Routes for CPC Gallery
 Flask routes for Google Drive integration
 """
 
-from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for
+from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for, session
 import os
 import json
 from datetime import datetime
@@ -19,6 +19,11 @@ except ImportError:
 # Create blueprint
 google_drive_bp = Blueprint('google_drive', __name__, url_prefix='/admin/google-drive')
 
+@google_drive_bp.before_request
+def require_admin():
+    if not session.get('authenticated'):
+        return redirect(url_for('admin_login', next=request.url))
+
 def check_google_drive_available():
     """Check if Google Drive integration is available"""
     if not GOOGLE_DRIVE_AVAILABLE:
@@ -29,13 +34,17 @@ def check_google_drive_available():
 def dashboard():
     """Google Drive integration dashboard"""
     if not GOOGLE_DRIVE_AVAILABLE:
-        return render_template('admin/google_drive_dashboard.html', 
-                             status={'error': 'Google Drive integration not available. Please install dependencies.'})
-    
-    manager = GoogleDriveGalleryManager()
-    status = manager.get_sync_status()
-    
-    return render_template('admin/google_drive_dashboard.html', status=status)
+        status = {'error': 'Google Drive integration not available. Please install dependencies.'}
+    else:
+        manager = GoogleDriveGalleryManager()
+        status = manager.get_sync_status()
+
+    try:
+        from app import admin
+        return admin.index_view.render('admin/google_drive_dashboard.html', status=status, today=datetime.now())
+    except Exception:
+        from flask_admin import helpers as admin_helpers
+        return render_template('admin/google_drive_dashboard.html', status=status, today=datetime.now(), h=admin_helpers)
 
 @google_drive_bp.route('/setup')
 def setup():

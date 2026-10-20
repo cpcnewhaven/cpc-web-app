@@ -108,6 +108,19 @@ These endpoints exist for older consumers and may use the sermon helper or JSON 
 
 Database-backed content managed in admin is the production source of truth. Calendar, newsletter, YouTube, Bible verse, Mailchimp, and feed-backed podcast data remain external or synchronized sources; they are not all admin CRUD records.
 
+## Security architecture and defensive controls
+
+The application implements defense-in-depth across routing, session handling, and rendering:
+
+- **HTTP Defensive Headers**: Global `@app.after_request` middleware injects `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, and `Referrer-Policy: strict-origin-when-cross-origin` on all responses.
+- **Session & Cookie Hardening**: `SESSION_COOKIE_HTTPONLY=True` and `SESSION_COOKIE_SAMESITE='Lax'` are configured globally; `SESSION_COOKIE_SECURE=True` is enforced in production environments.
+- **Request Size Limiting**: `MAX_CONTENT_LENGTH` is set to 32 MB (33,554,432 bytes) to protect upload routes and general POST endpoints against denial-of-service via oversized payloads.
+- **Blueprint Authentication & CSRF Protection**: Administrative blueprints (`/admin/google-drive`, worship slides) and internal status APIs enforce session authentication. Mutating administrative operations (`/admin/bulk/*`, `/admin/events/reorder`, `/admin/teaching-series/reorder-sessions`, `/admin/banners/reorder`) use `require_admin_csrf` middleware to verify Same-Origin and Fetch Metadata headers.
+- **Webhook Authentication**: Planning Center webhooks enforce SHA256 HMAC signatures (`X-PCO-Webhooks-Authenticity`), and Mailchimp webhooks enforce secret query verification (`MAILCHIMP_WEBHOOK_SECRET`) when set.
+- **Open Redirect Protection**: `admin_login` sanitizes `request.args.get('next')` to prevent redirecting to external domains or protocol-relative schemes.
+- **Stored XSS & Honeypot Bot Defense**: Public inputs (`/suggest-event` and `/api/feedback`) employ hidden honeypot fields to filter automated bot traffic and escape inputs before persistence. Dynamic browser template insertions (e.g. in `announcements.html`) use client-side HTML entity escaping.
+- **Information Leak Prevention**: The `/healthz` probe returns a generic `{"status": "error", "database": "unavailable"}` response on database connection failure, while logging the full exception internally.
+
 ## Environment variables
 
 | Variable | Required | Purpose |

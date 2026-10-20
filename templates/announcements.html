@@ -204,29 +204,44 @@ document.addEventListener('DOMContentLoaded', function() {
         return (value || '').toString().trim().toLowerCase();
     }
 
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+        });
+    }
+
     function renderAnnouncements(announcements) {
         if (announcements && announcements.length > 0) {
             const badge = (kind, value) => {
                 const isActive = activeFilter &&
                     activeFilter.type === kind &&
                     normalize(activeFilter.value) === normalize(value);
-                return `<span class="announcement-badge clickable-badge${isActive ? ' active' : ''}" data-filter-type="${kind}" data-filter-value="${value}">${value}</span>`;
+                const safeKind = escapeHtml(kind);
+                const safeValue = escapeHtml(value);
+                return `<span class="announcement-badge clickable-badge${isActive ? ' active' : ''}" data-filter-type="${safeKind}" data-filter-value="${safeValue}">${safeValue}</span>`;
             };
             container.innerHTML = announcements.map(announcement => {
                 const ratioClass = announcement.imageDisplayType === 'square' ? 'ratio-square' : (announcement.imageDisplayType === '9x16' ? 'ratio-9x16' : 'ratio-16x9');
+                const safeTitle = escapeHtml(announcement.title);
+                const safeDesc = escapeHtml(announcement.description);
+                const safeImg = announcement.featuredImage ? escapeHtml(announcement.featuredImage) : '';
+                const safeStart = escapeHtml(announcement.eventStartTime || '');
+                const safeEnd = escapeHtml(announcement.eventEndTime || '');
+                const safeDate = escapeHtml(announcement.dateEntered || '');
                 return `
                 <div class="announcement-card">
-                    <a href="/announcement/${announcement.id}" style="text-decoration:none;display:block;height:100%;color:inherit;">
-                        ${announcement.featuredImage ? `<img src="${announcement.featuredImage}" alt="${announcement.title}" class="announcement-image ${ratioClass}">` : ''}
-                        <h3>${announcement.title}</h3>
+                    <a href="/announcement/${encodeURIComponent(announcement.id)}" style="text-decoration:none;display:block;height:100%;color:inherit;">
+                        ${safeImg ? `<img src="${safeImg}" alt="${safeTitle}" class="announcement-image ${ratioClass}">` : ''}
+                        <h3>${safeTitle}</h3>
                         <div class="announcement-badges">
                             ${announcement.type ? badge('type', announcement.type) : ''}
                             ${announcement.category ? badge('category', announcement.category) : ''}
                             ${announcement.tag ? badge('tag', announcement.tag) : ''}
                         </div>
-                        <p class="announcement-description">${announcement.description}</p>
-                        ${(announcement.eventStartTime || announcement.eventEndTime) ? `<p class="announcement-date" style="margin-bottom: 0.25rem;"><i class="fas fa-clock"></i> ${announcement.eventStartTime || ''} ${announcement.eventEndTime ? '- ' + announcement.eventEndTime : ''}</p>` : ''}
-                        ${announcement.dateEntered ? `<p class="announcement-date">${announcement.dateEntered}</p>` : ''}
+                        <p class="announcement-description">${safeDesc}</p>
+                        ${(safeStart || safeEnd) ? `<p class="announcement-date" style="margin-bottom: 0.25rem;"><i class="fas fa-clock"></i> ${safeStart} ${safeEnd ? '- ' + safeEnd : ''}</p>` : ''}
+                        ${safeDate ? `<p class="announcement-date">${safeDate}</p>` : ''}
                     </a>
                 </div>
             `;}).join('');

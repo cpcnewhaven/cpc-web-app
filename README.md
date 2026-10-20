@@ -309,9 +309,35 @@ Access the admin interface at `/admin` to manage:
 Create a `.env` file in the project root:
 
 ```env
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=generate-a-strong-random-key  # Required in production: python -c 'import secrets; print(secrets.token_hex(32))'
 DATABASE_URL=sqlite:///cpc_newhaven.db
 ```
+
+### Security & Hardening
+
+The application includes defensive controls configured by default:
+
+- **HTTP Security Headers**: Global `@app.after_request` middleware automatically injects `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN` (clickjacking defense), and `Referrer-Policy: strict-origin-when-cross-origin`.
+- **Session Cookie Protection**: Cookies carry `HttpOnly=True` and `SameSite=Lax` across all environments; `Secure=True` (HTTPS-only) is enforced in production.
+- **Request Body Limits**: `MAX_CONTENT_LENGTH` is set to 32 MB to guard against payload-based denial-of-service.
+- **Admin Access Control & CSRF Protection**: All administrative views, blueprints (`/admin/*`, `/admin/google-drive/*`, worship slides), and internal status APIs enforce session authentication. Mutating bulk actions and reordering operations require same-origin request verification (`require_admin_csrf`) to prevent cross-site request forgery.
+- **Open Redirect Defense**: Administrative login validates the `next` destination parameter, requiring a relative local path.
+- **Input Sanitization & Honeypot Spam Defense**: Public forms (`/suggest-event` and `/api/feedback`) employ hidden honeypot fields to filter automated bot submissions silently, and sanitize user text to prevent Stored XSS. Dynamic client-side rendering uses HTML entity escaping.
+- **Webhook Authentication**: Planning Center webhooks enforce HMAC SHA256 signatures, and Mailchimp webhooks enforce secret query authentication (`MAILCHIMP_WEBHOOK_SECRET`) when configured.
+- **Health Check Safety**: The `/healthz` endpoint returns a generic status string on database connection errors to prevent leaking internal database host, user, or driver details.
+
+### Testing & Verification
+
+Run the automated test suite:
+
+```bash
+python -m unittest discover -s tests -p 'test_*.py'
+```
+
+Key test suites include:
+- `tests/test_security_fixes.py` (security headers, admin blueprint auth, open redirect protection, XSS sanitization)
+- `tests/test_admin_views.py` (admin CRUD and view rendering)
+- `tests/test_sunday_and_beyond_spotlight.py` (sermon and podcast spotlight helpers)
 
 ### Production Database
 
