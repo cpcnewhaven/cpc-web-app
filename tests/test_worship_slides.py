@@ -183,7 +183,7 @@ class TestWorshipSlidesRoutes(unittest.TestCase):
 
         response = self.client.get("/slides/")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Worship, ready to share", response.data)
+        self.assertIn(b"Worship Slides Wizard", response.data)
         self.assertIn(b"15zT3vmtW0ZYXYgm57qIkOAaLcNODjuNYQeur48w_oNw", response.data)
         self.assertIn(b"1nDWJbDmvbf1PNYbHk9JMrjdihIrW2Cy9_MZoZBD-gNc", response.data)
 

@@ -47,3 +47,54 @@
 .item-remove-btn:hover{color:#f58484;background:#5e191933}
 .editor-actions{display:flex;justify-content:flex-start;margin-top:12px}
 .pipe-banner{margin-bottom:14px;padding:9px 12px;border:1px solid #5ca8e644;background:#173d6133;color:#b6dbfa;border-radius:7px;font-size:11px;display:flex;align-items:center;gap:8px}
+
+/* Wizard Stepper & Guide */
+.how-it-works-box{margin:18px 0 28px;border:1px solid #ffffff18;border-radius:12px;background:#ffffff06;overflow:hidden;transition:border-color .15s}
+.how-it-works-box[open]{border-color:#5ca8e655;background:#10263c22}
+.how-it-works-box summary{padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;font-size:12px;color:#c9dcf0;list-style:none}
+.how-it-works-box summary::-webkit-details-marker{display:none}
+.explainer-icon{color:#70b6eb;font-size:14px}
+.explainer-toggle{margin-left:auto;font-size:10px;color:#7e98b0;font-weight:600}
+.how-it-works-content{padding:10px 18px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;border-top:1px solid #ffffff0d}
+.how-card{display:flex;gap:10px;font-size:11px;line-height:1.5;color:#9bb2c8}
+.how-card strong{display:block;color:#f0f5fa;font-size:11px;margin-bottom:3px}
+.how-card p{margin:0;font-size:10px;color:#8da5bc}
+.how-num{height:22px;width:22px;border-radius:6px;background:#173b5e;color:#8dc8f7;font-weight:800;display:grid;place-items:center;flex-shrink:0;font-size:11px}
+
+/* Stepper bar */
+.wizard-stepper{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:24px 0 26px;background:#ffffff06;border:1px solid #ffffff14;border-radius:12px;padding:12px 18px;overflow-x:auto}
+.wizard-step{display:flex;align-items:center;gap:9px;cursor:pointer;opacity:.5;transition:all .15s;white-space:nowrap}
+.wizard-step.active{opacity:1}
+.wizard-step.completed{opacity:.85}
+.wizard-step:hover{opacity:.9}
+.step-num{height:26px;width:26px;border-radius:50%;display:grid;place-items:center;font:700 11px "DM Sans",sans-serif;background:#ffffff15;color:#bacddf}
+.wizard-step.active .step-num{background:#70b6eb;color:#071a2a;box-shadow:0 0 10px #70b6eb44}
+.wizard-step.completed .step-num{background:#4ea47d;color:#fff}
+.step-info{display:grid}
+.step-info strong{font-size:11px;color:#f0f5fa}
+.step-info small{font-size:9px;color:#8fa7bf}
+.step-divider{flex:1;height:1px;background:#ffffff14;min-width:16px}
+
+/* Wizard Panels & Navigation */
+.wizard-panel[hidden]{display:none}
+.wizard-nav-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px;padding-top:18px;border-top:1px solid #ffffff12}
+.template-hint{display:block;margin-top:7px;color:#7e96ad;font-size:10px}
+
+/* Slide Cards Preview (Step 3) */
+.slides-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;max-height:540px;overflow-y:auto;padding:4px 4px 10px 0}
+.slide-preview-card{background:#071626;border:1px solid #234567;border-radius:10px;padding:14px 16px;aspect-ratio:16/9;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 14px #0004;position:relative}
+.slide-preview-head{display:flex;align-items:start;justify-content:space-between;gap:8px;border-bottom:1px solid #ffffff12;padding-bottom:6px;margin-bottom:8px}
+.slide-preview-title{font:700 10px Manrope,sans-serif;color:#a9d7ff;line-height:1.3;max-width:80%}
+.slide-preview-num{font-size:8px;color:#6b8aa8;font-weight:700}
+.slide-preview-body{font-size:9.5px;line-height:1.45;color:#e8f1fa;white-space:pre-wrap;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;flex:1}
+
+/* Publish Card (Step 4) */
+.publish-card{display:flex;gap:16px;align-items:center;padding:18px;background:#10263c44;border:1px solid #5ca8e633;border-radius:11px;margin:20px 0}
+.publish-card-icon{font-size:32px;height:52px;width:52px;border-radius:12px;background:#173d61;display:grid;place-items:center;flex-shrink:0}
+.publish-card-body strong{font-size:14px;color:#f3f7fb;display:block;margin-bottom:4px}
+.publish-card-body p{margin:0 0 8px;font-size:11px;color:#9eb5cb}
+.template-badge{font-size:10px;color:#91c2eb}
+.template-badge code{background:#0b1d2e;padding:2px 6px;border-radius:4px;color:#aee2ff;font-size:10px}
+.publish-progress{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px;background:#10263c55;border:1px solid #ffffff15;border-radius:9px;font-size:11px;color:#c5def5}
+.progress-spinner{height:16px;width:16px;border:2px solid #ffffff33;border-top-color:#70b6eb;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}

@@ -4,29 +4,70 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1f35">
-  <title>Worship slides · CPC New Haven</title>
+  <title>Worship Slides Wizard · CPC New Haven</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('worship_slides.static', filename='slides.css') }}">
 </head>
 <body data-csrf="{{ csrf_token }}" data-pco="{{ '1' if pco_connected else '0' }}" data-google="{{ '1' if google_connected else '0' }}" data-default-template="{{ default_template_url }}" data-default-bulletin="{{ default_bulletin_url }}">
   <header class="topbar">
-    <a class="brand" href="/slides"><span class="brand-mark">C</span><span>CPC <small>WORSHIP WORKSPACE</small></span></a>
+    <a class="brand" href="/slides"><span class="brand-mark">C</span><span>CPC <small>WORSHIP SLIDES WIZARD</small></span></a>
     <nav><a href="/">Church site</a><a href="/admin/dashboard/">Admin</a><span class="staff-pill">STAFF WORKSPACE</span></nav>
   </header>
+
   <main class="shell">
     <section class="intro">
-      <div class="eyebrow"><span></span> SUNDAY PREPARATION</div>
-      <h1>Worship, ready to share.</h1>
-      <p>Convert your Sunday bulletin Google Doc into a standardized Google Slides presentation. Review lyrics and liturgy, optionally pipe in Planning Center arrangements, and publish directly to Google Drive.</p>
+      <div class="eyebrow"><span></span> SUNDAY PREPARATION WIZARD</div>
+      <h1>Worship Slides Wizard</h1>
+      <p>Follow four simple steps to convert your Sunday bulletin into a standardized Google Slides presentation, with optional Planning Center song lyric piping.</p>
     </section>
 
+    <!-- How It Works Explainer -->
+    <details class="how-it-works-box">
+      <summary>
+        <span class="explainer-icon">✦</span>
+        <strong>How does this wizard work behind the scenes?</strong>
+        <span class="explainer-toggle">Click to learn more ▾</span>
+      </summary>
+      <div class="how-it-works-content">
+        <div class="how-card">
+          <div class="how-num">1</div>
+          <div>
+            <strong>Smart Bulletin Parser</strong>
+            <p>Reads your Google Doc bulletin (or pasted text), extracting the Order of Worship into liturgical sections (Call to Worship, Songs, Prayers, Scripture, Sermon, Announcements).</p>
+          </div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">2</div>
+          <div>
+            <strong>Planning Center Lyric Piping</strong>
+            <p>Matches songs in the bulletin with your Planning Center Services plan, pulling the exact lyrics and arrangements into your slides automatically.</p>
+          </div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">3</div>
+          <div>
+            <strong>Automatic Slide Chunking</strong>
+            <p>Song verses and readings are automatically split into 3–5 line slide blocks with verse labels so projection text remains large, readable, and comfortable for the congregation.</p>
+          </div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">4</div>
+          <div>
+            <strong>Standardized Template Cloner</strong>
+            <p>Clones your church’s master Google Slides template, preserving typography, colors, and background designs, then populates every slide ready in Google Drive.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Connection Status Bar -->
     <section class="connections" aria-label="Connected services">
       <article class="connection-card">
         <div class="connection-icon google-icon">G</div>
         <div class="connection-copy">
           <strong>Google Drive & Workspace</strong>
-          <small id="google-status">{% if google_connected %}Ready to read bulletins & create slides{% elif google_configured %}Connect to read docs & create slides{% else %}Google OAuth setup required{% endif %}</small>
+          <small id="google-status">{% if google_connected %}Connected · Ready to read bulletins & build slides{% elif google_configured %}Connect to read docs & build slides{% else %}Google OAuth setup required{% endif %}</small>
         </div>
         {% if google_connected %}
           <form method="post" action="{{ url_for('worship_slides.disconnect', provider='google') }}" class="disconnect">
@@ -43,7 +84,7 @@
         <div class="connection-icon pco-icon">P</div>
         <div class="connection-copy">
           <strong>Planning Center Services</strong>
-          <small id="pco-status">{{ 'Services connected' if pco_connected else 'Connect Services to pipe song lyrics' }}</small>
+          <small id="pco-status">{{ 'Connected · Ready to pipe arrangements & lyrics' if pco_connected else 'Connect Services to pipe song lyrics' }}</small>
         </div>
         {% if pco_connected %}
           <form method="post" action="{{ url_for('worship_slides.disconnect', provider='planning-center') }}" class="disconnect">
@@ -66,135 +107,178 @@
       <div class="notice success-notice">{{ 'Planning Center Services is connected.' if request.args.get('connected') == 'planning-center' else 'Google Drive is connected.' }}</div>
     {% endif %}
 
-    <section class="builder" aria-labelledby="builder-title">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">SERVICE BUILDER</div>
-          <h2 id="builder-title">Choose service source</h2>
+    <!-- WIZARD STEPPER -->
+    <nav class="wizard-stepper" aria-label="Wizard Steps">
+      <div class="wizard-step active" data-step="1">
+        <span class="step-num">1</span>
+        <div class="step-info">
+          <strong>Source</strong>
+          <small>Bulletin & PCO</small>
         </div>
-        <div class="step-count"><span>01</span> IMPORT <i></i><span>02</span> REVIEW <i></i><span>03</span> POPULATE</div>
       </div>
-
-      <!-- Source selection tabs -->
-      <div class="source-tabs" role="tablist">
-        <button class="source-tab active" data-tab="bulletin" type="button" role="tab">
-          <span class="tab-icon">📄</span> Bulletin (Google Doc)
-        </button>
-        <button class="source-tab" data-tab="planning-center" type="button" role="tab">
-          <span class="tab-icon">📅</span> Planning Center Plan
-        </button>
-        <button class="source-tab" data-tab="combine" type="button" role="tab">
-          <span class="tab-icon">⚡</span> Combine Bulletin + PCO
-        </button>
+      <div class="step-divider"></div>
+      <div class="wizard-step" data-step="2">
+        <span class="step-num">2</span>
+        <div class="step-info">
+          <strong>Review</strong>
+          <small>Edit Liturgy & Lyrics</small>
+        </div>
       </div>
+      <div class="step-divider"></div>
+      <div class="wizard-step" data-step="3">
+        <span class="step-num">3</span>
+        <div class="step-info">
+          <strong>Preview</strong>
+          <small>Projector Slide Cards</small>
+        </div>
+      </div>
+      <div class="step-divider"></div>
+      <div class="wizard-step" data-step="4">
+        <span class="step-num">4</span>
+        <div class="step-info">
+          <strong>Publish</strong>
+          <small>Generate Slides</small>
+        </div>
+      </div>
+    </nav>
 
-      <!-- Tab 1: Bulletin Google Doc -->
-      <div id="tab-bulletin" class="tab-panel active">
-        <div class="doc-input-grid">
-          <label class="field-label">
-            Bulletin Google Doc URL or ID
-            <input type="text" id="bulletin-url" class="text-input" value="{{ default_bulletin_url }}" placeholder="https://docs.google.com/document/d/..." />
-          </label>
-          <div class="action-btn-row">
-            <button type="button" id="fetch-bulletin-btn" class="action-button primary-btn">
-              <span>Import Bulletin Doc</span>
-              <span class="button-arrow">↓</span>
-            </button>
-            <button type="button" id="toggle-paste-btn" class="action-button quiet-btn">
-              <span>Or paste bulletin text</span>
+    <!-- WIZARD BODY -->
+    <section class="builder" aria-labelledby="builder-title">
+      <!-- ========================================== -->
+      <!-- STEP 1: SELECT SOURCE & IMPORT             -->
+      <!-- ========================================== -->
+      <div id="step-panel-1" class="wizard-panel active">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">STEP 1 OF 4</div>
+            <h2 id="builder-title">Choose Service Source</h2>
+          </div>
+        </div>
+
+        <div class="source-tabs" role="tablist">
+          <button class="source-tab active" data-tab="bulletin" type="button" role="tab">
+            <span class="tab-icon">📄</span> 1. Bulletin (Google Doc)
+          </button>
+          <button class="source-tab" data-tab="combine" type="button" role="tab">
+            <span class="tab-icon">⚡</span> 2. Combine Bulletin + Planning Center
+          </button>
+          <button class="source-tab" data-tab="planning-center" type="button" role="tab">
+            <span class="tab-icon">📅</span> 3. Planning Center Only
+          </button>
+        </div>
+
+        <!-- Tab 1: Bulletin Google Doc -->
+        <div id="tab-bulletin" class="tab-panel active">
+          <div class="doc-input-grid">
+            <label class="field-label">
+              Bulletin Google Doc URL or ID
+              <input type="text" id="bulletin-url" class="text-input" value="{{ default_bulletin_url }}" placeholder="https://docs.google.com/document/d/..." />
+            </label>
+            <div class="action-btn-row">
+              <button type="button" id="fetch-bulletin-btn" class="action-button primary-btn">
+                <span>Import Bulletin & Continue</span>
+                <span class="button-arrow">→</span>
+              </button>
+              <button type="button" id="toggle-paste-btn" class="action-button quiet-btn">
+                <span>Or paste bulletin text</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="paste-box" class="paste-box" hidden>
+            <label class="field-label">
+              Paste bulletin text (Order of Worship)
+              <textarea id="bulletin-paste-text" rows="6" placeholder="Paste your Sunday bulletin text here (Call to Worship, Hymns, Scripture, Sermon, etc.)..."></textarea>
+            </label>
+            <button type="button" id="parse-pasted-btn" class="action-button secondary-btn">
+              <span>Parse Pasted Text & Continue →</span>
             </button>
           </div>
         </div>
 
-        <div id="paste-box" class="paste-box" hidden>
-          <label class="field-label">
-            Paste bulletin text (Order of Worship)
-            <textarea id="bulletin-paste-text" rows="6" placeholder="Paste your Sunday bulletin text here (Call to Worship, Hymns, Scripture, Sermon, etc.)..."></textarea>
-          </label>
-          <button type="button" id="parse-pasted-btn" class="action-button secondary-btn">
-            <span>Parse Pasted Text</span>
+        <!-- Tab 2: Combine Bulletin + Planning Center -->
+        <div id="tab-combine" class="tab-panel" hidden>
+          <p class="tab-hint">Import liturgy and readings from your Google Doc bulletin, and automatically pull full song lyrics and arrangements from Planning Center.</p>
+          <div class="combine-grid">
+            <label class="field-label">
+              Bulletin Google Doc
+              <input type="text" id="combine-bulletin-url" class="text-input" value="{{ default_bulletin_url }}" />
+            </label>
+            <div class="selectors combine-selectors">
+              <label class="field-label">
+                Planning Center Service Type
+                <select id="combine-service-type" {% if not pco_connected %}disabled{% endif %}>
+                  <option value="">{% if pco_connected %}Loading service types…{% else %}Connect Planning Center first{% endif %}</option>
+                </select>
+              </label>
+              <label class="field-label">
+                Planning Center Plan (e.g. Sunday Worship)
+                <select id="combine-service-plan" disabled>
+                  <option value="">Choose a service type first</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <button type="button" id="combine-btn" class="action-button primary-btn" style="margin-top: 16px;">
+            <span>Import & Pipe Planning Center Lyrics →</span>
+            <span class="button-arrow">⚡</span>
           </button>
         </div>
-      </div>
 
-      <!-- Tab 2: Planning Center Services -->
-      <div id="tab-planning-center" class="tab-panel" hidden>
-        <div class="selectors">
-          <label class="field-label">
-            Service type
-            <select id="service-type" {% if not pco_connected %}disabled{% endif %}>
-              <option value="">{% if pco_connected %}Loading service types…{% else %}Connect Planning Center first{% endif %}</option>
-            </select>
-          </label>
-          <label class="field-label">
-            Service plan
-            <select id="service-plan" disabled>
-              <option value="">Choose a service type first</option>
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <!-- Tab 3: Combine Bulletin + Planning Center -->
-      <div id="tab-combine" class="tab-panel" hidden>
-        <p class="tab-hint">Import liturgy and readings from your bulletin Google Doc, and automatically pipe in song lyrics and arrangements from Planning Center.</p>
-        <div class="combine-grid">
-          <label class="field-label">
-            Bulletin Google Doc
-            <input type="text" id="combine-bulletin-url" class="text-input" value="{{ default_bulletin_url }}" />
-          </label>
-          <div class="selectors combine-selectors">
+        <!-- Tab 3: Planning Center Only -->
+        <div id="tab-planning-center" class="tab-panel" hidden>
+          <p class="tab-hint">Directly load an existing Sunday service plan from Planning Center Services.</p>
+          <div class="selectors">
             <label class="field-label">
-              PCO Service type
-              <select id="combine-service-type" {% if not pco_connected %}disabled{% endif %}>
+              Service Type
+              <select id="service-type" {% if not pco_connected %}disabled{% endif %}>
                 <option value="">{% if pco_connected %}Loading service types…{% else %}Connect Planning Center first{% endif %}</option>
               </select>
             </label>
             <label class="field-label">
-              PCO Service plan
-              <select id="combine-service-plan" disabled>
+              Service Plan
+              <select id="service-plan" disabled>
                 <option value="">Choose a service type first</option>
               </select>
             </label>
           </div>
         </div>
-        <button type="button" id="combine-btn" class="action-button primary-btn" style="margin-top: 14px;">
-          <span>Import Bulletin & Pipe PCO Lyrics</span>
-          <span class="button-arrow">⚡</span>
-        </button>
+
+        <!-- Template selection setting -->
+        <div class="template-config-row">
+          <label class="field-label">
+            Standardized Google Slides Template
+            <div class="template-input-wrap">
+              <input type="text" id="template-url" class="text-input template-input" value="{{ default_template_url }}" placeholder="https://docs.google.com/presentation/d/..." />
+              <a id="preview-template-link" href="{{ default_template_url }}" target="_blank" rel="noopener" class="preview-template-link" title="Open template in Google Slides">
+                Open Template ↗
+              </a>
+            </div>
+          </label>
+          <small class="template-hint">CPC standard branded master template (fonts, dark blue theme, and slide dimensions will be duplicated).</small>
+        </div>
       </div>
 
-      <!-- Template Configuration Row -->
-      <div class="template-config-row">
-        <label class="field-label">
-          Standardized Google Slides Template
-          <div class="template-input-wrap">
-            <input type="text" id="template-url" class="text-input template-input" value="{{ default_template_url }}" placeholder="https://docs.google.com/presentation/d/..." />
-            <a id="preview-template-link" href="{{ default_template_url }}" target="_blank" rel="noopener" class="preview-template-link" title="Open template in Google Slides">
-              Open Template ↗
-            </a>
-          </div>
-        </label>
-      </div>
-
-      <!-- Empty State -->
-      <div id="empty-state" class="empty-state">
-        <div class="empty-icon">↗</div>
-        <strong>Ready to build your Sunday slides</strong>
-        <span>Click <em>Import Bulletin Doc</em> or select a Planning Center plan above to begin.</span>
-      </div>
-
-      <!-- Review / Editor Section -->
-      <div id="editor" hidden>
-        <div class="editor-heading">
+      <!-- ========================================== -->
+      <!-- STEP 2: REVIEW & EDIT CONTENT              -->
+      <!-- ========================================== -->
+      <div id="step-panel-2" class="wizard-panel" hidden>
+        <div class="section-head">
           <div>
-            <label class="field-label" for="document-title">Presentation Title</label>
-            <input id="document-title" class="title-input" maxlength="160" placeholder="Sunday Worship · October 18">
+            <div class="eyebrow">STEP 2 OF 4</div>
+            <h2>Review Service Items & Liturgy</h2>
           </div>
           <div class="item-summary">
             <b id="item-count">0</b><span>items</span>
             <span class="summary-sep">·</span>
-            <b id="slide-count">0</b><span>slides</span>
+            <b id="slide-count">0</b><span>slides estimated</span>
+          </div>
+        </div>
+
+        <div class="editor-heading">
+          <div style="flex: 1;">
+            <label class="field-label" for="document-title">Presentation Title</label>
+            <input id="document-title" class="title-input" maxlength="160" placeholder="Sunday Worship · October 18">
           </div>
         </div>
 
@@ -210,9 +294,68 @@
           </button>
         </div>
 
+        <div class="wizard-nav-row">
+          <button type="button" class="action-button quiet-btn" data-goto-step="1">
+            <span>← Back to Source</span>
+          </button>
+          <button type="button" class="action-button primary-btn" data-goto-step="3">
+            <span>Next: Preview Slides →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- STEP 3: PREVIEW SLIDES CARDS               -->
+      <!-- ========================================== -->
+      <div id="step-panel-3" class="wizard-panel" hidden>
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">STEP 3 OF 4</div>
+            <h2>Slide Deck Preview</h2>
+          </div>
+          <div class="item-summary">
+            <b id="preview-total-slides">0</b><span>slides to generate</span>
+          </div>
+        </div>
+        <p class="tab-hint">Below is how each slide will be projected. Long songs and readings have been segmented into clean, readable cards.</p>
+
+        <div id="slides-preview-grid" class="slides-preview-grid"></div>
+
+        <div class="wizard-nav-row">
+          <button type="button" class="action-button quiet-btn" data-goto-step="2">
+            <span>← Back to Review Items</span>
+          </button>
+          <button type="button" class="action-button primary-btn" data-goto-step="4">
+            <span>Next: Publish to Google Drive →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- STEP 4: PUBLISH TO GOOGLE DRIVE            -->
+      <!-- ========================================== -->
+      <div id="step-panel-4" class="wizard-panel" hidden>
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">STEP 4 OF 4</div>
+            <h2>Generate & Publish</h2>
+          </div>
+        </div>
+
+        <div class="publish-card">
+          <div class="publish-card-icon">📽</div>
+          <div class="publish-card-body">
+            <strong id="publish-summary-title">Sunday Worship Service</strong>
+            <p id="publish-summary-desc">Ready to generate 0 slides using the standardized CPC template.</p>
+            <div class="template-badge">
+              <span>Template:</span> <code id="publish-template-label">15zT3vmtW0ZYXYgm57qIkOAaLcNODjuNYQeur48w_oNw</code>
+            </div>
+          </div>
+        </div>
+
         <div class="publish-row">
           <div class="output-choice">
-            <span class="field-label">CREATE IN GOOGLE DRIVE</span>
+            <span class="field-label">DESTINATIONS IN GOOGLE DRIVE</span>
             <label class="check-option">
               <input type="checkbox" id="make-slides" checked>
               <span class="fake-check"></span>
@@ -221,7 +364,7 @@
             <label class="check-option">
               <input type="checkbox" id="make-doc">
               <span class="fake-check"></span>
-              Google Doc
+              Google Doc (Order of Worship outline)
             </label>
           </div>
           <button id="create-button" class="create-button" {% if not google_connected %}disabled{% endif %}>
@@ -229,15 +372,29 @@
             <span class="button-arrow">→</span>
           </button>
         </div>
+
         {% if not google_connected %}
-          <p class="inline-hint">Connect Google Drive above to populate the slides in your account.</p>
+          <p class="inline-hint">Connect Google Drive at the top of the page to populate the slides in your account.</p>
         {% endif %}
+
+        <div id="publish-progress" class="publish-progress" hidden>
+          <div class="progress-spinner"></div>
+          <span id="publish-progress-text">Cloning standardized template and populating slides…</span>
+        </div>
+
         <div id="created-links" class="created-links" hidden></div>
+
+        <div class="wizard-nav-row" style="margin-top: 25px;">
+          <button type="button" class="action-button quiet-btn" data-goto-step="3">
+            <span>← Back to Slide Preview</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    <footer>Worship workspace · Bulletin content is parsed and reviewed here before slides are populated in Google Drive.</footer>
+    <footer>Worship Slides Wizard · Christ Presbyterian Church in New Haven</footer>
   </main>
+
   <script src="{{ url_for('worship_slides.static', filename='slides.js') }}" defer></script>
 </body>
 </html>

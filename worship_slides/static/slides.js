@@ -4,7 +4,17 @@
   const isPco = body.dataset.pco === '1';
   const isGoogle = body.dataset.google === '1';
 
-  // Tabs & panels
+  // Wizard state
+  let currentStep = 1;
+  const wizardSteps = document.querySelectorAll('.wizard-step');
+  const wizardPanels = {
+    1: document.querySelector('#step-panel-1'),
+    2: document.querySelector('#step-panel-2'),
+    3: document.querySelector('#step-panel-3'),
+    4: document.querySelector('#step-panel-4'),
+  };
+
+  // Tabs within Step 1
   const tabs = document.querySelectorAll('.source-tab');
   const panels = {
     bulletin: document.querySelector('#tab-bulletin'),
@@ -32,9 +42,7 @@
   const templateUrlInput = document.querySelector('#template-url');
   const previewTemplateLink = document.querySelector('#preview-template-link');
 
-  // Editor elements
-  const empty = document.querySelector('#empty-state');
-  const editor = document.querySelector('#editor');
+  // Step 2 Review elements
   const itemList = document.querySelector('#items');
   const notice = document.querySelector('#notice');
   const docTitleInput = document.querySelector('#document-title');
@@ -42,7 +50,18 @@
   const slideCountEl = document.querySelector('#slide-count');
   const addItemBtn = document.querySelector('#add-item-btn');
   const pipeBanner = document.querySelector('#pipe-banner');
+
+  // Step 3 Slide Preview elements
+  const slidesPreviewGrid = document.querySelector('#slides-preview-grid');
+  const previewTotalSlidesEl = document.querySelector('#preview-total-slides');
+
+  // Step 4 Publish elements
+  const publishSummaryTitle = document.querySelector('#publish-summary-title');
+  const publishSummaryDesc = document.querySelector('#publish-summary-desc');
+  const publishTemplateLabel = document.querySelector('#publish-template-label');
   const createBtn = document.querySelector('#create-button');
+  const publishProgress = document.querySelector('#publish-progress');
+  const publishProgressText = document.querySelector('#publish-progress-text');
   const createdLinks = document.querySelector('#created-links');
 
   let currentItems = [];
@@ -86,7 +105,55 @@
     form.addEventListener('formdata', (event) => event.formData.append('csrf_token', csrf));
   });
 
-  // Tab switching
+  // Wizard Step Transition
+  function goToStep(step) {
+    if (step > 1 && !currentItems.length) {
+      showNotice('Please import a bulletin or Planning Center plan first.');
+      return;
+    }
+    currentStep = step;
+    hideNotice();
+
+    // Update stepper navigation
+    wizardSteps.forEach((s) => {
+      const sNum = parseInt(s.dataset.step, 10);
+      s.classList.remove('active', 'completed');
+      if (sNum === step) s.classList.add('active');
+      else if (sNum < step) s.classList.add('completed');
+    });
+
+    // Update panels
+    Object.entries(wizardPanels).forEach(([num, panel]) => {
+      if (panel) panel.hidden = parseInt(num, 10) !== step;
+    });
+
+    // Specific panel actions
+    if (step === 3) {
+      renderSlideCardsPreview();
+    } else if (step === 4) {
+      updatePublishCard();
+    }
+
+    window.scrollTo({ top: 120, behavior: 'smooth' });
+  }
+
+  // Stepper click handlers
+  wizardSteps.forEach((s) => {
+    s.addEventListener('click', () => {
+      const targetStep = parseInt(s.dataset.step, 10);
+      goToStep(targetStep);
+    });
+  });
+
+  // Navigation button handlers
+  document.querySelectorAll('[data-goto-step]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const target = parseInt(btn.dataset.gotoStep, 10);
+      goToStep(target);
+    });
+  });
+
+  // Tab switching in Step 1
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       tabs.forEach((t) => t.classList.remove('active'));
@@ -114,26 +181,49 @@
     });
   }
 
-  // Update slide count indicator
-  function calculateTotalSlides() {
-    let total = 0;
+  // Helper: flatten items into discrete slide objects
+  function getAllSlideObjects() {
+    const slides = [];
     currentItems.forEach((item) => {
       if (item.slides && item.slides.length) {
-        total += item.slides.length;
+        item.slides.forEach((s) => {
+          slides.push({
+            title: s.title || item.title,
+            content: s.content || '',
+            category: item.category || 'liturgy',
+          });
+        });
       } else {
         const lines = (item.content || '').split('\n').filter((l) => l.trim().length > 0);
-        total += Math.max(1, Math.ceil(lines.length / 5));
+        const chunkSize = 5;
+        if (!lines.length) {
+          slides.push({ title: item.title, content: '', category: item.category });
+        } else {
+          for (let i = 0; i < lines.length; i += chunkSize) {
+            slides.push({
+              title: item.title,
+              content: lines.slice(i, i + chunkSize).join('\n'),
+              category: item.category,
+            });
+          }
+        }
       }
     });
-    return total;
+    return slides;
+  }
+
+  function calculateTotalSlides() {
+    return getAllSlideObjects().length;
   }
 
   function updateSummary() {
-    itemCountEl.textContent = currentItems.length;
-    slideCountEl.textContent = calculateTotalSlides();
+    const totalSlides = calculateTotalSlides();
+    if (itemCountEl) itemCountEl.textContent = currentItems.length;
+    if (slideCountEl) slideCountEl.textContent = totalSlides;
+    if (previewTotalSlidesEl) previewTotalSlidesEl.textContent = totalSlides;
   }
 
-  // Render items into review editor
+  // Step 2: Render Items list in Review Editor
   function renderItems(rows, titleText = '') {
     currentItems = rows.map((row) => ({
       title: row.title || '',
@@ -207,7 +297,7 @@
       contentTextarea.placeholder = 'Add or edit lyrics, readings, prayers, and service notes…';
       contentTextarea.addEventListener('input', () => {
         currentItems[index].content = contentTextarea.value;
-        currentItems[index].slides = null; // Re-calculate on custom edit
+        currentItems[index].slides = null; // Invalidate cached slides on manual edits
         updateSummary();
         const freshCount = Math.max(1, Math.ceil((contentTextarea.value.split('\n').filter(l => l.trim()).length || 1) / 5));
         slideBadge.textContent = `${freshCount} ${freshCount === 1 ? 'slide' : 'slides'}`;
@@ -224,8 +314,55 @@
     }
 
     updateSummary();
-    editor.hidden = false;
-    empty.hidden = true;
+  }
+
+  // Step 3: Render visual slide projector cards
+  function renderSlideCardsPreview() {
+    const slides = getAllSlideObjects();
+    slidesPreviewGrid.replaceChildren();
+
+    slides.forEach((s, idx) => {
+      const card = document.createElement('div');
+      card.className = 'slide-preview-card';
+
+      const head = document.createElement('div');
+      head.className = 'slide-preview-head';
+
+      const title = document.createElement('div');
+      title.className = 'slide-preview-title';
+      title.textContent = s.title;
+
+      const num = document.createElement('div');
+      num.className = 'slide-preview-num';
+      num.textContent = `SLIDE ${String(idx + 1).padStart(2, '0')}`;
+
+      head.append(title, num);
+
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'slide-preview-body';
+      bodyEl.textContent = s.content || '(Title slide / Instrumental)';
+
+      card.append(head, bodyEl);
+      slidesPreviewGrid.append(card);
+    });
+
+    if (previewTotalSlidesEl) previewTotalSlidesEl.textContent = slides.length;
+  }
+
+  // Step 4: Update Publish Card
+  function updatePublishCard() {
+    const title = docTitleInput.value || 'Sunday Worship Service';
+    const total = calculateTotalSlides();
+    const tplUrl = (templateUrlInput ? templateUrlInput.value : '').trim();
+
+    if (publishSummaryTitle) publishSummaryTitle.textContent = title;
+    if (publishSummaryDesc) {
+      publishSummaryDesc.textContent = `Ready to generate ${total} slides using the standardized CPC template.`;
+    }
+    if (publishTemplateLabel) {
+      const tMatch = tplUrl.match(/\/d\/([a-zA-Z0-9_-]{20,})/) || [null, tplUrl || 'Standardized CPC Template'];
+      publishTemplateLabel.textContent = tMatch[1];
+    }
   }
 
   // Add Item button
@@ -259,12 +396,13 @@
         const data = await postJson('/slides/api/parse-bulletin', { doc_id_or_url: docUrl });
         pipeBanner.hidden = true;
         renderItems(data.items, data.title || 'Sunday Worship Service');
+        goToStep(2); // Automatically advance to Step 2
         showNotice(`Imported ${data.items.length} items (${data.slide_count} slides) from bulletin. Review below before creating slides.`, true);
       } catch (err) {
         showNotice(err.message);
       } finally {
         fetchBulletinBtn.disabled = false;
-        fetchBulletinBtn.querySelector('span:first-child').textContent = 'Import Bulletin Doc';
+        fetchBulletinBtn.querySelector('span:first-child').textContent = 'Import Bulletin & Continue';
       }
     });
   }
@@ -285,12 +423,13 @@
         const data = await postJson('/slides/api/parse-bulletin', { text });
         pipeBanner.hidden = true;
         renderItems(data.items, 'Sunday Worship Service');
+        goToStep(2); // Automatically advance to Step 2
         showNotice(`Parsed ${data.items.length} items (${data.slide_count} slides) from pasted text.`, true);
       } catch (err) {
         showNotice(err.message);
       } finally {
         parsePastedBtn.disabled = false;
-        parsePastedBtn.querySelector('span').textContent = 'Parse Pasted Text';
+        parsePastedBtn.querySelector('span').textContent = 'Parse Pasted Text & Continue →';
       }
     });
   }
@@ -345,13 +484,14 @@
   // PCO-only tab plan load
   setupPlanDropdown(types, plans, async () => {
     hideNotice();
-    if (!plans.value) { editor.hidden = true; empty.hidden = false; return; }
+    if (!plans.value) return;
     plans.disabled = true;
     try {
       const rows = await getJson(`/slides/api/plan/${encodeURIComponent(types.value)}/${encodeURIComponent(plans.value)}`);
       pipeBanner.hidden = true;
       const planLabel = plans.options[plans.selectedIndex].text.split(' · ')[0];
       renderItems(rows, `Worship Service · ${planLabel}`);
+      goToStep(2); // Automatically advance to Step 2
       showNotice('Planning Center plan loaded. Review items before creating files.', true);
     } catch (err) {
       showNotice(err.message);
@@ -396,12 +536,13 @@
         pipeBanner.hidden = false;
         pipeBanner.textContent = `Piped lyrics and arrangements from Planning Center into ${pipeData.synced_count || 0} songs.`;
         renderItems(pipeData.items, bulletinData.title || 'Sunday Worship Service');
+        goToStep(2); // Advance to Step 2
         showNotice(`Combined bulletin & Planning Center: ${pipeData.items.length} items (${pipeData.slide_count} slides) ready.`, true);
       } catch (err) {
         showNotice(err.message);
       } finally {
         combineBtn.disabled = false;
-        combineBtn.querySelector('span:first-child').textContent = 'Import Bulletin & Pipe PCO Lyrics';
+        combineBtn.querySelector('span:first-child').textContent = 'Import & Pipe Planning Center Lyrics →';
       }
     });
   }
@@ -421,7 +562,8 @@
 
       const templateId = (templateUrlInput ? templateUrlInput.value : '').trim();
       button.disabled = true;
-      button.querySelector('span:first-child').textContent = 'Populating Slides…';
+      publishProgress.hidden = false;
+      publishProgressText.textContent = 'Cloning standardized template and populating slides in Google Drive…';
       hideNotice();
 
       try {
@@ -432,6 +574,7 @@
           template_id: templateId,
         });
 
+        publishProgress.hidden = true;
         createdLinks.replaceChildren();
         createdLinks.hidden = false;
 
@@ -454,10 +597,10 @@
 
         showNotice('Your slides are populated and ready in Google Drive!', true);
       } catch (err) {
+        publishProgress.hidden = true;
         showNotice(err.message);
       } finally {
         button.disabled = false;
-        button.querySelector('span:first-child').textContent = 'Populate Google Slides';
       }
     });
   }
