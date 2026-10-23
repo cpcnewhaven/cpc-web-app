@@ -28,13 +28,18 @@
         },
         {
           "number": "05",
-          "title": "The Word & The Lord’s Supper",
-          "description": "The preaching of the Word, the purpose and vision of the Supper, and their communion in Christ."
+          "title": "Hearing from Christ in Communal Worship",
+          "description": "How God speaks to his people through his Word in communal worship."
         },
         {
           "number": "06",
-          "title": "Coronation & Benediction",
-          "description": "Christ’s kingship, biblical blessing, course review, and sending the church out in mission."
+          "title": "The Sacrament of Communal Worship",
+          "description": "The Lord’s Supper as the visible Word and a means of grace, nourishing communion with Christ."
+        },
+        {
+          "number": "07",
+          "title": "The Conclusion of Communal Worship",
+          "description": "Coronating Christ our King, the benediction, overall review of the gospel arc and liturgy, and living the Sabbath."
         }
       ],
       "curriculum_url": "",
@@ -96,8 +101,56 @@
           "description": "What happens when people enter God’s presence? Examining the biblical patterns of worship (Isaiah 6, 1 Kings 8, Nehemiah 8–11, Revelation 4–5), the gospel arc (Praising God’s Glory, Confession of Sin & Pardon, God Speaks, Communion with Christ, Coronation of Christ our King), and how liturgy trains our hearts for communion with the living God.",
           "resources": [
             {
+              "label": "Listen on Spotify",
+              "url": "https://open.spotify.com/episode/1yDXXGZLpkPjR8Ztk3h54P?si=lD1u3_RPR5OqjkwBp0J6GA"
+            },
+            {
               "label": "Handout #4 (PDF)",
               "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_4_Structure_2026.pdf"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Hearing from Christ in Communal Worship",
+          "date": "October 11, 2026",
+          "description": "How God speaks to his people through his Word in communal worship, and how communication from God becomes communion with God.",
+          "resources": [
+            {
+              "label": "Listen on Spotify",
+              "url": "https://open.spotify.com/episode/3wpdvH6wCRdmQ2I8Efq4wf?si=fxPLM1ZtRHq6wZ8C2ff7Jw"
+            },
+            {
+              "label": "Handout #5 (PDF)",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_5_Sermon_2026.pdf"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "title": "The Sacrament of Communal Worship",
+          "date": "October 18, 2026",
+          "description": "Explore the Lord’s Supper as the visible Word and a means of grace, and how the sacrament nourishes the church’s communion with Christ.",
+          "resources": [
+            {
+              "label": "Listen on Spotify",
+              "url": "https://open.spotify.com/episode/18AqfEQVnQfDS1gxKDRYDp?si=zzrf5Fi7T02w-JZenC3s-w"
+            },
+            {
+              "label": "Handout #6 (PDF)",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_6_Sacrament_2026.pdf"
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "title": "The Conclusion of Communal Worship",
+          "date": "October 25, 2026",
+          "description": "Coronating Christ our King, the biblical blessing of the benediction, an overall review of the gospel arc and liturgy, and poems on the Lord’s Day.",
+          "resources": [
+            {
+              "label": "Handout #7 (PDF)",
+              "url": "https://cpcnewhaven.org/sunday-studies/handouts/worship/Worship_SS_7_Conclusion_2026.pdf"
             }
           ]
         }

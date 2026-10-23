@@ -1529,17 +1529,29 @@ def teaching_series_detail(slug):
     return render_template('teaching-series-detail.html', course=course, courses=catalog)
 
 
+@app.route('/sunday-studies/<slug>')
 @app.route('/sunday-studies/<slug>.html')
+@app.route('/adult-studies/<slug>')
+@app.route('/classes/<slug>')
 def legacy_adult_study(slug):
     """Keep existing Adult Sunday Studies URLs working after the redesign."""
     with open(os.path.join(os.path.dirname(__file__), 'data', 'adult_sunday_studies.json'), encoding='utf-8') as f:
         slugs = {item['slug'] for item in json.load(f).get('courses', [])}
     if slug not in slugs:
-        abort(404)
+        series = next((item for item in TeachingSeries.query.filter_by(active=True).filter(
+            _not_expired(TeachingSeries)
+        ).all() if re.sub(r'[^a-z0-9]+', '-', item.title.casefold()).strip('-') == slug), None)
+        if not series:
+            abort(404)
     return redirect(url_for('teaching_series_detail', slug=slug), code=301)
 
 
 @app.route('/pastor-teaching')
+@app.route('/adult-sunday-school')
+@app.route('/adult-sunday-school.html')
+@app.route('/sunday-studies')
+@app.route('/adult-studies')
+@app.route('/classes')
 def pastor_teaching():
     """Legacy alias for the unified Adult Sunday Studies directory."""
     return redirect(url_for('teaching_series'), code=301)

@@ -16,8 +16,10 @@ class ProductionConfig(Config):
 
 # --- Podcast + cache config ---
 PODCAST_FEEDS = {
-    "cpc": "https://anchor.fm/s/4c59256c/podcast/rss",
-    "beyond": "https://anchor.fm/s/4c59256c/podcast/rss",
+    # Spotify for Podcasters/Anchor RSS feeds can be updated in the hosting
+    # dashboard. Keep the deployment value overridable without a code change.
+    "cpc": os.getenv("CPC_PODCAST_RSS_URL", "https://anchor.fm/s/4c59256c/podcast/rss"),
+    "beyond": os.getenv("BEYOND_PODCAST_RSS_URL", "https://anchor.fm/s/4c59256c/podcast/rss"),
 }
 CACHE_TYPE = "SimpleCache"
 CACHE_DEFAULT_TIMEOUT = 900  # 15 minutes

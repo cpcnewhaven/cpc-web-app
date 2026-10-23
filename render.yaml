@@ -41,7 +41,7 @@ services:
     env: python
     runtime: python
     plan: starter
-    schedule: "0 */6 * * *"
+    schedule: "*/30 * * * *"
     buildCommand: pip install -r requirements.txt
     startCommand: python scripts/podcasts/fetch_and_sync.py
     envVars:
@@ -49,3 +49,5 @@ services:
         fromDatabase:
           name: cpc-newhaven-db
           property: connectionString
+      - key: BEYOND_PODCAST_RSS_URL
+        sync: false

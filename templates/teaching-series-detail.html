@@ -64,7 +64,7 @@
     {% if course.description and course.description != course.summary %}<div class="study-description"><p>{{ course.description }}</p>{% if course.intro_points %}<ul>{% for point in course.intro_points %}<li>{{ point }}</li>{% endfor %}</ul>{% endif %}</div>{% endif %}
     {% if course.image_url %}<img class="study-detail-image" src="{{ course.image_url }}" alt="{{ course.title }}" loading="lazy">{% endif %}
     {% if course.roadmap %}
-    <h2 class="study-sessions-heading">A six-week roadmap</h2>
+    <h2 class="study-sessions-heading">{% if course.roadmap|length > 0 %}A {{ course.roadmap|length }}-week roadmap{% else %}Course roadmap{% endif %}</h2>
     <div class="study-roadmap">
         {% for lesson in course.roadmap %}
         <article class="study-roadmap__item"><span class="study-roadmap__number">{{ lesson.number }}</span><div><h3>{{ lesson.title }}</h3>{% if lesson.description %}<p>{{ lesson.description }}</p>{% endif %}</div></article>
