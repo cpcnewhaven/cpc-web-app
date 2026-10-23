@@ -525,6 +525,19 @@
         text-decoration: none;
     }
 
+    .home-highlights .highlight-signup-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        padding: 0 1.25rem 1.25rem;
+    }
+    .home-highlights .highlight-signup-actions a {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: center;
+    }
+    .home-highlights .highlight-card__link { flex: 1; height: auto; }
+
     .home-highlights .highlight-card__media {
         position: relative;
         height: 140px;
@@ -1569,6 +1582,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/announcement-actions.js') }}"></script>
 <script>
     (function () {
         // ----- Fading rotating banner -----
@@ -1781,6 +1795,10 @@
                 '<div class="highlight-card__cta"><span>View details</span> <i class="fas fa-arrow-right" aria-hidden="true"></i></div>' +
                 '</div>';
             card.innerHTML = '<a class="highlight-card__link" href="' + detailUrl + '" aria-label="View details: ' + (h.title || 'CPC update') + '">' + mediaHtml + contentHtml + '</a>';
+            var actions = document.createElement('div');
+            actions.className = 'highlight-signup-actions';
+            CPCAnnouncementActions.append(actions, h, 'highlight-events-button');
+            if (actions.childElementCount) card.appendChild(actions);
             return card;
         }
 

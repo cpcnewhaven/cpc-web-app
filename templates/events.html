@@ -688,6 +688,7 @@ body.theme-white .events-hero p { color: var(--page-muted); }
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/announcement-actions.js') }}"></script>
 <script src="{{ url_for('static', filename='js/events.js') }}"></script>
 <script>
 (function () {

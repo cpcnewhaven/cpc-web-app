@@ -22,8 +22,7 @@ async function loadEvents() {
 
 async function loadEventCategories() {
   try {
-    const response = await fetch('/api/events');
-    const data = await response.json();
+    const data = await fetchUpcomingEvents();
 
     // Extract unique categories from events
     const categories = new Set();
@@ -84,8 +83,7 @@ async function searchEvents() {
 
   try {
     // Fetch from /api/events (Google Calendar)
-    const response = await fetch('/api/events');
-    const data = await response.json();
+    const data = await fetchUpcomingEvents();
 
     // Normalize Google Calendar events to search results format
     let events = (data.events || []).map(ev => ({
@@ -97,7 +95,8 @@ async function searchEvents() {
       location: ev.location || '',
       url: ev.url || '',
       end: ev.end || '',
-      imageUrl: ev.imageUrl || ev.image_url || ''
+      imageUrl: ev.imageUrl || ev.image_url || '',
+      announcement: ev.announcement || null
     }));
 
     // Apply filters
@@ -152,6 +151,27 @@ async function searchEvents() {
   }
 }
 
+async function fetchUpcomingEvents() {
+  const results = await Promise.allSettled(['/api/events', '/api/event-announcements'].map(async url => {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Unable to load events');
+    return response.json();
+  }));
+  if (results.every(result => result.status === 'rejected')) throw new Error('Unable to load events');
+  const calendar = results[0].status === 'fulfilled' ? results[0].value.events || [] : [];
+  const announcements = results[1].status === 'fulfilled' ? results[1].value.announcements || [] : [];
+  const key = (title, day) => String(title || '').toLowerCase().replace(/[^a-z0-9]/g, '') + ':' + String(day || '').slice(0, 10);
+  const announcementKeys = new Set(announcements.map(a => key(a.title, a.eventDate)));
+  const events = calendar.filter(ev => !announcementKeys.has(key(ev.title, ev.start)));
+  announcements.forEach(a => {
+    const doc = new DOMParser().parseFromString(a.description || '', 'text/html');
+    doc.querySelectorAll('p, br').forEach(el => el.appendChild(doc.createTextNode(' ')));
+    events.push({id: a.id, title: a.title, start: a.eventDate, description: doc.body.textContent,
+      category: a.category || 'General', imageUrl: a.featuredImage, announcement: a});
+  });
+  return {events};
+}
+
 function createEventListContainer() {
   const root = document.getElementById('events-app');
   const list = document.createElement('div');
@@ -185,7 +205,7 @@ function renderEventResults(events, container) {
 
   // Helper functions
   function monthLabel(d) { return d.toLocaleString(undefined, { month: 'long', year: 'numeric' }); }
-  function parseDate(iso) { const d = new Date(iso); return isNaN(d.getTime()) ? null : d; }
+  function parseDate(iso) { const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso + 'T12:00:00' : iso); return isNaN(d.getTime()) ? null : d; }
   function displayTag(cat) {
     if (!cat) return 'General';
     return String(cat)
@@ -199,8 +219,12 @@ function renderEventResults(events, container) {
   function dateRange(ev) {
     const s = parseDate(ev.date);
     if (!s) return '';
-    const opts = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
-    return s.toLocaleString(undefined, opts);
+    const opts = { weekday: 'short', month: 'short', day: 'numeric' };
+    if (ev.announcement) {
+      const a = ev.announcement;
+      return s.toLocaleDateString(undefined, opts) + (a.eventStartTime ? ' • ' + a.eventStartTime : '') + (a.eventEndTime ? ' – ' + a.eventEndTime : '');
+    }
+    return s.toLocaleString(undefined, {...opts, hour: 'numeric', minute: '2-digit'});
   }
   function googleCalendarUrl(ev) {
     const start = parseDate(ev.date);
@@ -275,17 +299,18 @@ function renderEventResults(events, container) {
         </div>
         ${ev.description ? `<p class="evt-desc">${formatEventDescription(ev.description, ev.id)}</p>` : ''}
         <div class="evt-actions evt-actions--calendar">
-          <details class="evt-calendar-menu">
+          ${ev.announcement ? `<a class="btn" href="/announcement/${encodeURIComponent(ev.id)}">View details</a>` : `<details class="evt-calendar-menu">
             <summary><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add to Calendar <i class="fas fa-chevron-down" aria-hidden="true"></i></summary>
             <div class="evt-calendar-menu__panel">
               ${googleUrl ? `<a target="_blank" rel="noopener" href="${googleUrl}"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Google Calendar</a>` : ''}
               ${icsUrl ? `<a href="${icsUrl}"><i class="fas fa-calendar-check" aria-hidden="true"></i> Apple Calendar / Outlook</a>` : ''}
               ${ev.url ? `<a target="_blank" rel="noopener" href="${ev.url}"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> Event details</a>` : ''}
             </div>
-          </details>
+          </details>`}
         </div>
         </div>
       `;
+      if (ev.announcement) CPCAnnouncementActions.append(card.querySelector('.evt-actions'), ev.announcement);
       container.appendChild(card);
     }
   }
