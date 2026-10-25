@@ -520,7 +520,7 @@
     .home-highlights .highlight-card__link {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        height: auto;
         color: inherit;
         text-decoration: none;
     }
@@ -528,7 +528,8 @@
     .home-highlights .highlight-signup-actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.65rem;
+        gap: 0.5rem;
+        margin-top: auto;
         padding: 0 1.25rem 1.25rem;
     }
     .home-highlights .highlight-signup-actions a {
@@ -536,7 +537,11 @@
         overflow-wrap: anywhere;
         text-align: center;
     }
-    .home-highlights .highlight-card__link { flex: 1; height: auto; }
+    .home-highlights .highlight-signup-actions .highlight-events-button {
+        padding: 0.55rem 0.85rem;
+        font-size: 0.84rem;
+        box-shadow: none;
+    }
 
     .home-highlights .highlight-card__media {
         position: relative;
@@ -561,8 +566,7 @@
     .home-highlights .highlight-card__content {
         display: flex;
         flex-direction: column;
-        flex: 1;
-        padding: 1.05rem 1.25rem 1.15rem;
+        padding: 1.05rem 1.25rem 1rem;
     }
 
     .home-highlights .highlight-card__title {
@@ -594,11 +598,6 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
     }
-        color: #315b8c !important;
-        font-size: 0.8rem;
-        font-weight: 700;
-        line-height: 1.3;
-    }
 
     .home-highlights .highlight-card__meta-item {
         display: inline-flex;
@@ -616,7 +615,7 @@
         align-items: center;
         gap: 0.4rem;
         align-self: flex-start;
-        margin-top: auto;
+        margin-top: 0.15rem;
         padding-top: 0.45rem;
         color: #0b61c3;
         font: 750 0.82rem/1 'Manrope', sans-serif;
@@ -639,23 +638,52 @@
         border-color: rgba(212, 160, 23, 0.5) !important;
     }
 
+    /* One action style for signup links and the section controls. */
     .home-highlights .highlight-events-button {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
-        padding: 0.68rem 1rem;
+        min-height: 44px;
+        padding: 0.7rem 1rem;
+        border: 2px solid transparent;
         border-radius: 999px;
         color: #fff !important;
-        background: #0b61c3;
-        box-shadow: 0 7px 16px rgba(5, 81, 166, 0.18);
-        font: 750 0.9rem/1 'Manrope', sans-serif;
+        background: var(--cpc-blue);
+        box-shadow: 0 3px 10px rgba(5, 81, 166, 0.14);
+        font: 750 0.9rem/1.25 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .home-highlights .highlight-events-button:hover {
         color: #fff !important;
-        background: #084c9b;
-        transform: translateY(-1px);
+        background: var(--cpc-blue-dark);
+        box-shadow: 0 4px 12px rgba(5, 81, 166, 0.22);
+    }
+
+    .home-highlights .highlight-events-button--secondary {
+        color: #fff !important;
+        background: transparent;
+        border-color: #93c5fd;
+        box-shadow: none;
+    }
+
+    .home-highlights .highlight-events-button--secondary:hover {
+        border-color: #fff;
+    }
+
+    .home-highlights .highlight-events-button:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 6px var(--cpc-blue);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .home-highlights .highlight-events-button {
+            transition: none;
+        }
     }
 
     .home-schedule-section .time-slot {
@@ -1324,7 +1352,7 @@
         </div>
         <div id="new-content-actions"
             style="text-align: center; margin-top: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
-            <button type="button" id="show-all-highlights-btn" class="btn btn-secondary" style="display: none;">Show
+            <button type="button" id="show-all-highlights-btn" aria-controls="highlights" aria-expanded="false" class="highlight-events-button highlight-events-button--secondary" style="display: none;">Show
                 all highlights</button>
             <a href="{{ url_for('events') }}" class="highlight-events-button">View all events <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
@@ -1822,6 +1850,11 @@
             var actions = document.createElement('div');
             actions.className = 'highlight-signup-actions';
             CPCAnnouncementActions.append(actions, h, 'highlight-events-button');
+            actions.querySelectorAll('a').forEach(function (action) {
+                if (action.textContent === 'Email CPC') {
+                    action.classList.add('highlight-events-button--secondary');
+                }
+            });
             if (actions.childElementCount) card.appendChild(actions);
             return card;
         }
@@ -1855,7 +1888,7 @@
             renderItems(container, initial);
 
             if (rest.length > 0 && btn) {
-                btn.style.display = 'inline-block';
+                btn.style.display = 'inline-flex';
                 btn.textContent = 'Show all highlights';
                 var isExpanded = false;
                 btn.addEventListener('click', function () {
@@ -1867,6 +1900,7 @@
                         btn.textContent = 'Show less';
                     }
                     isExpanded = !isExpanded;
+                    btn.setAttribute('aria-expanded', String(isExpanded));
                 });
             }
         }).catch(function () {

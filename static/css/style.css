@@ -655,6 +655,19 @@ body.theme-white .hero-banner .btn-secondary:hover {
     color: #1a1a1a !important;
 }
 
+/* Homepage secondary actions use the same blue palette as signup actions. */
+body.theme-white .home-highlights .highlight-events-button--secondary {
+    color: var(--cpc-blue) !important;
+    background: #fff;
+    border-color: var(--cpc-blue);
+}
+
+body.theme-white .home-highlights .highlight-events-button--secondary:hover {
+    color: var(--cpc-blue-dark) !important;
+    background: var(--cpc-blue-light);
+    border-color: var(--cpc-blue-dark);
+}
+
 /* Highlights section */
 .highlights-grid {
     display: grid;
