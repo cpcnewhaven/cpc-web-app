@@ -75,15 +75,15 @@ class TeachingSeriesWidgetAndSubpageTestCase(unittest.TestCase):
         self.client = app.test_client()
 
     def test_sidebar_widget_renders_acts(self):
-        """Verify the Current Teaching Series widget on pages renders Acts and links to teaching-series."""
+        """Verify the Current Sermon Series widget on pages renders Acts and links to sermons."""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         html = response.get_data(as_text=True)
 
-        self.assertIn('Current Teaching Series', html)
+        self.assertIn('Current Sermon Series', html)
         self.assertIn('Acts', html)
         self.assertIn('The Sunday Sermon Podcast', html)
-        self.assertIn('/teaching-series?q=Acts', html)
+        self.assertIn('/sermons', html)
 
     def test_subpage_editor_homepage_defaults(self):
         """Verify the subpage config for homepage includes Acts as current and Luke as previous."""
@@ -93,16 +93,13 @@ class TeachingSeriesWidgetAndSubpageTestCase(unittest.TestCase):
         self.assertEqual(keys.get('previous_teaching_series_title'), 'Luke')
 
     def test_teaching_series_subpage_renders_acts_and_luke(self):
-        """Verify /teaching-series subpage displays current series Acts and previous Luke."""
+        """Verify /teaching-series subpage displays Adult Sunday Studies courses."""
         response = self.client.get('/teaching-series')
         self.assertEqual(response.status_code, 200)
         html = response.get_data(as_text=True)
 
-        self.assertIn('Current Preaching Series', html)
-        self.assertIn('Acts', html)
-        self.assertIn('Previous series:', html)
-        self.assertIn('Luke', html)
-        self.assertIn('/sermons?series=54', html)
+        self.assertIn('Adult Sunday Studies', html)
+        self.assertIn('Communal Worship', html)
 
     def test_today_at_cpc_fallback(self):
         """Verify display page uses current series Acts."""

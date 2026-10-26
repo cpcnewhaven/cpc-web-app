@@ -848,11 +848,17 @@ body.theme-white .dashboard-sidebar .text-white\/70 {
 }
 
 body.theme-white #liveClock,
+body.theme-white #weatherNow {
+    color: #0f172a !important;
+}
+
 body.theme-white #liveDate,
-body.theme-white #weatherNow,
-body.theme-white #weatherHiLo,
 body.theme-white #weatherDesc {
-    color: #1a1a1a !important;
+    color: #64748b !important;
+}
+
+body.theme-white #weatherHiLo {
+    color: #94a3b8 !important;
 }
 
 /* Search input in sidebar */
@@ -1452,10 +1458,9 @@ main {
 /* Dashboard Layout */
 :root {
     --dashboard-sidebar-width: 217px;
-    /* 15% wider */
     --dashboard-sidebar-width-max: 320px;
     --dashboard-sidebar-width-left: 248px;
-    --dashboard-sidebar-width-right: var(--dashboard-sidebar-width);
+    --dashboard-sidebar-width-right: 217px;
     --dashboard-gutter: 16px;
     --dashboard-top-offset: 90px;
     /* below nav */
@@ -1497,6 +1502,9 @@ body.theme-white .dashboard-sidebar {
 .dashboard-right {
     right: var(--dashboard-gutter);
     width: var(--dashboard-sidebar-width-right);
+    display: flex;
+    flex-direction: column;
+    padding: 16px 14px;
 }
 
 .dashboard-main {
@@ -6252,6 +6260,289 @@ body.theme-white .dash-live.is-sunday:hover {
 
 body.theme-white .dash-live__dot { background: rgba(0, 100, 200, 0.7); }
 body.theme-white .dash-live.is-sunday .dash-live__dot { background: rgba(0, 102, 204, 0.82); }
+
+/* ===========================================================================
+   RIGHT DASHBOARD COMPACT STYLING
+   Restores slim original footprint (217px) with refined, modern typography.
+   =========================================================================== */
+
+.dashboard-right .dash-block {
+    display: block;
+}
+
+.dashboard-right .dash-block + .dash-block {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.theme-white .dashboard-right .dash-block + .dash-block {
+    border-top: 1px solid rgba(10, 42, 82, 0.08);
+}
+
+.dashboard-right .dash-heading {
+    margin: 0 0 6px 0;
+    font: 800 10.5px/1 'Barlow', sans-serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #c3daf7;
+}
+
+body.theme-white .dashboard-right .dash-heading {
+    color: #0052a3;
+}
+
+/* Titles and subtitles */
+.dash-r-title {
+    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #ffffff;
+    margin: 0 0 3px 0;
+}
+
+body.theme-white .dash-r-title {
+    color: #0f172a;
+}
+
+.dash-r-sub {
+    font-size: 0.79rem;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+body.theme-white .dash-r-sub {
+    color: #64748b;
+}
+
+/* Links with subtle right arrow */
+.dash-r-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 7px;
+    font-size: 0.79rem;
+    font-weight: 700;
+    color: #70b4ff;
+    text-decoration: none;
+    transition: gap 0.15s ease, color 0.15s ease;
+}
+
+.dash-r-link i {
+    font-size: 0.7rem;
+    transition: transform 0.15s ease;
+}
+
+.dash-r-link:hover {
+    gap: 8px;
+    color: #a5d0ff;
+}
+
+.dash-r-link:hover i {
+    transform: translateX(2px);
+}
+
+body.theme-white .dash-r-link {
+    color: #0052a3;
+}
+
+body.theme-white .dash-r-link:hover {
+    color: #003d7a;
+}
+
+/* Studies Meta */
+.dash-r-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 3px;
+}
+
+.dash-r-meta__line {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.35;
+}
+
+body.theme-white .dash-r-meta__line {
+    color: #64748b;
+}
+
+.dash-r-pill {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 0.67rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.theme-white .dash-r-pill {
+    background: rgba(0, 82, 163, 0.07);
+    color: #0052a3;
+    border: 1px solid rgba(0, 82, 163, 0.15);
+}
+
+/* In New Haven (Time & Weather Glance) */
+.dash-r-glance {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.dash-r-glance__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.dash-r-glance__time {
+    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    color: #ffffff;
+}
+
+body.theme-white .dash-r-glance__time {
+    color: #0f172a !important;
+}
+
+.dash-r-glance__temp {
+    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+body.theme-white .dash-r-glance__temp {
+    color: #0f172a !important;
+}
+
+.dash-r-glance__subrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.75rem;
+    line-height: 1.3;
+}
+
+.dash-r-glance__date {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+body.theme-white .dash-r-glance__date {
+    color: #64748b !important;
+}
+
+.dash-r-glance__desc {
+    color: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+}
+
+body.theme-white .dash-r-glance__desc {
+    color: #64748b !important;
+}
+
+.dash-r-glance__hilo {
+    font-size: 0.69rem;
+    color: rgba(255, 255, 255, 0.55);
+    text-align: right;
+    margin-top: 1px;
+}
+
+body.theme-white .dash-r-glance__hilo {
+    color: #94a3b8 !important;
+}
+
+.dash-r-login {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 4px;
+}
+
+body.theme-white .dash-r-login {
+    color: #94a3b8;
+}
+
+/* Sunday Service */
+.dash-r-service__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.dash-r-service__time {
+    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+body.theme-white .dash-r-service__time {
+    color: #0f172a;
+}
+
+.dash-r-badge {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #70b4ff;
+    background: rgba(112, 180, 255, 0.14);
+    border: 1px solid rgba(112, 180, 255, 0.25);
+    border-radius: 999px;
+    padding: 2px 6px;
+}
+
+body.theme-white .dash-r-badge {
+    color: #0052a3;
+    background: rgba(0, 82, 163, 0.08);
+    border: 1px solid rgba(0, 82, 163, 0.2);
+}
+
+.dash-r-service__addr {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 0.77rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.72);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.dash-r-service__addr:hover {
+    color: #ffffff;
+}
+
+.dash-r-service__addr i {
+    font-size: 0.75rem;
+    color: var(--surface-accent, #0066cc);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+body.theme-white .dash-r-service__addr {
+    color: #475569;
+}
+
+body.theme-white .dash-r-service__addr:hover {
+    color: #0052a3;
+}
 
 /* ===========================================================================
    BLUE THEME OVERRIDES

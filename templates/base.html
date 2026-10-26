@@ -382,63 +382,76 @@
     <!-- Fixed Right Dashboard (Desktop) -->
     <aside class="dashboard-sidebar dashboard-right hidden lg:block" :class="$store.dash.compact ? 'text-sm' : ''"
         x-show="$store.dash.showRightSidebar">
-        <div class="dashboard-section" id="luke-chapter-section">
-            <div class="dashboard-title">Current Sermon Series</div>
-            <div class="dashboard-note" id="luke-chapter-content">
-                <div class="study-title" style="font-size: 1.1rem; font-weight: 700;">{{ site_content.get('current_teaching_series_title', 'Acts') }}</div>
-                <div class="study-date" style="margin-top: 0.25rem;">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
-                <a href="{{ url_for('sermons') }}"
-                    class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">Browse Sermons →</a>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-title">Adult Sunday Studies</div>
-            <div class="dashboard-note">
-                <div class="study-title" style="font-size: 1rem; font-weight: 700;">The Wonders of Communal Worship</div>
-                <div class="study-date" style="margin-top: 0.25rem;">9:30am · Fellowship Hall</div>
-                <div class="study-date" style="margin-top: 0.25rem;">This Sunday: Class 7 of 7</div>
-                <a href="{{ url_for('teaching_series_detail', slug='wonders-of-communal-worship') }}"
-                    class="cta mt-2 inline-block text-blue-400 hover:text-blue-300">View class →</a>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-title">Now</div>
-            <div class="dashboard-note">
-                <div id="liveClock" class="text-white text-lg font-semibold"></div>
-                <div id="liveDate" class="text-white/80 text-sm mt-1"></div>
-                {% if session.get('authenticated') and current_user_last_login %}
-                <div class="text-white/70 text-xs mt-2">
-                    Last login: {{ current_user_last_login.strftime('%b %d, %Y %I:%M %p') }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-title">Weather — New Haven</div>
-            <div class="dashboard-note">
-                <div id="weatherNow" class="text-white text-lg font-semibold"></div>
-                <div id="weatherHiLo" class="text-white/80 text-sm mt-1"></div>
-                <div id="weatherDesc" class="text-white/70 text-xs mt-1"></div>
-            </div>
-        </div>
-        <div class="dashboard-section" x-show="$store.dash.showService">
-            <div class="dashboard-title">Sunday Service</div>
-            <div class="dashboard-note">
-                {% set _sidebar_worship = site_content.get('service_summer_worship_time', '10:30am') if active_schedule == 'summer' else site_content.get('service_worship_time', '10:30am') %}
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
-                    <strong style="color:var(--surface-text);">{{ _sidebar_worship }} Worship</strong>
-                    <span style="font-size:0.62rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--surface-accent); background:var(--surface-accent-soft); border-radius:999px; padding:0.2rem 0.45rem;">
-                        {{ 'Summer' if active_schedule == 'summer' else 'Regular' }}
-                    </span>
-                </div>
-                <a href="https://maps.google.com/?q={{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') | urlencode }}"
-                    target="_blank" rel="noopener"
-                    style="display:flex; align-items:flex-start; gap:0.4rem; margin-top:0.55rem; color:var(--surface-muted); text-decoration:none; line-height:1.45;">
-                    <i class="fas fa-location-dot" aria-hidden="true" style="color:var(--surface-accent); margin-top:0.18rem;"></i>
-                    <span>{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</span>
+        
+        <!-- Current Sermon Series -->
+        <div class="dash-block" id="luke-chapter-section">
+            <h3 class="dash-heading">Current Sermon Series</h3>
+            <div id="luke-chapter-content">
+                <div class="dash-r-title study-title">{{ site_content.get('current_teaching_series_title', 'Acts') }}</div>
+                <div class="dash-r-sub study-date">{{ site_content.get('current_teaching_series_subtitle', 'The Sunday Sermon Podcast') }}</div>
+                <a href="{{ url_for('sermons') }}" class="dash-r-link cta">
+                    <span>Browse Sermons</span>
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </a>
-                <a href="{{ url_for('plan_a_visit') }}" class="cta" style="display:inline-block; margin-top:0.65rem; color:var(--surface-accent);">Plan Your Visit →</a>
             </div>
+        </div>
+
+        <!-- Adult Sunday Studies -->
+        <div class="dash-block">
+            <h3 class="dash-heading">Adult Sunday Studies</h3>
+            <div class="dash-r-title study-title" style="font-size: 0.95rem;">The Wonders of Communal Worship</div>
+            <div class="dash-r-meta">
+                <div class="dash-r-meta__line">9:30am · Fellowship Hall</div>
+                <span class="dash-r-pill">All 7 classes available</span>
+            </div>
+            <a href="{{ url_for('teaching_series_detail', slug='wonders-of-communal-worship') }}" class="dash-r-link cta">
+                <span>View class</span>
+                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <!-- In New Haven: Ambient Clock & Weather -->
+        <div class="dash-block">
+            <h3 class="dash-heading">In New Haven</h3>
+            <div class="dash-r-glance">
+                <div class="dash-r-glance__row">
+                    <span id="liveClock" class="dash-r-glance__time"></span>
+                    <span id="weatherNow" class="dash-r-glance__temp"></span>
+                </div>
+                <div class="dash-r-glance__subrow">
+                    <span id="liveDate" class="dash-r-glance__date"></span>
+                    <span id="weatherDesc" class="dash-r-glance__desc"></span>
+                </div>
+                <div id="weatherHiLo" class="dash-r-glance__hilo"></div>
+            </div>
+            {% if session.get('authenticated') and current_user_last_login %}
+            <div class="dash-r-login">
+                Last login: {{ current_user_last_login.strftime('%b %d, %I:%M %p') }}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sunday Worship Service -->
+        <div class="dash-block" x-show="$store.dash.showService">
+            <h3 class="dash-heading">Sunday Service</h3>
+            {% set _sidebar_worship = site_content.get('service_summer_worship_time', '10:30am') if active_schedule == 'summer' else site_content.get('service_worship_time', '10:30am') %}
+            <div class="dash-r-service__top">
+                <strong class="dash-r-service__time">{{ _sidebar_worship }} Worship</strong>
+                <span class="dash-r-badge">
+                    {{ 'Summer' if active_schedule == 'summer' else 'Regular' }}
+                </span>
+            </div>
+            <a href="https://maps.google.com/?q={{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') | urlencode }}"
+                target="_blank" rel="noopener"
+                class="dash-r-service__addr"
+                title="View on Google Maps">
+                <i class="fas fa-location-dot" aria-hidden="true"></i>
+                <span>{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</span>
+            </a>
+            <a href="{{ url_for('plan_a_visit') }}" class="dash-r-link cta">
+                <span>Plan Your Visit</span>
+                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
         </div>
     </aside>
 
