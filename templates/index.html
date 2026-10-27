@@ -450,7 +450,7 @@
             grid-template-columns: 1fr;
             gap: 0.65rem;
             align-items: start;
-            padding: 4.5rem 1.25rem 4rem !important;
+            padding: max(5.5rem, calc(env(safe-area-inset-top, 0px) + 4.5rem)) 1.25rem 3.5rem !important;
         }
 
         .hero-banner .splash-content h1 {
@@ -798,7 +798,7 @@
 
     /* ===== SUNDAY & BEYOND COMPANION SPOTLIGHT ===== */
     .sunday-beyond-section {
-        padding: 3rem 0 2.75rem;
+        padding: clamp(2.25rem, 4.5vw, 3.25rem) 0;
         position: relative;
     }
 
@@ -1354,13 +1354,13 @@
         style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-NewHaven.jpg');">
     </div>
     <div class="banner-slide" data-index="1"
-        style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg');">
+        data-bg="https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg">
     </div>
     <div class="banner-slide" data-index="2"
-        style="background-image: url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg');">
+        data-bg="https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg">
     </div>
     <div class="banner-slide" data-index="3"
-        style="background-image: url('https://storage.googleapis.com/cpc-public-website/web-assets/heros/events-splash-1.jpg');">
+        data-bg="https://storage.googleapis.com/cpc-public-website/web-assets/heros/events-splash-1.jpg">
     </div>
     <div class="banner-overlay"></div>
     <div class="splash-content mx-auto max-w-3xl px-4 md:px-6 py-16 md:py-20 text-center relative">
@@ -1377,7 +1377,7 @@
 </section>
 
 <!-- New Content Section (announcements / latest from admin) -->
-<section class="highlights-section section-dark new-content-section home-highlights" style="padding: 4rem 0; position: relative;">
+<section class="highlights-section section-dark new-content-section home-highlights" style="padding: clamp(2.5rem, 5vw, 3.75rem) 0; position: relative;">
     <div class="container" style="position: relative; z-index: 1;">
         <div class="section-header highlights-header" style="text-align: center; margin-bottom: 2.5rem;">
             <span class="highlights-kicker">What&apos;s happening now</span>
@@ -1411,7 +1411,7 @@
             {% if spotlight_sermon %}
             <article class="spotlight-card spotlight-card--sermon" id="spotlight-sermon-card">
                 <a href="{{ url_for('sermons') }}" class="spotlight-card__media" aria-label="Explore Sunday Sermons">
-                    <img src="{{ spotlight_sermon.thumbnail_url }}" alt="{{ spotlight_sermon.title }}" class="spotlight-thumb" loading="lazy">
+                    <img src="{{ spotlight_sermon.thumbnail_url }}" alt="{{ spotlight_sermon.title }}" class="spotlight-thumb" loading="lazy" decoding="async">
                     <span class="spotlight-play-overlay" aria-hidden="true">
                         <i class="fas fa-play"></i>
                     </span>
@@ -1486,7 +1486,7 @@
             {% if spotlight_beyond %}
             <article class="spotlight-card spotlight-card--beyond" id="spotlight-beyond-card">
                 <a href="{{ url_for('podcasts') }}" class="spotlight-card__media" aria-label="Explore Beyond the Sunday Sermon Podcast">
-                    <img src="{{ spotlight_beyond.artwork }}" alt="Beyond the Sunday Sermon" class="spotlight-thumb" loading="lazy">
+                    <img src="{{ spotlight_beyond.artwork }}" alt="Beyond the Sunday Sermon" class="spotlight-thumb" loading="lazy" decoding="async">
                     <span class="spotlight-play-overlay" aria-hidden="true">
                         <i class="fas fa-play"></i>
                     </span>
@@ -1653,6 +1653,25 @@
         var current = 0;
         var interval = 5500;
 
+        function loadSlideBg(slide) {
+            if (slide && slide.dataset.bg && !slide.style.backgroundImage) {
+                slide.style.backgroundImage = 'url(\'' + slide.dataset.bg + '\')';
+            }
+        }
+
+        // Defer remaining background images until window loads or system is idle
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(function () {
+                slides.forEach(loadSlideBg);
+            });
+        } else {
+            window.addEventListener('load', function () {
+                setTimeout(function () {
+                    slides.forEach(loadSlideBg);
+                }, 1200);
+            });
+        }
+
         if (slides.length && dotsContainer) {
             slides.forEach(function (_, i) {
                 var dot = document.createElement('span');
@@ -1671,6 +1690,9 @@
 
         function goTo(index) {
             current = (index + slides.length) % slides.length;
+            loadSlideBg(slides[current]);
+            var nextIndex = (current + 1) % slides.length;
+            loadSlideBg(slides[nextIndex]);
             slides.forEach(function (s, i) {
                 s.classList.toggle('active', i === current);
             });
@@ -1723,55 +1745,55 @@
                 var url = latest.youtube_url || latest.spotify_url || latest.link || latest.apple_podcasts_url;
                 if (link && url) {
                     link.href = url;
-<script>
-(() => {
-    const alert = document.getElementById('home-live-alert');
-    if (!alert) return;
-    const title = document.getElementById('home-live-title');
-    const subtitle = document.getElementById('home-live-subtitle');
-    const badge = document.getElementById('home-live-badge');
-    const button = document.getElementById('home-live-button');
-    let isLive = false;
-    let liveTitle = '';
-    const updateSchedule = () => {
-        const parts = new Intl.DateTimeFormat('en-US', {
-            timeZone: 'America/New_York', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-        }).formatToParts(new Date());
-        const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
-        const isSunday = values.weekday === 'Sun';
-        const minutes = Number(values.hour) * 60 + Number(values.minute);
-        const serviceWindow = isSunday && minutes >= 630 && minutes < 720;
-        alert.classList.toggle('is-visible', isSunday);
-        alert.classList.toggle('is-compact', isSunday && !serviceWindow);
-        alert.classList.toggle('is-streaming', isLive && serviceWindow);
-        if (!isSunday) return;
-        badge.textContent = isLive && serviceWindow ? 'LIVE NOW' : (serviceWindow ? 'SUNDAY WORSHIP' : 'SUNDAY AT CPC');
-        if (isLive && serviceWindow) title.textContent = liveTitle || 'CPC is live on YouTube';
-        else title.innerHTML = serviceWindow ? 'Sunday worship,<br>from New Haven.' : 'A place for grace.';
-        subtitle.textContent = serviceWindow ? 'Join CPC New Haven live · Sundays at 10:30 a.m.' : 'Sunday worship · New Haven, Connecticut';
-        button.innerHTML = (isLive && serviceWindow ? 'Watch the service' : 'Open CPC Live') + ' <i class="fas fa-arrow-right" aria-hidden="true"></i>';
-    };
-    const checkLive = async () => {
-        try {
-            const response = await fetch('/api/youtube/live', { cache: 'no-store' });
-            if (!response.ok) return;
-            const status = await response.json();
-            isLive = status.is_live === true;
-            liveTitle = isLive && status.title ? status.title : '';
-            updateSchedule();
-        } catch (_) { /* Keep the homepage quiet when YouTube cannot be reached. */ }
-    };
-    updateSchedule();
-    checkLive();
-    window.setInterval(updateSchedule, 15000);
-    window.setInterval(checkLive, 60000);
-})();
-</script>
                     link.setAttribute('target', '_blank');
                     link.setAttribute('rel', 'noopener');
                 }
             }
         }).catch(function () { });
+    })();
+
+    // ----- Live Alert Schedule & Check -----
+    (function () {
+        const alert = document.getElementById('home-live-alert');
+        if (!alert) return;
+        const title = document.getElementById('home-live-title');
+        const subtitle = document.getElementById('home-live-subtitle');
+        const badge = document.getElementById('home-live-badge');
+        const button = document.getElementById('home-live-button');
+        let isLive = false;
+        let liveTitle = '';
+        const updateSchedule = () => {
+            const parts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'America/New_York', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+            }).formatToParts(new Date());
+            const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+            const isSunday = values.weekday === 'Sun';
+            const minutes = Number(values.hour) * 60 + Number(values.minute);
+            const serviceWindow = isSunday && minutes >= 630 && minutes < 720;
+            alert.classList.toggle('is-visible', isSunday);
+            alert.classList.toggle('is-compact', isSunday && !serviceWindow);
+            alert.classList.toggle('is-streaming', isLive && serviceWindow);
+            if (!isSunday) return;
+            badge.textContent = isLive && serviceWindow ? 'LIVE NOW' : (serviceWindow ? 'SUNDAY WORSHIP' : 'SUNDAY AT CPC');
+            if (isLive && serviceWindow) title.textContent = liveTitle || 'CPC is live on YouTube';
+            else title.innerHTML = serviceWindow ? 'Sunday worship,<br>from New Haven.' : 'A place for grace.';
+            subtitle.textContent = serviceWindow ? 'Join CPC New Haven live · Sundays at 10:30 a.m.' : 'Sunday worship · New Haven, Connecticut';
+            button.innerHTML = (isLive && serviceWindow ? 'Watch the service' : 'Open CPC Live') + ' <i class="fas fa-arrow-right" aria-hidden="true"></i>';
+        };
+        const checkLive = async () => {
+            try {
+                const response = await fetch('/api/youtube/live', { cache: 'no-store' });
+                if (!response.ok) return;
+                const status = await response.json();
+                isLive = status.is_live === true;
+                liveTitle = isLive && status.title ? status.title : '';
+                updateSchedule();
+            } catch (_) { /* Keep the homepage quiet when YouTube cannot be reached. */ }
+        };
+        updateSchedule();
+        checkLive();
+        window.setInterval(updateSchedule, 15000);
+        window.setInterval(checkLive, 60000);
     })();
 </script>
 <script>
@@ -1833,7 +1855,7 @@
             card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
             var detailUrl = '/announcement/' + h.id;
             var mediaHtml = h.featuredImage
-                ? '<div class="highlight-card__media"><img src="' + h.featuredImage + '" alt=""></div>'
+                ? '<div class="highlight-card__media"><img src="' + h.featuredImage + '" alt="" loading="lazy" decoding="async"></div>'
                 : '';
 
             var metaItems = [];

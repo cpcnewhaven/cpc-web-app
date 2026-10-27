@@ -180,7 +180,10 @@ _engine_opts = {
     'pool_pre_ping': True,
 }
 if database_url.startswith('postgresql'):
-    _engine_opts['connect_args'] = {'connect_timeout': 10}
+    connect_args = {'connect_timeout': 25}
+    if 'render.com' in database_url or ('localhost' not in database_url and '127.0.0.1' not in database_url and 'sslmode' not in database_url):
+        connect_args['sslmode'] = 'require'
+    _engine_opts['connect_args'] = connect_args
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = _engine_opts
 
 # Log DB type + host (NEVER log the full URL — it contains credentials)
@@ -545,7 +548,7 @@ def redirect_admin_to_dashboard():
 def index():
     """Homepage with highlights"""
     highlights = _get_home_announcements()
-    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    site_content = get_site_content()
     spotlight_sermon, spotlight_beyond = _get_home_teaching_spotlight()
     return render_template(
         'index.html',
@@ -825,20 +828,31 @@ SUBPAGE_CONFIGS = {
     }
 }
 
-def get_site_content():
-    """Return editable site content with the admin editor defaults applied.
+import time as _pytime
 
-    The editor displays defaults for rows that have not been saved yet. Public
-    pages need the same fallback behavior so a fresh database does not render
-    empty service schedules.
-    """
-    content = {r.key: r.value for r in SiteContent.query.all()}
-    for config in SUBPAGE_CONFIGS.values():
-        for item in config.get('keys', []):
-            key, default = item[0], item[2]
-            if not content.get(key):
-                content[key] = default
-    return content
+_SITE_CONTENT_CACHE = None
+_SITE_CONTENT_CACHE_TIME = 0
+
+def get_site_content(force_refresh=False):
+    """Return editable site content with the admin editor defaults applied (cached in memory)."""
+    global _SITE_CONTENT_CACHE, _SITE_CONTENT_CACHE_TIME
+    now = _pytime.time()
+    if not app.config.get('TESTING') and not force_refresh and _SITE_CONTENT_CACHE is not None and (now - _SITE_CONTENT_CACHE_TIME) < 60:
+        return _SITE_CONTENT_CACHE.copy()
+    try:
+        content = {r.key: r.value for r in SiteContent.query.all()}
+        for config in SUBPAGE_CONFIGS.values():
+            for item in config.get('keys', []):
+                key, default = item[0], item[2]
+                if not content.get(key):
+                    content[key] = default
+        if not app.config.get('TESTING'):
+            _SITE_CONTENT_CACHE = content
+            _SITE_CONTENT_CACHE_TIME = now
+        return content.copy()
+    except Exception as exc:
+        log.warning("SiteContent query failed: %s", exc)
+        return _SITE_CONTENT_CACHE.copy() if _SITE_CONTENT_CACHE else {}
 
 
 def get_active_sermon_series_options():
@@ -1831,30 +1845,50 @@ def _prefer_announcement_snapshot():
     return os.getenv('CPC_USE_ANNOUNCEMENT_SNAPSHOT', default).lower() in ('1', 'true', 'yes', 'on')
 
 
-def _get_home_announcements():
+_HOME_ANNOUNCEMENTS_CACHE = None
+_HOME_ANNOUNCEMENTS_CACHE_TIME = 0
+
+def _get_home_announcements(force_refresh=False):
+    global _HOME_ANNOUNCEMENTS_CACHE, _HOME_ANNOUNCEMENTS_CACHE_TIME
+    now = _pytime.time()
+    if not app.config.get('TESTING') and not force_refresh and _HOME_ANNOUNCEMENTS_CACHE is not None and (now - _HOME_ANNOUNCEMENTS_CACHE_TIME) < 60:
+        return _HOME_ANNOUNCEMENTS_CACHE
+    res = None
     if _prefer_announcement_snapshot():
         rows = _snapshot_announcements(active_only=True)
         if rows:
             featured = [a for a in rows if bool(a.superfeatured)][:3]
             regular = [a for a in rows if not bool(a.superfeatured)][:7]
-            return featured + regular
-    try:
-        featured = Announcement.query.filter_by(active=True, superfeatured=True)\
-            .filter(_not_expired(Announcement))\
-            .filter(_announcement_is_due(Announcement))\
-            .order_by(Announcement.date_entered.desc()).limit(3).all()
-        regular = Announcement.query.filter_by(active=True, superfeatured=False)\
-            .filter(_not_expired(Announcement))\
-            .filter(_announcement_is_due(Announcement))\
-            .order_by(Announcement.date_entered.desc()).limit(7).all()
-        return featured + regular
-    except Exception as exc:
-        log.error("Announcement DB read failed; using snapshot: %s", exc)
-        return _snapshot_announcements(active_only=True)[:10]
+            res = featured + regular
+    if res is None:
+        try:
+            featured = Announcement.query.filter_by(active=True, superfeatured=True)\
+                .filter(_not_expired(Announcement))\
+                .filter(_announcement_is_due(Announcement))\
+                .order_by(Announcement.date_entered.desc()).limit(3).all()
+            regular = Announcement.query.filter_by(active=True, superfeatured=False)\
+                .filter(_not_expired(Announcement))\
+                .filter(_announcement_is_due(Announcement))\
+                .order_by(Announcement.date_entered.desc()).limit(7).all()
+            res = featured + regular
+        except Exception as exc:
+            log.error("Announcement DB read failed; using snapshot: %s", exc)
+            res = _snapshot_announcements(active_only=True)[:10]
+    if not app.config.get('TESTING'):
+        _HOME_ANNOUNCEMENTS_CACHE = res
+        _HOME_ANNOUNCEMENTS_CACHE_TIME = now
+    return res
 
 
-def _get_home_teaching_spotlight():
-    """Fetch the latest Sunday sermon and corresponding Beyond the Sunday Sermon podcast episode."""
+_SPOTLIGHT_CACHE = None
+_SPOTLIGHT_CACHE_TIME = 0
+
+def _get_home_teaching_spotlight(force_refresh=False):
+    """Fetch the latest Sunday sermon and corresponding Beyond the Sunday Sermon podcast episode (cached in memory)."""
+    global _SPOTLIGHT_CACHE, _SPOTLIGHT_CACHE_TIME
+    now = _pytime.time()
+    if not app.config.get('TESTING') and not force_refresh and _SPOTLIGHT_CACHE is not None and (now - _SPOTLIGHT_CACHE_TIME) < 60:
+        return _SPOTLIGHT_CACHE
     latest_sermon = None
     latest_beyond = None
     default_sermon_thumb = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'
@@ -1990,6 +2024,9 @@ def _get_home_teaching_spotlight():
             'is_direct_companion': False,
         }
 
+    if not app.config.get('TESTING'):
+        _SPOTLIGHT_CACHE = (latest_sermon, latest_beyond)
+        _SPOTLIGHT_CACHE_TIME = now
     return latest_sermon, latest_beyond
 
 
@@ -3875,13 +3912,18 @@ def get_authenticated_user():
     return User.query.filter_by(username=username).first()
 
 
+_CACHED_GIT_REVISION = None
+
 def get_git_revision_short_hash():
-    """Returns the shorthand commit hash if git is available."""
-    try:
-        import subprocess
-        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
-    except Exception:
-        return None
+    """Returns the shorthand commit hash if git is available (cached in memory)."""
+    global _CACHED_GIT_REVISION
+    if _CACHED_GIT_REVISION is None:
+        try:
+            import subprocess
+            _CACHED_GIT_REVISION = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+        except Exception:
+            _CACHED_GIT_REVISION = ''
+    return _CACHED_GIT_REVISION or None
 
 @app.context_processor
 def inject_current_user_metadata():
@@ -3898,10 +3940,12 @@ def inject_current_user_metadata():
     except Exception:
         pass
 
-    try:
-        new_feedback_count = SiteFeedback.query.filter_by(status='new').count()
-    except Exception:
-        new_feedback_count = 0
+    new_feedback_count = 0
+    if is_authenticated():
+        try:
+            new_feedback_count = SiteFeedback.query.filter_by(status='new').count()
+        except Exception:
+            new_feedback_count = 0
         
     return {
         'current_user': current_user,
