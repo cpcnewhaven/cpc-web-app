@@ -1400,9 +1400,8 @@ body.ticker-hidden .footer-ticker {
     display: none !important;
 }
 
-body.ticker-hidden {
-    --dashboard-bottom-height: 0;
-}
+/* The status bar remains visible when the announcements ticker is hidden.
+   Keep its sidebar clearance; a unitless zero also invalidates calc() below. */
 
 /* Bottom status bar (date/time) */
 .footer-status-bar {
@@ -1522,8 +1521,14 @@ main,
     padding: 18px;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior-y: contain;
     z-index: 40;
     transition: all 0.3s ease;
+}
+
+/* Preserve card/link heights so short windows scroll instead of squeezing them. */
+.dashboard-sidebar > * {
+    flex-shrink: 0;
 }
 
 body.theme-white .dashboard-sidebar {
