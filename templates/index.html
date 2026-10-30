@@ -1854,9 +1854,7 @@
             var card = document.createElement('div');
             card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
             var detailUrl = '/announcement/' + h.id;
-            var mediaHtml = h.featuredImage
-                ? '<div class="highlight-card__media"><img src="' + h.featuredImage + '" alt="" loading="lazy" decoding="async"></div>'
-                : '';
+            var mediaHtml = window.CPCAnnouncementMedia.render(h);
 
             var metaItems = [];
             if (h.eventDate) {

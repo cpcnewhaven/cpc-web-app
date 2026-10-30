@@ -1,10 +1,24 @@
 {
   "courses": [
     {
+      "slug": "deeper-into-acts",
+      "title": "Deeper into Acts",
+      "nav_title": "Deeper into Acts",
+      "status": "Six-week study · Begins November 1, 2026",
+      "summary": "Sundays at 9:30am. Join Adult Sunday Studies for six weeks on the Book of Acts, beginning November 1, 2026.",
+      "description": "A six-week Adult Sunday Studies class on the Book of Acts.",
+      "promote_from": "2026-10-30",
+      "promote_until": "2026-12-07",
+      "image_url": "",
+      "curriculum_url": "",
+      "roadmap": [],
+      "sessions": []
+    },
+    {
       "slug": "wonders-of-communal-worship",
       "title": "The Wonders of Communal Worship",
-      "status": "Current study · Fall 2026",
-      "summary": "9:30am · A new Adult Sunday Study on the gift and practice of worshiping together. Class recordings and PDF handouts will live here as they become available.",
+      "status": "Class archive · Fall 2026",
+      "summary": "Explore the theology and practice of communal worship through class recordings and PDF handouts.",
       "roadmap": [
         {
           "number": "01",

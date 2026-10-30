@@ -131,7 +131,7 @@ class AnnouncementEditTestCase(unittest.TestCase):
                 "category": "worship",
                 "tag": "",
                 "speaker": "",
-                "event_date": "2026-07-12",
+                "event_date": (date.today() + timedelta(days=7)).isoformat(),
                 "event_start_time": "9:00 AM",
                 "event_end_time": "10:30 AM",
                 "active": "y",

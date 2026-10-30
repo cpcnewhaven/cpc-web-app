@@ -1153,10 +1153,15 @@ def highlights():
 @app.route('/announcement/<int:announcement_id>')
 def announcement_detail(announcement_id):
     """Detail page for a single announcement or event highlight."""
-    announcement = Announcement.query.get_or_404(announcement_id)
+    announcement = None
+    if _prefer_announcement_snapshot():
+        announcement = next((a for a in _snapshot_announcements(active_only=True)
+                             if a.id == announcement_id), None)
+    if announcement is None:
+        announcement = Announcement.query.get_or_404(announcement_id)
     if (
         not is_authenticated()
-        and announcement.scheduled_at
+        and getattr(announcement, 'scheduled_at', None)
         and announcement.scheduled_at > datetime.utcnow()
     ):
         abort(404)
@@ -1488,7 +1493,7 @@ def teaching_series():
             ],
         })
     courses = catalog + extra_courses
-    featured_course = next((course for course in catalog if course['slug'] == 'wonders-of-communal-worship'), None)
+    featured_course = _current_adult_study()
     nav_titles = {
         'wonders-of-communal-worship': 'Communal Worship',
         'emotions-spirituality': 'Emotions & Spirituality',
@@ -1792,7 +1797,17 @@ def _not_expired(model_klass):
     col = getattr(model_klass, 'expires_at', None)
     if col is None:
         return text('1 = 1')  # no expires_at column
-    return db.or_(col.is_(None), col > date.today())
+    today = datetime.now(pytz.timezone('America/New_York')).date()
+    valid = db.or_(col.is_(None), col > today)
+    if model_klass is Announcement:
+        # Recurring groups may retain their original start date. One-time
+        # notices must disappear after their event, even without an expiry.
+        valid = db.and_(valid, db.or_(
+            Announcement.event_date.is_(None),
+            Announcement.event_date >= today,
+            Announcement.type == 'ongoing',
+        ))
+    return valid
 
 
 _CHURCH_TIMEZONE = pytz.timezone('America/New_York')
@@ -1833,15 +1848,17 @@ def _snapshot_announcements(active_only=False):
     """Use the public JSON snapshot in development or after a DB read failure."""
     from announcement_snapshot import load_snapshot
     rows = load_snapshot()
-    today = date.today()
-    rows = [a for a in rows if not a.expires_at or a.expires_at > today]
+    today = datetime.now(_CHURCH_TIMEZONE).date()
+    rows = [a for a in rows if (not a.expires_at or a.expires_at > today)
+            and (not a.event_date or a.event_date >= today or a.type == 'ongoing')
+            and not getattr(a, 'archived', False)]
     if active_only:
         rows = [a for a in rows if bool(a.active)]
     return rows
 
 
 def _prefer_announcement_snapshot():
-    default = '1' if not _is_production else '0'
+    default = '1' if not _is_production and not app.config.get('TESTING') else '0'
     return os.getenv('CPC_USE_ANNOUNCEMENT_SNAPSHOT', default).lower() in ('1', 'true', 'yes', 'on')
 
 
@@ -2034,7 +2051,9 @@ def _get_home_teaching_spotlight(force_refresh=False):
 @cache.cached(timeout=60)
 def api_announcements():
     """API endpoint matching your highlights.json structure"""
-    announcements = Announcement.query.filter_by(active=True)\
+    announcements = _snapshot_announcements(active_only=True) if _prefer_announcement_snapshot() else None
+    if announcements is None:
+        announcements = Announcement.query.filter_by(active=True, archived=False)\
         .filter(_not_expired(Announcement))\
         .filter(_announcement_is_due(Announcement))\
         .order_by(Announcement.date_entered.desc()).all()
@@ -2088,18 +2107,26 @@ def api_banner_announcements():
 def api_event_announcements():
     """Fetch announcements with event_date for the events page (3-month view)"""
     from datetime import datetime, timedelta
-    today = datetime.utcnow().date()
+    today = datetime.now(_CHURCH_TIMEZONE).date()
 
     # Get announcements with event_date in the next 3 months
     future_limit = today + timedelta(days=90)
-    announcements = Announcement.query.filter(
-        Announcement.active == True,
-        Announcement.event_date != None,
-        Announcement.event_date >= today,
-        Announcement.event_date <= future_limit
-    ).filter(_not_expired(Announcement))\
-    .filter(_announcement_is_due(Announcement))\
-    .order_by(Announcement.event_date.asc()).all()
+    if _prefer_announcement_snapshot():
+        announcements = sorted(
+            (a for a in _snapshot_announcements(active_only=True)
+             if a.event_date and today <= a.event_date <= future_limit),
+            key=lambda a: a.event_date,
+        )
+    else:
+        announcements = Announcement.query.filter(
+            Announcement.active == True,
+            Announcement.archived == False,
+            Announcement.event_date != None,
+            Announcement.event_date >= today,
+            Announcement.event_date <= future_limit
+        ).filter(_not_expired(Announcement))\
+        .filter(_announcement_is_due(Announcement))\
+        .order_by(Announcement.event_date.asc()).all()
 
     return jsonify({
         'announcements': [
@@ -2123,18 +2150,15 @@ def api_highlights():
     """API endpoint for highlights data - pulls from database"""
     # Development prefers the public snapshot; production falls back to it
     # only when the database read raises an error.
-    # The committed snapshot is ordered newest first. Limit its public fallback
-    # to the current weekly set so historical rows without expiration dates do
-    # not reappear alongside current announcements.
-    announcements = _snapshot_announcements(active_only=True)[:7] if _prefer_announcement_snapshot() else []
+    announcements = _snapshot_announcements(active_only=True) if _prefer_announcement_snapshot() else []
     if not announcements:
         try:
-            announcements = Announcement.query.filter(_not_expired(Announcement))\
+            announcements = Announcement.query.filter_by(active=True, archived=False).filter(_not_expired(Announcement))\
                 .filter(_announcement_is_due(Announcement))\
                 .order_by(Announcement.date_entered.desc()).limit(50).all()
         except Exception as exc:
             log.error("Highlights DB read failed; using snapshot: %s", exc)
-            announcements = _snapshot_announcements()
+            announcements = _snapshot_announcements(active_only=True)
     
     return jsonify({
         'announcements': [
@@ -2995,6 +3019,8 @@ def _load_local_events_json(site_tz):
     now = datetime.now(local)
     items = []
     for idx, ev in enumerate(raw if isinstance(raw, list) else []):
+        if ev.get('active') in (False, 'false'):
+            continue
         start_value = ev.get("start") or ev.get("date") or ev.get("date_entered") or ev.get("dateEntered")
         if not start_value:
             continue
@@ -3975,7 +4001,20 @@ def inject_site_content():
         'active_schedule': resolve_active_schedule(sc),
         'regular_schedule_resume_label': get_regular_schedule_resume_label(sc),
         'belief_lessons': get_belief_lessons(sc),
+        'current_adult_study': _current_adult_study(),
+        'church_today': datetime.now(_CHURCH_TIMEZONE).date().isoformat(),
     }
+
+
+def _current_adult_study():
+    """Promote a dated class only during its published announcement window."""
+    path = os.path.join(os.path.dirname(__file__), 'data', 'adult_sunday_studies.json')
+    with open(path, encoding='utf-8') as handle:
+        courses = json.load(handle).get('courses', [])
+    today = datetime.now(_CHURCH_TIMEZONE).date().isoformat()
+    return next((course for course in courses
+                 if course.get('promote_from', '9999') <= today
+                 < course.get('promote_until', '0000')), None)
 
 
 @app.route('/admin/export/feedback')

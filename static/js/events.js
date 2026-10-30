@@ -287,7 +287,7 @@ function renderEventResults(events, container) {
         </div>` : '';
 
       card.innerHTML = `
-        ${hasImage ? `<div class="evt-card__media"><img src="${ev.imageUrl}" alt="${ev.title}"></div>` : dateTile}
+        ${window.CPCAnnouncementMedia.render({featuredImage: ev.imageUrl, category: ev.category})}
         <div class="evt-card__body">
         <div class="evt-head">
           <span class="evt-cat">${displayTag(ev.category)}</span>

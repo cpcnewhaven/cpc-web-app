@@ -397,10 +397,7 @@
                 card.dataset.type = type;
                 card.dataset.superfeatured = highlight.superfeatured ? 'true' : 'false';
 
-                let imgHtml = '';
-                if (highlight.featuredImage) {
-                    imgHtml = `<div class="highlight-card__media"><img src="${highlight.featuredImage}" alt="" loading="lazy"></div>`;
-                }
+                const imgHtml = window.CPCAnnouncementMedia.render(highlight);
 
                 const detailUrl = `/announcement/${highlight.id}`;
                 

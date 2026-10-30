@@ -552,15 +552,25 @@ body.theme-white .events-hero p { color: var(--page-muted); }
             <p>Join us for fellowship, learning, worship, and community events</p>
         </div>
 
-        <section class="welcome-sunday-card" aria-labelledby="welcome-sunday-title">
+        {% if '2026-10-30' <= church_today < '2026-11-08' %}
+        <section class="welcome-sunday-card" aria-labelledby="season-events-title">
             <div>
-                <p class="events-eyebrow">Academic year 2026–27 begins</p>
-                <h2 id="welcome-sunday-title">Welcome Sunday</h2>
-                <p class="welcome-sunday-card__date"><time datetime="2026-09-13">September 13, 2026</time></p>
-                <p>Join us as we begin a new academic calendar year together in worship, welcome, and community.</p>
+                <p class="events-eyebrow">Fall &amp; Christmas 2026</p>
+                <h2 id="season-events-title">Save these dates</h2>
+                <ul>
+                    <li>November 7 — Parenting Seminar</li>
+                    <li>November 26 — Thanksgiving Fellowship Meals</li>
+                    <li>December 5 — Fall Work Day and Decor Setup</li>
+                    <li>December 12 — Christmas Service</li>
+                    <li>December 13 — Last day of Sunday School and weekly lunches</li>
+                </ul>
+                <a class="welcome-sunday-card__action" href="#upcoming-events">Browse event details <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
             </div>
-            <a class="welcome-sunday-card__action" href="#upcoming-events">See upcoming events <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+            <a href="{{ url_for('static', filename='assets/newsletters/2026-10-30/upcoming-events.png') }}" aria-label="Open the fall and Christmas upcoming events poster">
+                <img src="{{ url_for('static', filename='assets/newsletters/2026-10-30/upcoming-events.png') }}" alt="CPC upcoming events for November and December 2026; dates listed alongside" width="1394" height="1754" style="display:block;width:100%;max-width:280px;height:auto;" loading="lazy">
+            </a>
         </section>
+        {% endif %}
 
         <!-- Events Content -->
         <section class="events-section" id="upcoming-events">

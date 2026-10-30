@@ -5,7 +5,7 @@
     "description": "Join us as we begin the 2026–27 academic calendar year together in worship, welcome, and community.",
     "type": "event",
     "category": "worship",
-    "active": true,
+    "active": false,
     "start": "2026-09-13T10:30:00-04:00",
     "location": "Christ Presbyterian Church"
   },
@@ -15,7 +15,7 @@
     "description": "Please join us for breakfast and a time to connect and re-connect as we love one another and love others through service. Breakfast will be served and then we'll be making a meal for about 40 folks. We'll also be putting together cookie packages for our covenant children who are away at school. Feel free to just show up and bring a friend, however if you'd like to bake cookies or help with the breakfast, you can use the sign up sheet in the foyer or contact Diane Miller (auntie.diane@comcast.net)",
     "type": "event",
     "category": "fellowship",
-    "active": true,
+    "active": false,
     "date_entered": "2026-01-24T09:00:00Z",
     "location": "Fellowship Hall"
   },
@@ -25,7 +25,7 @@
     "description": "For those who are new, or new-ish, join us for a \"Newcomer's Lunch\" in the Lecture Room to learn more about CPC and to meet some of our leadership teams. Lunch will be provided in the Lecture Room for you, just head there! Also, fill out a Welcome Card from the pew and return it to the Welcome Bar in the foyer where you can pick up a gift just for you.",
     "type": "event",
     "category": "fellowship",
-    "active": true,
+    "active": false,
     "date_entered": "2026-02-01T12:00:00Z",
     "location": "Lecture Room"
   },
@@ -35,7 +35,7 @@
     "description": "If you're an undergraduate student and enjoy playing an assortment of games, come join us for a bit of fun and fellowship. Be sure to grab our new brochure in the foyer to see what college events are coming up!",
     "type": "event",
     "category": "college",
-    "active": true,
+    "active": false,
     "date_entered": "2026-01-25T17:00:00Z",
     "location": "CPC Fellowship Hall"
   },
@@ -45,7 +45,7 @@
     "description": "For all those interested in shaping the future culture of our church! We're holding monthly training sessions on key topics such as: Gospel-centered community, Small Group Leadership, Missional Living & Hospitality, and Lay Counseling. This class builds on the Total Christ vision from Sunday School. It is especially for small group leaders and anyone aspiring to grow in their faith and service to the church. All are welcome. Continues Friday, Jan. 30, 6:30-8:30pm, meal provided. Will continue in 2026. See website for readings.",
     "type": "event",
     "category": "education",
-    "active": true,
+    "active": false,
     "date_entered": "2026-01-30T18:30:00Z",
     "location": "CPC"
   },
@@ -55,7 +55,7 @@
     "description": "Join students from across southern New England in a joint youth event with our Presbytery! We will be in Whitinsville Christian School in eastern Massachusetts for a half day of fun, fellowship, food and worship. Cost is $10 per student. Age range, 6th to 12th grade. Be on the lookout for registration. If you have any questions, contact Pastor Jerry.",
     "type": "event",
     "category": "youth",
-    "active": true,
+    "active": false,
     "date_entered": "2026-02-28T10:00:00Z",
     "location": "Whitinsville Christian School, MA"
   },
@@ -65,7 +65,7 @@
     "description": "Join us for prayer every Sunday at 8:30am in the parlor.",
     "type": "ongoing",
     "category": "prayer",
-    "active": true,
+    "active": false,
     "date_entered": "2024-01-01T08:30:00Z"
   },
   {
@@ -74,7 +74,7 @@
     "description": "Please sign up on the sheet in the foyer to help set up.\n\nJoin us for our Summer Thursday Picnics! These gatherings are a wonderful opportunity to enjoy fellowship, food, and fun together as a church family.\nEach picnic date will have two key leaders and three support volunteers responsible for, utilizing the provided budget to select the meal, and coordinating setup and cleanup.",
     "type": "event",
     "category": "fellowship",
-    "active": true,
+    "active": false,
     "start": "2026-07-30T18:00:00-04:00",
     "location": "CPC"
   },
@@ -84,7 +84,7 @@
     "description": "Sign up here: https://us.list-manage.com/GDgRralFBKf?e=9da175cc40&c2id=6df9b900f2d1d0ec64fac5dfc299411c\n\nWednesday Night Summer BBQs (July 1-August 19) | Trowbridge Square Park in the Hill: 169 Cedar St, New Haven, CT 06519. Volunteers needed to help set up, serve, and clean up (4:45pm-7:00pm).",
     "type": "event",
     "category": "service",
-    "active": true,
+    "active": false,
     "start": "2026-07-01T16:45:00-04:00",
     "location": "Trowbridge Square Park in the Hill, 169 Cedar St, New Haven, CT 06519"
   },
@@ -94,7 +94,7 @@
     "description": "Bike ride the Canal trail to Mikro for lunch, meeting at 11am at CPC parking lot. Sign up sheet in the foyer.",
     "type": "event",
     "category": "fellowship",
-    "active": true,
+    "active": false,
     "start": "2026-08-01T11:00:00-04:00",
     "location": "CPC Parking Lot"
   },
@@ -104,7 +104,7 @@
     "description": "Sign up here! https://us.list-manage.com/XmvyHP5m0iv?e=9da175cc40&c2id=6df9b900f2d1d0ec64fac5dfc299411c\n\nTo truly love and serve one another, we’ll tackle projects for those who need any help. Each project will have a dedicated project lead/captain who will give instructions to volunteers.",
     "type": "event",
     "category": "service",
-    "active": true,
+    "active": false,
     "start": "2026-08-29T09:00:00-04:00",
     "location": "CPC"
   },
@@ -114,7 +114,7 @@
     "description": "Regular Sunday Lunches Resume | August 23",
     "type": "announcement",
     "category": "announcement",
-    "active": true,
+    "active": false,
     "start": "2026-08-23T09:00:00-04:00",
     "location": "CPC"
   },
@@ -124,7 +124,7 @@
     "description": "CPC Women’s Conference | Save the Date! | October 3rd at CPC",
     "type": "announcement",
     "category": "announcement",
-    "active": true,
+    "active": false,
     "start": "2026-10-03T09:00:00-04:00",
     "location": "CPC"
   },
@@ -134,7 +134,7 @@
     "description": "If you’re interested in connecting more spontaneously with CPC folks, you’re welcome to join our WhatsApp group “CPC Social!”",
     "type": "announcement",
     "category": "announcement",
-    "active": true,
+    "active": false,
     "start": "2026-08-23T09:00:00-04:00",
     "location": "CPC"
   }

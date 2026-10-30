@@ -52,6 +52,8 @@
 
     <!-- Unified Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=git_rev or app_version) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/announcement-media.css', v=git_rev or app_version) }}">
+    <script src="{{ url_for('static', filename='js/announcement-media.js', v=git_rev or app_version) }}"></script>
     <style>
         :root {
             --cpc-blue: #0052a3;
@@ -420,13 +422,13 @@
         <!-- Adult Sunday Studies -->
         <div class="dash-block">
             <h3 class="dash-heading">Adult Sunday Studies</h3>
-            <div class="dash-r-title study-title" style="font-size: 0.95rem;">The Wonders of Communal Worship</div>
+            <div class="dash-r-title study-title" style="font-size: 0.95rem;">{{ current_adult_study.title if current_adult_study else 'Adult Sunday Studies' }}</div>
             <div class="dash-r-meta">
-                <div class="dash-r-meta__line">9:30am · Fellowship Hall</div>
-                <span class="dash-r-pill">All 7 classes available</span>
+                <div class="dash-r-meta__line">Sundays at 9:30am</div>
+                {% if current_adult_study %}<span class="dash-r-pill">{{ current_adult_study.status }}</span>{% endif %}
             </div>
-            <a href="{{ url_for('teaching_series_detail', slug='wonders-of-communal-worship') }}" class="dash-r-link cta">
-                <span>View class</span>
+            <a href="{{ url_for('teaching_series_detail', slug=current_adult_study.slug) if current_adult_study else url_for('teaching_series') }}" class="dash-r-link cta">
+                <span>{{ 'View class' if current_adult_study else 'Browse classes' }}</span>
                 <i class="fas fa-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
