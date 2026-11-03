@@ -287,7 +287,12 @@ function renderEventResults(events, container) {
         </div>` : '';
 
       card.innerHTML = `
-        ${window.CPCAnnouncementMedia.render({featuredImage: ev.imageUrl, category: ev.category})}
+        ${window.CPCAnnouncementMedia.render({
+          featuredImage: ev.imageUrl,
+          category: ev.category,
+          title: ev.title,
+          eventDate: ev.date || (startDate ? startDate.toISOString().split('T')[0] : null)
+        })}
         <div class="evt-card__body">
         <div class="evt-head">
           <span class="evt-cat">${displayTag(ev.category)}</span>

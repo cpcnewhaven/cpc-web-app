@@ -393,6 +393,9 @@
                 if (highlight.superfeatured) {
                     card.classList.add('featured', 'superfeatured');
                 }
+                if (!highlight.featuredImage) {
+                    card.classList.add('highlight-card--no-image');
+                }
                 const type = (highlight.type || 'announcement').toLowerCase();
                 card.dataset.type = type;
                 card.dataset.superfeatured = highlight.superfeatured ? 'true' : 'false';

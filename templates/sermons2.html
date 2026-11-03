@@ -1085,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // HTML-escape helper for data attribute values
     function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
 
-    const SERMON_THUMBNAIL_FALLBACK = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg';
+    const SERMON_THUMBNAIL_FALLBACK = 'https://cpcnewhaven.org/assets/podcast-thumbnails/THE%20SUNDAY%20SERMON.jpg';
 
     function resolveSermonThumbnail(sermon) {
         const raw = sermon && sermon.thumbnail ? String(sermon.thumbnail).trim() : '';

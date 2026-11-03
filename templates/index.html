@@ -1411,7 +1411,7 @@
             {% if spotlight_sermon %}
             <article class="spotlight-card spotlight-card--sermon" id="spotlight-sermon-card">
                 <a href="{{ url_for('sermons') }}" class="spotlight-card__media" aria-label="Explore Sunday Sermons">
-                    <img src="{{ spotlight_sermon.thumbnail_url }}" alt="{{ spotlight_sermon.title }}" class="spotlight-thumb" loading="lazy" decoding="async">
+                    <img src="{{ spotlight_sermon.thumbnail_url }}" alt="{{ spotlight_sermon.title }}" class="spotlight-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://cpcnewhaven.org/assets/podcast-thumbnails/THE%20SUNDAY%20SERMON.jpg';">
                     <span class="spotlight-play-overlay" aria-hidden="true">
                         <i class="fas fa-play"></i>
                     </span>
@@ -1486,7 +1486,7 @@
             {% if spotlight_beyond %}
             <article class="spotlight-card spotlight-card--beyond" id="spotlight-beyond-card">
                 <a href="{{ url_for('podcasts') }}" class="spotlight-card__media" aria-label="Explore Beyond the Sunday Sermon Podcast">
-                    <img src="{{ spotlight_beyond.artwork }}" alt="Beyond the Sunday Sermon" class="spotlight-thumb" loading="lazy" decoding="async">
+                    <img src="{{ spotlight_beyond.artwork }}" alt="Beyond the Sunday Sermon" class="spotlight-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png';">
                     <span class="spotlight-play-overlay" aria-hidden="true">
                         <i class="fas fa-play"></i>
                     </span>
@@ -1852,7 +1852,7 @@
         }
         function buildCard(h) {
             var card = document.createElement('div');
-            card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '');
+            card.className = 'highlight-card' + (h.superfeatured ? ' superfeatured' : '') + (!h.featuredImage ? ' highlight-card--no-image' : '');
             var detailUrl = '/announcement/' + h.id;
             var mediaHtml = window.CPCAnnouncementMedia.render(h);
 

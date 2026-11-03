@@ -1908,7 +1908,7 @@ def _get_home_teaching_spotlight(force_refresh=False):
         return _SPOTLIGHT_CACHE
     latest_sermon = None
     latest_beyond = None
-    default_sermon_thumb = 'https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-Sermon.jpg'
+    default_sermon_thumb = 'https://cpcnewhaven.org/assets/podcast-thumbnails/THE%20SUNDAY%20SERMON.jpg'
     default_beyond_art = 'https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png'
 
     try:
