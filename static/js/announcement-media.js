@@ -22,29 +22,6 @@ window.CPCAnnouncementMedia = {
     media.classList.add('cpc-announcement-media--poster');
     media.setAttribute('aria-hidden', 'true');
 
-    const categoryIcons = {
-      children: 'fa-child-reaching',
-      education: 'fa-book-open',
-      worship: 'fa-church',
-      fellowship: 'fa-mug-hot',
-      service: 'fa-hands-helping',
-      mercy: 'fa-heart',
-      general: 'fa-bullhorn'
-    };
-    const categoryLabels = {
-      children: 'Children & Families',
-      education: 'Learning Together',
-      worship: 'Worship Together',
-      fellowship: 'Life Together',
-      service: 'Serving Neighbors',
-      mercy: 'Caring For Others',
-      general: 'Church Life'
-    };
-
-    const catKey = (announcement.category || 'general').toLowerCase();
-    const catIcon = categoryIcons[catKey] || 'fa-church';
-    const catLabel = categoryLabels[catKey] || 'Church Life';
-
     // Date badge parsing
     let dateBadgeHtml = '';
     const dateVal = announcement.eventDate || announcement.date || announcement.startDate;
@@ -69,8 +46,8 @@ window.CPCAnnouncementMedia = {
     if (!dateBadgeHtml) {
       dateBadgeHtml = `
         <div class="cpc-poster__date-badge cpc-poster__date-badge--ongoing">
-          <i class="fas ${catIcon}"></i>
-          <span>CPC</span>
+          <span class="cpc-poster__date-month">CPC</span>
+          <span class="cpc-poster__date-dow">UPDATE</span>
         </div>`;
     }
 
@@ -100,26 +77,13 @@ window.CPCAnnouncementMedia = {
       </div>
       <div class="cpc-poster__header">
         ${dateBadgeHtml}
-        <div class="cpc-poster__meta-group">
-          <span class="cpc-poster__brand">
-            <span class="cpc-poster__brand-dot"></span>
-            CPC NEW HAVEN
-          </span>
-          <span class="cpc-poster__cat-tag">
-            <i class="fas ${catIcon}" aria-hidden="true"></i>
-            <span>${catLabel}</span>
-          </span>
-        </div>
+        <span class="cpc-poster__brand">
+          <span class="cpc-poster__brand-dot"></span>
+          CPC NEW HAVEN
+        </span>
       </div>
       <div class="cpc-poster__body">
-        <h4 class="cpc-poster__title ${titleSizeClass}">${escapedTitle}</h4>
-      </div>
-      <div class="cpc-poster__footer">
-        <span class="cpc-poster__accent-line"></span>
-        <span class="cpc-poster__accent-badge">
-          <i class="fas ${catIcon}" aria-hidden="true"></i>
-          <span>${catLabel}</span>
-        </span>
+        <div class="cpc-poster__title ${titleSizeClass}">${escapedTitle}</div>
       </div>
     `;
 

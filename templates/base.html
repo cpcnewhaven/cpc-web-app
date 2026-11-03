@@ -425,7 +425,9 @@
             <div class="dash-r-title study-title" style="font-size: 0.95rem;">{{ current_adult_study.title if current_adult_study else 'Adult Sunday Studies' }}</div>
             <div class="dash-r-meta">
                 <div class="dash-r-meta__line">Sundays at 9:30am</div>
-                {% if current_adult_study %}<span class="dash-r-pill">{{ current_adult_study.status }}</span>{% endif %}
+                {% if current_adult_study %}
+                <span class="dash-r-pill">{{ current_adult_study.pill or (current_adult_study.status.split('·')[0].strip() if '·' in current_adult_study.status and current_adult_study.status|length > 25 else current_adult_study.status) }}</span>
+                {% endif %}
             </div>
             <a href="{{ url_for('teaching_series_detail', slug=current_adult_study.slug) if current_adult_study else url_for('teaching_series') }}" class="dash-r-link cta">
                 <span>{{ 'View class' if current_adult_study else 'Browse classes' }}</span>
