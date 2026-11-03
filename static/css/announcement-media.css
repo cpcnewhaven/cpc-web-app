@@ -168,7 +168,7 @@
     margin: 0;
     font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
     font-weight: 700;
-    color: #ffffff !important;
+    color: #ffffff;
     letter-spacing: -0.01em;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
     display: -webkit-box;
@@ -176,6 +176,11 @@
     -webkit-line-clamp: 3;
     overflow: hidden;
     width: 100%;
+    transition: color 0.2s ease;
+}
+
+.highlight-card:hover .cpc-poster__title {
+    color: #93c5fd !important;
 }
 
 .cpc-poster__title--lg {
@@ -319,3 +324,30 @@ body.theme-blue .highlight-card .highlight-card__title { color: #fff !important;
 body.theme-blue .highlight-card .highlight-card__description { color: #d6e5f5 !important; }
 body.theme-white .highlight-card .highlight-card__title { color: #1d2e42 !important; }
 body.theme-white .highlight-card .highlight-card__description { color: #586c80 !important; }
+
+/* Option B: Avoid Title Duplication
+   When an announcement has no uploaded graphic, the typographic poster prominently
+   presents the title in the top banner. On desktop viewports, visually hide the redundant
+   body title (preserving accessibility for screen readers via sr-only pattern),
+   while allowing it to display on mobile screens where the poster collapses into a compact date ticket. */
+@media (min-width: 641px) {
+    .highlight-card--no-image .highlight-card__title {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+    }
+
+    .highlight-card--no-image .highlight-card__content {
+        justify-content: flex-start;
+    }
+
+    .highlight-card--no-image .highlight-card__description {
+        -webkit-line-clamp: 3;
+    }
+}
