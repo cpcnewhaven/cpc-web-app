@@ -4,6 +4,7 @@ let allCategories = [];
 let currentEventPage = 1;
 let currentEventQuery = '';
 let currentEventCategory = '';
+let currentEventTimeline = 'upcoming';
 let eventSearchTimer;
 
 async function loadEvents() {
@@ -73,6 +74,16 @@ function setupEventFilters() {
     currentEventPage = 1;
     searchEvents();
   });
+
+  // Timeline filter (upcoming vs full church year)
+  const timelineSelect = document.getElementById('eventTimelineFilter');
+  if (timelineSelect) {
+    timelineSelect.addEventListener('change', () => {
+      currentEventTimeline = timelineSelect.value;
+      currentEventPage = 1;
+      searchEvents();
+    });
+  }
 }
 
 async function searchEvents() {
@@ -110,6 +121,17 @@ async function searchEvents() {
 
     if (currentEventCategory) {
       events = events.filter(e => e.category === currentEventCategory);
+    }
+
+    // Filter by timeline (upcoming vs full church year) unless user explicitly typed a search query
+    if (currentEventTimeline === 'upcoming' && !currentEventQuery) {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      events = events.filter(e => {
+        if (!e.date) return true;
+        const evDate = new Date(e.date);
+        return isNaN(evDate.getTime()) || evDate >= todayStart;
+      });
     }
 
     // Sort by date

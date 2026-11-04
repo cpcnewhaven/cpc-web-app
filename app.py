@@ -2109,8 +2109,8 @@ def api_event_announcements():
     from datetime import datetime, timedelta
     today = datetime.now(_CHURCH_TIMEZONE).date()
 
-    # Get announcements with event_date in the next 3 months
-    future_limit = today + timedelta(days=90)
+    # Get announcements with event_date for the church academic year
+    future_limit = today + timedelta(days=int(app.config.get("EVENTS_LOOKAHEAD_DAYS", 365)))
     if _prefer_announcement_snapshot():
         announcements = sorted(
             (a for a in _snapshot_announcements(active_only=True)
@@ -3090,9 +3090,14 @@ def _fetch_events_json():
     items.extend(_load_active_ongoing_events(site_tz))
     items.extend(_load_local_events_json(site_tz))
 
-    # window filter
-    lookahead = int(app.config.get("EVENTS_LOOKAHEAD_DAYS", 120))
+    # window filter: include current academic/ministry year and full upcoming lookahead
+    lookahead = int(app.config.get("EVENTS_LOOKAHEAD_DAYS", 365))
     now = datetime.now(pytz.timezone(site_tz))
+    church_year_start = now.replace(month=8, day=1, hour=0, minute=0, second=0, microsecond=0)
+    if now.month < 8:
+        church_year_start = church_year_start.replace(year=now.year - 1)
+    else:
+        church_year_start = church_year_start.replace(year=now.year)
     until = now + timedelta(days=lookahead)
 
     upcoming = []
@@ -3106,14 +3111,14 @@ def _fetch_events_json():
             continue
         if start.tzinfo is None:
             start = pytz.utc.localize(start)
-        if not (now <= start <= until):
+        if not (church_year_start <= start <= until):
             continue
         if e["id"] in seen_ids:
             continue
         seen_ids.add(e["id"])
         upcoming.append(e)
 
-    upcoming.sort(key=lambda e: e.get("start") or "", reverse=True)
+    upcoming.sort(key=lambda e: e.get("start") or "")
     return {"events": upcoming}
 
 @app.route("/api/events/<eid>.ics")

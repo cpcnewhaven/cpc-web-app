@@ -552,25 +552,61 @@ body.theme-white .events-hero p { color: var(--page-muted); }
             <p>Join us for fellowship, learning, worship, and community events</p>
         </div>
 
-        {% if '2026-10-30' <= church_today < '2026-11-08' %}
-        <section class="welcome-sunday-card" aria-labelledby="season-events-title">
-            <div>
-                <p class="events-eyebrow">Fall &amp; Christmas 2026</p>
-                <h2 id="season-events-title">Save these dates</h2>
-                <ul>
-                    <li>November 7 — Parenting Seminar</li>
-                    <li>November 26 — Thanksgiving Fellowship Meals</li>
-                    <li>December 5 — Fall Work Day and Decor Setup</li>
-                    <li>December 12 — Christmas Service</li>
-                    <li>December 13 — Last day of Sunday School and weekly lunches</li>
-                </ul>
-                <a class="welcome-sunday-card__action" href="#upcoming-events">Browse event details <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+        <section class="welcome-sunday-card" aria-labelledby="season-events-title" style="display: flex; flex-direction: column; align-items: stretch; gap: 1.25rem;">
+            <div style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                    <div>
+                        <p class="events-eyebrow">Church Year 2026–2027</p>
+                        <h2 id="season-events-title" style="margin-bottom: 0.35rem;">Save these dates</h2>
+                        <p style="margin: 0; color: var(--page-muted); font-size: 0.95rem;">Key gatherings, special worship services, and fellowship events across the academic and ministry year.</p>
+                    </div>
+                    <a class="welcome-sunday-card__action" href="#upcoming-events" style="margin-top: 0.25rem;">Browse upcoming details <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="church-calendar-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--page-border);">
+                    <div>
+                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--page-accent); margin: 0 0 0.65rem; font-weight: 800;">Fall 2026</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; line-height: 1.85;">
+                            <li><strong style="color: var(--page-text);">08/29/26</strong> — Mercy Day</li>
+                            <li><strong style="color: var(--page-text);">08/30/26</strong> — Congregational Meeting</li>
+                            <li><strong style="color: var(--page-text);">09/13/26</strong> — Sunday School Begins</li>
+                            <li><strong style="color: var(--page-text);">09/13/26</strong> — Welcome Sunday &amp; Ministry Fair</li>
+                            <li><strong style="color: var(--page-text);">09/18/26</strong> — Men’s Discipleship Gathering</li>
+                            <li><strong style="color: var(--page-text);">10/03/26</strong> — Women’s Conference at CPC</li>
+                            <li><strong style="color: var(--page-accent); font-weight: 800;">11/07/26</strong> — <strong>Parenting Seminar</strong></li>
+                            <li><strong style="color: var(--page-accent); font-weight: 800;">11/26/26</strong> — <strong>Thanksgiving Fellowship Meals</strong></li>
+                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/05/26</strong> — <strong>Fall Work Day and Decor Set-Up</strong></li>
+                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/12/26</strong> — <strong>Christmas Service</strong></li>
+                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/13/26</strong> — <strong>Last Day Sunday School</strong></li>
+                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/13/26</strong> — <strong>Last Day Weekly Lunches</strong></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--page-accent); margin: 0 0 0.65rem; font-weight: 800;">Winter &amp; Spring 2027</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; line-height: 1.85;">
+                            <li><strong style="color: var(--page-text);">01/09/27</strong> — Decor Take-Down</li>
+                            <li><strong style="color: var(--page-text);">01/17/27</strong> — Sunday School Resumes</li>
+                            <li><strong style="color: var(--page-text);">01/17/27</strong> — Weekly Lunches Resume</li>
+                            <li><strong style="color: var(--page-text);">01/30/27</strong> — Women’s Service Project</li>
+                            <li><strong style="color: var(--page-text);">03/20/27</strong> — Spring Work Day</li>
+                            <li><strong style="color: var(--page-text);">03/26/27</strong> — Good Friday Service</li>
+                            <li><strong style="color: var(--page-text);">03/28/27</strong> — Easter Fellowship Meals</li>
+                            <li><strong style="color: var(--page-text);">04/16/27</strong> — Women’s Overnight Retreat</li>
+                            <li><strong style="color: var(--page-text);">05/02/27</strong> — College and Grad School Sunday</li>
+                            <li><strong style="color: var(--page-text);">05/16/27</strong> — Last Day of Sunday School</li>
+                            <li><strong style="color: var(--page-text);">05/16/27</strong> — Last Day of Weekly Lunches</li>
+                        </ul>
+
+                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--page-accent); margin: 1.25rem 0 0.65rem; font-weight: 800;">Summer 2027</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; line-height: 1.85;">
+                            <li><strong style="color: var(--page-text);">06/06/27</strong> — Youth Sunday</li>
+                            <li><strong style="color: var(--page-text);">07/08/27</strong> — Summer Picnic Series Begins</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <a href="{{ url_for('static', filename='assets/newsletters/2026-10-30/upcoming-events.png') }}" aria-label="Open the fall and Christmas upcoming events poster">
-                <img src="{{ url_for('static', filename='assets/newsletters/2026-10-30/upcoming-events.png') }}" alt="CPC upcoming events for November and December 2026; dates listed alongside" width="1394" height="1754" style="display:block;width:100%;max-width:280px;height:auto;" loading="lazy">
-            </a>
         </section>
-        {% endif %}
 
         <!-- Events Content -->
         <section class="events-section" id="upcoming-events">
@@ -587,6 +623,10 @@ body.theme-white .events-hero p { color: var(--page-muted); }
                 <div class="filter-controls mobile-collapsible" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
                     <select id="eventCategoryFilter" style="padding: 0.5rem 0.75rem; background: var(--page-surface-hover); border: 1px solid var(--page-border); color: var(--page-text); border-radius: 6px; font-size: 0.85rem;">
                         <option value="">All Categories</option>
+                    </select>
+                    <select id="eventTimelineFilter" style="padding: 0.5rem 0.75rem; background: var(--page-surface-hover); border: 1px solid var(--page-border); color: var(--page-text); border-radius: 6px; font-size: 0.85rem;">
+                        <option value="upcoming">Upcoming Events</option>
+                        <option value="all">Full 2026–2027 Calendar (All 25 Dates)</option>
                     </select>
                 </div>
             </div>

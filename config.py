@@ -33,7 +33,7 @@ BIBLE_API_KEY = "not_needed"  # Uses free public API
 
 # === Events (Google Calendar ICS) ===
 # How far ahead to show events (in days)
-EVENTS_LOOKAHEAD_DAYS = 120
+EVENTS_LOOKAHEAD_DAYS = 365
 
 # Site timezone for display
 SITE_TIMEZONE = "America/New_York"
