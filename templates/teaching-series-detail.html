@@ -7,8 +7,21 @@
 {% block canonical %}https://cpcnewhaven.org/teaching-series/{{ course.slug }}{% endblock %}
 
 {% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 <style>
     .study-detail-page { --detail-ink:var(--surface-text); --detail-muted:var(--surface-muted); --detail-border:var(--surface-border); --detail-surface:var(--surface-bg); --detail-raised:var(--surface-bg-hover); max-width:1080px; margin:0 auto; }
+    .study-detail-page--acts, .study-detail-page--acts *:not(i) { font-family:Poppins,Manrope,sans-serif; }
+    .study-detail-page--acts { max-width:1280px; padding:0 clamp(1rem,2.4vw,2.5rem) 3rem; }
+    .study-detail-page--acts .study-detail-hero { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:2rem; min-height:0; padding:clamp(2rem,4vw,3.25rem); }
+    .study-detail-page--acts .study-detail-hero__copy { max-width:740px; }
+    .study-detail-page--acts .study-detail-hero h1 { font-family:Poppins,Manrope,sans-serif; }
+    .study-detail-page--acts .study-detail-hero__facts { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1.25rem; }
+    .study-detail-page--acts .study-detail-hero__facts span { display:inline-flex; align-items:center; gap:.5rem; min-height:38px; padding:.45rem .75rem; border:1px solid rgba(255,255,255,.2); border-radius:9px; background:rgba(255,255,255,.1); color:#fff; font-size:.8rem; font-weight:650; }
+    .study-detail-page--acts .study-detail-hero__download { display:inline-flex; align-items:center; gap:.65rem; max-width:240px; padding:.9rem 1rem; border:1px solid rgba(255,255,255,.32); border-radius:11px; background:#fff; color:#003c6d; font-size:.9rem; font-weight:800; line-height:1.45; text-decoration:none; box-shadow:0 8px 20px rgba(0,12,32,.2); }
+    .study-detail-page--acts .study-detail-hero__download:hover { background:#eaf4ff; }
+    @media(max-width:700px) { .study-detail-page--acts .study-detail-hero { grid-template-columns:1fr; gap:1.3rem; padding:1.5rem; } .study-detail-page--acts .study-detail-hero__download { max-width:none; } }
     .study-back { display:inline-flex; align-items:center; gap:.5rem; min-height:42px; margin:0 0 .9rem; color:var(--surface-accent); font-size:.9rem; font-weight:750; text-decoration:none; }
     .study-back:hover { color:var(--detail-ink); }
     .study-course-nav { display:flex; gap:.5rem; overflow-x:auto; padding:.2rem .1rem .85rem; margin-bottom:.8rem; scrollbar-width:thin; }
@@ -45,7 +58,7 @@
 {% endblock %}
 
 {% block content %}
-<section class="study-detail-page" aria-labelledby="study-title">
+<section class="study-detail-page{% if course.slug == 'deeper-into-acts' %} study-detail-page--acts{% endif %}" aria-labelledby="study-title">
     <a class="study-back" href="{{ url_for('teaching_series') }}"><span aria-hidden="true">←</span> All Adult Sunday Studies</a>
     <nav class="study-course-nav" aria-label="Adult Sunday Studies courses">
         {% for item in courses %}
@@ -58,7 +71,15 @@
             <p class="study-detail-hero__eyebrow">Adult Sunday Studies · {{ course.status }}</p>
             <h1 id="study-title">{{ course.title }}</h1>
             <p>{{ course.summary }}</p>
+            {% if course.schedule_dates or course.schedule_time or course.location %}
+            <div class="study-detail-hero__facts">
+                {% if course.schedule_dates %}<span><i class="fa-regular fa-calendar" aria-hidden="true"></i>{{ course.schedule_dates }}</span>{% endif %}
+                {% if course.schedule_time %}<span><i class="fa-regular fa-clock" aria-hidden="true"></i>{{ course.schedule_time }}</span>{% endif %}
+                {% if course.location %}<span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>{{ course.location }}</span>{% endif %}
+            </div>
+            {% endif %}
         </div>
+        {% if course.handout_url %}<a class="study-detail-hero__download" href="{{ course.handout_url }}" target="_blank" rel="noopener"><i class="fa-solid fa-download" aria-hidden="true"></i>Download session 1 handout (PDF)</a>{% endif %}
     </header>
 
     {% if course.description and course.description != course.summary %}<div class="study-description"><p>{{ course.description }}</p>{% if course.intro_points %}<ul>{% for point in course.intro_points %}<li>{{ point }}</li>{% endfor %}</ul>{% endif %}</div>{% endif %}

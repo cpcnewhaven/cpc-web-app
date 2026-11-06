@@ -82,22 +82,23 @@
   },
   {
     "id": "event_2026_12_05_fall_work_day_decor_setup",
-    "title": "Fall Work Day and Decor Set-Up",
-    "description": "Help clean and beautify our building and grounds, and set up the sanctuary decorations for the Advent and Christmas season.",
+    "title": "Fall Work Day & Decor Setup",
+    "description": "<p>Calling all volunteer elves to decorate our church with a festive touch and to start the holiday season off with a winter wonderland of goodness and kindness (Elf costumes optional). Join together with your brothers and sisters in Christ to care for our facilities and grounds. This year will also include bagels, coffee and OJ that will be provided in the morning and hot cocoa and christmas cookies to share afterward. Work activities will include raking leaves, light repairs, Christmas decorating, and more. All are welcome!</p>",
     "type": "event",
     "category": "service",
     "active": true,
     "start": "2026-12-05T09:00:00-05:00",
-    "location": "Christ Presbyterian Church"
+    "location": "Christ Presbyterian Church",
+    "end": "2026-12-05T12:00:00-05:00"
   },
   {
     "id": "event_2026_12_12_christmas_service",
     "title": "Christmas Service",
-    "description": "Celebrate the birth of our Savior Jesus Christ with scripture readings, lessons, and carols for the whole family.",
+    "description": "<p>Save the date! CPC Christmas Service, Saturday, December 12 at 5pm. More details to come!</p>",
     "type": "event",
     "category": "worship",
     "active": true,
-    "start": "2026-12-12T16:00:00-05:00",
+    "start": "2026-12-12T17:00:00-05:00",
     "location": "CPC Sanctuary"
   },
   {
@@ -249,5 +250,15 @@
     "active": true,
     "start": "2027-07-08T18:00:00-04:00",
     "location": "CPC Lawn / Local Parks"
+  },
+  {
+    "id": "event_2026_11_11_moms_discipleship_group",
+    "title": "Mom’s Discipleship Group",
+    "description": "<p>Please join us! Children are welcome to play near us while we meet. Future dates: No Dec, 1/13/27. Please inquire with any young mom, or <a href=\"mailto:mhbogue@me.com\">Meg Bogue</a> or <a href=\"mailto:kristin.jensen358@gmail.com\">Kristin Jensen</a> with questions.</p>",
+    "type": "event",
+    "category": "fellowship",
+    "active": true,
+    "start": "2026-11-11T09:45:00-05:00",
+    "location": "CPC Fellowship Hall"
   }
 ]

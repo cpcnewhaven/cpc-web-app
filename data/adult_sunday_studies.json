@@ -4,16 +4,62 @@
       "slug": "deeper-into-acts",
       "title": "Deeper into Acts",
       "nav_title": "Deeper into Acts",
-      "status": "Six-week study · Fall 2026",
+      "status": "Fall 2026 · November 1–December 13",
       "pill": "Six-week study",
-      "summary": "Sundays at 9:30am. Join Adult Sunday Studies for six weeks on the Book of Acts, beginning November 1, 2026.",
-      "description": "A six-week Adult Sunday Studies class on the Book of Acts.",
+      "summary": "Six weeks exploring the Book of Acts: its context, its people, and the church’s witness to Christ.",
+      "description": "A six-week Adult Sunday Studies class exploring the Book of Acts and the church’s witness to Christ.",
       "promote_from": "2026-10-30",
       "promote_until": "2026-12-07",
       "image_url": "",
       "curriculum_url": "",
       "roadmap": [],
-      "sessions": []
+      "sessions": [
+        {
+          "number": 1,
+          "title": "Acts 1–12: Introduction & Overall Context",
+          "date": "November 1, 2026",
+          "resources": [
+            {
+              "label": "Session 1 handout (PDF)",
+              "url": "/static/assets/handouts/acts/Acts_SS_2026_1.pdf"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Acts 13–28: Overall Context",
+          "date": "November 8, 2026",
+          "resources": []
+        },
+        {
+          "number": 3,
+          "title": "Greco-Roman World and Government Structure",
+          "date": "November 15, 2026",
+          "resources": []
+        },
+        {
+          "number": 4,
+          "title": "Missions",
+          "date": "November 22, 2026",
+          "resources": []
+        },
+        {
+          "number": 5,
+          "title": "Jew and Gentile Relations",
+          "date": "December 6, 2026",
+          "resources": []
+        },
+        {
+          "number": 6,
+          "title": "Suffering",
+          "date": "December 13, 2026",
+          "resources": []
+        }
+      ],
+      "schedule_dates": "November 1–December 13, 2026",
+      "schedule_time": "Sundays · 9:30am",
+      "location": "CPC New Haven",
+      "handout_url": "/static/assets/handouts/acts/Acts_SS_2026_1.pdf"
     },
     {
       "slug": "wonders-of-communal-worship",

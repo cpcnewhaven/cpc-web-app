@@ -69,7 +69,10 @@ def populate_database():
                     continue
                 
                 # Check if announcement already exists (match by title)
-                existing = Announcement.query.filter_by(title=title).first()
+                item_id = int(item['id']) if str(item.get('id', '')).isdigit() else None
+                existing = db.session.get(Announcement, item_id) if item_id is not None else None
+                if existing is None:
+                    existing = Announcement.query.filter_by(title=title).first()
                 
                 if existing:
                     # Update existing announcement
@@ -83,6 +86,18 @@ def populate_database():
                     existing.featured_image = item.get('featuredImage')
                     existing.image_display_type = item.get('imageDisplayType')
                     existing.show_in_banner = parse_active(item.get('showInBanner', False))
+                    if 'archived' in item:
+                        existing.archived = parse_active(item['archived'])
+                    if 'expires_at' in item or 'expiresAt' in item:
+                        expires = item.get('expires_at') or item.get('expiresAt')
+                        existing.expires_at = parse_date(expires).date() if expires else None
+                    if 'eventDate' in item or 'event_date' in item:
+                        event_date = item.get('eventDate') or item.get('event_date')
+                        existing.event_date = parse_date(event_date).date() if event_date else None
+                    if 'eventStartTime' in item or 'event_start_time' in item:
+                        existing.event_start_time = item.get('eventStartTime') or item.get('event_start_time')
+                    if 'eventEndTime' in item or 'event_end_time' in item:
+                        existing.event_end_time = item.get('eventEndTime') or item.get('event_end_time')
                     
                     updated_count += 1
                     print(f"♻️  Updated: #{existing.id} - {title[:50]}")
@@ -101,6 +116,11 @@ def populate_database():
                         featured_image=item.get('featuredImage'),
                         image_display_type=item.get('imageDisplayType'),
                         show_in_banner=parse_active(item.get('showInBanner', False)),
+                        archived=parse_active(item.get('archived', False)),
+                        expires_at=parse_date(item.get('expires_at') or item.get('expiresAt')).date() if (item.get('expires_at') or item.get('expiresAt')) else None,
+                        event_date=parse_date(item.get('eventDate') or item.get('event_date')).date() if (item.get('eventDate') or item.get('event_date')) else None,
+                        event_start_time=item.get('eventStartTime') or item.get('event_start_time'),
+                        event_end_time=item.get('eventEndTime') or item.get('event_end_time'),
                     )
                     
                     db.session.add(announcement)

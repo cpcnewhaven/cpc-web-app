@@ -5,7 +5,7 @@
       "title": "Fall Festival",
       "description": "<p><strong>Saturday, October 31, 2026 from 10:30am–12:00pm</strong></p><p>All children and families are invited to join CPC for Fall Fun and Trunk-or-Treat! If you are interested in attending, RSVP <a href=\"https://us.list-manage.com/5z0Lcn6F6Oh?e=9da175cc40&amp;c2id=6df9b900f2d1d0ec64fac5dfc299411c\">here</a>.</p>",
       "dateEntered": "2026-10-30",
-      "active": "true",
+      "active": "false",
       "type": "event",
       "category": "children",
       "tag": null,
@@ -15,13 +15,14 @@
       "eventStartTime": "10:30am",
       "eventEndTime": "12:00pm",
       "featuredImage": "/static/assets/newsletters/2026-10-30/fall-festival.png",
-      "imageDisplayType": "poster"
+      "imageDisplayType": "poster",
+      "archived": "true"
     },
     {
       "id": "533",
-      "title": "Parenting Seminar",
-      "description": "<p><strong>Saturday, November 7 from 9–11:30am | CPC Fellowship Hall | Light Breakfast | Childcare provided.</strong></p><p>We’re hoping for helpful cross-pollination among all stages of parenting. There will be time for discussion, collaboration, and prayer.</p><p>For all parents and children that are planning to attend, please RSVP <a href=\"https://us.list-manage.com/LQCsZcglJKg?e=9da175cc40&amp;c2id=6df9b900f2d1d0ec64fac5dfc299411c\">here</a>.</p>",
-      "dateEntered": "2026-10-30",
+      "title": "Parenting Seminar | TOMORROW, November 7, from 9-11:30am | CPC Fellowship Hall | Light Breakfast | Childcare provided.",
+      "description": "<p><strong>Saturday, November 7, 9–11:30am | CPC Fellowship Hall | Light Breakfast | Childcare provided.</strong></p><p>We’re hoping for helpful cross-pollination among all stages of parenting. There will be time for discussion, collaboration, and prayer.</p><p>For all parents and children that are planning to attend, please RSVP <a href=\"https://us.list-manage.com/LQCsZcglJKg?e=9da175cc40&amp;c2id=6df9b900f2d1d0ec64fac5dfc299411c\">here</a>.</p>",
+      "dateEntered": "2026-11-06",
       "active": "true",
       "type": "event",
       "category": "education",
@@ -51,9 +52,9 @@
     },
     {
       "id": "539",
-      "title": "Thanksgiving Fellowship Meals",
-      "description": "<p>Sign Up <a href=\"https://us.list-manage.com/P_cBw6be6CY?e=9da175cc40&amp;c2id=6df9b900f2d1d0ec64fac5dfc299411c\">Here</a> as Host or Guest</p><p>Staying local for Thanksgiving? Come celebrate with your brothers and sisters in Christ! As we’ve done in the past, we’re coordinating hosts &amp; guests to have a Thanksgiving meal together on November 26. If you're interested, please email <a href=\"mailto:admin@cpcnewhaven.org\">admin@cpcnewhaven.org</a> or fill out the form.</p>",
-      "dateEntered": "2026-10-30",
+      "title": "Thanksgiving Fellowship Meals | Sign Up Here as Host or Guest",
+      "description": "<p><a href=\"https://us.list-manage.com/P_cBw6be6CY?e=9da175cc40&amp;c2id=6df9b900f2d1d0ec64fac5dfc299411c\">Sign Up Here as Host or Guest</a></p><p>Staying local for Thanksgiving? Come celebrate with your brothers and sisters in Christ! As we’ve done in the past, we’re coordinating hosts &amp; guests to have a Thanksgiving meal together on November 26. If you're interested, please email <a href=\"mailto:admin@cpcnewhaven.org\">admin@cpcnewhaven.org</a> or fill out the form.</p>",
+      "dateEntered": "2026-11-06",
       "active": "true",
       "type": "event",
       "category": "fellowship",
@@ -66,9 +67,9 @@
     },
     {
       "id": "542",
-      "title": "Hill Christmas Store | Donate by December 6",
-      "description": "<p><strong>Donate by Sunday, December 6, 2026</strong></p><p>Please join us in our 13th annual Hill Christmas Store! We will be sharing Christmas joy with some wonderful families from New Haven’s Hill community. Purchase and leave an unwrapped gift valued at $20 or more for a child in the designated category (e.g., “Girl, 9–14”). In the spirit of empowerment, your gift will in turn be bought at a very reduced price by families in the Hill at the store.</p><p>Please reach out to Kaitlyn Jessee (<a href=\"mailto:kaijessee@gmail.com\">kaijessee@gmail.com</a>) with any questions.</p>",
-      "dateEntered": "2026-10-30",
+      "title": "Hill Christmas Store | Donate by Sunday, December 6",
+      "description": "<p>Please join us in our 13th annual Hill Christmas Store! We will be sharing Christmas joy with some wonderful families from New Haven’s Hill community. Purchase and leave an unwrapped gift valued at $20 or more for a child in the designated category (e.g., “Girl, 9-14”). In the spirit of empowerment, your gift will in turn be bought at a very reduced price by families in the Hill at the store. Please reach out to <a href=\"mailto:kaijessee@gmail.com\">Kaitlyn Jessee (kaijessee@gmail.com)</a> with any questions.</p>",
+      "dateEntered": "2026-11-06",
       "active": "true",
       "type": "announcement",
       "category": "service",
@@ -82,8 +83,8 @@
     {
       "id": "543",
       "title": "Regular Sunday Schedule",
-      "description": "<ul><li>8:30am — Prayer in the Parlor</li><li>9:30am — Children’s Sunday School</li><li>9:30am — Adult Sunday Studies</li><li>10:30am — Worship Service</li><li>12:00pm — Fellowship Lunch</li></ul>",
-      "dateEntered": "2026-10-30",
+      "description": "<p>Worship Service only on Nov. 29, Dec. 20, Dec. 27, Jan. 3, and Jan. 10.</p><ul><li>8:30am | Prayer in the Parlor</li><li>9:30am | Children’s Sunday School</li><li>9:30am | Adult Sunday Studies — “Deeper into Acts: 6 weeks on the Book of Acts”</li><li>10:30am | Worship Service</li><li>12:00pm | Fellowship Lunch</li></ul>",
+      "dateEntered": "2026-11-06",
       "active": "true",
       "type": "ongoing",
       "category": "worship",
@@ -167,8 +168,8 @@
     },
     {
       "id": "546",
-      "title": "Christmas Service",
-      "description": "<p>Save the date: Saturday, December 12, 2026. CPC’s Christmas Service is listed on the fall upcoming-events calendar.</p>",
+      "title": "Save the Date! | CPC Christmas Service | Saturday, December 12 @ 5pm | More details to come!",
+      "description": "<p>More details to come!</p>",
       "date_entered": "2026-10-30T10:59:59",
       "active": "true",
       "type": "event",
@@ -188,13 +189,14 @@
       "revision": 3,
       "updated_at": "2026-10-30T11:00:00",
       "existing_id": null,
-      "dateEntered": "2026-10-30",
-      "eventDate": "2026-12-12"
+      "dateEntered": "2026-11-06",
+      "eventDate": "2026-12-12",
+      "eventStartTime": "5:00pm"
     },
     {
       "id": "545",
-      "title": "Fall Work Day and Decor Setup",
-      "description": "<p>Save the date: Saturday, December 5, 2026. Join CPC for the Fall Work Day and Decor Setup.</p>",
+      "title": "Fall Work Day & Decor Setup | Saturday, December 5, from 9am-12pm | All Hands on Deck",
+      "description": "<p>Calling all volunteer elves to decorate our church with a festive touch and to start the holiday season off with a winter wonderland of goodness and kindness (Elf costumes optional). Join together with your brothers and sisters in Christ to care for our facilities and grounds. This year will also include bagels, coffee and OJ that will be provided in the morning and hot cocoa and christmas cookies to share afterward. Work activities will include raking leaves, light repairs, Christmas decorating, and more. All are welcome!</p>",
       "date_entered": "2026-10-30T10:59:59",
       "active": "true",
       "type": "event",
@@ -214,8 +216,10 @@
       "revision": 3,
       "updated_at": "2026-10-30T11:00:00",
       "existing_id": null,
-      "dateEntered": "2026-10-30",
-      "eventDate": "2026-12-05"
+      "dateEntered": "2026-11-06",
+      "eventDate": "2026-12-05",
+      "eventStartTime": "9:00am",
+      "eventEndTime": "12:00pm"
     },
     {
       "id": "2026-001",
@@ -969,6 +973,42 @@
       "category": "event",
       "tag": "training",
       "superfeatured": true
+    },
+    {
+      "id": "540",
+      "title": "Pastor Drop-in Office Hours | Craig, Fridays 7:30-10:30am (except 11/27) | Jerry, Wednesdays Noon-3:00pm (except 11/25) | Other hours available upon request",
+      "description": "<p><strong>Craig, Fridays 7:30–10:30am (except 11/27) | Jerry, Wednesdays Noon–3:00pm (except 11/25)</strong> | <em>Other hours available upon request</em></p><p>Drop in for a casual time of discussion, Q&amp;A, prayer, coffee, tea, really whatever you want to make it! If you have a more private or formal need, you’re always welcome to set up a separate time with Pastor Craig (<a href=\"mailto:craig.luekens@cpcnewhaven.org\">craig.luekens@cpcnewhaven.org</a>), or Pastor Jerry (<a href=\"mailto:jerry.ornelas@cpcnewhaven.org\">jerry.ornelas@cpcnewhaven.org</a>) but this is meant to be a space where anyone can drop in.</p>",
+      "dateEntered": "2026-11-06",
+      "active": "true",
+      "archived": "false",
+      "type": "ongoing",
+      "category": "general"
+    },
+    {
+      "id": "448",
+      "title": "10:30am Worship This Sunday",
+      "description": "<p>Join us for worship this Sunday, November 8 at 10:30am. <a href=\"https://files.cpcnewhaven.org/bulletins/latest.pdf\">Large Print Bulletin</a>.</p>",
+      "dateEntered": "2026-11-06",
+      "active": "true",
+      "type": "announcement",
+      "category": "worship",
+      "tag": "service",
+      "eventDate": "2026-11-08",
+      "expires_at": "2026-11-08",
+      "archived": "false"
+    },
+    {
+      "id": "505",
+      "title": "Mom’s Discipleship Group | Wednesday, November 11 at 9:45am | CPC Fellowship Hall",
+      "description": "<p>Please join us! Children are welcome to play near us while we meet. Future dates: No Dec, 1/13/27. Please inquire with any young mom, or <a href=\"mailto:mhbogue@me.com\">Meg Bogue</a> or <a href=\"mailto:kristin.jensen358@gmail.com\">Kristin Jensen</a> with questions.</p>",
+      "dateEntered": "2026-11-06",
+      "active": "true",
+      "type": "event",
+      "category": "fellowship",
+      "eventDate": "2026-11-11",
+      "expires_at": "2026-11-12",
+      "eventStartTime": "9:45am",
+      "archived": "false"
     }
   ]
 }
