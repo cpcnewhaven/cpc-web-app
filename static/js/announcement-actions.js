@@ -10,7 +10,12 @@ window.CPCAnnouncementActions = {
       if (!['https:', 'http:', 'mailto:'].includes(url.protocol) || seen.has(url.href)) return [];
       seen.add(url.href);
       let label = anchor.textContent.trim() || 'Learn more';
-      if (url.protocol === 'mailto:') label = /joining/.test(title) ? 'Begin membership' : 'Email CPC';
+      if (url.protocol === 'mailto:') {
+        const address = decodeURIComponent(url.pathname).toLowerCase();
+        const contact = /craig/.test(address) ? 'Craig' : /jerry/.test(address) ? 'Jerry' : '';
+        label = /joining/.test(title) ? 'Begin membership' : contact ? 'Email ' + contact
+          : label && !/^(email|email cpc|here|click here|learn more)$/i.test(label) ? label : 'Email ' + address;
+      }
       else if (/fall festival/.test(title)) label = seen.size === 1 ? 'RSVP for Fall Festival' : 'Volunteer at Fall Festival';
       else if (/parenting/.test(title)) label = 'RSVP for Parenting Seminar';
       else if (/thanksgiving/.test(title)) label = 'Sign up as host or guest';

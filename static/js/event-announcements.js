@@ -29,7 +29,7 @@ function renderEventAnnouncements(announcements, container) {
   }
 
   function parseDate(iso) {
-    const d = new Date(iso + 'T00:00:00Z');
+    const d = CPCCalendarDate(iso);
     return isNaN(d.getTime()) ? null : d;
   }
 

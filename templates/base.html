@@ -50,6 +50,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="{{ url_for('static', filename='js/calendar-date.js', v=git_rev or app_version) }}"></script>
     <!-- Unified Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=git_rev or app_version) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/announcement-media.css', v=git_rev or app_version) }}">
@@ -1281,7 +1282,7 @@
 
                         modalResults.innerHTML = data.results.map(item => {
                             const label = typeLabels[item.type] || item.type;
-                            const dateStr = item.date ? new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+                            const dateStr = item.date ? CPCCalendarDate(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
                             const resultUrl = item.url || `/search?q=${encodeURIComponent(query)}`;
                             return `
                                 <a href="${resultUrl}" style="display: flex; gap: 0.75rem; padding: 0.75rem; background: var(--surface-bg); border: 1px solid var(--surface-border); border-radius: 8px; text-decoration: none; color: var(--surface-text); transition: all 0.2s;" onmouseover="this.style.background='var(--surface-bg-hover)'" onmouseout="this.style.background='var(--surface-bg)'">

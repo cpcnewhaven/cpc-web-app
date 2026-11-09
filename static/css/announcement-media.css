@@ -351,3 +351,28 @@ body.theme-white .highlight-card .highlight-card__description { color: #586c80 !
         -webkit-line-clamp: 3;
     }
 }
+
+/* A small family of bold church bulletin covers, shared across both themes. */
+body .cpc-announcement-media--poster {
+    --poster-ink: #123c65;
+    aspect-ratio: auto;
+    min-height: 210px;
+    background: var(--poster-ink);
+    color: #fff;
+    padding: 1.2rem 1.35rem;
+    box-shadow: inset 0 -5px 0 #e5b969;
+}
+body .cpc-announcement-media--gold { --poster-ink: #70431e; }
+body .cpc-announcement-media--green { --poster-ink: #21564f; }
+body .cpc-announcement-media--poster .cpc-poster__title { color: #fff !important; text-shadow: none !important; font-size: 1.5rem; line-height: 1.18; -webkit-line-clamp: 4; }
+body .cpc-announcement-media--poster .cpc-poster__title--sm { font-size: 1.3rem; }
+body .cpc-announcement-media--poster .cpc-poster__body { align-items: flex-end; padding-top: 1.5rem; }
+body .cpc-announcement-media--poster .cpc-poster__art { color: #fff; opacity: 0.28; width: 185px; }
+body .cpc-announcement-media--poster .cpc-poster__date-badge { background: #fff; border: none; box-shadow: none; }
+body .cpc-announcement-media--poster .cpc-poster__date-month,
+body .cpc-announcement-media--poster .cpc-poster__date-day,
+body .cpc-announcement-media--poster .cpc-poster__date-dow { color: var(--poster-ink); }
+body .highlight-card:hover .cpc-poster__title { color: #fff !important; }
+@media (max-width: 640px) {
+    body .cpc-announcement-media--poster { min-height: 76px; padding: 0.85rem 1rem; }
+}

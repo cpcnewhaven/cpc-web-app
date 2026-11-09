@@ -799,6 +799,32 @@ body.theme-blue .sermons-page .sermon-card .sermon-media-empty { color: #a8c5e5;
     .sermons-page .sermon-title { font-size: 0.98rem; }
     .sermons-page .sermon-links { gap: 0.34rem; }
 }
+
+/* Solid surfaces and actual table cells keep list mode readable and aligned. */
+.sermons-page { --list-bg: #fff; --list-text: #20364f; --list-muted: #52667d; --list-line: #dce5ef; --list-alt: #f5f8fc; }
+body.theme-blue .sermons-page { --list-bg: #102c48; --list-text: #f1f6ff; --list-muted: #bad0e6; --list-line: #34506c; --list-alt: #173653; }
+.sermons-page .sermon-controls { background: var(--list-bg); border: 1px solid var(--list-line); flex-wrap: wrap; }
+.sermons-page .search-container input,
+.sermons-page .filter-controls select { background: var(--list-bg); color: var(--list-text); border: 1px solid var(--list-line); backdrop-filter: none; }
+.sermons-page .search-container input::placeholder { color: var(--list-muted); }
+.sermons-page .filter-controls select option { background: var(--list-bg); color: var(--list-text); }
+.sermons-page .table-responsive { background: var(--list-bg); border: 1px solid var(--list-line); box-shadow: 0 6px 22px #102c4810; backdrop-filter: none; }
+.sermons-page .sermons-table { width: 100%; min-width: 760px; table-layout: fixed; }
+.sermons-page .sermons-table thead { background: #163c64; }
+.sermons-page .sermons-table th { color: #fff; padding: 0.85rem; }
+.sermons-page .sermons-table td { display: table-cell; color: var(--list-muted); border-bottom: 1px solid var(--list-line); padding: 1rem 0.85rem; font-size: 0.88rem; vertical-align: middle; max-width: none; }
+.sermons-page .sermons-table td:nth-child(2) { color: var(--list-text); font-weight: 700; line-height: 1.5; }
+.sermons-page .sermons-table th:nth-child(2), .sermons-page .sermons-table td:nth-child(2) { width: 30%; }
+.sermons-page .sermons-table th:nth-child(4), .sermons-page .sermons-table td:nth-child(4) { width: 15%; }
+.sermons-page .sermons-table th:nth-child(5), .sermons-page .sermons-table td:nth-child(5) { width: 28%; }
+.sermons-page .sermons-table tbody tr:nth-child(even), .sermons-page .sermons-table tbody tr:hover { background: var(--list-alt); transform: none; }
+.sermons-page .sermons-table .sermon-links { margin: 0; gap: 0.4rem; }
+.sermons-page .sermons-table .sermon-links a, .sermons-page .sermons-table .sermon-links button { display: inline-flex !important; align-items: center; gap: 0.35rem; margin: 0 !important; background: var(--list-alt) !important; color: var(--list-text) !important; border: 1px solid var(--list-line) !important; box-shadow: none !important; backdrop-filter: none !important; padding: 0.45rem 0.6rem !important; font-size: 0.75rem !important; }
+.sermons-page .results-count, .sermons-page .no-results, .sermons-page .loading, .sermons-page #sermonPageInfo { color: var(--list-muted) !important; }
+.sermons-page #sermonPagination button { background: #0052a3 !important; }
+.sermons-page #sermonPagination button:disabled { opacity: 0.45; cursor: default !important; }
+.sermons-page :is(input, select, button, a):focus-visible { outline: 3px solid #b77b18; outline-offset: 3px; }
+
 </style>
 {% endblock %}
 
@@ -1202,37 +1228,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
         filteredSermons.forEach(sermon => {
             const tr = document.createElement('tr');
+            const thumbnailSrc = resolveSermonThumbnail(sermon);
             const isUpcoming = sermon._nextUpcoming === true;
             const AUDIO_RE = /\.(mp3|m4a|ogg|wav|aac)(\?|$)/i;
             const hasAudio = !!sermon.audio_file_url;
             const urlIsAudio = sermon.url && AUDIO_RE.test(sermon.url);
             const audioSrc = sermon.audio_file_url || (urlIsAudio ? sermon.url : null);
-            const hasStreamingLinks = (sermon.spotify_url && sermon.spotify_url.includes('spotify')) ||
-                                     (sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be'))) ||
-                                     (sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
+            const hasStreamingLinks = (sermon.spotify_url && (sermon.spotify_url || '').includes('spotify')) ||
+                                     (sermon.youtube_url && ((sermon.youtube_url || '').includes('youtube') || (sermon.youtube_url || '').includes('youtu.be'))) ||
+                                     (sermon.apple_podcasts_url && (sermon.apple_podcasts_url || '').includes('apple'));
 
             tr.innerHTML = `
                 <td>${formatDate(sermon.date)}</td>
                 <td>${sermon.title}</td>
                 <td>${sermon.speaker || 'Unknown'}</td>
                 <td>${sermon.scripture || '-'}</td>
-                <td class="sermon-links">
+                <td><div class="sermon-links">
                     ${isUpcoming ? `
                         <span style="color: rgba(255, 193, 7, 0.95); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
                             <i class="fas fa-calendar-alt"></i> Upcoming
                         </span>
                     ` : `
-                        ${sermon.spotify_url.includes('spotify') ? `
+                        ${(sermon.spotify_url || '').includes('spotify') ? `
                             <a href="${sermon.spotify_url}" target="_blank" rel="noopener" class="btn-spotify" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Spotify">
                                 <i class="fab fa-spotify"></i> Spotify
                             </a>
                         ` : ''}
-                        ${sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be') ? `
+                        ${(sermon.youtube_url || '').includes('youtube') || (sermon.youtube_url || '').includes('youtu.be') ? `
                             <a href="${sermon.youtube_url}" target="_blank" rel="noopener" class="btn-youtube" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="YouTube">
                                 <i class="fab fa-youtube"></i> YouTube
                             </a>
                         ` : ''}
-                        ${sermon.apple_podcasts_url.includes('apple') ? `
+                        ${(sermon.apple_podcasts_url || '').includes('apple') ? `
                             <a href="${sermon.apple_podcasts_url}" target="_blank" rel="noopener" class="btn-apple" style="padding: 0.4rem 0.75rem; font-size: 0.7rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; line-height: 1.2; display: inline-block; margin: 0.15rem 0.15rem 0.15rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;" title="Apple Podcasts">
                                 <i class="fab fa-apple"></i> Apple
                             </a>
@@ -1256,7 +1283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ` : ''}
                         ${!sermon.url && !audioSrc ? '<span style="color: rgba(255,255,255,0.5);">-</span>' : ''}
                     `}
-                </td>
+                </div></td>
             `;
             tbody.appendChild(tr);
         });
@@ -1264,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function formatDate(dateStr) {
         if (!dateStr) return 'N/A';
-        const date = new Date(dateStr);
+        const date = new Date(/^\d{4}-\d{2}-\d{2}$/.test(dateStr) ? dateStr + 'T12:00:00' : dateStr);
         if (isNaN(date.getTime())) return dateStr;
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');

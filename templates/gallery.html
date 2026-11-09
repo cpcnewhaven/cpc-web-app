@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const dateStr = photo.created || photo.date;
             if (!dateStr) return;
 
-            const date = new Date(dateStr);
+            const date = CPCCalendarDate(dateStr);
             if (isNaN(date.getTime())) return;
 
             const year = date.getFullYear();

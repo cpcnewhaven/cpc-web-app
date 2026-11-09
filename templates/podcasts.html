@@ -1489,7 +1489,7 @@ function escHtml(s) {
 
 function formatPodcastDate(dateValue) {
     if (!dateValue) return '';
-    const date = new Date(dateValue);
+    const date = CPCCalendarDate(dateValue);
     if (Number.isNaN(date.getTime())) return String(dateValue);
     return date.toLocaleDateString();
 }

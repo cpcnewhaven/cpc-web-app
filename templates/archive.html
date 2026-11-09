@@ -425,7 +425,7 @@
         // Yearbook-style: years are the primary "chapters"
         const groupedByYear = {};
         data.items.forEach(item => {
-            const year = item.date ? new Date(item.date).getFullYear() : null;
+            const year = item.date ? CPCCalendarDate(item.date).getFullYear() : null;
             const key = Number.isFinite(year) ? String(year) : 'Undated';
             if (!groupedByYear[key]) {
                 groupedByYear[key] = {};
@@ -492,7 +492,7 @@
                                     <div class="archive-item-title">${item.title}</div>
                                     <div class="archive-item-meta">
                                         ${item.author || item.guest ? `${item.author || item.guest} • ` : ''}
-                                        ${item.date ? new Date(item.date).toLocaleDateString() : ''}
+                                        ${item.date ? CPCCalendarDate(item.date).toLocaleDateString() : ''}
                                         ${item.category ? ` • ${item.category}` : ''}
                                     </div>
                                     <div class="archive-item-description">
@@ -539,7 +539,7 @@
         const years = new Set();
         items.forEach(item => {
             if (item.date) {
-                const year = new Date(item.date).getFullYear();
+                const year = CPCCalendarDate(item.date).getFullYear();
                 years.add(year);
             }
         });

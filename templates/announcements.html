@@ -111,6 +111,8 @@
 }
 
 .announcement-badge.clickable-badge {
+    border: 0;
+    font: inherit;
     cursor: pointer;
     transition: transform 0.15s ease, background 0.15s ease;
 }
@@ -219,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     normalize(activeFilter.value) === normalize(value);
                 const safeKind = escapeHtml(kind);
                 const safeValue = escapeHtml(value);
-                return `<span class="announcement-badge clickable-badge${isActive ? ' active' : ''}" data-filter-type="${safeKind}" data-filter-value="${safeValue}">${safeValue}</span>`;
+                return `<button type="button" class="announcement-badge clickable-badge${isActive ? ' active' : ''}" data-filter-type="${safeKind}" data-filter-value="${safeValue}">${safeValue}</button>`;
             };
             container.innerHTML = announcements.map(announcement => {
                 const ratioClass = announcement.imageDisplayType === 'square' ? 'ratio-square' : (announcement.imageDisplayType === '9x16' ? 'ratio-9x16' : 'ratio-16x9');
@@ -234,15 +236,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="/announcement/${encodeURIComponent(announcement.id)}" style="text-decoration:none;display:block;height:100%;color:inherit;">
                         ${safeImg ? `<img src="${safeImg}" alt="${safeTitle}" class="announcement-image ${ratioClass}">` : ''}
                         <h3>${safeTitle}</h3>
-                        <div class="announcement-badges">
-                            ${announcement.type ? badge('type', announcement.type) : ''}
-                            ${announcement.category ? badge('category', announcement.category) : ''}
-                            ${announcement.tag ? badge('tag', announcement.tag) : ''}
-                        </div>
+
                         <p class="announcement-description">${safeDesc}</p>
                         ${(safeStart || safeEnd) ? `<p class="announcement-date" style="margin-bottom: 0.25rem;"><i class="fas fa-clock"></i> ${safeStart} ${safeEnd ? '- ' + safeEnd : ''}</p>` : ''}
                         ${safeDate ? `<p class="announcement-date">${safeDate}</p>` : ''}
                     </a>
+                    <div class="announcement-badges">
+                        ${announcement.type ? badge('type', announcement.type) : ''}
+                        ${announcement.category ? badge('category', announcement.category) : ''}
+                        ${announcement.tag ? badge('tag', announcement.tag) : ''}
+                    </div>
                 </div>
             `;}).join('');
         } else {
@@ -274,6 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
     container.addEventListener('click', function(event) {
         const badge = event.target.closest('.announcement-badge.clickable-badge');
         if (!badge) return;
+        event.preventDefault();
         const type = badge.dataset.filterType;
         const value = badge.dataset.filterValue;
         if (!type || !value) return;

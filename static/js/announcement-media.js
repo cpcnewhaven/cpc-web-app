@@ -46,12 +46,16 @@ window.CPCAnnouncementMedia = {
     if (!dateBadgeHtml) {
       dateBadgeHtml = `
         <div class="cpc-poster__date-badge cpc-poster__date-badge--ongoing">
-          <span class="cpc-poster__date-month">CPC</span>
-          <span class="cpc-poster__date-dow">UPDATE</span>
+          <span class="cpc-poster__date-month">CHURCH</span>
+          <span class="cpc-poster__date-dow">LIFE</span>
         </div>`;
     }
 
     // Escape HTML in title
+    const titleKey = (announcement.title || '').toLowerCase();
+    const tone = /meal|thanksgiving|fellowship/.test(titleKey) ? 'gold' : /mercy|care|group|community/.test(titleKey) ? 'green' : 'blue';
+    media.classList.add('cpc-announcement-media--' + tone);
+
     const rawTitle = (announcement.title || 'CPC New Haven').trim();
     const escapedTitle = rawTitle
       .replace(/&/g, '&amp;')
@@ -77,10 +81,7 @@ window.CPCAnnouncementMedia = {
       </div>
       <div class="cpc-poster__header">
         ${dateBadgeHtml}
-        <span class="cpc-poster__brand">
-          <span class="cpc-poster__brand-dot"></span>
-          CPC NEW HAVEN
-        </span>
+
       </div>
       <div class="cpc-poster__body">
         <div class="cpc-poster__title ${titleSizeClass}">${escapedTitle}</div>

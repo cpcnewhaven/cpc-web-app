@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <style>
     .search-page {
+        --search-text: #f2f7ff;
+        --search-muted: #bdd0e5;
+        --search-link: #9ed8ff;
         min-height: calc(100vh - 200px);
         padding: 0;
         margin: 0;
@@ -28,13 +31,13 @@
 
     .search-hero h1 {
         font-size: 1.75rem;
-        color: rgba(255, 255, 255, 0.95);
+        color: var(--search-text);
         margin: 0 0 0.25rem 0;
         font-weight: 600;
     }
 
     .search-hero p {
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--search-muted);
         font-size: 0.9rem;
         margin: 0;
     }
@@ -91,7 +94,7 @@
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 6px;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--search-muted);
         cursor: pointer;
         font-size: 0.85rem;
         transition: all 0.2s;
@@ -119,7 +122,7 @@
 
     .result-card h3 {
         font-size: 1rem;
-        color: rgba(255, 255, 255, 0.95);
+        color: var(--search-text);
         margin: 0 0 0.5rem 0;
         font-weight: 600;
     }
@@ -127,9 +130,12 @@
     .result-card p {
         font-size: 0.85rem;
         line-height: 1.6;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--search-text);
         margin: 0;
     }
+body.theme-white .search-page { --search-text: #20364f; --search-muted: #52667d; --search-link: #0052a3; }
+body.theme-white .search-page #searchResults button { color: #164a80 !important; background: #e8f1fc !important; }
+body.theme-white .search-page #searchResults button:disabled { opacity: 0.45; }
 </style>
 {% endblock %}
 
@@ -140,7 +146,7 @@
             <h1>Search</h1>
             <p>Find sermons, podcasts, announcements, and more</p>
             <p style="margin-top: 0.5rem; font-size: 0.85rem;">
-                <a href="/archive" style="color: rgba(135, 206, 250, 0.9); text-decoration: none; font-weight: 500; transition: color 0.2s;">
+                <a href="/archive" style="color: var(--search-link); text-decoration: none; font-weight: 500; transition: color 0.2s;">
                     Browse our archive →
                 </a>
             </p>
@@ -152,7 +158,7 @@
             <div style="display: flex; gap: 0.5rem; position: relative;">
                 <input type="text" id="searchInput"
                     placeholder="Search for anything... (e.g., 'Luke', 'grace', 'worship')" autocomplete="off">
-                <button id="clearSearchBtn" style="position: absolute; right: 3.5rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.2rem; padding: 0; display: none;" aria-label="Clear search">✕</button>
+                <button id="clearSearchBtn" style="position: absolute; right: 3.5rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--search-muted); cursor: pointer; font-size: 1.2rem; padding: 0; display: none;" aria-label="Clear search">✕</button>
                 <button id="searchButton">Go</button>
             </div>
         </div>
@@ -172,7 +178,7 @@
 
         <!-- Advanced Filters Panel (Phase 2) -->
         <div id="advancedFiltersToggle" style="display: none; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; user-select: none;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.9rem; font-weight: 500;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--search-muted); font-size: 0.9rem; font-weight: 500;">
                 <span id="filterToggleIcon">▼</span>
                 <span>Advanced Filters</span>
             </div>
@@ -181,7 +187,7 @@
         <div id="advancedFiltersPanel" style="display: none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
             <!-- Filter groups will be dynamically populated here -->
             <div id="filterGroupsContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;"></div>
-            <button id="clearFiltersBtn" style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+            <button id="clearFiltersBtn" style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--search-muted); cursor: pointer; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
                 Clear Filters
             </button>
         </div>
@@ -392,7 +398,7 @@
                 group.style.cssText = 'display: flex; flex-direction: column; gap: 0.4rem;';
 
                 const label = document.createElement('label');
-                label.style.cssText = 'font-size: 0.8rem; color: rgba(255,255,255,0.7); font-weight: 500;';
+                label.style.cssText = 'font-size: 0.8rem; color: var(--search-muted); font-weight: 500;';
                 label.textContent = filterConfig.label;
 
                 let filterEl;
@@ -469,7 +475,7 @@
     }
 
     function showLoading() {
-        searchResults.innerHTML = '<div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">Searching...</div>';
+        searchResults.innerHTML = '<div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: var(--search-muted);">Searching...</div>';
     }
 
     function showEmptyState() {
@@ -477,26 +483,26 @@
         const popularTerms = window.popularSearchTerms || ['Grace', 'Sermon', 'Worship', 'Community'];
 
         let contentHTML = `
-            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-bottom: 0.5rem; display: block;">Popular Searches</span>
+            <span style="font-size: 0.75rem; color: var(--search-muted); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-bottom: 0.5rem; display: block;">Popular Searches</span>
         `;
 
         popularTerms.forEach(term => {
-            contentHTML += `<button onclick="quickSearch('${term.replace(/'/g, "\\'")}')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">${term}</button>`;
+            contentHTML += `<button onclick="quickSearch('${term.replace(/'/g, "\\'")}')" style="padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; color: var(--search-text); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">${term}</button>`;
         });
 
         // Add recent searches if any
         if (recent.length > 0) {
             contentHTML += `
-                <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-top: 1.5rem; margin-bottom: 0.5rem; display: block;">Recent Searches</span>
+                <span style="font-size: 0.75rem; color: var(--search-muted); text-transform: uppercase; letter-spacing: 0.05em; width: 100%; margin-top: 1.5rem; margin-bottom: 0.5rem; display: block;">Recent Searches</span>
             `;
             recent.forEach(term => {
-                contentHTML += `<button onclick="quickSearch('${term.replace(/'/g, "\\'")}')" style="padding: 0.25rem 0.75rem; background: rgba(135,206,250,0.1); border: none; border-radius: 9999px; color: rgba(135,206,250,0.8); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(135,206,250,0.2)'" onmouseout="this.style.background='rgba(135,206,250,0.1)'">${term}</button>`;
+                contentHTML += `<button onclick="quickSearch('${term.replace(/'/g, "\\'")}')" style="padding: 0.25rem 0.75rem; background: rgba(135,206,250,0.1); border: none; border-radius: 9999px; color: var(--search-link); font-size: 0.75rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(135,206,250,0.2)'" onmouseout="this.style.background='rgba(135,206,250,0.1)'">${term}</button>`;
             });
         }
 
         searchResults.innerHTML = `
-            <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">
-                <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">Start Your Search</h2>
+            <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: var(--search-muted);">
+                <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--search-text);">Start Your Search</h2>
                 <p style="font-size: 1rem; margin-bottom: 1.5rem;">Enter a search query to find content across the site</p>
                 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;">
                     ${contentHTML}
@@ -625,10 +631,10 @@
             // Easy Win #4: Contextual empty state message
             const typeLabel = currentType !== 'all' ? ` in ${currentType.charAt(0).toUpperCase() + currentType.slice(1).replace('_', ' ')}` : '';
             searchResults.innerHTML = `
-                <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: rgba(255,255,255,0.6);">
-                    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: rgba(255,255,255,0.95);">No Results Found</h2>
-                    <p style="font-size: 1rem;">No results for "<strong style="color: rgba(255,255,255,0.8);">${data.query}</strong>"${typeLabel}</p>
-                    <p style="font-size: 0.9rem; margin-top: 1rem; color: rgba(255,255,255,0.5);">Try a different search term or check the spelling</p>
+                <div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: var(--search-muted);">
+                    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--search-text);">No Results Found</h2>
+                    <p style="font-size: 1rem;">No results for "<strong style="color: var(--search-text);">${data.query}</strong>"${typeLabel}</p>
+                    <p style="font-size: 0.9rem; margin-top: 1rem; color: var(--search-muted);">Try a different search term or check the spelling</p>
                 </div>
             `;
             // Easy Win #6: Focus on results after display
@@ -650,14 +656,14 @@
 
         let html = `
             <div style="margin-bottom: 1.5rem;">
-                <div style="font-size: 1rem; color: rgba(255,255,255,0.6);">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
+                <div style="font-size: 1rem; color: var(--search-muted);">Found ${data.total} result${data.total !== 1 ? 's' : ''}</div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
         `;
 
         data.results.forEach(item => {
             const label = typeLabels[item.type] || item.type;
-            const dateStr = item.date ? new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+            const dateStr = item.date ? CPCCalendarDate(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
             const highlightedTitle = highlightText(item.title, data.query);
             const highlightedDescription = highlightText(item.description || '', data.query);
@@ -680,16 +686,16 @@
 
             html += `
                 <div class="result-card" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1.5rem;">
-                    <div style="padding: 0.25rem 0.75rem; background: rgba(0,102,204,0.2); color: rgba(135,206,250,0.9); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">${label}</div>
-                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem; color: rgba(255,255,255,0.95);">${highlightedTitle}</h3>
-                    <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                    <div style="padding: 0.25rem 0.75rem; background: rgba(0,102,204,0.2); color: var(--search-link); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">${label}</div>
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--search-text);">${highlightedTitle}</h3>
+                    <div style="font-size: 0.875rem; color: var(--search-muted); margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
                         ${item.speaker || item.author ? `<span>${item.speaker || item.author}</span><span style="opacity: 0.3;">•</span>` : ''}
                         ${dateStr ? `<span>${dateStr}</span>` : ''}
                         ${item.category ? `<span style="opacity: 0.3;">•</span><span>${item.category}</span>` : ''}
-                        ${item.series ? `<span style="opacity: 0.3;">•</span><span style="color: rgba(135,206,250,0.9);">${item.series}</span>` : ''}
+                        ${item.series ? `<span style="opacity: 0.3;">•</span><span style="color: var(--search-link);">${item.series}</span>` : ''}
                     </div>
-                    ${item.description ? `<p style="font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.8); margin-bottom: 1rem;">${highlightedDescription}</p>` : ''}
-                    <a href="${resultUrl}" style="display: inline-flex; align-items: center; color: rgba(135,206,250,0.9); font-weight: 500; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='rgba(135,206,250,1)'" onmouseout="this.style.color='rgba(135,206,250,0.9)'" ${resultUrl.startsWith('http') ? 'target="_blank"' : ''}>
+                    ${item.description ? `<p style="font-size: 1rem; line-height: 1.6; color: var(--search-text); margin-bottom: 1rem;">${highlightedDescription}</p>` : ''}
+                    <a href="${resultUrl}" style="display: inline-flex; align-items: center; color: var(--search-link); font-weight: 500; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--search-link)'" onmouseout="this.style.color='var(--search-link)'" ${resultUrl.startsWith('http') ? 'target="_blank"' : ''}>
                         View Details <i class="fas fa-arrow-right" style="margin-left: 0.5rem; font-size: 0.75rem;"></i>
                     </a>
                 </div>
@@ -708,11 +714,11 @@
             // Easy Win #2: Improved disabled button styling
             const prevDisabled = currentPage === 1;
             const nextDisabled = currentPage >= data.pages;
-            const prevStyle = `padding: 0.5rem 1rem; background: ${prevDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}; border: 1px solid ${prevDisabled ? 'rgba(0,82,163,0.2)' : 'rgba(0,82,163,0.5)'}; border-radius: 6px; color: ${prevDisabled ? 'rgba(255,255,255,0.4)' : 'white'}; cursor: ${prevDisabled ? 'not-allowed' : 'pointer'}; opacity: ${prevDisabled ? '0.5' : '1'}; transition: all 0.2s;`;
-            const nextStyle = `padding: 0.5rem 1rem; background: ${nextDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}; border: 1px solid ${nextDisabled ? 'rgba(0,82,163,0.2)' : 'rgba(0,82,163,0.5)'}; border-radius: 6px; color: ${nextDisabled ? 'rgba(255,255,255,0.4)' : 'white'}; cursor: ${nextDisabled ? 'not-allowed' : 'pointer'}; opacity: ${nextDisabled ? '0.5' : '1'}; transition: all 0.2s;`;
+            const prevStyle = `padding: 0.5rem 1rem; background: ${prevDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}; border: 1px solid ${prevDisabled ? 'rgba(0,82,163,0.2)' : 'rgba(0,82,163,0.5)'}; border-radius: 6px; color: ${prevDisabled ? 'var(--search-muted)' : 'var(--search-text)'}; cursor: ${prevDisabled ? 'not-allowed' : 'pointer'}; opacity: ${prevDisabled ? '0.5' : '1'}; transition: all 0.2s;`;
+            const nextStyle = `padding: 0.5rem 1rem; background: ${nextDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}; border: 1px solid ${nextDisabled ? 'rgba(0,82,163,0.2)' : 'rgba(0,82,163,0.5)'}; border-radius: 6px; color: ${nextDisabled ? 'var(--search-muted)' : 'var(--search-text)'}; cursor: ${nextDisabled ? 'not-allowed' : 'pointer'}; opacity: ${nextDisabled ? '0.5' : '1'}; transition: all 0.2s;`;
             html += `<div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">`;
             html += `<button style="${prevStyle}" ${prevDisabled ? 'disabled' : ''} onclick="${prevDisabled ? '' : `changePage(${currentPage - 1})`}" onmouseover="if(${!prevDisabled}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='${prevDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}'">← Previous</button>`;
-            html += `<span style="color: rgba(255,255,255,0.7);">Page ${data.page} of ${data.pages}</span>`;
+            html += `<span style="color: var(--search-muted);">Page ${data.page} of ${data.pages}</span>`;
             html += `<button style="${nextStyle}" ${nextDisabled ? 'disabled' : ''} onclick="${nextDisabled ? '' : `changePage(${currentPage + 1})`}" onmouseover="if(${!nextDisabled}) this.style.background='rgba(0,82,163,0.4)'" onmouseout="this.style.background='${nextDisabled ? 'rgba(0,82,163,0.15)' : 'rgba(0,82,163,0.3)'}'">Next →</button>`;
             html += `</div>`;
         }

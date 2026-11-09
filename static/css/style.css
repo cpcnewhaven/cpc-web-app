@@ -7055,3 +7055,10 @@ body.theme-white .pastors-book-page .book-content h1,
 body.theme-white .pastors-book-page .book-info-card h3 {
     color: var(--surface-text) !important;
 }
+
+/* Gallery utility text must follow the surface in light mode too. */
+body.theme-white .gallery-page .hero-stats .stat,
+body.theme-white .gallery-page #galleryPageInfo,
+body.theme-white .gallery-page .loading-indicator p { color: #52667d !important; }
+body.theme-white .gallery-page #gallery-pagination button { color: #fff !important; background: #0052a3 !important; }
+body.theme-white .gallery-page #gallery-pagination button:disabled { opacity: 0.45; }
