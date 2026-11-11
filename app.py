@@ -3417,6 +3417,7 @@ def api_external_data():
 def api_search():
     """Unified search endpoint that searches across all content types with optional filters"""
     from sqlalchemy import or_, and_
+    from sqlalchemy.orm import joinedload
     from datetime import datetime
     import urllib.parse
 
@@ -3512,6 +3513,12 @@ def api_search():
             # Filter by scripture book
             if sermon_filters['scripture_book']:
                 q = q.filter(Sermon.scripture.ilike(f'%{sermon_filters["scripture_book"]}%'))
+
+            q = q.options(
+                joinedload(Sermon.series),
+                joinedload(Sermon.speaker_user),
+                joinedload(Sermon.book)
+            )
 
             sermon_hits = q.order_by(Sermon.date.desc()).limit(100).all()
 
