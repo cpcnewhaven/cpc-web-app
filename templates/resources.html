@@ -1,515 +1,1191 @@
 {% extends "base.html" %}
 
 {% block title %}Resources - CPC New Haven{% endblock %}
-{% block meta_description %}Christian resources from CPC New Haven — books, studies, and tools for growing in faith.{% endblock %}
+{% block meta_description %}Christian resources from CPC New Haven — scriptures, study tools, prayer guides, and book recommendations for spiritual growth.{% endblock %}
 {% block og_title %}Resources — CPC New Haven{% endblock %}
-{% block og_description %}Christian resources from CPC New Haven — books, studies, and tools for growing in faith.{% endblock %}
+{% block og_description %}Christian resources from CPC New Haven — scriptures, study tools, prayer guides, and book recommendations for spiritual growth.{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/resources{% endblock %}
 
 {% block head %}
 <style>
+/* ==========================================================================
+   CPC New Haven - Resources Hub (Clean, Icon-Free, Brand Color System)
+   ========================================================================== */
 .resources-page {
     min-height: calc(100vh - 200px);
-    padding: 1.25rem 0 3rem;
+    padding: 0.5rem 0 3.5rem;
     margin: 0;
-    --page-surface: var(--surface-bg);
-    --page-surface-hover: var(--surface-bg-hover);
-    --page-border: var(--surface-border);
-    --page-text: var(--surface-text);
-    --page-muted: var(--surface-muted);
-    --page-accent: var(--surface-accent);
-}
-
-.resources-main-container {
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/* Compact Hero */
-.resources-hero {
-    grid-column: 1 / -1;
-    padding: 2.5rem 1rem;
-    text-align: center;
-    background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
-                url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/CPC_AUTUMN_PHOTO.jpg') center/cover no-repeat;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--page-border);
-    margin: 0 0 0.75rem 0;
-}
-
-.resources-hero h1 {
-    font-size: 1.75rem;
-    color: #fff;
-    margin: 0 0 0.25rem 0;
-    font-weight: 600;
-}
-
-.resources-hero p {
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-/* Page Submenu - Vertical List Format */
-.page-submenu {
-    background: var(--page-surface);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--page-border);
-    border-radius: var(--radius-lg);
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
-}
-
-.submenu-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--page-text);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid var(--page-border);
-}
-
-.submenu-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.submenu-list li {
-    margin: 0;
-}
-
-.submenu-list a {
-    display: block;
-    padding: 0.4rem 0.75rem;
-    color: var(--page-muted);
-    text-decoration: none;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    background: var(--page-surface);
-    border: 1px solid var(--page-border);
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.submenu-list a:hover,
-.submenu-list a.active {
-    background: var(--page-surface-hover);
-    color: var(--page-text);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Content Area */
-.resources-content-area {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-width: 100%;
-}
-
-.resources-section {
-    background: var(--page-surface);
-    border: 1px solid var(--page-border);
-    border-radius: var(--radius-lg);
-    padding: 1rem;
-    box-shadow: var(--surface-shadow);
-}
-
-/* Pastor's book picks */
-.book-picks-disclosure {
-    margin-bottom: 1rem;
-    border: 1px solid var(--page-border);
-    border-radius: var(--radius-lg);
-    background: var(--page-surface);
-    overflow: hidden;
-}
-
-.book-picks-disclosure summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.15rem;
-    color: var(--page-text);
-    cursor: pointer;
-    font-weight: 700;
-    list-style: none;
-}
-
-.book-picks-disclosure summary::-webkit-details-marker { display: none; }
-
-.book-picks-disclosure__meta {
-    display: block;
-    margin-top: 0.18rem;
-    color: var(--page-muted);
-    font-size: 0.86rem;
-    font-weight: 400;
-}
-
-.book-picks-disclosure__action {
-    flex: 0 0 auto;
-    color: var(--page-accent);
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.book-picks-disclosure__action::after { content: ' ↓'; }
-.book-picks-disclosure[open] .book-picks-disclosure__action::after { content: ' ↑'; }
-
-.featured-book-pick {
-    display: flex;
-    align-items: stretch;
-    border-top: 1px solid var(--page-border);
-}
-
-.featured-book-pick__cover {
-    width: 180px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    background: rgba(0, 0, 0, 0.16);
-}
-
-.featured-book-pick__cover img {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-    box-shadow: var(--surface-shadow);
-}
-
-.featured-book-pick__content {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1.5rem;
-}
-
-.featured-book-pick__label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--page-accent);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-.featured-book-pick h3 {
-    margin: 0 0 0.25rem;
-    color: var(--page-text);
-    font-size: 1.5rem;
-}
-
-.featured-book-pick__author {
-    margin: 0 0 1rem;
-    color: var(--page-muted);
-    font-size: 0.95rem;
-}
-
-.featured-book-pick__description {
-    margin: 0 0 1.25rem;
-    color: var(--page-text);
-    font-size: 0.9rem;
-    line-height: 1.55;
-}
-
-.featured-book-pick .btn { align-self: flex-start; }
-
-.section-header {
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--page-border);
-}
-
-.section-header h2 {
-    font-size: 1.25rem;
-    color: var(--page-text);
-    margin: 0 0 0.25rem 0;
-    font-weight: 600;
-}
-
-.section-header p {
-    font-size: 0.9rem;
-    color: var(--page-muted);
-    margin: 0;
-}
-
-/* Resource Categories Grid */
-.resource-categories {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-top: 0.75rem;
-}
-
-.resource-category {
-    background: var(--page-surface);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--page-border);
-    border-radius: var(--radius-lg);
-    padding: 0.9rem;
-    transition: all 0.3s ease;
-}
-
-.resource-category:hover {
-    background: var(--page-surface-hover);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.resource-category h3 {
-    font-size: 1rem;
-    color: var(--page-text);
-    margin: 0 0 0.55rem 0;
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--page-border);
-}
-
-.resource-category ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.resource-category li {
-    margin-bottom: 0.2rem;
-}
-
-.resource-category a {
-    display: block;
-    padding: 0.42rem 0.5rem;
-    color: var(--page-text);
-    text-decoration: none;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    transition: all 0.2s;
-}
-
-.resource-category a:hover {
-    background: var(--page-surface-hover);
-    color: var(--page-text);
-    padding-left: 0.75rem;
-}
-
-/* Contact Resources */
-.contact-resources {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--page-border);
-}
-
-.contact-resources h3 {
-    font-size: 1rem;
-    color: var(--page-text);
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
-}
-
-.contact-resources p {
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: var(--page-muted);
-    margin: 0;
-}
-
-.contact-resources a {
-    color: var(--page-accent);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.contact-resources a:hover {
-    text-decoration: underline;
+    --res-surface: var(--surface-bg, rgba(255, 255, 255, 0.05));
+    --res-surface-hover: var(--surface-bg-hover, rgba(255, 255, 255, 0.09));
+    --res-border: var(--surface-border, rgba(255, 255, 255, 0.12));
+    --res-text: var(--surface-text, rgba(255, 255, 255, 0.95));
+    --res-heading: #ffffff;
+    --res-muted: var(--surface-muted, rgba(255, 255, 255, 0.75));
+    --res-accent: var(--surface-accent, #60a5fa);
+    --res-card-bg: rgba(14, 30, 56, 0.85);
+    --res-item-bg: rgba(255, 255, 255, 0.04);
+    --res-item-border: rgba(255, 255, 255, 0.08);
+    --res-item-hover: rgba(255, 255, 255, 0.09);
+    --res-badge-bg: rgba(96, 165, 250, 0.16);
+    --res-badge-text: #93c5fd;
+    --res-badge-border: rgba(96, 165, 250, 0.3);
+    --res-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
 }
 
 body.theme-white .resources-page {
-    --page-surface: #ffffff;
-    --page-surface-hover: #f1f6fd;
-    --page-border: rgba(27, 69, 113, 0.16);
-    --page-text: #1d2e42;
-    --page-muted: #627487;
-    --page-accent: #075db8;
-    background: linear-gradient(180deg, #f6f8fb 0%, #edf3fa 100%);
+    --res-surface: #ffffff;
+    --res-surface-hover: #f3f7fd;
+    --res-border: rgba(27, 69, 113, 0.14);
+    --res-text: #1d2e42;
+    --res-heading: #0a2544;
+    --res-muted: #486581;
+    --res-accent: #0052a3;
+    --res-card-bg: #ffffff;
+    --res-item-bg: #f8fafc;
+    --res-item-border: rgba(0, 50, 120, 0.12);
+    --res-item-hover: #edf5ff;
+    --res-badge-bg: #e8f2ff;
+    --res-badge-text: #0052a3;
+    --res-badge-border: rgba(0, 82, 163, 0.2);
+    --res-shadow: 0 8px 24px rgba(0, 40, 80, 0.06);
 }
 
-body.theme-white .resources-section,
-body.theme-white .page-submenu,
-body.theme-white .book-picks-disclosure {
-    box-shadow: 0 12px 30px rgba(16, 50, 85, 0.08);
+.resources-main-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 0.5rem;
 }
 
-body.theme-white .featured-book-pick__cover {
-    background: #edf3fa;
+/* --------------------------------------------------------------------------
+   1. Hero Banner (CPC Royal Blue, Crystal Clear Text)
+   -------------------------------------------------------------------------- */
+.resources-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2.25rem, 4.5vw, 3.5rem) 1.5rem;
+    text-align: center;
+    background: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%);
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 16px 40px rgba(0, 35, 75, 0.25);
+    margin: 0 0 1.25rem 0;
 }
 
-body.theme-white .submenu-list a:hover,
-body.theme-white .submenu-list a.active,
-body.theme-white .resource-category:hover {
-    border-color: rgba(7, 93, 184, 0.28);
+.resources-hero::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(147, 197, 253, 0.25), transparent 70%);
+    pointer-events: none;
 }
 
-/* Responsive */
-@media (max-width: 720px) {
-    .resource-categories {
+.resources-eyebrow,
+body.theme-white .resources-eyebrow {
+    display: inline-block;
+    padding: 0.35rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18) !important;
+    border: 1px solid rgba(255, 255, 255, 0.32) !important;
+    color: #ffffff !important;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    backdrop-filter: blur(8px);
+}
+
+.resources-hero h1,
+body.theme-white .resources-hero h1 {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: clamp(2.1rem, 4.5vw, 3.2rem) !important;
+    color: #ffffff !important;
+    margin: 0 0 0.6rem 0;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 10px rgba(0, 20, 60, 0.4);
+}
+
+.resources-hero p,
+body.theme-white .resources-hero p {
+    color: #ffffff !important;
+    font-family: 'Barlow', sans-serif;
+    font-size: clamp(0.98rem, 1.8vw, 1.15rem) !important;
+    max-width: 660px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.55;
+    opacity: 0.96;
+    text-shadow: 0 1px 4px rgba(0, 20, 60, 0.3);
+}
+
+/* Quick search in hero */
+.resources-search-wrap {
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.resources-search-input {
+    width: 100%;
+    padding: 0.85rem 2.5rem 0.85rem 1.25rem;
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    background: #ffffff !important;
+    color: #0a2544 !important;
+    font-size: 0.95rem;
+    outline: none;
+    box-shadow: 0 10px 25px rgba(0, 20, 50, 0.25);
+    transition: all 0.25s ease;
+}
+
+.resources-search-input:focus {
+    background: #ffffff !important;
+    border-color: #38bdf8;
+    box-shadow: 0 12px 30px rgba(0, 30, 80, 0.35);
+}
+
+.resources-search-input::placeholder {
+    color: #627d98;
+}
+
+.resources-search-clear {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #627d98;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: none;
+    padding: 4px;
+}
+
+.resources-search-clear:hover {
+    color: #0a2544;
+}
+
+/* --------------------------------------------------------------------------
+   2. Pastor's Book Recommendation Spotlight
+   -------------------------------------------------------------------------- */
+.pastors-book-spotlight {
+    background: var(--res-card-bg);
+    border: 1px solid var(--res-border);
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: var(--res-shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pastors-book-spotlight:hover {
+    box-shadow: 0 14px 32px rgba(0, 40, 80, 0.1);
+}
+
+.pastors-book-spotlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, #0052a3, #0284c7);
+}
+
+.book-spotlight-grid {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 1.75rem;
+    align-items: center;
+}
+
+.book-spotlight-cover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.book-spotlight-cover img {
+    width: 100%;
+    max-width: 140px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(0, 50, 120, 0.12);
+    transition: transform 0.3s ease;
+}
+
+.pastors-book-spotlight:hover .book-spotlight-cover img {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.book-spotlight-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--res-badge-text);
+    background: var(--res-badge-bg);
+    border: 1px solid var(--res-badge-border);
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    margin-bottom: 0.6rem;
+}
+
+.book-spotlight-body h3 {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(1.25rem, 2.5vw, 1.65rem) !important;
+    font-weight: 800;
+    color: var(--res-heading) !important;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+}
+
+body.theme-white .book-spotlight-body h3 {
+    color: #0a2544 !important;
+}
+
+.book-spotlight-author {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--res-muted) !important;
+    margin: 0 0 0.85rem 0;
+}
+
+body.theme-white .book-spotlight-author {
+    color: #334e68 !important;
+}
+
+.book-spotlight-desc {
+    color: var(--res-text) !important;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    margin: 0 0 1.25rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+body.theme-white .book-spotlight-desc {
+    color: #243b53 !important;
+}
+
+.book-spotlight-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.book-spotlight-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.book-spotlight-btn-primary {
+    background: #0052a3 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0, 82, 163, 0.28);
+}
+
+.book-spotlight-btn-primary:hover {
+    background: #003d7a !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 82, 163, 0.38);
+    color: #ffffff !important;
+}
+
+.book-spotlight-btn-secondary {
+    background: var(--res-item-bg);
+    border: 1px solid var(--res-border);
+    color: var(--res-heading) !important;
+}
+
+body.theme-white .book-spotlight-btn-secondary {
+    background: #f0f4f8;
+    border-color: rgba(0, 50, 120, 0.16);
+    color: #0a2544 !important;
+}
+
+.book-spotlight-btn-secondary:hover {
+    background: var(--res-item-hover);
+    color: var(--res-accent) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Category Filter Bar (Refined Contrast)
+   -------------------------------------------------------------------------- */
+.resources-filter-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.4rem 0.2rem 0.85rem;
+    margin-bottom: 1.25rem;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.res-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.05rem;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--res-text);
+    background: var(--res-surface);
+    border: 1px solid var(--res-border);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    user-select: none;
+    box-shadow: 0 2px 6px rgba(0, 40, 80, 0.04);
+}
+
+body.theme-white .res-filter-pill {
+    background: #ffffff;
+    border-color: rgba(0, 50, 120, 0.18);
+    color: #102a43 !important;
+}
+
+.res-filter-pill:hover {
+    background: var(--res-surface-hover);
+    color: var(--res-heading);
+    border-color: rgba(0, 82, 163, 0.35);
+}
+
+body.theme-white .res-filter-pill:hover {
+    background: #eef5ff;
+    color: #0052a3 !important;
+    border-color: #0052a3;
+}
+
+.res-filter-pill.active,
+body.theme-white .res-filter-pill.active {
+    background: #0052a3 !important;
+    color: #ffffff !important;
+    border-color: #0052a3 !important;
+    box-shadow: 0 4px 14px rgba(0, 82, 163, 0.28);
+    font-weight: 700;
+}
+
+.res-filter-pill .pill-count {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--res-badge-bg);
+    color: var(--res-badge-text);
+}
+
+.res-filter-pill.active .pill-count,
+body.theme-white .res-filter-pill.active .pill-count {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Category Grid & Clean Blocks
+   -------------------------------------------------------------------------- */
+.resources-category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.res-category-block {
+    background: var(--res-card-bg);
+    border: 1px solid var(--res-border);
+    border-top: 3px solid #0052a3;
+    border-radius: var(--radius-lg, 16px);
+    padding: 1.45rem;
+    box-shadow: var(--res-shadow);
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.res-category-block:hover {
+    border-color: rgba(0, 82, 163, 0.35);
+    box-shadow: 0 14px 32px rgba(0, 40, 80, 0.1);
+}
+
+.res-category-header {
+    padding-bottom: 0.9rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--res-border);
+}
+
+.res-category-header h2 {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: 1.28rem !important;
+    font-weight: 800;
+    color: var(--res-heading) !important;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+}
+
+body.theme-white .res-category-header h2 {
+    color: #0a2544 !important;
+}
+
+.res-category-header p {
+    font-size: 0.88rem;
+    color: var(--res-muted) !important;
+    margin: 0;
+    line-height: 1.45;
+}
+
+body.theme-white .res-category-header p {
+    color: #486581 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. Resource List Items (High Contrast)
+   -------------------------------------------------------------------------- */
+.res-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    flex: 1;
+}
+
+.res-item-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.05rem;
+    background: var(--res-item-bg);
+    border: 1px solid var(--res-item-border);
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+}
+
+.res-item-link:hover {
+    background: var(--res-item-hover);
+    border-color: #0052a3;
+    transform: translateX(3px);
+}
+
+.res-item-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.res-item-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+    flex-wrap: wrap;
+}
+
+.res-item-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--res-heading);
+    line-height: 1.3;
+}
+
+body.theme-white .res-item-title {
+    color: #0a2544 !important;
+}
+
+.res-item-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: var(--res-badge-bg);
+    color: var(--res-badge-text);
+    border: 1px solid var(--res-badge-border);
+}
+
+.res-item-desc {
+    font-size: 0.83rem;
+    color: var(--res-muted) !important;
+    margin: 0;
+    line-height: 1.45;
+}
+
+body.theme-white .res-item-desc {
+    color: #486581 !important;
+}
+
+.res-item-action {
+    flex-shrink: 0;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--res-accent);
+    letter-spacing: 0.02em;
+    transition: transform 0.2s ease;
+}
+
+.res-item-link:hover .res-item-action {
+    color: #0052a3;
+    transform: translateX(3px);
+}
+
+/* Empty Search State */
+.resources-empty-state {
+    display: none;
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    background: var(--res-card-bg);
+    border: 1px solid var(--res-border);
+    border-radius: var(--radius-lg, 16px);
+    margin: 1rem 0 2rem;
+}
+
+.resources-empty-state h3 {
+    font-size: 1.25rem !important;
+    font-weight: 700;
+    color: var(--res-heading) !important;
+    margin: 0 0 0.4rem;
+}
+
+body.theme-white .resources-empty-state h3 {
+    color: #0a2544 !important;
+}
+
+.resources-empty-state p {
+    font-size: 0.9rem;
+    color: var(--res-muted) !important;
+    margin: 0 0 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   6. Assistance & Contact Banner
+   -------------------------------------------------------------------------- */
+.resources-help-panel {
+    background: var(--res-card-bg);
+    border: 1px solid var(--res-border);
+    border-left: 4px solid #0052a3;
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: var(--res-shadow);
+    padding: 1.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+body.theme-white .resources-help-panel {
+    background: linear-gradient(135deg, #ffffff 0%, #f4f8fd 100%);
+}
+
+.resources-help-panel::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -40px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(0, 82, 163, 0.08), transparent 70%);
+    pointer-events: none;
+}
+
+.help-panel-text {
+    max-width: 620px;
+}
+
+.help-panel-text h3 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.25rem !important;
+    font-weight: 800;
+    color: var(--res-heading) !important;
+    margin: 0 0 0.35rem 0;
+}
+
+body.theme-white .help-panel-text h3 {
+    color: #0a2544 !important;
+}
+
+.help-panel-text p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--res-muted) !important;
+    margin: 0;
+}
+
+body.theme-white .help-panel-text p {
+    color: #334e68 !important;
+}
+
+.help-panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+}
+
+.help-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+}
+
+.help-btn-primary {
+    background: #0052a3 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0, 82, 163, 0.25);
+}
+
+.help-btn-primary:hover {
+    background: #003d7a !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 82, 163, 0.35);
+}
+
+.help-btn-outline {
+    background: var(--res-surface);
+    border: 1px solid var(--res-border);
+    color: var(--res-heading) !important;
+}
+
+body.theme-white .help-btn-outline {
+    background: #ffffff;
+    border-color: rgba(0, 50, 120, 0.2);
+    color: #0052a3 !important;
+}
+
+body.theme-white .help-btn-outline:hover {
+    background: #eef5ff;
+    border-color: #0052a3;
+    color: #003d7a !important;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+    .resources-category-grid {
         grid-template-columns: 1fr;
     }
-    
-    .submenu-list {
-        flex-direction: column;
+    .book-spotlight-grid {
+        grid-template-columns: 130px 1fr;
+        gap: 1.25rem;
     }
-    
-    .submenu-list a {
-        width: 100%;
+    .resources-help-panel {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
     }
 }
 
-@media (max-width: 640px) {
-    .resources-page { padding-top: 0.75rem; }
-    .book-picks-disclosure summary { padding: 0.9rem 1rem; }
-    .featured-book-pick { flex-direction: column; }
-    .featured-book-pick__cover { width: 100%; }
-    .featured-book-pick__cover img { max-width: 180px; }
-    .featured-book-pick__content { padding: 1.15rem; }
+@media (max-width: 600px) {
+    .resources-hero {
+        padding: 2rem 1rem;
+    }
+    .book-spotlight-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .book-spotlight-cover img {
+        max-width: 130px;
+    }
+    .book-spotlight-actions {
+        justify-content: center;
+    }
+    .res-item-link {
+        padding: 0.75rem 0.85rem;
+    }
+    .help-panel-actions {
+        width: 100%;
+    }
+    .help-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Resources Page -->
 <div class="resources-page compact-page">
     <div class="resources-main-container compact-content">
-        <!-- Compact Hero -->
-        <div class="resources-hero">
-            <h1>Resources</h1>
-            <p>Helpful resources for your spiritual journey</p>
-        </div>
 
-        <!-- Page Submenu -->
-        <nav class="page-submenu">
-            <div class="submenu-title">Resource Categories</div>
-            <ul class="submenu-list">
-                <li><a href="#bible-study" class="submenu-link">Bible Study</a></li>
-                <li><a href="#prayer" class="submenu-link">Prayer</a></li>
-                <li><a href="#ministry" class="submenu-link">Ministry</a></li>
-                <li><a href="#education" class="submenu-link">Education</a></li>
-            </ul>
+        <!-- 1. Hero Banner (CPC Royal Blue, Pure White Text) -->
+        <header class="resources-hero">
+            <span class="resources-eyebrow">
+                Spiritual Growth & Discipleship
+            </span>
+            <h1>Spiritual Resources</h1>
+            <p>
+                Scriptures, reading recommendations, prayer tools, and teaching materials to encourage and equip your daily walk with Christ.
+            </p>
+
+            <!-- Live Search Bar -->
+            <div class="resources-search-wrap">
+                <input
+                    type="text"
+                    id="resourceSearchInput"
+                    class="resources-search-input"
+                    placeholder="Search resources by keyword (e.g. Bible, Prayer, LifeGroups)..."
+                    aria-label="Search resources"
+                    autocomplete="off"
+                >
+                <button type="button" id="resourceSearchClear" class="resources-search-clear" aria-label="Clear search">
+                    &times;
+                </button>
+            </div>
+        </header>
+
+        <!-- 2. Pastor's Book Recommendation Spotlight -->
+        {% if site_content.get('pastors_book_active', 'True') == 'True' %}
+        <section class="pastors-book-spotlight" id="featured-book-pick" aria-labelledby="featured-book-heading">
+            <div class="book-spotlight-grid">
+                <div class="book-spotlight-cover">
+                    <img
+                        src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}"
+                        alt="Cover of {{ site_content.get('pastors_book_title', 'Life Together') }}"
+                        loading="lazy"
+                    >
+                </div>
+                <div class="book-spotlight-body">
+                    <div class="book-spotlight-badge">
+                        {{ site_content.get('pastors_book_label', "Pastor's Current Book Pick") }}
+                    </div>
+                    <h3 id="featured-book-heading">{{ site_content.get('pastors_book_title', 'Life Together') }}</h3>
+                    <div class="book-spotlight-author">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</div>
+                    <p class="book-spotlight-desc">
+                        {% if site_content.get('pastors_book_description') %}
+                            {{ site_content.get('pastors_book_description') | striptags }}
+                        {% else %}
+                            In <em>Life Together</em>, Dietrich Bonhoeffer presents a profound and practical theology of Christian community, fellowship, shared prayer, and daily grace that speaks directly into congregational life.
+                        {% endif %}
+                    </p>
+                    <div class="book-spotlight-actions">
+                        <a href="{{ url_for('pastors_book') }}" class="book-spotlight-btn book-spotlight-btn-primary">
+                            <span>Read Full Recommendation &rarr;</span>
+                        </a>
+                        <a href="https://www.amazon.com/dp/0060608528" target="_blank" rel="noopener noreferrer" class="book-spotlight-btn book-spotlight-btn-secondary">
+                            <span>View on Amazon</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- 3. Category Filter Tabs (No Icons, Clear States) -->
+        <nav class="resources-filter-nav" aria-label="Resource Categories">
+            <button type="button" class="res-filter-pill active" data-category="all">
+                <span>All Resources</span>
+                <span class="pill-count" id="count-all">16</span>
+            </button>
+            <button type="button" class="res-filter-pill" data-category="bible-study">
+                <span>Scripture & Study</span>
+                <span class="pill-count">4</span>
+            </button>
+            <button type="button" class="res-filter-pill" data-category="prayer">
+                <span>Prayer & Care</span>
+                <span class="pill-count">4</span>
+            </button>
+            <button type="button" class="res-filter-pill" data-category="ministry">
+                <span>Community & LifeGroups</span>
+                <span class="pill-count">4</span>
+            </button>
+            <button type="button" class="res-filter-pill" data-category="education">
+                <span>Theology & Audio</span>
+                <span class="pill-count">4</span>
+            </button>
         </nav>
 
-        <!-- Content Area -->
-        <div class="resources-content-area">
-            <section class="resources-section">
-                {% if site_content.get('pastors_book_active', 'True') == 'True' %}
-                <details class="book-picks-disclosure">
-                    <summary>
-                        <span>
-                            Pastor's Book Picks
-                            <span class="book-picks-disclosure__meta">{{ site_content.get('pastors_book_title', 'Life Together') }} by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</span>
-                        </span>
-                        <span class="book-picks-disclosure__action">Show all</span>
-                    </summary>
-                    <div class="featured-book-pick">
-                    <div class="featured-book-pick__cover">
-                        <img src="{{ site_content.get('pastors_book_image_url', 'https://m.media-amazon.com/images/I/41VLz4wzqrL._SY445_SX342_FMwebp_.jpg') }}"
-                             alt="Book Cover" loading="lazy"
-                             >
-                    </div>
-                    <div class="featured-book-pick__content">
-                        <span class="featured-book-pick__label">{{ site_content.get('pastors_book_label', "Pastor's Book Pick") }}</span>
-                        <h3>{{ site_content.get('pastors_book_title', 'Life Together') }}</h3>
-                        <p class="featured-book-pick__author">by {{ site_content.get('pastors_book_author', 'Dietrich Bonhoeffer') }}</p>
-                        <p class="featured-book-pick__description">
-                            {{ site_content.get('pastors_book_description', '') | striptags }}
-                        </p>
-                        <a href="{{ url_for('pastors_book') }}" class="btn btn-primary">Read Recommendation →</a>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                <div class="section-header">
-                    <h2>Spiritual Resources</h2>
-                    <p>Find helpful resources to support your spiritual growth and understanding of the Christian faith.</p>
-                </div>
-                
-                <div class="resource-categories">
-                    <div id="bible-study" class="resource-category">
-                        <h3>Bible Study</h3>
-                        <ul>
-                            <li><a href="#">Weekly Bible Study Materials</a></li>
-                            <li><a href="#">Study Guides</a></li>
-                            <li><a href="#">Recommended Commentaries</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div id="prayer" class="resource-category">
-                        <h3>Prayer</h3>
-                        <ul>
-                            <li><a href="#">Prayer Requests</a></li>
-                            <li><a href="#">Prayer Guide</a></li>
-                            <li><a href="#">Prayer Meeting Schedule</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div id="ministry" class="resource-category">
-                        <h3>Ministry</h3>
-                        <ul>
-                            <li><a href="#">Volunteer Opportunities</a></li>
-                            <li><a href="#">Ministry Descriptions</a></li>
-                            <li><a href="#">Leadership Resources</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div id="education" class="resource-category">
-                        <h3>Education</h3>
-                        <ul>
-                            <li><a href="#">Sunday School Curriculum</a></li>
-                            <li><a href="#">Theological Resources</a></li>
-                            <li><a href="#">Recommended Reading</a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="contact-resources">
-                    <h3>Need More Information?</h3>
-                    <p>Contact us at <a href="mailto:admin@cpcnewhaven.org">admin@cpcnewhaven.org</a> for more information about any of these resources.</p>
-                </div>
-            </section>
+        <!-- Empty Search State -->
+        <div id="resourcesEmptyState" class="resources-empty-state" role="status">
+            <h3>No resources found</h3>
+            <p>We couldn't find any resources matching your search. Try another keyword or browse all categories.</p>
+            <button type="button" class="res-filter-pill active" id="resetSearchBtn" style="margin: 0 auto;">
+                Show All Resources
+            </button>
         </div>
+
+        <!-- 4. Resources Grid (No Icons, Bold Headings & Crisp Rows) -->
+        <div class="resources-category-grid" id="resourcesGrid">
+
+            <!-- Category 1: Scripture & Bible Study -->
+            <article class="res-category-block" data-category="bible-study" id="bible-study">
+                <div class="res-category-header">
+                    <h2>Scripture & Bible Study</h2>
+                    <p>Engage with God's Word through digital study tools, sermon archives, and teaching series.</p>
+                </div>
+                <div class="res-items-list">
+                    <a href="{{ url_for('esv') }}" class="res-item-link" data-search="esv online bible reader scripture search verse passage study text">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">ESV Online Bible & Search</span>
+                                <span class="res-item-tag">Web App Tool</span>
+                            </div>
+                            <p class="res-item-desc">Read, search, and cross-reference scripture directly on the CPC web app.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('sermons') }}" class="res-item-link" data-search="sermons preaching audio transcripts series lord's day worship pulpit">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Sermon Audio & Manuscripts</span>
+                                <span class="res-item-tag">Audio & Notes</span>
+                            </div>
+                            <p class="res-item-desc">Listen to Sunday messages and follow along with sermon texts and outlines.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('pastor_teaching') }}" class="res-item-link" data-search="adult sunday studies teaching series doctrine bible classes pastor craig jerry theology">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Adult Sunday Studies & Series</span>
+                                <span class="res-item-tag">Classes</span>
+                            </div>
+                            <p class="res-item-desc">Explore multi-week teaching series on theology, scripture, and Christian living.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="https://www.esv.org/resources/reading-plans/" target="_blank" rel="noopener noreferrer" class="res-item-link" data-search="daily bible reading plan devotion scripture through the bible track crossway">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Daily Scripture Reading Plans</span>
+                                <span class="res-item-tag">ESV Plans</span>
+                            </div>
+                            <p class="res-item-desc">Structured devotional reading schedules to anchor your daily time in the Word.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Category 2: Prayer & Pastoral Care -->
+            <article class="res-category-block" data-category="prayer" id="prayer">
+                <div class="res-category-header">
+                    <h2>Prayer & Pastoral Care</h2>
+                    <p>Intercession, pre-service prayer gatherings, and pastoral support for life's seasons.</p>
+                </div>
+                <div class="res-items-list">
+                    <a href="mailto:prayer@cpcnewhaven.org?subject=Prayer%20Request%20-%20CPC%20New%20Haven" class="res-item-link" data-search="submit prayer request intercession petition confidential elders pastoral team">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Submit a Prayer Request</span>
+                                <span class="res-item-tag">Confidential</span>
+                            </div>
+                            <p class="res-item-desc">Share personal burdens, petitions, and praises directly with our pastors & prayer chain.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('events') }}" class="res-item-link" data-search="sunday morning prayer meeting pre-service 8:30am parlor gathering calendar events">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Sunday Morning Prayer Meeting</span>
+                                <span class="res-item-tag">Sundays 8:30am</span>
+                            </div>
+                            <p class="res-item-desc">Join us in the Parlor each Lord's Day morning to pray for our church and city.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('contact') }}" class="res-item-link" data-search="pastoral care counseling appointment craig luekens jerry ornelas guidance spiritual meeting">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Pastoral Care & Counseling</span>
+                                <span class="res-item-tag">Pastoral Team</span>
+                            </div>
+                            <p class="res-item-desc">Connect with Pastor Craig or Pastor Jerry for spiritual guidance, counseling, or prayer.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('what_we_believe') }}" class="res-item-link" data-search="lord's prayer historic prayers reformed liturgy devotion prayer guides">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Guides & Liturgical Prayers</span>
+                                <span class="res-item-tag">Guides</span>
+                            </div>
+                            <p class="res-item-desc">Biblical frameworks, collect prayers, and the Lord's Prayer to enrich daily devotion.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Category 3: Community & Discipleship -->
+            <article class="res-category-block" data-category="ministry" id="ministry">
+                <div class="res-category-header">
+                    <h2>Community & Discipleship</h2>
+                    <p>Get connected in fellowship, join a neighborhood LifeGroup, and serve together.</p>
+                </div>
+                <div class="res-items-list">
+                    <a href="{{ url_for('lifegroups') }}" class="res-item-link" data-search="lifegroups small groups fellowship neighborhood new haven hamden cheshire shoreline community">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">LifeGroups Directory</span>
+                                <span class="res-item-tag">Small Groups</span>
+                            </div>
+                            <p class="res-item-desc">Find a neighborhood small group for regular dinner, prayer, fellowship, and study.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('community') }}" class="res-item-link" data-search="ministry teams volunteering serve volunteer opportunities mercy hospitality children music tech">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Ministry Teams & Serving</span>
+                                <span class="res-item-tag">Get Involved</span>
+                            </div>
+                            <p class="res-item-desc">Opportunities to use your gifts in hospitality, mercy, youth, nursery, and worship.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('plan_a_visit') }}" class="res-item-link" data-search="sunday worship guide plan a visit communion liturgy order of service visitors kids nursery">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Sunday Worship Guide</span>
+                                <span class="res-item-tag">What to Expect</span>
+                            </div>
+                            <p class="res-item-desc">An overview of our order of worship, the sacraments, hymns, parking, and children's ministry.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('highlights') }}" class="res-item-link" data-search="weekly highlights announcements newsletter bulletins pastoral letter church news">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Weekly Highlights & Bulletins</span>
+                                <span class="res-item-tag">Weekly Update</span>
+                            </div>
+                            <p class="res-item-desc">Stay informed with parish announcements, event updates, and the weekly pastoral letter.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Category 4: Theology, Podcasts & Education -->
+            <article class="res-category-block" data-category="education" id="education">
+                <div class="res-category-header">
+                    <h2>Theology, Podcasts & Reading</h2>
+                    <p>Podcasts, historic confessions and catechisms, and curated reading lists.</p>
+                </div>
+                <div class="res-items-list">
+                    <a href="{{ url_for('podcasts') }}" class="res-item-link" data-search="podcasts beyond the sermon confessional theology biblical interpretation audio spotify apple">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">CPC Podcast Network</span>
+                                <span class="res-item-tag">3 Show Channels</span>
+                            </div>
+                            <p class="res-item-desc">Listen to <em>Beyond the Sermon</em>, <em>Confessional Theology</em>, and seminar audio.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('what_we_believe') }}" class="res-item-link" data-search="westminster confession of faith shorter catechism larger catechism reformed doctrine standards presbyterian">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Westminster Confession & Creeds</span>
+                                <span class="res-item-tag">Doctrinal Standards</span>
+                            </div>
+                            <p class="res-item-desc">Explore the historic Westminster Confession of Faith, Catechisms, and historic ecumenical creeds.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('pastors_book') }}" class="res-item-link" data-search="pastor's book picks recommendations reading list books bonhoeffer keller lewis packer">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Pastor's Recommended Reading</span>
+                                <span class="res-item-tag">Book Picks</span>
+                            </div>
+                            <p class="res-item-desc">Curated books on discipleship, Christian history, family, and spiritual formation.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+
+                    <a href="{{ url_for('community') }}#children" class="res-item-link" data-search="children youth sunday school curriculum kids family discipleship nursery parents catechism">
+                        <div class="res-item-content">
+                            <div class="res-item-title-row">
+                                <span class="res-item-title">Children & Family Discipleship</span>
+                                <span class="res-item-tag">Family Resources</span>
+                            </div>
+                            <p class="res-item-desc">Sunday school curriculum, First Catechism questions, and family worship tools.</p>
+                        </div>
+                        <span class="res-item-action">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- 5. Assistance Banner -->
+        <footer class="resources-help-panel">
+            <div class="help-panel-text">
+                <h3>Looking for a specific book or study material?</h3>
+                <p>
+                    Whether you need a physical Bible, guidance on a particular theological topic, or assistance getting plugged into a LifeGroup study, our pastoral staff and ministry directors are eager to help.
+                </p>
+            </div>
+            <div class="help-panel-actions">
+                <a href="mailto:admin@cpcnewhaven.org?subject=Resource%20Inquiry%20-%20CPC%20New%20Haven" class="help-btn help-btn-primary">
+                    <span>Email Church Office</span>
+                </a>
+                <a href="{{ url_for('contact') }}" class="help-btn help-btn-outline">
+                    <span>Contact Pastoral Staff</span>
+                </a>
+                <a href="{{ url_for('plan_a_visit') }}" class="help-btn help-btn-outline">
+                    <span>Plan a Visit</span>
+                </a>
+            </div>
+        </footer>
+
     </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    function smoothScrollTo(targetId) {
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-            const headerOffset = 80;
-            const elementPosition = targetElement.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    const searchInput = document.getElementById('resourceSearchInput');
+    const searchClear = document.getElementById('resourceSearchClear');
+    const resetSearchBtn = document.getElementById('resetSearchBtn');
+    const filterPills = document.querySelectorAll('.res-filter-pill');
+    const categoryBlocks = document.querySelectorAll('.res-category-block');
+    const allItems = document.querySelectorAll('.res-item-link');
+    const emptyState = document.getElementById('resourcesEmptyState');
+    const countAll = document.getElementById('count-all');
+
+    if (countAll) {
+        countAll.textContent = allItems.length;
+    }
+
+    let activeCategory = 'all';
+
+    function filterResources() {
+        const query = (searchInput.value || '').trim().toLowerCase();
+        let totalVisibleItems = 0;
+
+        categoryBlocks.forEach(block => {
+            const blockCategory = block.getAttribute('data-category');
+            const items = block.querySelectorAll('.res-item-link');
+            let visibleInBlock = 0;
+
+            const categoryMatches = (activeCategory === 'all' || activeCategory === blockCategory);
+
+            items.forEach(item => {
+                if (!categoryMatches) {
+                    item.style.display = 'none';
+                    return;
+                }
+
+                if (!query) {
+                    item.style.display = 'flex';
+                    visibleInBlock++;
+                    totalVisibleItems++;
+                    return;
+                }
+
+                const searchData = (item.getAttribute('data-search') || '').toLowerCase();
+                const itemText = (item.textContent || '').toLowerCase();
+
+                if (searchData.includes(query) || itemText.includes(query)) {
+                    item.style.display = 'flex';
+                    visibleInBlock++;
+                    totalVisibleItems++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (visibleInBlock > 0 && categoryMatches) {
+                block.style.display = 'flex';
+            } else {
+                block.style.display = 'none';
+            }
+        });
+
+        if (totalVisibleItems === 0) {
+            emptyState.style.display = 'block';
+        } else {
+            emptyState.style.display = 'none';
+        }
+
+        if (searchClear) {
+            searchClear.style.display = query.length > 0 ? 'block' : 'none';
         }
     }
 
-    document.querySelectorAll('.submenu-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            smoothScrollTo(targetId);
-            document.querySelectorAll('.submenu-link').forEach(l => l.classList.remove('active'));
+    // Category pill filtering
+    filterPills.forEach(pill => {
+        pill.addEventListener('click', function() {
+            const cat = this.getAttribute('data-category');
+            if (!cat) return;
+
+            filterPills.forEach(p => p.classList.remove('active'));
             this.classList.add('active');
+            activeCategory = cat;
+
+            filterResources();
         });
     });
+
+    // Real-time search
+    if (searchInput) {
+        searchInput.addEventListener('input', filterResources);
+    }
+
+    if (searchClear) {
+        searchClear.addEventListener('click', function() {
+            searchInput.value = '';
+            searchInput.focus();
+            filterResources();
+        });
+    }
+
+    if (resetSearchBtn) {
+        resetSearchBtn.addEventListener('click', function() {
+            if (searchInput) searchInput.value = '';
+            activeCategory = 'all';
+            filterPills.forEach(p => {
+                if (p.getAttribute('data-category') === 'all') {
+                    p.classList.add('active');
+                } else {
+                    p.classList.remove('active');
+                }
+            });
+            filterResources();
+        });
+    }
 });
 </script>
 {% endblock %}

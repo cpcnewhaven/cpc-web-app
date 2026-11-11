@@ -3,8 +3,8 @@
   "description": "Weekly sermons from our Sunday worship services",
   "_year_counts": {
     "2026": {
-      "count": 28,
-      "note": "28 sermons from 2026"
+      "count": 30,
+      "note": "30 sermons from 2026"
     },
     "2025": {
       "count": 116,
@@ -43,7 +43,7 @@
       "note": "11 sermons from 2002"
     }
   },
-  "_total_sermons": 593,
+  "_total_sermons": 595,
   "_organized_by": "year (oldest to newest)",
   "_note": "Scroll through 'sermons_by_year' to see sermons organized by year. The 'sermons' array at the end is for API compatibility.",
   "sermons_by_year": {
@@ -12072,6 +12072,54 @@
     ],
     "2026": [
       {
+        "id": "26-11-10",
+        "title": "Beyond the Sunday Sermon | Acts 4: 32 - 5:11 | With Guest Seth Bollinger",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Acts 4: 32 - 5:11",
+        "date": "2026-11-10",
+        "apple_podcasts_url": "",
+        "spotify_url": "https://open.spotify.com/episode/3X8F1neHqrXiJHO8O9V6W8?si=Ar6bl336S0aeg2agh0TAxg",
+        "link": "https://open.spotify.com/episode/3X8F1neHqrXiJHO8O9V6W8?si=Ar6bl336S0aeg2agh0TAxg",
+        "podcast_thumbnail_url": "https://s3-us-west-2.amazonaws.com/anchor-generated-image-bank/staging/podcast_uploaded_episode400/12709107/12709107-1794329415814-62411b790af26.jpg",
+        "youtube_url": "",
+        "source": "spotify",
+        "original_id": "3X8F1neHqrXiJHO8O9V6W8",
+        "series": "Beyond the Sunday Sermon",
+        "episode_title": "Beyond the Sunday Sermon | Acts 4: 32 - 5:11 | With Guest Seth Bollinger",
+        "guest_speaker": "Seth Bollinger",
+        "sermon_type": "discussion",
+        "tags": [
+          "Discussion",
+          "Guest: Seth Bollinger",
+          "Beyond the Sunday Sermon"
+        ],
+        "search_keywords": "beyond the sunday sermon | acts 4: 32 - 5:11 with guest seth bollinger rev. craig luekens discussion guest:"
+      },
+      {
+        "id": "26-11-08",
+        "title": "Everything in Common: Full Devotion to King Jesus | The Sunday Sermon | Acts 4: 32 - 5:11 | Rev. Craig Luekens",
+        "author": "Rev. Craig Luekens",
+        "scripture": "Acts 4: 32 - 5:11",
+        "date": "2026-11-08",
+        "apple_podcasts_url": "",
+        "spotify_url": "https://podcasters.spotify.com/pod/show/cpcnewhaven/episodes/Everything-in-Common-Full-Devotion-to-King-Jesus--The-Sunday-Sermon--Acts-4-32---511--Rev--Craig-Luekens-e3s2vte",
+        "link": "https://podcasters.spotify.com/pod/show/cpcnewhaven/episodes/Everything-in-Common-Full-Devotion-to-King-Jesus--The-Sunday-Sermon--Acts-4-32---511--Rev--Craig-Luekens-e3s2vte",
+        "podcast_thumbnail_url": "https://files.cpcnewhaven.org/sermons/Sermon_2026-11-08.png",
+        "audio_file_url": "https://anchor.fm/s/4c59256c/podcast/play/129139534/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-10-9%2F2fc256a4-cf66-c67b-1cb1-a0c3dbbc71e7.mp3",
+        "youtube_url": "",
+        "source": "anchor",
+        "original_id": "e3s2vte",
+        "series": "Acts",
+        "episode_title": "Everything in Common: Full Devotion to King Jesus",
+        "guest_speaker": "",
+        "sermon_type": "sermon",
+        "tags": [
+          "Sunday Sermon",
+          "Acts"
+        ],
+        "search_keywords": "everything in common full devotion to king jesus sunday sermon acts 4: 32 - 5:11 rev. craig luekens"
+      },
+      {
         "id": "26-09-06",
         "title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
         "author": "Rev. Craig Luekens",
@@ -12090,7 +12138,10 @@
         "episode_title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
         "guest_speaker": "",
         "sermon_type": "sermon",
-        "tags": ["The Sunday Sermon", "Luke"],
+        "tags": [
+          "The Sunday Sermon",
+          "Luke"
+        ],
         "search_keywords": "it is finished now go get started mission joy and the new proclamation the sunday sermon rev craig luekens luke 24: 36-53"
       },
       {
@@ -12700,6 +12751,54 @@
   },
   "sermons": [
     {
+      "id": "26-11-10",
+      "title": "Beyond the Sunday Sermon | Acts 4: 32 - 5:11 | With Guest Seth Bollinger",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Acts 4: 32 - 5:11",
+      "date": "2026-11-10",
+      "apple_podcasts_url": "",
+      "spotify_url": "https://open.spotify.com/episode/3X8F1neHqrXiJHO8O9V6W8?si=Ar6bl336S0aeg2agh0TAxg",
+      "link": "https://open.spotify.com/episode/3X8F1neHqrXiJHO8O9V6W8?si=Ar6bl336S0aeg2agh0TAxg",
+      "podcast_thumbnail_url": "https://s3-us-west-2.amazonaws.com/anchor-generated-image-bank/staging/podcast_uploaded_episode400/12709107/12709107-1794329415814-62411b790af26.jpg",
+      "youtube_url": "",
+      "source": "spotify",
+      "original_id": "3X8F1neHqrXiJHO8O9V6W8",
+      "series": "Beyond the Sunday Sermon",
+      "episode_title": "Beyond the Sunday Sermon | Acts 4: 32 - 5:11 | With Guest Seth Bollinger",
+      "guest_speaker": "Seth Bollinger",
+      "sermon_type": "discussion",
+      "tags": [
+        "Discussion",
+        "Guest: Seth Bollinger",
+        "Beyond the Sunday Sermon"
+      ],
+      "search_keywords": "beyond the sunday sermon | acts 4: 32 - 5:11 with guest seth bollinger rev. craig luekens discussion guest:"
+    },
+    {
+      "id": "26-11-08",
+      "title": "Everything in Common: Full Devotion to King Jesus | The Sunday Sermon | Acts 4: 32 - 5:11 | Rev. Craig Luekens",
+      "author": "Rev. Craig Luekens",
+      "scripture": "Acts 4: 32 - 5:11",
+      "date": "2026-11-08",
+      "apple_podcasts_url": "",
+      "spotify_url": "https://podcasters.spotify.com/pod/show/cpcnewhaven/episodes/Everything-in-Common-Full-Devotion-to-King-Jesus--The-Sunday-Sermon--Acts-4-32---511--Rev--Craig-Luekens-e3s2vte",
+      "link": "https://podcasters.spotify.com/pod/show/cpcnewhaven/episodes/Everything-in-Common-Full-Devotion-to-King-Jesus--The-Sunday-Sermon--Acts-4-32---511--Rev--Craig-Luekens-e3s2vte",
+      "podcast_thumbnail_url": "https://files.cpcnewhaven.org/sermons/Sermon_2026-11-08.png",
+      "audio_file_url": "https://anchor.fm/s/4c59256c/podcast/play/129139534/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-10-9%2F2fc256a4-cf66-c67b-1cb1-a0c3dbbc71e7.mp3",
+      "youtube_url": "",
+      "source": "anchor",
+      "original_id": "e3s2vte",
+      "series": "Acts",
+      "episode_title": "Everything in Common: Full Devotion to King Jesus",
+      "guest_speaker": "",
+      "sermon_type": "sermon",
+      "tags": [
+        "Sunday Sermon",
+        "Acts"
+      ],
+      "search_keywords": "everything in common full devotion to king jesus sunday sermon acts 4: 32 - 5:11 rev. craig luekens"
+    },
+    {
       "id": "26-09-06",
       "title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
       "author": "Rev. Craig Luekens",
@@ -12718,7 +12817,10 @@
       "episode_title": "It Is Finished. Now, Go, Get Started! Mission, Joy, and the New Proclamation | The Sunday Sermon | Rev. Craig Luekens | Luke 24: 36-53",
       "guest_speaker": "",
       "sermon_type": "sermon",
-      "tags": ["The Sunday Sermon", "Luke"],
+      "tags": [
+        "The Sunday Sermon",
+        "Luke"
+      ],
       "search_keywords": "it is finished now go get started mission joy and the new proclamation the sunday sermon rev craig luekens luke 24: 36-53"
     },
     {

@@ -1284,6 +1284,93 @@ def yearbook():
     return render_template('yearbook.html', site_content=site_content)
 
 
+@app.route('/esv')
+@app.route('/bible')
+def esv():
+    """ESV Bible reader page featuring open source ESV text."""
+    import esv_helper
+    site_content = get_site_content()
+
+    passage_req = request.args.get('p') or request.args.get('passage')
+    book_req = request.args.get('b') or request.args.get('book')
+    chapter_req = request.args.get('c') or request.args.get('chapter')
+    verse_req = request.args.get('v') or request.args.get('verse')
+
+    book = None
+    chapter = 1
+    start_v = None
+
+    if passage_req:
+        book, chapter, start_v, _ = esv_helper.parse_passage_reference(passage_req)
+    elif book_req:
+        book = esv_helper.find_book(book_req)
+        if chapter_req:
+            try:
+                chapter = int(chapter_req)
+            except ValueError:
+                chapter = 1
+
+    if not book:
+        book = esv_helper.BOOK_BY_ID[1]
+        chapter = 1
+
+    if verse_req:
+        try:
+            start_v = int(verse_req)
+        except ValueError:
+            pass
+
+    chapter_data = esv_helper.get_chapter_text(book["id"], chapter)
+
+    return render_template(
+        'esv.html',
+        site_content=site_content,
+        books=esv_helper.BOOKS,
+        current_book=book,
+        current_chapter=chapter,
+        highlight_verse=start_v,
+        initial_data=chapter_data
+    )
+
+
+@app.route('/api/esv/chapter')
+def api_esv_chapter():
+    """API endpoint to get ESV chapter text."""
+    import esv_helper
+    passage = request.args.get('p') or request.args.get('passage')
+    book_param = request.args.get('b') or request.args.get('book')
+    chapter_param = request.args.get('c') or request.args.get('chapter')
+
+    if passage:
+        book, chapter, _, _ = esv_helper.parse_passage_reference(passage)
+    elif book_param:
+        book = esv_helper.find_book(book_param)
+        try:
+            chapter = int(chapter_param) if chapter_param else 1
+        except ValueError:
+            chapter = 1
+    else:
+        book = esv_helper.BOOK_BY_ID[1]
+        chapter = 1
+
+    if not book:
+        return jsonify({"success": False, "error": "Book not found"}), 404
+
+    data = esv_helper.get_chapter_text(book["id"], chapter)
+    return jsonify(data)
+
+
+@app.route('/api/esv/search')
+def api_esv_search():
+    """API endpoint to search the ESV Bible text."""
+    import esv_helper
+    q = request.args.get('q', '').strip()
+    if not q:
+        return jsonify({"success": False, "error": "Query is required"}), 400
+    res = esv_helper.search_esv(q)
+    return jsonify(res)
+
+
 @app.route('/newsletter')
 def newsletter():
     return render_template('newsletter.html')
@@ -1354,6 +1441,69 @@ def robots():
 def archive():
     """Site archive page showing older content"""
     return render_template('archive.html')
+
+@app.route('/sermons/series-history')
+@app.route('/sermon-series-history')
+def sermon_series_history():
+    """Chronological history of all sermon series through the years at CPC New Haven."""
+    from models import SermonSeries, Sermon
+    from sqlalchemy import func
+
+    # Pre-fetch sermon counts per series in a single group query
+    counts = dict(
+        db.session.query(Sermon.series_id, func.count(Sermon.id))
+        .filter(Sermon.active == True, Sermon.series_id.isnot(None))
+        .group_by(Sermon.series_id)
+        .all()
+    )
+
+    all_series = SermonSeries.query.order_by(
+        SermonSeries.start_date.desc().nullslast(),
+        SermonSeries.id.desc()
+    ).all()
+
+    # Determine current active series
+    current_series = next((s for s in all_series if s.active and s.start_date), None)
+
+    # Group series by year
+    years_map = {}
+    no_year_series = []
+
+    for s in all_series:
+        if not s.title or s.title.strip().lower() in ('none', 'untitled'):
+            continue
+        s_count = counts.get(s.id, 0)
+        item = {
+            'id': s.id,
+            'title': s.title,
+            'description': s.description or '',
+            'start_date': s.start_date,
+            'end_date': s.end_date,
+            'image_url': s.image_url,
+            'slug': s.slug,
+            'active': s.active,
+            'sermon_count': s_count,
+            'is_current': bool(current_series and s.id == current_series.id)
+        }
+        if s.start_date:
+            yr = s.start_date.year
+            if yr not in years_map:
+                years_map[yr] = []
+            years_map[yr].append(item)
+        else:
+            no_year_series.append(item)
+
+    sorted_years = sorted(years_map.keys(), reverse=True)
+    grouped_history = [{'year': yr, 'series': years_map[yr]} for yr in sorted_years]
+    valid_count = sum(len(group['series']) for group in grouped_history) + len(no_year_series)
+
+    return render_template(
+        'sermon_series_history.html',
+        grouped_history=grouped_history,
+        no_year_series=no_year_series,
+        current_series=current_series,
+        total_series=valid_count
+    )
 
 @app.route('/contact')
 def contact():
@@ -1944,7 +2094,7 @@ def _get_home_teaching_spotlight(force_refresh=False):
 
             if sermon.beyond_episode:
                 ep = sermon.beyond_episode
-                beyond_artwork = ep.podcast_thumbnail_url or default_beyond_art
+                beyond_artwork = default_beyond_art if (not ep.podcast_thumbnail_url or 'anchor-generated' in ep.podcast_thumbnail_url) else ep.podcast_thumbnail_url
                 latest_beyond = {
                     'id': ep.id,
                     'title': ep.title,
@@ -1954,6 +2104,7 @@ def _get_home_teaching_spotlight(force_refresh=False):
                     'date_iso': ep.date_added.isoformat() if ep.date_added else '',
                     'link': ep.link or ep.listen_url or '',
                     'listen_url': ep.listen_url or ep.link or '',
+                    'spotify_url': ep.link if (ep.link and 'spotify' in ep.link) else (ep.listen_url if (ep.listen_url and 'spotify' in ep.listen_url) else ''),
                     'handout_url': ep.handout_url,
                     'season': ep.season,
                     'number': ep.number,
@@ -1972,7 +2123,7 @@ def _get_home_teaching_spotlight(force_refresh=False):
                 .filter(_not_expired(PodcastEpisode))\
                 .order_by(PodcastEpisode.date_added.desc(), PodcastEpisode.number.desc()).first()
             if ep and (not latest_beyond or (ep.date_added and ep.date_added.isoformat() > latest_beyond.get('date_iso', ''))):
-                beyond_artwork = ep.podcast_thumbnail_url or default_beyond_art
+                beyond_artwork = default_beyond_art if (not ep.podcast_thumbnail_url or 'anchor-generated' in ep.podcast_thumbnail_url) else ep.podcast_thumbnail_url
                 latest_beyond = {
                         'id': ep.id,
                         'title': ep.title,
@@ -1982,6 +2133,7 @@ def _get_home_teaching_spotlight(force_refresh=False):
                         'date_iso': ep.date_added.isoformat() if ep.date_added else '',
                         'link': ep.link or ep.listen_url or '',
                         'listen_url': ep.listen_url or ep.link or '',
+                        'spotify_url': ep.link if (ep.link and 'spotify' in ep.link) else (ep.listen_url if (ep.listen_url and 'spotify' in ep.listen_url) else ''),
                         'handout_url': ep.handout_url,
                         'season': ep.season,
                         'number': ep.number,
@@ -3221,6 +3373,7 @@ def api_search():
     """Unified search endpoint that searches across all content types with optional filters"""
     from sqlalchemy import or_, and_
     from datetime import datetime
+    import urllib.parse
 
     query = request.args.get('q', '').strip().lower()
     content_type = request.args.get('type', 'all')
@@ -3230,7 +3383,7 @@ def api_search():
     # Optional filters per content type
     sermon_filters = {
         'speaker': request.args.get('speaker', '').strip(),
-        'series_id': request.args.get('series_id', '').strip(),
+        'series_id': request.args.get('series_id', '').strip() or request.args.get('series', '').strip(),
         'year': request.args.get('year', '').strip(),
         'scripture_book': request.args.get('scripture_book', '').strip(),
     }
@@ -3262,6 +3415,12 @@ def api_search():
     }
 
     try:
+        # Determine the current active sermon series to favor in search ranking
+        current_series = SermonSeries.query.filter(SermonSeries.active == True).order_by(
+            SermonSeries.start_date.desc().nullslast(), SermonSeries.id.desc()
+        ).first()
+        current_series_id = current_series.id if current_series else None
+
         # Search sermons — active only, plus single next-upcoming sermon
         if content_type in ['all', 'sermons']:
             q = Sermon.query.filter(
@@ -3292,7 +3451,10 @@ def api_search():
                     series_id = int(sermon_filters['series_id'])
                     q = q.filter(Sermon.series_id == series_id)
                 except ValueError:
-                    pass
+                    series_name = sermon_filters['series_id']
+                    q = q.join(SermonSeries, Sermon.series_id == SermonSeries.id, isouter=True).filter(
+                        SermonSeries.title.ilike(f'%{series_name}%')
+                    )
 
             # Filter by year
             if sermon_filters['year']:
@@ -3322,14 +3484,37 @@ def api_search():
 
             def _sermon_dict(s, upcoming=False):
                 series_title = s.series.title if s.series else ''
+                is_current = bool(current_series_id and s.series_id == current_series_id)
+                scripture_val = (s.scripture or '').strip()
+                book_name = ''
+                if scripture_val:
+                    parts = scripture_val.split()
+                    if len(parts) >= 2 and parts[0] in ['1', '2', '3', 'I', 'II', 'III']:
+                        book_name = f"{parts[0]} {parts[1]}"
+                    elif parts:
+                        book_name = parts[0]
+                elif s.book and hasattr(s.book, 'name') and s.book.name:
+                    book_name = s.book.name
+                elif series_title:
+                    book_name = series_title
+
+                esv_param = scripture_val or book_name
+                esv_url = f"/esv?p={urllib.parse.quote(esv_param)}" if esv_param else ''
+
                 return {
                     'type': 'sermon',
                     'id': s.id,
                     'title': s.title,
-                    'description': s.scripture or series_title,
+                    'description': scripture_val or series_title,
                     'speaker': s.display_speaker,
+                    'scripture': scripture_val,
+                    'book': book_name,
+                    'esv_url': esv_url,
                     'date': s.date.strftime('%Y-%m-%d') if s.date else None,
                     'series': series_title,
+                    'series_id': s.series_id,
+                    'is_current_series': is_current,
+                    'current_series_title': current_series.title if current_series else None,
                     'url': s.spotify_url or s.youtube_url or s.apple_podcasts_url or s.audio_file_url or '',
                     'audio_file_url': s.audio_file_url,
                     'spotify_url': s.spotify_url or '',
@@ -3551,11 +3736,14 @@ def api_search():
 
             series_hits = q.all()
             for ss in series_hits:
+                is_current = bool(current_series_id and ss.id == current_series_id)
                 results['results'].append({
                     'type': 'sermon_series',
+                    'id': ss.id,
                     'title': ss.title,
                     'description': ss.description[:200] if ss.description else '',
                     'date': ss.start_date.strftime('%Y-%m-%d') if ss.start_date else None,
+                    'is_current_series': is_current,
                     'url': url_for('sermons') + f"?series={ss.id}"
                 })
 
@@ -3603,9 +3791,19 @@ def api_search():
             else:
                 results['results'].sort(key=lambda x: (x.get('date', '') or '', x.get('title') or ''), reverse=True)
         else:
-            # Sort by date descending
-            results['results'].sort(key=lambda x: x.get('date', '') or '', reverse=True)
+            # Favor current sermon series first, then by date descending
+            results['results'].sort(
+                key=lambda x: (
+                    1 if x.get('is_current_series') else 0,
+                    x.get('date', '') or ''
+                ),
+                reverse=True
+            )
         results['total'] = len(results['results'])
+        results['current_series'] = {
+            'id': current_series.id,
+            'title': current_series.title
+        } if current_series else None
 
         # Pagination
         start = (page - 1) * per_page
@@ -3645,9 +3843,16 @@ def api_search_meta():
                     if speaker_str:
                         meta['speakers'].append(speaker_str)
 
-            # Get available series - Show all series for the archive
-            series_list = db.session.query(SermonSeries.id, SermonSeries.title).order_by(SermonSeries.title).all()
-            meta['series'] = [{'id': s[0], 'title': s[1]} for s in series_list]
+            # Get available series - filter valid series and prioritize current (Acts) & recent (Luke)
+            series_list = db.session.query(SermonSeries.id, SermonSeries.title)\
+                .filter(SermonSeries.title.isnot(None), SermonSeries.title != '')\
+                .order_by(SermonSeries.title).all()
+            featured_priority = {'Acts': 1, 'Luke': 2, 'Psalms of the Cross': 3}
+            series_list_sorted = sorted(
+                series_list,
+                key=lambda s: (featured_priority.get(s[1], 99), (s[1] or '').strip().lower())
+            )
+            meta['series'] = [{'id': s[0], 'title': s[1]} for s in series_list_sorted]
 
             # Get available years - Cross-DB compatible (PostgreSQL uses func.extract, SQLite uses strftime)
             year_field = func.extract('year', Sermon.date).label('year')

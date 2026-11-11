@@ -234,70 +234,6 @@ body.theme-white .cpc-announcement-media {
     background: #edf2f8;
 }
 
-body.theme-white .cpc-announcement-media--poster {
-    background: linear-gradient(150deg, #fbfcfe 0%, #edf3fa 100%);
-    box-shadow: inset 0 0 0 1px rgba(0, 82, 163, 0.1), 0 1px 3px rgba(0, 0, 0, 0.03);
-    color: #0b2d54;
-}
-
-body.theme-white .cpc-poster__date-badge {
-    background: #ffffff;
-    border: 1px solid rgba(0, 82, 163, 0.16);
-    box-shadow: 0 2px 8px rgba(11, 45, 84, 0.07);
-}
-
-body.theme-white .cpc-poster__date-month {
-    color: #b57a07; /* CPC Gold */
-}
-
-body.theme-white .cpc-poster__date-day {
-    color: #0c335e; /* Navy */
-}
-
-body.theme-white .cpc-poster__date-dow {
-    color: #586c80;
-}
-
-body.theme-white .cpc-poster__date-badge--ongoing {
-    background: #ffffff;
-    border: 1px solid rgba(0, 82, 163, 0.16);
-}
-
-body.theme-white .cpc-poster__date-badge--ongoing .cpc-poster__date-month {
-    color: #0052a3;
-}
-
-body.theme-white .cpc-poster__date-badge--ongoing .cpc-poster__date-dow {
-    color: #586c80;
-}
-
-body.theme-white .cpc-poster__brand {
-    color: #1a4270;
-}
-
-body.theme-white .cpc-poster__brand-dot {
-    background: #c99a3a;
-    box-shadow: 0 0 5px rgba(201, 154, 58, 0.4);
-}
-
-body.theme-white .cpc-poster__title {
-    color: #0b2d54 !important;
-    text-shadow: none !important;
-}
-
-body.theme-white .highlight-card:hover .cpc-poster__title {
-    color: #0052a3 !important;
-}
-
-body.theme-white .cpc-poster__art {
-    color: #0052a3;
-    opacity: 0.09;
-}
-
-body.theme-white .highlight-card:hover .cpc-poster__art {
-    opacity: 0.16;
-}
-
 /* Event List Page Adjustments */
 .events-page .evt-card {
     display: grid;
@@ -353,26 +289,45 @@ body.theme-white .highlight-card .highlight-card__description { color: #586c80 !
 }
 
 /* A small family of bold church bulletin covers, shared across both themes. */
+body.theme-white .cpc-announcement-media--poster,
+body.theme-blue .cpc-announcement-media--poster,
 body .cpc-announcement-media--poster {
     --poster-ink: #123c65;
     aspect-ratio: auto;
     min-height: 210px;
-    background: var(--poster-ink);
-    color: #fff;
+    background: var(--poster-ink) !important;
+    color: #fff !important;
     padding: 1.2rem 1.35rem;
     box-shadow: inset 0 -5px 0 #e5b969;
 }
-body .cpc-announcement-media--gold { --poster-ink: #70431e; }
-body .cpc-announcement-media--green { --poster-ink: #21564f; }
-body .cpc-announcement-media--poster .cpc-poster__title { color: #fff !important; text-shadow: none !important; font-size: 1.5rem; line-height: 1.18; -webkit-line-clamp: 4; }
+body.theme-white .cpc-announcement-media--gold,
+body.theme-blue .cpc-announcement-media--gold,
+body .cpc-announcement-media--gold { --poster-ink: #123c65; }
+body.theme-white .cpc-announcement-media--green,
+body.theme-blue .cpc-announcement-media--green,
+body .cpc-announcement-media--green { --poster-ink: #123c65; }
+body.theme-white .cpc-announcement-media--blue,
+body.theme-blue .cpc-announcement-media--blue,
+body .cpc-announcement-media--blue { --poster-ink: #123c65; }
+
+body .cpc-announcement-media--poster .cpc-poster__title {
+    color: #fff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    font-size: 1.5rem;
+    line-height: 1.18;
+    -webkit-line-clamp: 4;
+}
 body .cpc-announcement-media--poster .cpc-poster__title--sm { font-size: 1.3rem; }
 body .cpc-announcement-media--poster .cpc-poster__body { align-items: flex-end; padding-top: 1.5rem; }
-body .cpc-announcement-media--poster .cpc-poster__art { color: #fff; opacity: 0.28; width: 185px; }
-body .cpc-announcement-media--poster .cpc-poster__date-badge { background: #fff; border: none; box-shadow: none; }
+.cpc-poster__art {
+    display: none !important;
+}
+body .cpc-announcement-media--poster .cpc-poster__date-badge { background: #fff !important; border: none !important; box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important; }
 body .cpc-announcement-media--poster .cpc-poster__date-month,
 body .cpc-announcement-media--poster .cpc-poster__date-day,
-body .cpc-announcement-media--poster .cpc-poster__date-dow { color: var(--poster-ink); }
+body .cpc-announcement-media--poster .cpc-poster__date-dow { color: var(--poster-ink) !important; }
 body .highlight-card:hover .cpc-poster__title { color: #fff !important; }
 @media (max-width: 640px) {
+    body.theme-white .cpc-announcement-media--poster,
     body .cpc-announcement-media--poster { min-height: 76px; padding: 0.85rem 1rem; }
 }

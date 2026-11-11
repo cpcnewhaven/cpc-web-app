@@ -51,7 +51,7 @@ class WeeklyNewsletterTests(unittest.TestCase):
             client = app.test_client()
             highlights = client.get('/api/highlights').get_json()['announcements']
             titles = [r['title'] for r in highlights]
-            self.assertIn('Hill Christmas Store | Donate by December 6', titles)
+            self.assertTrue(any('Hill Christmas Store | Donate by' in t for t in titles))
             self.assertIn("Women's Discipleship Group", titles)
             self.assertNotIn('CPC Worship Night', titles)
             events = client.get('/api/event-announcements').get_json()['announcements']

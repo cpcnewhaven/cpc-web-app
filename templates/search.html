@@ -136,6 +136,22 @@
 body.theme-white .search-page { --search-text: #20364f; --search-muted: #52667d; --search-link: #0052a3; }
 body.theme-white .search-page #searchResults button { color: #164a80 !important; background: #e8f1fc !important; }
 body.theme-white .search-page #searchResults button:disabled { opacity: 0.45; }
+
+@keyframes searchSkeletonSweep {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+@keyframes searchProgressGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.search-skeleton-bar {
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.06) 75%);
+    background-size: 200% 100%;
+    animation: searchSkeletonSweep 1.5s infinite ease-in-out;
+    border-radius: 4px;
+}
 </style>
 {% endblock %}
 
@@ -474,8 +490,83 @@ body.theme-white .search-page #searchResults button:disabled { opacity: 0.45; }
         }
     }
 
+    let searchPageProgressTimer = null;
+    let searchPageCurrentProgress = 0;
+
+    function startSearchPageProgress() {
+        stopSearchPageProgress();
+        searchPageCurrentProgress = 0;
+        const startTime = performance.now();
+        searchPageProgressTimer = setInterval(() => {
+            const elapsed = performance.now() - startTime;
+            let target = 0;
+            let msg = 'Searching church archives…';
+
+            if (elapsed < 350) {
+                target = Math.min(18, Math.floor((elapsed / 350) * 18));
+                msg = 'Connecting to church database…';
+            } else if (elapsed < 2000) {
+                target = 18 + Math.floor(((elapsed - 350) / 1650) * 28);
+                msg = 'Scanning sermons & scripture text…';
+            } else if (elapsed < 5000) {
+                target = 46 + Math.floor(((elapsed - 2000) / 3000) * 26);
+                msg = 'Searching podcasts & guest teachers…';
+            } else if (elapsed < 8500) {
+                target = 72 + Math.floor(((elapsed - 5000) / 3500) * 16);
+                msg = 'Scanning events, announcements & gallery…';
+            } else {
+                target = Math.min(94, 88 + Math.floor((1 - Math.exp(-(elapsed - 8500) / 4500)) * 6));
+                msg = 'Sorting & aggregating results…';
+            }
+
+            if (target > searchPageCurrentProgress) {
+                searchPageCurrentProgress = target;
+                const bar = document.getElementById('searchPageProgressBar');
+                const pct = document.getElementById('searchPageProgressPercent');
+                const stat = document.getElementById('searchPageProgressStatus');
+                if (bar) bar.style.width = searchPageCurrentProgress + '%';
+                if (pct) pct.textContent = searchPageCurrentProgress + '%';
+                if (stat) stat.textContent = msg;
+            }
+        }, 70);
+    }
+
+    function stopSearchPageProgress() {
+        if (searchPageProgressTimer) {
+            clearInterval(searchPageProgressTimer);
+            searchPageProgressTimer = null;
+        }
+    }
+
     function showLoading() {
-        searchResults.innerHTML = '<div style="padding: 2.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-align: center; color: var(--search-muted);">Searching...</div>';
+        startSearchPageProgress();
+        searchResults.innerHTML = `
+            <div style="margin-bottom: 1.25rem; padding: 1.25rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.85rem;">
+                    <span style="color: var(--search-muted); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-circle-notch fa-spin" style="color: var(--search-link);"></i>
+                        <span id="searchPageProgressStatus">Connecting to church database…</span>
+                    </span>
+                    <span id="searchPageProgressPercent" style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; color: var(--search-link); font-size: 0.9rem;">0%</span>
+                </div>
+                <div style="height: 6px; background: rgba(255, 255, 255, 0.12); border-radius: 999px; overflow: hidden;">
+                    <div id="searchPageProgressBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #38bdf8 0%, #3b82f6 50%, #818cf8 100%); background-size: 200% 100%; animation: searchProgressGlow 2.5s infinite ease-in-out; border-radius: 999px; transition: width 0.18s ease-out; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);"></div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                ${[1, 2, 3, 4].map(() => `
+                    <div style="padding: 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <div class="search-skeleton-bar" style="width: 60px; height: 16px;"></div>
+                            <div class="search-skeleton-bar" style="width: 80px; height: 14px;"></div>
+                        </div>
+                        <div class="search-skeleton-bar" style="width: 70%; height: 20px; margin-bottom: 0.5rem;"></div>
+                        <div class="search-skeleton-bar" style="width: 90%; height: 14px; margin-bottom: 0.3rem;"></div>
+                        <div class="search-skeleton-bar" style="width: 40%; height: 14px;"></div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
     }
 
     function showEmptyState() {
@@ -618,6 +709,7 @@ body.theme-white .search-page #searchResults button:disabled { opacity: 0.45; }
     }
 
     function showError() {
+        stopSearchPageProgress();
         searchResults.innerHTML = `
             <div style="padding: 2.5rem; background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.2); border-radius: 8px; text-align: center; color: rgba(255,100,100,0.9);">
                 <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Search Error</h2>
@@ -627,6 +719,7 @@ body.theme-white .search-page #searchResults button:disabled { opacity: 0.45; }
     }
 
     function displayResults(data) {
+        stopSearchPageProgress();
         if (data.total === 0) {
             // Easy Win #4: Contextual empty state message
             const typeLabel = currentType !== 'all' ? ` in ${currentType.charAt(0).toUpperCase() + currentType.slice(1).replace('_', ' ')}` : '';
@@ -686,7 +779,10 @@ body.theme-white .search-page #searchResults button:disabled { opacity: 0.45; }
 
             html += `
                 <div class="result-card" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1.5rem;">
-                    <div style="padding: 0.25rem 0.75rem; background: rgba(0,102,204,0.2); color: var(--search-link); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">${label}</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                        <span style="padding: 0.25rem 0.75rem; background: rgba(0,102,204,0.2); color: var(--search-link); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-block; text-transform: uppercase; letter-spacing: 0.05em;">${label}</span>
+                        ${item.is_current_series ? '<span style="padding: 0.22rem 0.65rem; background: rgba(56, 189, 248, 0.22); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 9999px; font-size: 0.72rem; font-weight: 700; display: inline-block; text-transform: uppercase; letter-spacing: 0.04em;"><i class="fas fa-sparkles mr-1"></i>Current Series</span>' : ''}
+                    </div>
                     <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--search-text);">${highlightedTitle}</h3>
                     <div style="font-size: 0.875rem; color: var(--search-muted); margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
                         ${item.speaker || item.author ? `<span>${item.speaker || item.author}</span><span style="opacity: 0.3;">•</span>` : ''}

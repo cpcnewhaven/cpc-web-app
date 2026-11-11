@@ -13,14 +13,25 @@
     min-height: calc(100vh - 200px);
     padding: 0;
     margin: 0;
-    --page-surface: var(--surface-bg);
-    --page-surface-hover: var(--surface-bg-hover);
-    --page-border: var(--surface-border);
-    --page-text: var(--surface-text);
-    --page-muted: var(--surface-muted);
-    --page-accent: var(--surface-accent);
-    --page-accent-soft: var(--surface-accent-soft);
+    --page-surface: var(--surface-bg, rgba(255, 255, 255, 0.05));
+    --page-surface-hover: var(--surface-bg-hover, rgba(255, 255, 255, 0.09));
+    --page-border: var(--surface-border, rgba(255, 255, 255, 0.12));
+    --page-text: var(--surface-text, rgba(255, 255, 255, 0.95));
+    --page-muted: var(--surface-muted, rgba(255, 255, 255, 0.72));
+    --page-accent: var(--surface-accent, #60a5fa);
+    --page-accent-soft: var(--surface-accent-soft, rgba(96, 165, 250, 0.15));
 }
+
+body.theme-white .events-page {
+    --page-surface: #ffffff;
+    --page-surface-hover: #edf5ff;
+    --page-border: rgba(0, 50, 120, 0.14);
+    --page-text: #0a2544;
+    --page-muted: #486581;
+    --page-accent: #0052a3;
+    --page-accent-soft: rgba(0, 82, 163, 0.08);
+}
+
 .pco-calendar-widget { margin: 0 0 1rem; }
 .pco-calendar-widget .section-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem; }
 .pco-calendar-widget h2 { margin:.1rem 0; color:var(--page-text); }
@@ -35,51 +46,241 @@
     padding: 0;
 }
 
-.welcome-sunday-card {
-    margin: 0 0 1rem;
+/* Save These Dates Panel */
+.save-dates-panel {
+    margin: 0 0 1.25rem;
     padding: clamp(1.25rem, 3vw, 2rem);
     background: var(--page-surface);
     border: 1px solid var(--page-border);
-    border-radius: var(--radius-lg);
+    border-top: 3px solid #0052a3;
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 8px 24px rgba(0, 40, 80, 0.06);
 }
-.welcome-sunday-card h2 { margin: .25rem 0 .5rem; color: var(--page-text); font-size: clamp(1.5rem, 3vw, 2.2rem); }
-.welcome-sunday-card p:not(.events-eyebrow) { color: var(--page-muted); line-height: 1.6; }
-.welcome-sunday-card__action { display: inline-flex; gap: .5rem; align-items: center; margin-top: 1rem; color: var(--page-accent); font-weight: 700; text-decoration: none; }
-.welcome-sunday-card { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; border-color: rgba(0,120,212,.35); background: linear-gradient(135deg, rgba(0,120,212,.12), var(--page-surface)); }
-.welcome-sunday-card__date { color: var(--page-text) !important; font-size: 1.15rem; font-weight: 800; }
-@media (max-width: 640px) { .welcome-sunday-card { display: block; } }
+
+body.theme-white .save-dates-panel {
+    background: #ffffff !important;
+    border-color: rgba(0, 50, 120, 0.14) !important;
+    border-top-color: #0052a3 !important;
+    box-shadow: 0 8px 24px rgba(0, 40, 80, 0.06);
+}
+
+.save-dates-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.events-eyebrow {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--page-accent);
+    margin: 0 0 0.35rem 0;
+}
+
+body.theme-white .events-eyebrow {
+    color: #0052a3 !important;
+}
+
+.save-dates-panel h2 {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem) !important;
+    font-weight: 800 !important;
+    color: var(--page-text) !important;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+}
+
+body.theme-white .save-dates-panel h2 {
+    color: #0a2544 !important;
+}
+
+.save-dates-subtitle {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--page-muted) !important;
+}
+
+body.theme-white .save-dates-subtitle {
+    color: #486581 !important;
+}
+
+.save-dates-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 8px;
+    background: rgba(0, 82, 163, 0.08);
+    border: 1px solid rgba(0, 82, 163, 0.18);
+    color: #0052a3 !important;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.save-dates-action:hover {
+    background: #0052a3;
+    color: #ffffff !important;
+}
+
+.church-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--page-border);
+}
+
+body.theme-white .church-calendar-grid {
+    border-top-color: rgba(0, 50, 120, 0.1);
+}
+
+.season-column h3 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.85rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--page-accent) !important;
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid rgba(0, 82, 163, 0.18);
+}
+
+body.theme-white .season-column h3 {
+    color: #0052a3 !important;
+    border-bottom-color: rgba(0, 82, 163, 0.18);
+}
+
+.season-dates-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.9;
+}
+
+.season-dates-list li {
+    color: var(--page-text);
+}
+
+body.theme-white .season-dates-list li {
+    color: #243b53 !important;
+}
+
+.season-dates-list li strong {
+    color: var(--page-text);
+    font-weight: 700;
+}
+
+body.theme-white .season-dates-list li strong {
+    color: #0a2544 !important;
+}
+
+.season-dates-list li.season-date-highlight {
+    font-weight: 600;
+}
+
+body.theme-white .season-dates-list li.season-date-highlight {
+    color: #003d7a !important;
+}
+
+body.theme-white .season-dates-list li.season-date-highlight strong {
+    color: #0052a3 !important;
+    font-weight: 800;
+}
 
 /* Compact Hero */
 .events-hero {
     grid-column: 1 / -1;
-    padding: 2rem 1rem;
+    padding: 2.25rem 1.5rem;
     text-align: center;
-    background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.80)),
-                url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg') center/cover no-repeat;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--page-border);
-    margin: 0 0 1rem 0;
+    background: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%) !important;
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 16px 40px rgba(0, 35, 75, 0.25);
+    margin: 0 0 1.25rem 0;
 }
+
 body.theme-white .events-hero {
-    background: linear-gradient(135deg, rgba(200, 220, 255, 0.85), rgba(180, 210, 255, 0.80)),
-                url('https://storage.googleapis.com/cpc-public-website/retreat2025/CPC%20Retreat%202025%20All.jpg') center/cover no-repeat;
-    border-color: rgba(0, 82, 163, 0.15);
-}
-body.theme-white .events-hero h1 { color: var(--page-text); }
-body.theme-white .events-hero p { color: var(--page-muted); }
-
-.events-hero h1 {
-    font-size: 1.75rem;
-    color: var(--page-text);
-    margin: 0 0 0.25rem 0;
-    font-weight: 600;
+    background: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%) !important;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
-.events-hero p {
-    color: var(--page-muted);
-    font-size: 0.9rem;
+.events-hero h1,
+body.theme-white .events-hero h1 {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: clamp(2rem, 4vw, 2.75rem) !important;
+    color: #ffffff !important;
+    margin: 0 0 0.45rem 0;
+    font-weight: 800;
+    text-shadow: 0 2px 10px rgba(0, 20, 60, 0.4);
+}
+
+.events-hero p,
+body.theme-white .events-hero p {
+    color: #ffffff !important;
+    font-family: 'Barlow', sans-serif;
+    font-size: 1.05rem !important;
+    opacity: 0.96;
     margin: 0;
-    line-height: 1.5;
+    text-shadow: 0 1px 4px rgba(0, 20, 60, 0.3);
+}
+
+body.theme-white .events-page .section-title {
+    color: #0a2544 !important;
+    font-weight: 800 !important;
+}
+
+body.theme-white .events-page .sermon-controls {
+    background: #ffffff !important;
+    border-color: rgba(0, 50, 120, 0.14) !important;
+    box-shadow: 0 4px 16px rgba(0, 40, 80, 0.04);
+}
+
+body.theme-white .events-page .search-container input,
+body.theme-white .events-page .filter-controls select {
+    background: #f8fafc !important;
+    border-color: rgba(0, 50, 120, 0.16) !important;
+    color: #0a2544 !important;
+}
+
+body.theme-white .events-page .schedule-card,
+body.theme-white .events-page .contact-section {
+    background: #ffffff !important;
+    border-color: rgba(0, 50, 120, 0.14) !important;
+    box-shadow: 0 8px 24px rgba(0, 40, 80, 0.06);
+}
+
+body.theme-white .events-page .schedule-day {
+    color: #0052a3 !important;
+    border-bottom-color: rgba(0, 50, 120, 0.12) !important;
+    font-weight: 800 !important;
+}
+
+body.theme-white .events-page .schedule-time {
+    color: #0a2544 !important;
+    font-weight: 700 !important;
+}
+
+body.theme-white .events-page .schedule-activity {
+    color: #486581 !important;
+}
+
+body.theme-white .events-page .contact-item {
+    color: #243b53 !important;
+}
+
+body.theme-white .events-page .contact-icon {
+    color: #0052a3 !important;
 }
 
 /* Glass Card Styling - Matching about.html */
@@ -542,66 +743,67 @@ body.theme-white .events-hero p { color: var(--page-muted); }
 {% block content %}
 <div class="events-page compact-page">
     <div class="events-main-container compact-content">
-        <section class="events-section pco-calendar-widget" aria-labelledby="pco-calendar-title">
-            <div class="section-heading"><div><p class="events-eyebrow">Planning Center</p><h2 id="pco-calendar-title">Church calendar</h2></div></div>
-            <div id="pco-calendar-items"><p>Loading Planning Center events…</p></div>
-        </section>
         <!-- Compact Hero -->
         <div class="events-hero">
-            <h1>Events & Activities</h1>
+            <h1>Events &amp; Activities</h1>
             <p>Join us for fellowship, learning, worship, and community events</p>
         </div>
 
-        <section class="welcome-sunday-card" aria-labelledby="season-events-title" style="display: flex; flex-direction: column; align-items: stretch; gap: 1.25rem;">
-            <div style="width: 100%;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+        <section class="events-section pco-calendar-widget" aria-labelledby="pco-calendar-title" style="display: none;">
+            <div class="section-heading"><div><p class="events-eyebrow">Planning Center</p><h2 id="pco-calendar-title">Church calendar</h2></div></div>
+            <div id="pco-calendar-items"><p>Loading Planning Center events…</p></div>
+        </section>
+
+        <section class="save-dates-panel" aria-labelledby="season-events-title">
+            <div>
+                <div class="save-dates-header">
                     <div>
-                        <p class="events-eyebrow">Church Year 2026–2027</p>
-                        <h2 id="season-events-title" style="margin-bottom: 0.35rem;">Save these dates</h2>
-                        <p style="margin: 0; color: var(--page-muted); font-size: 0.95rem;">Key gatherings, special worship services, and fellowship events across the academic and ministry year.</p>
+                        <span class="events-eyebrow">Church Year 2026–2027</span>
+                        <h2 id="season-events-title">Save these dates</h2>
+                        <p class="save-dates-subtitle">Key gatherings, special worship services, and fellowship events across the academic and ministry year.</p>
                     </div>
-                    <a class="welcome-sunday-card__action" href="#upcoming-events" style="margin-top: 0.25rem;">Browse upcoming details <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+                    <a class="save-dates-action" href="#upcoming-events">Browse upcoming details &darr;</a>
                 </div>
 
-                <div class="church-calendar-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--page-border);">
-                    <div>
-                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--page-accent); margin: 0 0 0.65rem; font-weight: 800;">Fall 2026</h3>
-                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; line-height: 1.85;">
-                            <li><strong style="color: var(--page-text);">08/29/26</strong> — Mercy Day</li>
-                            <li><strong style="color: var(--page-text);">08/30/26</strong> — Congregational Meeting</li>
-                            <li><strong style="color: var(--page-text);">09/13/26</strong> — Sunday School Begins</li>
-                            <li><strong style="color: var(--page-text);">09/13/26</strong> — Welcome Sunday &amp; Ministry Fair</li>
-                            <li><strong style="color: var(--page-text);">09/18/26</strong> — Men’s Discipleship Gathering</li>
-                            <li><strong style="color: var(--page-text);">10/03/26</strong> — Women’s Conference at CPC</li>
-                            <li><strong style="color: var(--page-accent); font-weight: 800;">11/07/26</strong> — <strong>Parenting Seminar</strong></li>
-                            <li><strong style="color: var(--page-accent); font-weight: 800;">11/26/26</strong> — <strong>Thanksgiving Fellowship Meals</strong></li>
-                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/05/26</strong> — <strong>Fall Work Day and Decor Set-Up</strong></li>
-                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/12/26</strong> — <strong>Christmas Service</strong></li>
-                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/13/26</strong> — <strong>Last Day Sunday School</strong></li>
-                            <li><strong style="color: var(--page-accent); font-weight: 800;">12/13/26</strong> — <strong>Last Day Weekly Lunches</strong></li>
+                <div class="church-calendar-grid">
+                    <div class="season-column">
+                        <h3>Fall 2026</h3>
+                        <ul class="season-dates-list">
+                            <li><strong>08/29/26</strong> &mdash; Mercy Day</li>
+                            <li><strong>08/30/26</strong> &mdash; Congregational Meeting</li>
+                            <li><strong>09/13/26</strong> &mdash; Sunday School Begins</li>
+                            <li><strong>09/13/26</strong> &mdash; Welcome Sunday &amp; Ministry Fair</li>
+                            <li><strong>09/18/26</strong> &mdash; Men&rsquo;s Discipleship Gathering</li>
+                            <li><strong>10/03/26</strong> &mdash; Women&rsquo;s Conference at CPC</li>
+                            <li class="season-date-highlight"><strong>11/07/26</strong> &mdash; Parenting Seminar</li>
+                            <li class="season-date-highlight"><strong>11/26/26</strong> &mdash; Thanksgiving Fellowship Meals</li>
+                            <li class="season-date-highlight"><strong>12/05/26</strong> &mdash; Fall Work Day and Decor Set-Up</li>
+                            <li class="season-date-highlight"><strong>12/12/26</strong> &mdash; Christmas Service</li>
+                            <li class="season-date-highlight"><strong>12/13/26</strong> &mdash; Last Day Sunday School</li>
+                            <li class="season-date-highlight"><strong>12/13/26</strong> &mdash; Last Day Weekly Lunches</li>
                         </ul>
                     </div>
 
-                    <div>
-                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--page-accent); margin: 0 0 0.65rem; font-weight: 800;">Winter &amp; Spring 2027</h3>
-                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; line-height: 1.85;">
-                            <li><strong style="color: var(--page-text);">01/09/27</strong> — Decor Take-Down</li>
-                            <li><strong style="color: var(--page-text);">01/17/27</strong> — Sunday School Resumes</li>
-                            <li><strong style="color: var(--page-text);">01/17/27</strong> — Weekly Lunches Resume</li>
-                            <li><strong style="color: var(--page-text);">01/30/27</strong> — Women’s Service Project</li>
-                            <li><strong style="color: var(--page-text);">03/20/27</strong> — Spring Work Day</li>
-                            <li><strong style="color: var(--page-text);">03/26/27</strong> — Good Friday Service</li>
-                            <li><strong style="color: var(--page-text);">03/28/27</strong> — Easter Fellowship Meals</li>
-                            <li><strong style="color: var(--page-text);">04/16/27</strong> — Women’s Overnight Retreat</li>
-                            <li><strong style="color: var(--page-text);">05/02/27</strong> — College and Grad School Sunday</li>
-                            <li><strong style="color: var(--page-text);">05/16/27</strong> — Last Day of Sunday School</li>
-                            <li><strong style="color: var(--page-text);">05/16/27</strong> — Last Day of Weekly Lunches</li>
+                    <div class="season-column">
+                        <h3>Winter &amp; Spring 2027</h3>
+                        <ul class="season-dates-list">
+                            <li><strong>01/09/27</strong> &mdash; Decor Take-Down</li>
+                            <li><strong>01/17/27</strong> &mdash; Sunday School Resumes</li>
+                            <li><strong>01/17/27</strong> &mdash; Weekly Lunches Resume</li>
+                            <li><strong>01/30/27</strong> &mdash; Women&rsquo;s Service Project</li>
+                            <li><strong>03/20/27</strong> &mdash; Spring Work Day</li>
+                            <li><strong>03/26/27</strong> &mdash; Good Friday Service</li>
+                            <li><strong>03/28/27</strong> &mdash; Easter Fellowship Meals</li>
+                            <li><strong>04/16/27</strong> &mdash; Women&rsquo;s Overnight Retreat</li>
+                            <li><strong>05/02/27</strong> &mdash; College and Grad School Sunday</li>
+                            <li><strong>05/16/27</strong> &mdash; Last Day of Sunday School</li>
+                            <li><strong>05/16/27</strong> &mdash; Last Day of Weekly Lunches</li>
                         </ul>
 
-                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--page-accent); margin: 1.25rem 0 0.65rem; font-weight: 800;">Summer 2027</h3>
-                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; line-height: 1.85;">
-                            <li><strong style="color: var(--page-text);">06/06/27</strong> — Youth Sunday</li>
-                            <li><strong style="color: var(--page-text);">07/08/27</strong> — Summer Picnic Series Begins</li>
+                        <h3 style="margin-top: 1.5rem;">Summer 2027</h3>
+                        <ul class="season-dates-list">
+                            <li><strong>06/06/27</strong> &mdash; Youth Sunday</li>
+                            <li><strong>07/08/27</strong> &mdash; Summer Picnic Series Begins</li>
                         </ul>
                     </div>
                 </div>
@@ -742,15 +944,21 @@ body.theme-white .events-hero p { color: var(--page-muted); }
 <script src="{{ url_for('static', filename='js/events.js') }}"></script>
 <script>
 (function () {
+  const widget = document.querySelector('.pco-calendar-widget');
   const root = document.getElementById('pco-calendar-items');
-  if (!root) return;
+  if (!root || !widget) return;
   const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const formatDate = value => value ? new Intl.DateTimeFormat(undefined, {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}).format(new Date(value)) : 'Date to be announced';
   fetch('/api/planning-center/events').then(r => r.json()).then(data => {
-    if (!data.connected) { root.innerHTML = '<p>Planning Center calendar is not connected yet.</p>'; return; }
-    if (!data.events || !data.events.length) { root.innerHTML = '<p>No upcoming Planning Center events right now.</p>'; return; }
+    if (!data.connected || !data.events || !data.events.length) {
+      widget.style.display = 'none';
+      return;
+    }
     root.innerHTML = data.events.slice(0, 8).map(event => '<article class="pco-event"><time datetime="' + escapeHtml(event.starts_at) + '">' + escapeHtml(formatDate(event.starts_at)) + '</time><h3>' + escapeHtml(event.name || 'Untitled event') + '</h3>' + (event.description ? '<p>' + escapeHtml(event.description).slice(0, 220) + '</p>' : '') + '</article>').join('');
-  }).catch(() => { root.innerHTML = '<p>Planning Center events are temporarily unavailable.</p>'; });
+    widget.style.display = 'block';
+  }).catch(() => {
+    widget.style.display = 'none';
+  });
 }());
 </script>
 {% endblock %}

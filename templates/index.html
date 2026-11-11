@@ -501,9 +501,24 @@
             width: min(100%, 15rem);
         }
     }
-    /* Homepage highlights: clean, compact, scannable widgets */
+    /* Homepage highlights: clean, compact, scannable widgets in 3-column layout */
     .home-highlights .highlights-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.25rem;
         align-items: stretch;
+    }
+
+    @media (max-width: 1024px) {
+        .home-highlights .highlights-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 640px) {
+        .home-highlights .highlights-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     .home-highlights .highlight-card {
@@ -828,9 +843,9 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 0.9rem;
-        padding: 1.25rem;
-        border-radius: 16px;
+        gap: 1rem;
+        padding: 1.35rem;
+        border-radius: 18px;
         background: #ffffff;
         border: 1px solid rgba(15, 23, 42, 0.08);
         box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
@@ -841,24 +856,36 @@
 
     .spotlight-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.1);
         border-color: rgba(2, 132, 199, 0.25);
+    }
+
+    .spotlight-card__hero {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.25rem;
     }
 
     .spotlight-card__media {
         position: relative;
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        flex: none;
-        border-radius: 10px;
+        width: 108px;
+        height: 108px;
+        flex-shrink: 0;
+        border-radius: 14px;
         overflow: hidden;
-        background: #0f172a;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        background: #081a30;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08);
         display: flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
         cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .spotlight-card:hover .spotlight-card__media {
+        transform: scale(1.04);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(56, 189, 248, 0.35);
     }
 
     .spotlight-card__title a {
@@ -888,38 +915,16 @@
         object-fit: cover;
     }
 
-    .spotlight-card:hover .spotlight-thumb {
-        transform: scale(1.03);
-    }
-
     .spotlight-play-overlay {
-        position: absolute;
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background: rgba(15, 23, 42, 0.72);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        color: #ffffff;
+        display: none !important;
+    }
+
+    .spotlight-card__header-info {
+        flex: 1;
+        min-width: 0;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1.5px solid rgba(255, 255, 255, 0.5);
-        cursor: pointer;
-        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        z-index: 2;
-    }
-
-    .spotlight-play-overlay:hover {
-        transform: scale(1.1);
-        background: #0052a3;
-        border-color: #ffffff;
-    }
-
-    .spotlight-play-overlay i {
-        font-size: 1rem;
-        margin-left: 2px;
+        flex-direction: column;
+        gap: 0.35rem;
     }
 
     .spotlight-card__content {
@@ -986,13 +991,12 @@
         font-weight: 700;
         line-height: 1.35;
         color: #0f172a;
-        margin: 0 0 0.4rem 0;
+        margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        min-height: 2.7em;
     }
 
     body.theme-white .spotlight-card .spotlight-card__title {
@@ -1298,10 +1302,15 @@
 
     @media (max-width: 600px) {
         .spotlight-card {
-            padding: 1rem;
+            padding: 1.15rem;
+        }
+        .spotlight-card__hero {
+            gap: 0.9rem;
         }
         .spotlight-card__media {
-            aspect-ratio: 16 / 10;
+            width: 84px;
+            height: 84px;
+            border-radius: 12px;
         }
         .spotlight-actions {
             flex-direction: column;
@@ -1410,35 +1419,36 @@
             <!-- Left Column: Latest Sunday Sermon Promo -->
             {% if spotlight_sermon %}
             <article class="spotlight-card spotlight-card--sermon" id="spotlight-sermon-card">
-                <a href="{{ url_for('sermons') }}" class="spotlight-card__media" aria-label="Explore Sunday Sermons">
-                    <img src="{{ spotlight_sermon.thumbnail_url }}" alt="{{ spotlight_sermon.title }}" class="spotlight-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://cpcnewhaven.org/assets/podcast-thumbnails/THE%20SUNDAY%20SERMON.jpg';">
-                    <span class="spotlight-play-overlay" aria-hidden="true">
-                        <i class="fas fa-play"></i>
-                    </span>
-                </a>
+                <div class="spotlight-card__hero">
+                    <a href="{{ url_for('sermons') }}" class="spotlight-card__media" aria-label="Explore Sunday Sermons">
+                        <img src="{{ spotlight_sermon.thumbnail_url }}" alt="{{ spotlight_sermon.title }}" class="spotlight-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://cpcnewhaven.org/assets/podcast-thumbnails/THE%20SUNDAY%20SERMON.jpg';">
+                    </a>
+
+                    <div class="spotlight-card__header-info">
+                        <div class="spotlight-badge-row">
+                            <span class="spotlight-badge badge-sermon">Sunday Sermon</span>
+                            {% if spotlight_sermon.series_title %}
+                            <span class="spotlight-pill">{{ spotlight_sermon.series_title }}</span>
+                            {% endif %}
+                        </div>
+
+                        <h3 class="spotlight-card__title">
+                            <a href="{{ url_for('sermons') }}">{{ spotlight_sermon.title }}</a>
+                        </h3>
+
+                        <div class="spotlight-card__meta">
+                            {% if spotlight_sermon.scripture %}
+                            <span class="spotlight-meta-scripture">{{ spotlight_sermon.scripture }}</span>
+                            {% endif %}
+                            {% if spotlight_sermon.speaker %}
+                            {% if spotlight_sermon.scripture %}<span class="spotlight-meta-sep" aria-hidden="true">·</span>{% endif %}
+                            <span class="spotlight-meta-speaker">{{ spotlight_sermon.speaker }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
                 <div class="spotlight-card__content">
-                    <div class="spotlight-badge-row">
-                        <span class="spotlight-badge badge-sermon">Sunday Sermon</span>
-                        {% if spotlight_sermon.series_title %}
-                        <span class="spotlight-pill">{{ spotlight_sermon.series_title }}</span>
-                        {% endif %}
-                    </div>
-
-                    <h3 class="spotlight-card__title">
-                        <a href="{{ url_for('sermons') }}">{{ spotlight_sermon.title }}</a>
-                    </h3>
-
-                    <div class="spotlight-card__meta">
-                        {% if spotlight_sermon.scripture %}
-                        <span class="spotlight-meta-scripture">{{ spotlight_sermon.scripture }}</span>
-                        {% endif %}
-                        {% if spotlight_sermon.speaker %}
-                        {% if spotlight_sermon.scripture %}<span class="spotlight-meta-sep" aria-hidden="true">·</span>{% endif %}
-                        <span class="spotlight-meta-speaker">{{ spotlight_sermon.speaker }}</span>
-                        {% endif %}
-                    </div>
-
                     <p class="spotlight-card__description">
                         Weekly biblical preaching from Sunday morning worship at Christ Presbyterian Church.
                     </p>
@@ -1485,35 +1495,36 @@
             <!-- Right Column: Beyond the Sunday Sermon -->
             {% if spotlight_beyond %}
             <article class="spotlight-card spotlight-card--beyond" id="spotlight-beyond-card">
-                <a href="{{ url_for('podcasts') }}" class="spotlight-card__media" aria-label="Explore Beyond the Sunday Sermon Podcast">
-                    <img src="{{ spotlight_beyond.artwork }}" alt="Beyond the Sunday Sermon" class="spotlight-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png';">
-                    <span class="spotlight-play-overlay" aria-hidden="true">
-                        <i class="fas fa-play"></i>
-                    </span>
-                </a>
+                <div class="spotlight-card__hero">
+                    <a href="{{ url_for('podcasts') }}" class="spotlight-card__media" aria-label="Explore Beyond the Sunday Sermon Podcast">
+                        <img src="{{ spotlight_beyond.artwork }}" alt="Beyond the Sunday Sermon" class="spotlight-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='https://storage.googleapis.com/cpc-public-website/podcast-thumbnails/beyond/upBEYOND%20SUNDAY%20SERMON%20PODCAST.png';">
+                    </a>
+
+                    <div class="spotlight-card__header-info">
+                        <div class="spotlight-badge-row">
+                            {% if spotlight_beyond.is_direct_companion %}
+                            <span class="spotlight-badge badge-companion">Companion Conversation to Sunday’s Sermon</span>
+                            {% else %}
+                            <span class="spotlight-badge badge-podcast">Pastoral Podcast</span>
+                            {% endif %}
+                            {% if spotlight_beyond.number %}
+                            <span class="spotlight-pill">Episode {{ spotlight_beyond.number }}</span>
+                            {% endif %}
+                        </div>
+
+                        <h3 class="spotlight-card__title">
+                            <a href="{{ url_for('podcasts') }}">{{ spotlight_beyond.title }}</a>
+                        </h3>
+
+                        <div class="spotlight-card__meta">
+                            {% if spotlight_beyond.guest %}
+                            <span class="spotlight-meta-guest">With {{ spotlight_beyond.guest }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
                 <div class="spotlight-card__content">
-                    <div class="spotlight-badge-row">
-                        {% if spotlight_beyond.is_direct_companion %}
-                        <span class="spotlight-badge badge-companion">Companion Conversation to Sunday’s Sermon</span>
-                        {% else %}
-                        <span class="spotlight-badge badge-podcast">Pastoral Podcast</span>
-                        {% endif %}
-                        {% if spotlight_beyond.number %}
-                        <span class="spotlight-pill">Episode {{ spotlight_beyond.number }}</span>
-                        {% endif %}
-                    </div>
-
-                    <h3 class="spotlight-card__title">
-                        <a href="{{ url_for('podcasts') }}">{{ spotlight_beyond.title }}</a>
-                    </h3>
-
-                    <div class="spotlight-card__meta">
-                        {% if spotlight_beyond.guest %}
-                        <span class="spotlight-meta-guest">With {{ spotlight_beyond.guest }}</span>
-                        {% endif %}
-                    </div>
-
                     <p class="spotlight-card__description">
                         {% if spotlight_beyond.description %}
                             {{ spotlight_beyond.description }}
@@ -1532,7 +1543,7 @@
 
                         <div class="spotlight-actions__footer">
                             <div class="spotlight-platforms" aria-label="Available on">
-                                <a href="{{ spotlight_beyond.listen_url or 'https://open.spotify.com/show/cpcnewhaven' }}" target="_blank" rel="noopener" class="spotlight-platform-btn spotlight-platform-btn--spotify" aria-label="Listen to Discussion on Spotify" title="Listen on Spotify">
+                                <a href="{{ spotlight_beyond.spotify_url or (spotlight_beyond.link if spotlight_beyond.link and 'spotify' in spotlight_beyond.link else None) or (spotlight_beyond.listen_url if spotlight_beyond.listen_url and 'spotify' in spotlight_beyond.listen_url else None) or 'https://open.spotify.com/show/cpcnewhaven' }}" target="_blank" rel="noopener" class="spotlight-platform-btn spotlight-platform-btn--spotify" aria-label="Listen to Discussion on Spotify" title="Listen on Spotify">
                                     <i class="fab fa-spotify" aria-hidden="true"></i>
                                     <span>Spotify</span>
                                 </a>
@@ -1544,6 +1555,11 @@
 
                             <a href="{{ url_for('podcasts') }}" class="spotlight-browse-link">
                                 All episodes <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
                             </a>
                         </div>
                     </div>
@@ -1797,9 +1813,9 @@
     })();
 </script>
 <script>
-    // Highlights grid: latest 6, then "Show all highlights" continues the same grid
+    // Highlights grid: latest 3, then "Show all highlights" continues the same 3-column grid
     document.addEventListener('DOMContentLoaded', function () {
-        var INITIAL_COUNT = 6;
+        var INITIAL_COUNT = 3;
         var allActive = [];
 
         function stripHtml(html) {
@@ -1916,6 +1932,15 @@
             var initial = allActive.slice(0, INITIAL_COUNT);
             var rest = allActive.slice(INITIAL_COUNT);
             renderItems(container, initial);
+
+            if (window.location.hash) {
+                try {
+                    var target = document.querySelector(window.location.hash);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                } catch (e) {}
+            }
 
             if (rest.length > 0 && btn) {
                 btn.style.display = 'inline-flex';

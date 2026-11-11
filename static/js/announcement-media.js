@@ -52,8 +52,7 @@ window.CPCAnnouncementMedia = {
     }
 
     // Escape HTML in title
-    const titleKey = (announcement.title || '').toLowerCase();
-    const tone = /meal|thanksgiving|fellowship/.test(titleKey) ? 'gold' : /mercy|care|group|community/.test(titleKey) ? 'green' : 'blue';
+    const tone = 'blue';
     media.classList.add('cpc-announcement-media--' + tone);
 
     const rawTitle = (announcement.title || 'CPC New Haven').trim();
@@ -71,16 +70,9 @@ window.CPCAnnouncementMedia = {
     }
 
     media.innerHTML = `
-      <div class="cpc-poster__art" aria-hidden="true">
-        <svg class="cpc-poster__art-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M120 20 C60 20 30 75 30 150 L30 280 L210 280 L210 150 C210 75 180 20 120 20 Z" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.32"/>
-          <path d="M120 48 C75 48 50 92 50 150 L50 280 L190 280 L190 150 C190 92 165 48 120 48 Z" stroke="currentColor" stroke-width="1.2" opacity="0.22"/>
-          <circle cx="120" cy="115" r="26" stroke="currentColor" stroke-width="1.2" opacity="0.28"/>
-          <path d="M120 89 L120 141 M94 115 L146 115" stroke="currentColor" stroke-width="1.2" opacity="0.32"/>
-        </svg>
-      </div>
       <div class="cpc-poster__header">
         ${dateBadgeHtml}
+      </div>
 
       </div>
       <div class="cpc-poster__body">

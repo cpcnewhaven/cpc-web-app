@@ -814,9 +814,12 @@ body.theme-blue .sermons-page { --list-bg: #102c48; --list-text: #f1f6ff; --list
 .sermons-page .sermons-table th { color: #fff; padding: 0.85rem; }
 .sermons-page .sermons-table td { display: table-cell; color: var(--list-muted); border-bottom: 1px solid var(--list-line); padding: 1rem 0.85rem; font-size: 0.88rem; vertical-align: middle; max-width: none; }
 .sermons-page .sermons-table td:nth-child(2) { color: var(--list-text); font-weight: 700; line-height: 1.5; }
-.sermons-page .sermons-table th:nth-child(2), .sermons-page .sermons-table td:nth-child(2) { width: 30%; }
+.sermons-page .sermons-table th:nth-child(1), .sermons-page .sermons-table td:nth-child(1) { width: 11%; }
+.sermons-page .sermons-table th:nth-child(2), .sermons-page .sermons-table td:nth-child(2) { width: 28%; }
+.sermons-page .sermons-table th:nth-child(3), .sermons-page .sermons-table td:nth-child(3) { width: 15%; }
 .sermons-page .sermons-table th:nth-child(4), .sermons-page .sermons-table td:nth-child(4) { width: 15%; }
-.sermons-page .sermons-table th:nth-child(5), .sermons-page .sermons-table td:nth-child(5) { width: 28%; }
+.sermons-page .sermons-table th:nth-child(5), .sermons-page .sermons-table td:nth-child(5) { width: 12%; }
+.sermons-page .sermons-table th:nth-child(6), .sermons-page .sermons-table td:nth-child(6) { width: 19%; }
 .sermons-page .sermons-table tbody tr:nth-child(even), .sermons-page .sermons-table tbody tr:hover { background: var(--list-alt); transform: none; }
 .sermons-page .sermons-table .sermon-links { margin: 0; gap: 0.4rem; }
 .sermons-page .sermons-table .sermon-links a, .sermons-page .sermons-table .sermon-links button { display: inline-flex !important; align-items: center; gap: 0.35rem; margin: 0 !important; background: var(--list-alt) !important; color: var(--list-text) !important; border: 1px solid var(--list-line) !important; box-shadow: none !important; backdrop-filter: none !important; padding: 0.45rem 0.6rem !important; font-size: 0.75rem !important; }
@@ -824,6 +827,314 @@ body.theme-blue .sermons-page { --list-bg: #102c48; --list-text: #f1f6ff; --list
 .sermons-page #sermonPagination button { background: #0052a3 !important; }
 .sermons-page #sermonPagination button:disabled { opacity: 0.45; cursor: default !important; }
 .sermons-page :is(input, select, button, a):focus-visible { outline: 3px solid #b77b18; outline-offset: 3px; }
+
+/* Bible Series Navigation & Grouping */
+.sermon-series-nav {
+    background: #ffffff;
+    border: 1px solid #dce5ef;
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 18px rgba(10, 37, 68, 0.05);
+}
+body.theme-blue .sermon-series-nav {
+    background: #102c48;
+    border-color: #34506c;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+}
+.series-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.series-nav-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #0052a3;
+}
+body.theme-blue .series-nav-title {
+    color: #9ccbf8;
+}
+.series-nav-hint {
+    font-size: 0.8rem;
+    color: #52667d;
+}
+body.theme-blue .series-nav-hint {
+    color: #bad0e6;
+}
+.series-chips-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+.series-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.85rem;
+    background: #f4f7fb;
+    border: 1px solid #dce5ef;
+    border-radius: 999px;
+    color: #20364f;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    line-height: 1.2;
+}
+.series-chip:hover {
+    background: #e7eff8;
+    border-color: #0052a3;
+    color: #0052a3;
+    transform: translateY(-1px);
+}
+.series-chip.active {
+    background: #0052a3 !important;
+    border-color: #0052a3 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(0, 82, 163, 0.28);
+}
+.series-chip.active .chip-badge {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+}
+.series-chip .chip-badge {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    background: #e2edfa;
+    color: #0052a3;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+.series-chip.highlight-current {
+    border-color: #0052a3;
+    background: #f0f6fd;
+    color: #004080;
+    font-weight: 700;
+}
+.series-chip.highlight-current .chip-badge {
+    background: #0052a3;
+    color: #ffffff;
+}
+.series-chip.highlight-recent {
+    border-color: #9ac2ea;
+    background: #f8fbfe;
+}
+body.theme-blue .series-chip {
+    background: #173653;
+    border-color: #34506c;
+    color: #f1f6ff;
+}
+body.theme-blue .series-chip:hover {
+    background: #1f476e;
+    border-color: #4a7ab0;
+    color: #ffffff;
+}
+body.theme-blue .series-chip.active {
+    background: #0b61c3 !important;
+    border-color: #0b61c3 !important;
+    color: #ffffff !important;
+}
+body.theme-blue .series-chip .chip-badge {
+    background: rgba(255, 255, 255, 0.15);
+    color: #dce5ef;
+}
+body.theme-blue .series-chip.highlight-current {
+    border-color: #4a9eff;
+    background: #1a3f66;
+    color: #ffffff;
+}
+body.theme-blue .series-chip.highlight-current .chip-badge {
+    background: #4a9eff;
+    color: #0a2544;
+}
+
+/* Spotlight Banner for active series */
+.series-spotlight-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #0a2544 0%, #0052a3 100%);
+    color: #ffffff;
+    padding: 1.1rem 1.4rem;
+    border-radius: 14px;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 24px rgba(10, 37, 68, 0.15);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.series-spotlight-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #9ccbf8;
+    margin-bottom: 0.25rem;
+}
+.series-spotlight-title {
+    margin: 0 0 0.2rem 0;
+    color: #ffffff !important;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+.series-spotlight-desc {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.88) !important;
+    font-size: 0.86rem;
+}
+.series-spotlight-clear {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    color: #ffffff;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.series-spotlight-clear:hover {
+    background: rgba(255, 255, 255, 0.28);
+    border-color: #ffffff;
+}
+
+/* Group Headers within Card Grid */
+.series-group-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.95rem 1.25rem;
+    background: #f4f8fc;
+    border-left: 5px solid #0052a3;
+    border-radius: 10px;
+    margin: 1.25rem 0 0.4rem 0;
+    box-shadow: 0 2px 8px rgba(10, 37, 68, 0.04);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+body.theme-blue .series-group-header {
+    background: #153454;
+    border-left-color: #4a9eff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.series-group-header .series-group-pre {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #0052a3;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+body.theme-blue .series-group-header .series-group-pre {
+    color: #9ccbf8;
+}
+.series-group-header h3 {
+    margin: 0 0 0.2rem 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0a2544 !important;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+body.theme-blue .series-group-header h3 {
+    color: #ffffff !important;
+}
+.series-group-header .series-tag-current {
+    font-size: 0.72rem;
+    background: #0052a3;
+    color: #ffffff;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+.series-group-header .series-tag-past {
+    font-size: 0.72rem;
+    background: #e2edfa;
+    color: #0052a3;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+body.theme-blue .series-group-header .series-tag-past {
+    background: #20466b;
+    color: #bad0e6;
+}
+.series-group-header .series-group-subtitle {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #52667d;
+}
+body.theme-blue .series-group-header .series-group-subtitle {
+    color: #bad0e6;
+}
+.series-group-btn {
+    background: #ffffff;
+    border: 1px solid #dce5ef;
+    border-radius: 999px;
+    color: #0052a3;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.series-group-btn:hover {
+    background: #0052a3;
+    color: #ffffff;
+    border-color: #0052a3;
+}
+body.theme-blue .series-group-btn {
+    background: #102c48;
+    border-color: #34506c;
+    color: #9ccbf8;
+}
+body.theme-blue .series-group-btn:hover {
+    background: #0b61c3;
+    color: #ffffff;
+}
+
+/* Card series button */
+.sermons-page .sermon-series-label {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(11, 97, 195, 0.2);
+    background: rgba(11, 97, 195, 0.055);
+}
+.sermons-page .sermon-series-label:hover {
+    background: rgba(11, 97, 195, 0.15) !important;
+    border-color: #0b61c3 !important;
+}
+.sermons-page .sermon-series-label.sermon-series-current {
+    background: #eef5fc !important;
+    border-color: #0052a3 !important;
+    color: #0052a3 !important;
+    font-weight: 800;
+}
+.sermons-page .sermon-series-label .series-badge-dot {
+    display: inline-block;
+    padding: 0.1rem 0.35rem;
+    background: #0052a3;
+    color: #ffffff;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    margin-left: 0.3rem;
+}
 
 </style>
 {% endblock %}
@@ -838,6 +1149,45 @@ body.theme-blue .sermons-page { --list-bg: #102c48; --list-text: #f1f6ff; --list
 <!-- Sermons Section -->
 <section class="sermons-section sermons-page compact-page">
     <div class="compact-content" style="max-width: 100%; padding: 0 0.75rem;">
+        
+        <!-- Bible Series Quick Navigation -->
+        <div class="sermon-series-nav" aria-label="Browse by Bible Series">
+            <div class="series-nav-header">
+                <div>
+                    <span class="series-nav-title">Browse by Bible Series</span>
+                    <span class="series-nav-hint"> • Preaching archives organized by biblical books</span>
+                </div>
+            </div>
+            <div class="series-chips-wrapper" id="seriesChipsContainer">
+                <button class="series-chip active" data-series="" type="button">All Sermons</button>
+                <button class="series-chip highlight-current" data-series="Acts" type="button">
+                    <span>Acts</span> <span class="chip-badge">Current · Fall '26</span>
+                </button>
+                <button class="series-chip highlight-recent" data-series="Luke" type="button">
+                    <span>Luke</span> <span class="chip-badge">2025–2026</span>
+                </button>
+                <button class="series-chip" data-series="Psalms of the Cross" type="button">
+                    <span>Psalms of the Cross</span> <span class="chip-badge">Summer '26</span>
+                </button>
+                <button class="series-chip" data-series="Exodus" type="button">Exodus</button>
+                <button class="series-chip" data-series="Ephesians" type="button">Ephesians</button>
+                <button class="series-chip" data-series="John" type="button">John</button>
+                <button class="series-chip" data-series="Romans" type="button">Romans</button>
+            </div>
+        </div>
+
+        <!-- Series Spotlight Banner (Active when a series is selected) -->
+        <div id="seriesSpotlightBanner" class="series-spotlight-banner" style="display: none;">
+            <div class="series-spotlight-content">
+                <div class="series-spotlight-tag" id="seriesSpotlightTag">BIBLE SERIES</div>
+                <h2 class="series-spotlight-title" id="seriesSpotlightTitle">The Book of Acts</h2>
+                <p class="series-spotlight-desc" id="seriesSpotlightDesc">Witnesses to the New World — Sunday morning exposition through the Acts of the Apostles.</p>
+            </div>
+            <button class="series-spotlight-clear" id="seriesClearBtn" type="button">
+                ✕ Show All Sermons
+            </button>
+        </div>
+
         <!-- Filter Controls -->
         <div class="sermon-controls">
             <div class="search-container">
@@ -876,6 +1226,7 @@ body.theme-blue .sermons-page { --list-bg: #102c48; --list-text: #f1f6ff; --list
                     <tr>
                         <th>Date</th>
                         <th>Title</th>
+                        <th>Series</th>
                         <th>Speaker</th>
                         <th>Scripture</th>
                         <th>Links</th>
@@ -920,9 +1271,117 @@ document.addEventListener('DOMContentLoaded', function() {
     let filteredSermons = [];
 
     // Initialize sermons
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('series') || urlParams.get('series_id')) {
+        currentSeries = urlParams.get('series') || urlParams.get('series_id');
+    }
+    if (urlParams.get('speaker')) {
+        currentSpeaker = urlParams.get('speaker');
+    }
+    if (urlParams.get('q')) {
+        currentQuery = urlParams.get('q');
+        const qInput = document.getElementById('sermonSearchInput');
+        if (qInput) qInput.value = currentQuery;
+    }
+    if (urlParams.get('year')) {
+        currentYear = urlParams.get('year');
+    }
+
     loadSermonMeta();
     setupSermonFilters();
+    updateSeriesSpotlight();
     searchSermons();
+
+    function selectSeries(seriesVal) {
+        currentSeries = seriesVal || '';
+        currentPage = 1;
+        syncSeriesControls();
+        updateSeriesSpotlight();
+        searchSermons();
+    }
+
+    function syncSeriesControls() {
+        // Sync series dropdown
+        const seriesSelect = document.getElementById('seriesFilter');
+        if (seriesSelect) {
+            let matched = false;
+            for (let opt of seriesSelect.options) {
+                if (!currentSeries && !opt.value) {
+                    seriesSelect.value = '';
+                    matched = true;
+                    break;
+                }
+                if (currentSeries && (
+                    opt.value.toLowerCase() === currentSeries.toLowerCase() ||
+                    opt.textContent.toLowerCase() === currentSeries.toLowerCase() ||
+                    opt.textContent.toLowerCase().startsWith(currentSeries.toLowerCase() + ' ')
+                )) {
+                    seriesSelect.value = opt.value;
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched && !currentSeries) {
+                seriesSelect.value = '';
+            }
+        }
+
+        // Sync chips
+        document.querySelectorAll('.series-chip').forEach(chip => {
+            const chipVal = chip.dataset.series || '';
+            if ((!currentSeries && !chipVal) || (currentSeries && (
+                chipVal.toLowerCase() === currentSeries.toLowerCase() ||
+                (seriesSelect && seriesSelect.selectedOptions[0] && seriesSelect.selectedOptions[0].textContent.toLowerCase().includes(chipVal.toLowerCase()))
+            ))) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+    }
+
+    function updateSeriesSpotlight() {
+        const banner = document.getElementById('seriesSpotlightBanner');
+        const tag = document.getElementById('seriesSpotlightTag');
+        const title = document.getElementById('seriesSpotlightTitle');
+        const desc = document.getElementById('seriesSpotlightDesc');
+        if (!banner) return;
+
+        if (!currentSeries) {
+            banner.style.display = 'none';
+            return;
+        }
+
+        banner.style.display = 'flex';
+        const sLower = currentSeries.toLowerCase();
+        const isActs = sLower.includes('acts');
+        const isLuke = sLower.includes('luke');
+        const isPsalms = sLower.includes('psalms');
+
+        if (isActs) {
+            tag.textContent = 'CURRENT BIBLE SERIES • FALL 2026';
+            title.textContent = 'The Book of Acts';
+            desc.textContent = 'Witnesses to the New World — Sunday morning exposition through the Acts of the Apostles.';
+        } else if (isLuke) {
+            tag.textContent = 'RECENT BIBLE SERIES • 2025–2026';
+            title.textContent = 'The Gospel of Luke';
+            desc.textContent = 'The Son of Man Came to Seek and Save the Lost — Preaching through Luke across 2025 and 2026.';
+        } else if (isPsalms) {
+            tag.textContent = 'SUMMER PREACHING SERIES';
+            title.textContent = 'Psalms of the Cross';
+            desc.textContent = 'Summer worship messages through the Messianic Psalms.';
+        } else {
+            // Check dropdown option label
+            const seriesSelect = document.getElementById('seriesFilter');
+            let displayTitle = currentSeries;
+            if (seriesSelect && seriesSelect.selectedOptions[0] && seriesSelect.selectedOptions[0].value) {
+                displayTitle = seriesSelect.selectedOptions[0].textContent.split('(')[0].trim();
+            }
+            tag.textContent = 'BIBLE SERIES ARCHIVE';
+            title.textContent = displayTitle;
+            desc.textContent = 'Messages preached from this biblical book at Christ Presbyterian Church.';
+        }
+    }
 
     async function loadSermonMeta() {
         try {
@@ -938,6 +1397,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         option.textContent = speaker;
                         speakerSelect.appendChild(option);
                     });
+                    if (currentSpeaker && speakerSelect) {
+                        speakerSelect.value = currentSpeaker;
+                    }
                 }
                 // Populate series dropdown
                 if (data.meta.series) {
@@ -945,9 +1407,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     data.meta.series.forEach(series => {
                         const option = document.createElement('option');
                         option.value = series.id;
-                        option.textContent = series.title;
+                        let title = series.title;
+                        if (series.title === 'Acts') title = 'Acts (Current Series · Fall 2026)';
+                        else if (series.title === 'Luke') title = 'Luke (2025–2026 Series)';
+                        else if (series.title === 'Psalms of the Cross') title = 'Psalms of the Cross (Summer 2026)';
+                        option.textContent = title;
                         seriesSelect.appendChild(option);
                     });
+                    syncSeriesControls();
                 }
                 // Populate year dropdown
                 if (data.meta.years) {
@@ -958,6 +1425,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         option.textContent = year;
                         yearSelect.appendChild(option);
                     });
+                    if (currentYear && yearSelect) {
+                        yearSelect.value = currentYear;
+                    }
                 }
             }
         } catch (error) {
@@ -972,6 +1442,35 @@ document.addEventListener('DOMContentLoaded', function() {
         const speakerFilter = document.getElementById('speakerFilter');
         const seriesFilter = document.getElementById('seriesFilter');
         const yearFilter = document.getElementById('yearFilter');
+        const clearBtn = document.getElementById('seriesClearBtn');
+
+        // Series Chips click listener
+        document.querySelectorAll('.series-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                selectSeries(this.dataset.series || '');
+            });
+        });
+
+        // Series Spotlight clear listener
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                selectSeries('');
+            });
+        }
+
+        // Global delegate for clicking series badges on cards or tables
+        document.addEventListener('click', function(e) {
+            const seriesBtn = e.target.closest('[data-series-click]');
+            if (seriesBtn) {
+                e.preventDefault();
+                const sName = seriesBtn.getAttribute('data-series-click');
+                selectSeries(sName || '');
+                const controlsEl = document.querySelector('.sermon-controls');
+                if (controlsEl) {
+                    controlsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
 
         // Mobile filter toggle
         if (filterToggle) {
@@ -1002,6 +1501,8 @@ document.addEventListener('DOMContentLoaded', function() {
         seriesFilter.addEventListener('change', () => {
             currentSeries = seriesFilter.value;
             currentPage = 1;
+            syncSeriesControls();
+            updateSeriesSpotlight();
             searchSermons();
         });
 
@@ -1131,7 +1632,38 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        let lastSeries = null;
+        const isDefaultBrowse = !currentSeries && !currentQuery && !currentSpeaker && !currentYear && currentPage === 1;
+
         filteredSermons.forEach(sermon => {
+            const rawSeries = (typeof sermon.series === 'object' && sermon.series ? sermon.series.title : sermon.series) || '';
+            const seriesLabel = rawSeries || 'Sunday Sermon';
+            const isActs = /acts/i.test(seriesLabel);
+            const isLuke = /luke/i.test(seriesLabel);
+            const isCurrent = sermon.is_current_series || isActs;
+
+            // In default browse mode, render series section dividers when the series transitions
+            if (isDefaultBrowse && rawSeries && rawSeries !== lastSeries) {
+                lastSeries = rawSeries;
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'series-group-header';
+                groupHeader.innerHTML = `
+                    <div class="series-group-info">
+                        <span class="series-group-pre">BIBLE SERMON SERIES</span>
+                        <h3 class="series-group-title">
+                            ${esc(rawSeries)}
+                            ${isActs ? '<span class="series-tag-current">Current Series · Fall 2026</span>' : ''}
+                            ${isLuke ? '<span class="series-tag-past">2025–2026 Preaching Series</span>' : ''}
+                        </h3>
+                        <p class="series-group-subtitle">${isActs ? 'Witnesses to the New World — Sunday morning exposition through the Acts of the Apostles' : (isLuke ? 'The Son of Man Came to Seek and Save the Lost — Preaching through Luke' : 'Preaching series archive')}</p>
+                    </div>
+                    <button type="button" class="series-group-btn" data-series-click="${esc(rawSeries)}">
+                        View all ${esc(rawSeries)} sermons &rarr;
+                    </button>
+                `;
+                container.appendChild(groupHeader);
+            }
+
             const card = document.createElement('div');
             card.className = 'sermon-card';
 
@@ -1146,7 +1678,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const hasSpotify = !!(sermon.spotify_url && sermon.spotify_url.includes('spotify'));
             const hasYoutube = !!(sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be')));
             const hasApple = !!(sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
-            const seriesLabel = sermon.series?.title || 'Sunday Sermon';
 
             card.innerHTML = `
                 ${thumbnailSrc ? `
@@ -1156,7 +1687,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 ` : ''}
                 <div class="sermon-content">
                     <div class="sermon-topline">
-                        <span class="sermon-series-label">${seriesLabel}</span>
+                        <button type="button" class="sermon-series-label ${isCurrent ? 'sermon-series-current' : ''}" data-series-click="${esc(rawSeries || seriesLabel)}" title="Filter by ${esc(seriesLabel)} series">
+                            ${esc(seriesLabel)}
+                            ${isCurrent ? '<span class="series-badge-dot">Current</span>' : ''}
+                        </button>
                         <span class="sermon-date-chip"><i class="far fa-calendar" aria-hidden="true"></i>${formatDate(sermon.date)}</span>
                     </div>
                     <h3 class="sermon-title">${sermon.title}</h3>
@@ -1171,7 +1705,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fas fa-play-circle"></i> Preview
                             </a>
                         </span>
-                        
                     ` : `
                         <div class="sermon-links">
                             ${hasSpotify ? `
@@ -1237,10 +1770,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const hasStreamingLinks = (sermon.spotify_url && (sermon.spotify_url || '').includes('spotify')) ||
                                      (sermon.youtube_url && ((sermon.youtube_url || '').includes('youtube') || (sermon.youtube_url || '').includes('youtu.be'))) ||
                                      (sermon.apple_podcasts_url && (sermon.apple_podcasts_url || '').includes('apple'));
+            const rawSeries = (typeof sermon.series === 'object' && sermon.series ? sermon.series.title : sermon.series) || '';
+            const seriesLabel = rawSeries || '-';
+            const isActs = /acts/i.test(seriesLabel);
+            const isCurrent = sermon.is_current_series || isActs;
 
             tr.innerHTML = `
                 <td>${formatDate(sermon.date)}</td>
-                <td>${sermon.title}</td>
+                <td><strong>${sermon.title}</strong></td>
+                <td>
+                    ${rawSeries ? `
+                        <button type="button" class="sermon-series-label ${isCurrent ? 'sermon-series-current' : ''}" data-series-click="${esc(rawSeries)}" style="font-size:0.72rem; padding:0.2rem 0.5rem;" title="Filter by ${esc(rawSeries)} series">
+                            ${esc(rawSeries)}
+                            ${isCurrent ? '<span class="series-badge-dot">Current</span>' : ''}
+                        </button>
+                    ` : '<span style="color:#8898aa;">-</span>'}
+                </td>
                 <td>${sermon.speaker || 'Unknown'}</td>
                 <td>${sermon.scripture || '-'}</td>
                 <td><div class="sermon-links">
