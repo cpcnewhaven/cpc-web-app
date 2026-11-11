@@ -450,13 +450,15 @@
             <div class="dash-r-glance">
                 <div class="dash-r-glance__row">
                     <span id="liveClock" class="dash-r-glance__time"></span>
-                    <span id="weatherNow" class="dash-r-glance__temp"></span>
-                </div>
-                <div class="dash-r-glance__subrow">
                     <span id="liveDate" class="dash-r-glance__date"></span>
-                    <span id="weatherDesc" class="dash-r-glance__desc"></span>
                 </div>
-                <div id="weatherHiLo" class="dash-r-glance__hilo"></div>
+                <div class="dash-r-glance__row">
+                    <span id="weatherNow" class="dash-r-glance__temp"></span>
+                    <div class="dash-r-glance__weather-meta">
+                        <span id="weatherDesc" class="dash-r-glance__desc"></span>
+                        <span id="weatherHiLo" class="dash-r-glance__hilo"></span>
+                    </div>
+                </div>
             </div>
             {% if session.get('authenticated') and current_user_last_login %}
             <div class="dash-r-login">
@@ -952,16 +954,17 @@
             function updateClock() {
                 const now = new Date();
                 const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const date = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+                const dateFull = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+                const dateShort = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
                 const t = document.getElementById('liveClock');
                 const d = document.getElementById('liveDate');
                 const ft = document.getElementById('footerClock');
                 const fd = document.getElementById('footerDate');
                 const ftemp = document.getElementById('footerTemp');
                 if (t) t.textContent = time;
-                if (d) d.textContent = date;
+                if (d) d.textContent = dateShort;
                 if (ft) ft.textContent = time;
-                if (fd) fd.textContent = date;
+                if (fd) fd.textContent = dateFull;
                 if (ftemp && window.__cpcWeather && typeof window.__cpcWeather.temp === 'number') {
                     ftemp.textContent = 'New Haven ' + window.__cpcWeather.temp + '°F';
                 }
