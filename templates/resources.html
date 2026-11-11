@@ -597,7 +597,9 @@ body.theme-white .resources-empty-state h3 {
 }
 
 body.theme-white .resources-help-panel {
-    background: linear-gradient(135deg, #ffffff 0%, #f4f8fd 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f4f8fd 100%) !important;
+    border: 1px solid rgba(27, 69, 113, 0.16) !important;
+    border-left: 4px solid #0052a3 !important;
 }
 
 .resources-help-panel::after {
@@ -657,10 +659,18 @@ body.theme-white .help-panel-text p {
     transition: all 0.2s ease;
 }
 
+.help-btn span {
+    color: inherit !important;
+}
+
 .help-btn-primary {
     background: #0052a3 !important;
     color: #ffffff !important;
     box-shadow: 0 4px 14px rgba(0, 82, 163, 0.25);
+}
+
+.help-btn-primary span {
+    color: #ffffff !important;
 }
 
 .help-btn-primary:hover {
@@ -675,15 +685,27 @@ body.theme-white .help-panel-text p {
     color: var(--res-heading) !important;
 }
 
+.help-btn-outline span {
+    color: inherit !important;
+}
+
 body.theme-white .help-btn-outline {
-    background: #ffffff;
-    border-color: rgba(0, 50, 120, 0.2);
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 50, 120, 0.25) !important;
+    color: #0052a3 !important;
+}
+
+body.theme-white .help-btn-outline span {
     color: #0052a3 !important;
 }
 
 body.theme-white .help-btn-outline:hover {
-    background: #eef5ff;
-    border-color: #0052a3;
+    background: #eef5ff !important;
+    border-color: #0052a3 !important;
+    color: #003d7a !important;
+}
+
+body.theme-white .help-btn-outline:hover span {
     color: #003d7a !important;
 }
 
@@ -1051,7 +1073,7 @@ body.theme-white .help-btn-outline:hover {
         </div>
 
         <!-- 5. Assistance Banner -->
-        <footer class="resources-help-panel">
+        <section class="resources-help-panel" aria-label="Resource Assistance">
             <div class="help-panel-text">
                 <h3>Looking for a specific book or study material?</h3>
                 <p>
@@ -1069,7 +1091,7 @@ body.theme-white .help-btn-outline:hover {
                     <span>Plan a Visit</span>
                 </a>
             </div>
-        </footer>
+        </section>
 
     </div>
 </div>

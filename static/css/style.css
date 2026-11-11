@@ -296,27 +296,27 @@ body.theme-white .footer-ticker .ticker-item {
 }
 
 /* White theme footer should remain a dark footer with light copy */
-body.theme-white footer {
+body.theme-white footer:not(.resources-help-panel) {
     background: rgba(0, 20, 60, 0.9) !important;
     color: rgba(255, 255, 255, 0.85) !important;
 }
 
-body.theme-white footer p,
-body.theme-white footer span,
-body.theme-white footer a,
-body.theme-white footer i {
+body.theme-white footer:not(.resources-help-panel) p,
+body.theme-white footer:not(.resources-help-panel) span,
+body.theme-white footer:not(.resources-help-panel) a,
+body.theme-white footer:not(.resources-help-panel) i {
     color: rgba(255, 255, 255, 0.85) !important;
 }
 
-body.theme-white footer a:hover {
+body.theme-white footer:not(.resources-help-panel) a:hover {
     color: #ffffff !important;
 }
 
-body.theme-white footer [style*="color:var(--surface-text)"] {
+body.theme-white footer:not(.resources-help-panel) [style*="color:var(--surface-text)"] {
     color: #ffffff !important;
 }
 
-body.theme-white footer [style*="color:var(--surface-muted)"] {
+body.theme-white footer:not(.resources-help-panel) [style*="color:var(--surface-muted)"] {
     color: rgba(255, 255, 255, 0.78) !important;
 }
 
