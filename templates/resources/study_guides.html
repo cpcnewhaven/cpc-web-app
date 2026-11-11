@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+
+{% block title %}Bible Study Materials & Guides — CPC New Haven{% endblock %}
+{% block meta_description %}Bible study outlines, Acts & Luke reading guides, inductive study tools, and recommended commentaries from CPC New Haven.{% endblock %}
+{% block og_title %}Bible Study Materials & Guides — CPC New Haven{% endblock %}
+{% block og_description %}Equipping the CPC congregation with study guides, sermon series outlines for Acts & Luke, and curated biblical commentaries.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/resources/study-guides{% endblock %}
+
+{% block head %}
+<style>
+.study-page {
+    --s-accent: #0052a3;
+    --s-accent-light: #e8f2ff;
+    --s-heading: #0a2544;
+    --s-text: #1d2e42;
+    --s-muted: #52667d;
+    --s-border: #dce5ef;
+    --s-card-bg: #ffffff;
+    --s-hero-bg: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%);
+    padding: 0.5rem 0 3.5rem;
+}
+
+body.theme-blue .study-page {
+    --s-accent: #60a5fa;
+    --s-accent-light: rgba(96, 165, 250, 0.16);
+    --s-heading: #ffffff;
+    --s-text: #f1f6ff;
+    --s-muted: #bad0e6;
+    --s-border: #34506c;
+    --s-card-bg: #102c48;
+    --s-hero-bg: linear-gradient(135deg, #07192d 0%, #0d3257 60%, #0a223c 100%);
+}
+
+.study-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Breadcrumb */
+.study-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.study-breadcrumb a {
+    color: var(--s-accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: opacity 0.2s;
+}
+.study-breadcrumb a:hover { opacity: 0.8; }
+
+/* Hero Banner */
+.study-hero {
+    background: var(--s-hero-bg);
+    border-radius: 18px;
+    padding: 3rem 1.75rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 16px 36px rgba(0, 35, 75, 0.22);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.study-hero-tag {
+    display: inline-block;
+    padding: 0.28rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+.study-hero h1 {
+    font-size: clamp(2rem, 4.5vw, 2.9rem);
+    font-weight: 800;
+    color: #ffffff !important;
+    margin: 0 0 0.85rem 0;
+    line-height: 1.15;
+}
+.study-hero p {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Quick Nav Pills */
+.study-nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.25rem;
+}
+.study-nav-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--s-card-bg);
+    border: 1px solid var(--s-border);
+    color: var(--s-text);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.study-nav-pill:hover {
+    border-color: var(--s-accent);
+    color: var(--s-accent);
+    transform: translateY(-1px);
+}
+
+/* Section Cards */
+.study-card {
+    background: var(--s-card-bg);
+    border: 1px solid var(--s-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+.study-card h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--s-heading) !important;
+    margin: 0 0 0.6rem 0;
+}
+.study-subtitle {
+    font-size: 0.95rem;
+    color: var(--s-muted);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
+}
+
+/* Series Showcase Grid */
+.series-guides-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+@media (max-width: 720px) {
+    .series-guides-grid { grid-template-columns: 1fr; }
+}
+.series-guide-panel {
+    background: #f8fafc;
+    border: 1px solid var(--s-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+body.theme-blue .series-guide-panel {
+    background: #173653;
+}
+.series-guide-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--s-accent);
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+}
+.series-guide-badge.recent {
+    background: #4a7ab0;
+}
+.series-guide-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--s-heading);
+    margin: 0 0 0.4rem 0;
+}
+.series-guide-desc {
+    font-size: 0.88rem;
+    color: var(--s-muted);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+.series-guide-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.guide-btn {
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.guide-btn-primary {
+    background: var(--s-accent);
+    color: #ffffff !important;
+}
+.guide-btn-outline {
+    background: transparent;
+    border: 1px solid var(--s-border);
+    color: var(--s-text) !important;
+}
+.guide-btn:hover { transform: translateY(-1px); }
+
+/* Commentary List */
+.commentary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+.commentary-item {
+    background: #f8fafc;
+    border: 1px solid var(--s-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+body.theme-blue .commentary-item {
+    background: #173653;
+}
+.commentary-book {
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--s-accent);
+    margin-bottom: 0.25rem;
+}
+.commentary-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--s-heading);
+    margin-bottom: 0.25rem;
+}
+.commentary-author {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--s-text);
+    margin-bottom: 0.5rem;
+}
+.commentary-note {
+    font-size: 0.82rem;
+    color: var(--s-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Method Steps */
+.method-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+}
+.method-step-card {
+    background: #f8fafc;
+    border: 1px solid var(--s-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+body.theme-blue .method-step-card { background: #173653; }
+.step-num {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background: #0052a3;
+    color: #ffffff;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+.step-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--s-heading);
+    margin-bottom: 0.35rem;
+}
+.step-desc {
+    font-size: 0.85rem;
+    color: var(--s-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="study-page">
+    <div class="study-container">
+        <!-- Breadcrumb -->
+        <div class="study-breadcrumb">
+            <a href="{{ url_for('resources') }}">&larr; Back to Spiritual Resources Hub</a>
+        </div>
+
+        <!-- Hero -->
+        <header class="study-hero">
+            <span class="study-hero-tag">Spiritual Resources</span>
+            <h1>Bible Study Materials & Guides</h1>
+            <p>“All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness.” — 2 Timothy 3:16</p>
+        </header>
+
+        <!-- Quick Jump Pills -->
+        <nav class="study-nav-pills" aria-label="Page navigation">
+            <a href="#series-guides" class="study-nav-pill">Acts & Luke Series Guides</a>
+            <a href="#inductive-method" class="study-nav-pill">Inductive Study Method</a>
+            <a href="#commentaries" class="study-nav-pill">Recommended Commentaries</a>
+            <a href="#reading-plans" class="study-nav-pill">Scripture Reading Plans</a>
+        </nav>
+
+        <!-- Section 1: Preaching Series Study Guides (Acts & Luke) -->
+        <section class="study-card" id="series-guides">
+            <h2>Current & Recent Bible Series Guides</h2>
+            <p class="study-subtitle">Study materials aligned with our Sunday worship preaching schedule to enrich your personal and LifeGroup reflection.</p>
+
+            <div class="series-guides-grid">
+                <!-- Acts Guide -->
+                <div class="series-guide-panel">
+                    <div>
+                        <span class="series-guide-badge">Current Series • Fall 2026</span>
+                        <h3 class="series-guide-title">The Book of Acts</h3>
+                        <p class="series-guide-desc">
+                            <strong>Witnesses to the New World:</strong> Following the resurrected and ascended King Jesus as the Holy Spirit empowers the early church to proclaim the Gospel from Jerusalem to Judea, Samaria, and the ends of the earth.
+                        </p>
+                    </div>
+                    <div class="series-guide-actions">
+                        <a href="{{ url_for('sermons') }}?series=Acts" class="guide-btn guide-btn-primary">Browse Acts Sermons</a>
+                        <a href="{{ url_for('esv') }}?book=Acts&chapter=1" class="guide-btn guide-btn-outline">Read Acts in ESV</a>
+                    </div>
+                </div>
+
+                <!-- Luke Guide -->
+                <div class="series-guide-panel">
+                    <div>
+                        <span class="series-guide-badge recent">2025–2026 Series • 122 Messages</span>
+                        <h3 class="series-guide-title">The Gospel of Luke</h3>
+                        <p class="series-guide-desc">
+                            <strong>Seeking and Saving the Lost:</strong> Luke's orderly account of the life, ministry, parables, cross, and glorious resurrection of Jesus Christ — the Savior of outcasts, gentiles, and sinners.
+                        </p>
+                    </div>
+                    <div class="series-guide-actions">
+                        <a href="{{ url_for('sermons') }}?series=Luke" class="guide-btn guide-btn-primary">Browse Luke Sermons</a>
+                        <a href="{{ url_for('esv') }}?book=Luke&chapter=1" class="guide-btn guide-btn-outline">Read Luke in ESV</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Inductive Bible Study Method -->
+        <section class="study-card" id="inductive-method">
+            <h2>How to Study Scripture: The Inductive Method</h2>
+            <p class="study-subtitle">A simple, reproducible three-step approach used in CPC LifeGroups and personal devotions to let God's Word speak clearly.</p>
+
+            <div class="method-steps">
+                <div class="method-step-card">
+                    <div class="step-num">1</div>
+                    <div class="step-title">Observation</div>
+                    <p class="step-desc"><strong>What does the text say?</strong> Notice the context, key words, repeated phrases, verb tenses, contrasts, and connecting words (e.g. “therefore”, “because”, “so that”).</p>
+                </div>
+                <div class="method-step-card">
+                    <div class="step-num">2</div>
+                    <div class="step-title">Interpretation</div>
+                    <p class="step-desc"><strong>What does the text mean?</strong> What was the author's intended message to the original audience? How does this passage connect to the Gospel and the whole storyline of Scripture?</p>
+                </div>
+                <div class="method-step-card">
+                    <div class="step-num">3</div>
+                    <div class="step-title">Application</div>
+                    <p class="step-desc"><strong>How should we respond?</strong> What truth should we believe? What sin should we repent of? How does this call us to love God, neighbor, and city in Christ?</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Recommended Commentaries -->
+        <section class="study-card" id="commentaries">
+            <h2>Recommended Biblical Commentaries</h2>
+            <p class="study-subtitle">Pastoral recommendations for accessible, scholarly, and Gospel-centered study volumes for teachers, small group leaders, and curious readers.</p>
+
+            <div class="commentary-grid">
+                <div class="commentary-item">
+                    <div class="commentary-book">Acts of the Apostles</div>
+                    <div class="commentary-title">The Message of Acts</div>
+                    <div class="commentary-author">John Stott (Bible Speaks Today)</div>
+                    <p class="commentary-note">A warm, pastoral, and insightful verse-by-verse exposition of the expansion of the early church and the power of the Gospel.</p>
+                </div>
+
+                <div class="commentary-item">
+                    <div class="commentary-book">The Gospel of Luke</div>
+                    <div class="commentary-title">Luke (2 Volumes, BECNT)</div>
+                    <div class="commentary-author">Darrell L. Bock (Baker Academic)</div>
+                    <p class="commentary-note">The premier evangelical commentary on Luke, balancing exegetical precision with rich theological synthesis.</p>
+                </div>
+
+                <div class="commentary-item">
+                    <div class="commentary-book">The Gospel of John</div>
+                    <div class="commentary-title">The Gospel According to John</div>
+                    <div class="commentary-author">D. A. Carson (Pillar Commentary)</div>
+                    <p class="commentary-note">An exceptional blend of rigorous scholarship and devotional warmth on the Fourth Gospel.</p>
+                </div>
+
+                <div class="commentary-item">
+                    <div class="commentary-book">Psalms & Poetry</div>
+                    <div class="commentary-title">Psalms 1–72 & 73–150</div>
+                    <div class="commentary-author">Derek Kidner (Tyndale Old Testament)</div>
+                    <p class="commentary-note">Compact, lyrical, and deeply perceptive commentary that unfolds the Psalms as the prayer book of the Christ.</p>
+                </div>
+
+                <div class="commentary-item">
+                    <div class="commentary-book">Epistles (Ephesians & Romans)</div>
+                    <div class="commentary-title">The Epistle to the Romans</div>
+                    <div class="commentary-author">Douglas J. Moo (NICNT)</div>
+                    <p class="commentary-note">Comprehensive and thoroughly grounded exploration of Paul's masterpiece of justification by grace through faith.</p>
+                </div>
+
+                <div class="commentary-item">
+                    <div class="commentary-book">One-Volume Reference</div>
+                    <div class="commentary-title">The ESV Study Bible</div>
+                    <div class="commentary-author">Crossway / J.I. Packer & Team</div>
+                    <p class="commentary-note">Outstanding study notes, maps, introductions, and doctrinal articles for every book of the Old and New Testaments.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Daily Reading Plans -->
+        <section class="study-card" id="reading-plans">
+            <h2>Daily Scripture Reading Schedules</h2>
+            <p class="study-subtitle">Structured plans to help build a rhythm of consistent Bible intake throughout the year.</p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:1rem;">
+                <a href="https://www.esv.org/resources/reading-plans/" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.75rem 1.4rem; background:#0052a3; color:#fff; border-radius:10px; font-weight:700; text-decoration:none;">
+                    Crossway ESV Reading Plans Track &rarr;
+                </a>
+                <a href="{{ url_for('esv') }}" style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.75rem 1.4rem; background:var(--s-card-bg); border:1px solid var(--s-border); color:var(--s-text); border-radius:10px; font-weight:600; text-decoration:none;">
+                    Launch CPC ESV Web Bible Reader
+                </a>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

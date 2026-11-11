@@ -815,97 +815,274 @@ body.theme-blue .podcasts-page .podcast-top-level-card {
     box-shadow: 0 20px 42px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Option A: Responsive 2–3 Column Media Grid (Apple Podcasts / MasterClass Style) */
-body .podcasts-page .podcast-series-grid.is-class-list {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important;
-    gap: 1.35rem !important;
-    max-width: 1220px !important;
-    margin: 1.25rem auto 3rem !important;
-    padding: 0 !important;
+/* Option A: Responsive Media Grid with Mini Left Dashboard in Class Library */
+.class-library-container {
+    width: 100%;
 }
 
-.class-series-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem;
+.class-library-layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 1.75rem;
+    align-items: start;
     max-width: 1220px;
-    margin: 1rem auto 0;
-    padding: 0.95rem 1.25rem;
-    border: 1px solid rgba(154, 194, 238, 0.18);
-    border-radius: 16px;
-    background: rgba(14, 28, 48, 0.88);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 12px 30px rgba(4, 14, 28, 0.28);
+    margin: 1.25rem auto 3rem;
 }
 
-.class-series-toolbar-copy { min-width: 0; }
-.class-series-toolbar-kicker {
-    margin: 0 0 0.2rem;
+/* Mini Left Dashboard inside Class Library */
+.class-mini-dash {
+    position: sticky;
+    top: 96px;
+    background: linear-gradient(180deg, rgba(16, 35, 62, 0.94) 0%, rgba(9, 21, 40, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(154, 194, 238, 0.2);
+    border-radius: 18px;
+    padding: 1.25rem 1.15rem;
+    box-shadow: 0 12px 32px rgba(4, 14, 28, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    z-index: 10;
+}
+
+body.theme-white .class-mini-dash {
+    background: #ffffff;
+    border-color: rgba(13, 75, 145, 0.15);
+    box-shadow: 0 10px 28px rgba(10, 45, 90, 0.08);
+}
+
+.class-mini-dash-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: #93c5fd;
-    font-size: 0.68rem;
-    font-weight: 750;
+    text-decoration: none;
+    padding: 0.45rem 0.75rem;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(154, 194, 238, 0.2);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    align-self: flex-start;
+}
+.class-mini-dash-back:hover {
+    background: rgba(96, 165, 250, 0.16);
+    color: #ffffff;
+    border-color: #60a5fa;
+    transform: translateX(-2px);
+}
+body.theme-white .class-mini-dash-back {
+    color: #0052a3;
+    border-color: rgba(13, 75, 145, 0.2);
+    background: rgba(0, 82, 163, 0.06);
+}
+body.theme-white .class-mini-dash-back:hover {
+    background: rgba(0, 82, 163, 0.12);
+    color: #003d7a;
+}
+
+.class-mini-dash-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.9rem;
+}
+body.theme-white .class-mini-dash-header {
+    border-bottom-color: rgba(13, 75, 145, 0.1);
+}
+
+.class-mini-dash-kicker {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+    color: #93c5fd;
+    margin-bottom: 0.25rem;
 }
-.class-series-toolbar h2 {
-    margin: 0;
+body.theme-white .class-mini-dash-kicker { color: #0052a3; }
+
+.class-mini-dash-title {
+    margin: 0 0 0.3rem 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.15;
     color: #ffffff;
-    font-size: 1.25rem;
-    font-weight: 750;
     letter-spacing: -0.02em;
 }
+body.theme-white .class-mini-dash-title { color: #0f172a; }
 
-.class-series-toolbar-controls {
+.class-mini-dash-stats {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+body.theme-white .class-mini-dash-stats { color: #64748b; }
+
+.class-mini-dash-section {
     display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.class-series-select {
-    min-width: 130px;
-    padding: 0.52rem 0.85rem;
-    border: 1px solid rgba(154, 194, 238, 0.22);
+.class-mini-dash-label {
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+body.theme-white .class-mini-dash-label { color: #475569; }
+
+.class-mini-dash-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.class-mini-dash-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0.55rem 0.8rem;
     border-radius: 10px;
-    color: #f1f5f9;
+    font-size: 0.82rem;
+    font-weight: 650;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #e2e8f0;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+.class-mini-dash-pill i {
+    font-size: 12px;
+    width: 16px;
+    text-align: center;
+    color: #93c5fd;
+}
+.class-mini-dash-pill:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(147, 197, 253, 0.3);
+    color: #ffffff;
+}
+.class-mini-dash-pill.active {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.85), rgba(29, 78, 216, 0.9));
+    border-color: rgba(96, 165, 250, 0.6);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+.class-mini-dash-pill.active i {
+    color: #ffffff;
+}
+
+body.theme-white .class-mini-dash-pill {
+    background: #f8fafc;
+    border-color: rgba(13, 75, 145, 0.12);
+    color: #334155;
+}
+body.theme-white .class-mini-dash-pill i { color: #0052a3; }
+body.theme-white .class-mini-dash-pill:hover {
+    background: #eef5fc;
+    color: #0052a3;
+    border-color: rgba(0, 82, 163, 0.25);
+}
+body.theme-white .class-mini-dash-pill.active {
+    background: #0052a3;
+    color: #ffffff;
+    border-color: #0052a3;
+    box-shadow: 0 4px 12px rgba(0, 82, 163, 0.25);
+}
+body.theme-white .class-mini-dash-pill.active i {
+    color: #ffffff;
+}
+
+.class-mini-dash-select-wrap {
+    position: relative;
+    width: 100%;
+}
+.class-mini-dash-select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0.55rem 2rem 0.55rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid rgba(154, 194, 238, 0.22);
     background: rgba(20, 42, 72, 0.9);
+    color: #f1f5f9;
     font: inherit;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
 }
-.class-series-select:hover,
-.class-series-select:focus {
+.class-mini-dash-select:hover,
+.class-mini-dash-select:focus {
     border-color: #60a5fa;
     outline: none;
     box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
 }
-
-.class-series-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0.52rem 0.95rem;
-    border: 1px solid rgba(154, 194, 238, 0.25);
-    border-radius: 10px;
+.class-mini-dash-select-wrap .select-chevron {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
     color: #93c5fd;
-    background: rgba(255, 255, 255, 0.06);
-    font: inherit;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    pointer-events: none;
 }
-.class-series-back:hover {
-    border-color: #60a5fa;
-    background: rgba(96, 165, 250, 0.16);
-    color: #ffffff;
-    transform: translateY(-1px);
+body.theme-white .class-mini-dash-select {
+    background: #f8fafc;
+    border-color: rgba(13, 75, 145, 0.18);
+    color: #1e293b;
+}
+body.theme-white .class-mini-dash-select-wrap .select-chevron {
+    color: #0052a3;
+}
+
+.class-mini-dash-tip {
+    margin-top: auto;
+    padding: 0.8rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed rgba(154, 194, 238, 0.2);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: #cbd5e1;
+}
+.class-mini-dash-tip i {
+    color: #60a5fa;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+body.theme-white .class-mini-dash-tip {
+    background: #f1f5f9;
+    border-color: rgba(13, 75, 145, 0.16);
+    color: #475569;
+}
+body.theme-white .class-mini-dash-tip i {
+    color: #0052a3;
+}
+
+/* Right Media Grid inside Class Library */
+.class-library-main {
+    min-width: 0;
+}
+
+.class-library-main .podcast-series-grid.is-class-list,
+body .podcasts-page .podcast-series-grid.is-class-list {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 1.35rem !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Series Card Styling */
@@ -1255,18 +1432,27 @@ body.theme-blue .podcasts-page .podcast-episode .episode-details { color: #b9d0e
     overflow-y: visible;
 }
 
-@media (max-width: 768px) {
-    .class-series-toolbar {
-        align-items: stretch;
-        flex-direction: column;
-        gap: 0.75rem;
-        margin-top: 0.75rem;
-        padding: 0.9rem;
+@media (max-width: 860px) {
+    .class-library-layout {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
     }
+    .class-mini-dash {
+        position: static;
+        padding: 1rem;
+    }
+    .class-mini-dash-nav {
+        flex-direction: row;
+    }
+    .class-mini-dash-pill {
+        flex: 1;
+    }
+    .class-mini-dash-tip {
+        display: none;
+    }
+}
 
-    .class-series-toolbar-controls { justify-content: flex-start; }
-    .class-series-select { flex: 1 1 132px; }
-
+@media (max-width: 768px) {
     body .podcasts-page .podcast-series-grid.is-class-list {
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
@@ -1777,28 +1963,6 @@ function renderSeriesLibrary({ kicker, title, series, itemLabel }) {
     if (!container) return;
     document.getElementById('classSeriesToolbar')?.remove();
 
-    const toolbar = document.createElement('div');
-    toolbar.id = 'classSeriesToolbar';
-    toolbar.className = 'class-series-toolbar';
-    toolbar.innerHTML = `
-        <div class="class-series-toolbar-copy">
-            <p class="class-series-toolbar-kicker">${escHtml(kicker)}</p>
-            <h2>${escHtml(title)}</h2>
-        </div>
-        <div class="class-series-toolbar-controls">
-            <select id="classSeriesFilter" class="class-series-select" aria-label="Filter series">
-                <option value="active">Active series</option>
-                <option value="all">All series</option>
-            </select>
-            <select id="classSeriesSort" class="class-series-select" aria-label="Sort series">
-                <option value="latest">Latest activity</option>
-                <option value="title">Title A–Z</option>
-            </select>
-            <button id="classSeriesBack" class="class-series-back" type="button">← Back to Podcasts</button>
-        </div>`;
-    container.before(toolbar);
-
-    container.className = 'podcast-series-grid is-class-list';
     const getLatestTimestamp = (series) => {
         const latest = series.latest_episode || (series.episodes && series.episodes[0]);
         const timestamp = Date.parse(latest?.date_added || latest?.date || '');
@@ -1811,23 +1975,82 @@ function renderSeriesLibrary({ kicker, title, series, itemLabel }) {
             ? String(a.title || '').localeCompare(String(b.title || ''))
             : getLatestTimestamp(b) - getLatestTimestamp(a));
 
-    container.innerHTML = visibleSeries.length
+    const cardsHtml = visibleSeries.length
         ? visibleSeries.map(item => renderSeriesCard(item, itemLabel)).join('')
         : '<div class="error-message">No series match this filter.</div>';
 
-    const filter = document.getElementById('classSeriesFilter');
+    container.className = 'class-library-container';
+    container.innerHTML = `
+        <div class="class-library-layout">
+            <!-- Left Mini Dashboard in Class -->
+            <aside class="class-mini-dash">
+                <button id="classSeriesBack" class="class-mini-dash-back" type="button">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    <span>All Podcasts</span>
+                </button>
+
+                <div class="class-mini-dash-header">
+                    <span class="class-mini-dash-kicker">${escHtml(kicker)}</span>
+                    <h2 class="class-mini-dash-title">${escHtml(title)}</h2>
+                    <p class="class-mini-dash-stats">${visibleSeries.length} ${visibleSeries.length === 1 ? 'collection' : 'collections'}</p>
+                </div>
+
+                <div class="class-mini-dash-section">
+                    <span class="class-mini-dash-label">Filter</span>
+                    <div class="class-mini-dash-nav">
+                        <button type="button" class="class-mini-dash-pill ${classSeriesFilterMode === 'active' ? 'active' : ''}" data-filter-val="active">
+                            <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                            <span>Active series</span>
+                        </button>
+                        <button type="button" class="class-mini-dash-pill ${classSeriesFilterMode === 'all' ? 'active' : ''}" data-filter-val="all">
+                            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                            <span>All series</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="class-mini-dash-section">
+                    <label class="class-mini-dash-label" for="classSeriesSort">Sort by</label>
+                    <div class="class-mini-dash-select-wrap">
+                        <select id="classSeriesSort" class="class-mini-dash-select" aria-label="Sort series">
+                            <option value="latest" ${classSeriesSortMode === 'latest' ? 'selected' : ''}>Latest activity</option>
+                            <option value="title" ${classSeriesSortMode === 'title' ? 'selected' : ''}>Title A–Z</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down select-chevron" aria-hidden="true"></i>
+                    </div>
+                </div>
+
+                <div class="class-mini-dash-tip">
+                    <i class="fa-solid fa-headphones-simple" aria-hidden="true"></i>
+                    <span>Click any class to stream audio recordings & study handouts.</span>
+                </div>
+            </aside>
+
+            <!-- Right 2-3 Column Media Grid -->
+            <main class="class-library-main">
+                <div class="podcast-series-grid is-class-list">
+                    ${cardsHtml}
+                </div>
+            </main>
+        </div>`;
+
+    document.querySelectorAll('.class-mini-dash-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            classSeriesFilterMode = pill.dataset.filterVal;
+            renderSeriesLibrary({ kicker, title, series, itemLabel });
+        });
+    });
+
     const sort = document.getElementById('classSeriesSort');
-    filter.value = classSeriesFilterMode;
-    sort.value = classSeriesSortMode;
-    filter.addEventListener('change', event => {
-        classSeriesFilterMode = event.target.value;
-        renderSeriesLibrary({ kicker, title, series, itemLabel });
-    });
-    sort.addEventListener('change', event => {
-        classSeriesSortMode = event.target.value;
-        renderSeriesLibrary({ kicker, title, series, itemLabel });
-    });
-    document.getElementById('classSeriesBack').addEventListener('click', loadPodcastSeries);
+    if (sort) {
+        sort.value = classSeriesSortMode;
+        sort.addEventListener('change', event => {
+            classSeriesSortMode = event.target.value;
+            renderSeriesLibrary({ kicker, title, series, itemLabel });
+        });
+    }
+
+    document.getElementById('classSeriesBack')?.addEventListener('click', loadPodcastSeries);
 }
 
 function renderSeriesCard(series, itemLabel = 'Class') {
@@ -1870,6 +2093,7 @@ function loadPodcastSeries() {
     const container = document.getElementById('podcast-series-container');
     if (!container) return;
     document.getElementById('classSeriesToolbar')?.remove();
+    container.className = 'podcast-series-grid is-top-level';
 
     const beyond = podcastBeyond || {};
     const beyondCard = renderTopLevelCard('CPC Podcast', 'Beyond the Sunday Sermon', beyond.description || 'Discussions with Pastors about the Sunday Sermon.', beyond.artwork, '<button class="podcast-btn podcast-btn-primary" type="button" onclick="openBeyondEpisodes()">Browse episodes</button><button class="podcast-btn" type="button" onclick="renderPodcastShows()">All podcasts</button>', 'is-featured');
@@ -1928,9 +2152,8 @@ function hideFullEpisodes() {
     const seriesContainer = document.getElementById('podcast-series-container');
     const fullView = document.getElementById('full-episodes-view');
     
-    if (seriesContainer) seriesContainer.style.display = 'grid';
+    if (seriesContainer) seriesContainer.style.display = '';
     fullView.style.display = 'none';
-    document.getElementById('classSeriesToolbar')?.removeAttribute('hidden');
     document.getElementById('latest-beyond-section')?.removeAttribute('hidden');
 }
 

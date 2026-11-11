@@ -139,7 +139,7 @@ A light `body.theme-white` override exists — it must be fully supported when a
 
 ### Typography
 
-Primary font: `'Barlow'` (headings use `'Manrope'` or `'Libre Baskerville'`).
+Primary font: `'Poppins'` (serif quotes and scripture use `'Source Serif 4'` / `'Source Serif Pro'`).
 Always specify fallbacks: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`
 
 ### Glass Card Pattern (frontend)

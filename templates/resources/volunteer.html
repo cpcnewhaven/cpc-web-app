@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}Ministry Teams & Volunteering — CPC New Haven{% endblock %}
+{% block meta_description %}Volunteer opportunities, serving teams, and ministry descriptions at Christ Presbyterian Church in New Haven.{% endblock %}
+{% block og_title %}Ministry Teams & Volunteering — CPC New Haven{% endblock %}
+{% block og_description %}Discover ways to serve in hospitality, children's ministry, mercy outreach, music, tech, and community stewardship at CPC New Haven.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/resources/volunteer{% endblock %}
+
+{% block head %}
+<style>
+.vol-page {
+    --v-accent: #0052a3;
+    --v-heading: #0a2544;
+    --v-text: #1d2e42;
+    --v-muted: #52667d;
+    --v-border: #dce5ef;
+    --v-card-bg: #ffffff;
+    --v-hero-bg: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%);
+    padding: 0.5rem 0 3.5rem;
+}
+
+body.theme-blue .vol-page {
+    --v-accent: #60a5fa;
+    --v-heading: #ffffff;
+    --v-text: #f1f6ff;
+    --v-muted: #bad0e6;
+    --v-border: #34506c;
+    --v-card-bg: #102c48;
+    --v-hero-bg: linear-gradient(135deg, #07192d 0%, #0d3257 60%, #0a223c 100%);
+}
+
+.vol-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.vol-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.vol-breadcrumb a {
+    color: var(--v-accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.vol-hero {
+    background: var(--v-hero-bg);
+    border-radius: 18px;
+    padding: 3rem 1.75rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 16px 36px rgba(0, 35, 75, 0.22);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+.vol-hero-tag {
+    display: inline-block;
+    padding: 0.28rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+.vol-hero h1 {
+    font-size: clamp(2rem, 4.5vw, 2.9rem);
+    font-weight: 800;
+    color: #ffffff !important;
+    margin: 0 0 0.85rem 0;
+    line-height: 1.15;
+}
+.vol-hero p {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.vol-card {
+    background: var(--v-card-bg);
+    border: 1px solid var(--v-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+.vol-card h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--v-heading) !important;
+    margin: 0 0 0.6rem 0;
+}
+.vol-subtitle {
+    font-size: 0.95rem;
+    color: var(--v-muted);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
+}
+
+/* Teams Grid */
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+.team-item {
+    background: #f8fafc;
+    border: 1px solid var(--v-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+body.theme-blue .team-item { background: #173653; }
+.team-item h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--v-heading);
+    margin: 0 0 0.5rem 0;
+}
+.team-commitment {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: #eaf2fb;
+    color: #0052a3;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 0.85rem;
+}
+body.theme-blue .team-commitment {
+    background: #20466b;
+    color: #bad0e6;
+}
+.team-desc {
+    font-size: 0.88rem;
+    color: var(--v-muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Form */
+.vol-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+@media (max-width: 680px) { .vol-form-grid { grid-template-columns: 1fr; } }
+.vol-form-full { grid-column: 1 / -1; }
+.vol-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+.vol-form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--v-heading);
+}
+.vol-form-group input,
+.vol-form-group textarea {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--v-border);
+    background: var(--v-card-bg);
+    color: var(--v-text);
+    font-size: 0.92rem;
+    outline: none;
+}
+.vol-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.65rem;
+    margin-top: 0.35rem;
+}
+.vol-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--v-text);
+    cursor: pointer;
+}
+.vol-btn {
+    padding: 0.85rem 1.75rem;
+    border-radius: 10px;
+    background: #0052a3;
+    color: #ffffff !important;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.vol-btn:hover { background: #003d7a; transform: translateY(-1px); }
+.vol-success-msg {
+    display: none;
+    padding: 1.25rem;
+    background: #eaf8ed;
+    border: 1px solid #c2e9cb;
+    border-radius: 10px;
+    color: #1e6b37;
+    margin-top: 1rem;
+    font-weight: 600;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="vol-page">
+    <div class="vol-container">
+        <!-- Breadcrumb -->
+        <div class="vol-breadcrumb">
+            <a href="{{ url_for('resources') }}">&larr; Back to Spiritual Resources Hub</a>
+        </div>
+
+        <!-- Hero -->
+        <header class="vol-hero">
+            <span class="vol-hero-tag">Spiritual Resources</span>
+            <h1>Ministry Teams & Volunteering</h1>
+            <p>“As each has received a gift, use it to serve one another, as good stewards of God's varied grace.” — 1 Peter 4:10</p>
+        </header>
+
+        <!-- Teams Section -->
+        <section class="vol-card" id="teams">
+            <h2>Serving Teams at CPC New Haven</h2>
+            <p class="vol-subtitle">The ministry of Christ Presbyterian Church flourishes through the faithful participation of our members and attendees. Explore our core teams below.</p>
+
+            <div class="teams-grid">
+                <!-- Hospitality & Welcome -->
+                <div class="team-item">
+                    <div>
+                        <span class="team-commitment">Monthly Rotation • Sundays 9:45 AM</span>
+                        <h3>Hospitality & Welcome Desk</h3>
+                        <p class="team-desc">Welcome visitors at the front doors, answer questions at the foyer desk, distribute worship bulletins, and set up our Sunday coffee and fellowship hour.</p>
+                    </div>
+                </div>
+
+                <!-- Children's Ministry -->
+                <div class="team-item">
+                    <div>
+                        <span class="team-commitment">Bi-Weekly or Monthly • Background Check Required</span>
+                        <h3>Children's Ministry & Nursery</h3>
+                        <p class="team-desc">Serve our covenant kids as nursery caregivers, Sunday school teachers, or classroom assistants. Curriculum and training materials are fully provided.</p>
+                    </div>
+                </div>
+
+                <!-- Mercy & Diaconate Outreach -->
+                <div class="team-item">
+                    <div>
+                        <span class="team-commitment">Flexible Schedule • Weekdays or Weekends</span>
+                        <h3>Mercy & City Outreach</h3>
+                        <p class="team-desc">Partner with the CPC Diaconate to serve vulnerable neighbors in Greater New Haven through food drives, Christian Community Action support, and mercy care.</p>
+                    </div>
+                </div>
+
+                <!-- Music & Worship Arts -->
+                <div class="team-item">
+                    <div>
+                        <span class="team-commitment">Rehearsals + Sunday Services</span>
+                        <h3>Music & Choir</h3>
+                        <p class="team-desc">Lead the congregation in historic hymns, Psalms, and modern spiritual songs through vocals, instrumental accompaniments, and seasonal choral offerings.</p>
+                    </div>
+                </div>
+
+                <!-- Sound & Livestream Tech -->
+                <div class="team-item">
+                    <div>
+                        <span class="team-commitment">Monthly Rotation • Sundays 9:30 AM</span>
+                        <h3>Audio Engineering & Livestream Tech</h3>
+                        <p class="team-desc">Operate the sound mixing board, manage live microphones, run slides, and direct the YouTube livestream cameras to serve homebound saints and visitors.</p>
+                    </div>
+                </div>
+
+                <!-- Facilities & Historic Building Care -->
+                <div class="team-item">
+                    <div>
+                        <span class="team-commitment">Quarterly Work Days + Periodic Projects</span>
+                        <h3>Building Stewardship & Work Days</h3>
+                        <p class="team-desc">Help maintain our historic 135 Whitney building and grounds through seasonal cleanup work days, interior repairs, and sanctuary care.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interest Form -->
+        <section class="vol-card" id="interest-form">
+            <h2>Volunteer Interest Form</h2>
+            <p class="vol-subtitle">Let us know where you feel called to serve or explore. A ministry team leader will follow up with details and training steps.</p>
+
+            <form id="volForm" onsubmit="handleVolSubmit(event)">
+                <div class="vol-form-grid">
+                    <div class="vol-form-group">
+                        <label for="vName">Your Full Name *</label>
+                        <input type="text" id="vName" name="name" required placeholder="Jane Doe">
+                    </div>
+                    <div class="vol-form-group">
+                        <label for="vEmail">Email Address *</label>
+                        <input type="email" id="vEmail" name="email" required placeholder="jane@example.com">
+                    </div>
+                    <div class="vol-form-group">
+                        <label for="vPhone">Phone Number</label>
+                        <input type="tel" id="vPhone" name="phone" placeholder="(203) 555-0123">
+                    </div>
+                    <div class="vol-form-group">
+                        <label for="vStatus">Church Involvement</label>
+                        <input type="text" id="vStatus" name="status" placeholder="Member / Regular Attendee / Visitor">
+                    </div>
+
+                    <div class="vol-form-group vol-form-full">
+                        <label>Teams You're Interested In (Select all that apply):</label>
+                        <div class="vol-checkboxes">
+                            <label class="vol-checkbox-label"><input type="checkbox" name="team" value="Hospitality & Welcome"> Hospitality & Ushers</label>
+                            <label class="vol-checkbox-label"><input type="checkbox" name="team" value="Children & Nursery"> Children & Nursery</label>
+                            <label class="vol-checkbox-label"><input type="checkbox" name="team" value="Mercy Outreach"> Mercy Outreach</label>
+                            <label class="vol-checkbox-label"><input type="checkbox" name="team" value="Music & Choir"> Music & Choir</label>
+                            <label class="vol-checkbox-label"><input type="checkbox" name="team" value="A/V & Livestream Tech"> A/V & Livestream Tech</label>
+                            <label class="vol-checkbox-label"><input type="checkbox" name="team" value="Building Stewardship"> Building Stewardship</label>
+                        </div>
+                    </div>
+
+                    <div class="vol-form-group vol-form-full">
+                        <label for="vNotes">Questions or Prior Experience</label>
+                        <textarea id="vNotes" name="notes" rows="3" placeholder="Tell us about any specific skills or questions you have..."></textarea>
+                    </div>
+
+                    <div class="vol-form-full">
+                        <button type="submit" class="vol-btn">Submit Volunteer Interest</button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="volSuccess" class="vol-success-msg">
+                Thank you! Your interest has been received. Our ministry coordinator will connect with you soon.
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+function handleVolSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('vName').value;
+    const email = document.getElementById('vEmail').value;
+    const phone = document.getElementById('vPhone').value || 'Not provided';
+    const status = document.getElementById('vStatus').value || 'Not specified';
+    const notes = document.getElementById('vNotes').value || 'None';
+
+    const checked = Array.from(document.querySelectorAll('input[name="team"]:checked')).map(c => c.value);
+    const teams = checked.length ? checked.join(', ') : 'None selected';
+
+    const subject = encodeURIComponent(`Volunteer Interest: ${name} (${teams})`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nInvolvement: ${status}\n\nInterested in:\n${teams}\n\nNotes:\n${notes}`);
+
+    window.location.href = `mailto:admin@cpcnewhaven.org?subject=${subject}&body=${body}`;
+
+    document.getElementById('volForm').reset();
+    document.getElementById('volSuccess').style.display = 'block';
+}
+</script>
+{% endblock %}

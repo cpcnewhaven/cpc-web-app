@@ -1,0 +1,453 @@
+{% extends "base.html" %}
+
+{% block title %}Prayer & Pastoral Care — CPC New Haven{% endblock %}
+{% block meta_description %}Prayer requests, Sunday morning prayer gatherings, liturgical devotion, and pastoral care at Christ Presbyterian Church in New Haven.{% endblock %}
+{% block og_title %}Prayer & Pastoral Care — CPC New Haven{% endblock %}
+{% block og_description %}Submit prayer requests, explore guided prayers, and join the Lord's Day morning prayer gathering at CPC New Haven.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/resources/prayer{% endblock %}
+
+{% block head %}
+<style>
+.prayer-page {
+    --p-accent: #0052a3;
+    --p-accent-light: #e8f2ff;
+    --p-heading: #0a2544;
+    --p-text: #1d2e42;
+    --p-muted: #52667d;
+    --p-border: #dce5ef;
+    --p-card-bg: #ffffff;
+    --p-hero-bg: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%);
+    padding: 0.5rem 0 3.5rem;
+}
+
+body.theme-blue .prayer-page {
+    --p-accent: #60a5fa;
+    --p-accent-light: rgba(96, 165, 250, 0.16);
+    --p-heading: #ffffff;
+    --p-text: #f1f6ff;
+    --p-muted: #bad0e6;
+    --p-border: #34506c;
+    --p-card-bg: #102c48;
+    --p-hero-bg: linear-gradient(135deg, #07192d 0%, #0d3257 60%, #0a223c 100%);
+}
+
+.prayer-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Breadcrumb */
+.prayer-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.prayer-breadcrumb a {
+    color: var(--p-accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: opacity 0.2s;
+}
+.prayer-breadcrumb a:hover { opacity: 0.8; }
+
+/* Hero Banner */
+.prayer-hero {
+    background: var(--p-hero-bg);
+    border-radius: 18px;
+    padding: 3rem 1.75rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 16px 36px rgba(0, 35, 75, 0.22);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.prayer-hero-tag {
+    display: inline-block;
+    padding: 0.28rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+.prayer-hero h1 {
+    font-size: clamp(2rem, 4.5vw, 2.9rem);
+    font-weight: 800;
+    color: #ffffff !important;
+    margin: 0 0 0.85rem 0;
+    line-height: 1.15;
+}
+.prayer-hero p {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    max-width: 660px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Quick Nav Pills */
+.prayer-nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.25rem;
+}
+.prayer-nav-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--p-card-bg);
+    border: 1px solid var(--p-border);
+    color: var(--p-text);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.prayer-nav-pill:hover {
+    border-color: var(--p-accent);
+    color: var(--p-accent);
+    transform: translateY(-1px);
+}
+
+/* Content Sections */
+.prayer-section-card {
+    background: var(--p-card-bg);
+    border: 1px solid var(--p-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+.prayer-section-card h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--p-heading) !important;
+    margin: 0 0 0.6rem 0;
+}
+.prayer-section-subtitle {
+    font-size: 0.95rem;
+    color: var(--p-muted);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
+}
+
+/* Prayer Request Form */
+.prayer-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+@media (max-width: 680px) {
+    .prayer-form-grid { grid-template-columns: 1fr; }
+}
+.prayer-form-full {
+    grid-column: 1 / -1;
+}
+.prayer-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+.prayer-form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--p-heading);
+}
+.prayer-form-group input,
+.prayer-form-group select,
+.prayer-form-group textarea {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--p-border);
+    background: var(--p-card-bg);
+    color: var(--p-text);
+    font-size: 0.92rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.prayer-form-group input:focus,
+.prayer-form-group select:focus,
+.prayer-form-group textarea:focus {
+    border-color: var(--p-accent);
+}
+.prayer-submit-btn {
+    padding: 0.85rem 1.75rem;
+    border-radius: 10px;
+    background: #0052a3;
+    color: #ffffff !important;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.prayer-submit-btn:hover {
+    background: #003d7a;
+    transform: translateY(-1px);
+}
+.prayer-success-msg {
+    display: none;
+    padding: 1.25rem;
+    background: #eaf8ed;
+    border: 1px solid #c2e9cb;
+    border-radius: 10px;
+    color: #1e6b37;
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+/* Prayer Meeting Highlight Box */
+.meeting-banner {
+    background: linear-gradient(135deg, #f4f8fc 0%, #eaf2fb 100%);
+    border-left: 5px solid #0052a3;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.25rem;
+}
+body.theme-blue .meeting-banner {
+    background: #173653;
+    border-left-color: #60a5fa;
+}
+.meeting-time {
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--p-accent);
+    margin-bottom: 0.35rem;
+}
+.meeting-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--p-heading);
+    margin-bottom: 0.5rem;
+}
+
+/* Framework Accordions / Cards */
+.framework-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+}
+.framework-card {
+    background: #f8fafc;
+    border: 1px solid var(--p-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+body.theme-blue .framework-card {
+    background: #173653;
+}
+.framework-letter {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    background: #0052a3;
+    color: #ffffff;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+}
+.framework-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--p-heading);
+    margin-bottom: 0.35rem;
+}
+.framework-desc {
+    font-size: 0.85rem;
+    color: var(--p-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Scripture quote box */
+.scripture-box {
+    padding: 1.25rem 1.5rem;
+    background: #fdfaf3;
+    border: 1px solid #f1e4cb;
+    border-radius: 12px;
+    font-style: italic;
+    color: #4a3c22;
+    margin: 1.5rem 0;
+    line-height: 1.7;
+}
+body.theme-blue .scripture-box {
+    background: #1c2e42;
+    border-color: #3f556d;
+    color: #e8d8be;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="prayer-page">
+    <div class="prayer-container">
+        <!-- Breadcrumb -->
+        <div class="prayer-breadcrumb">
+            <a href="{{ url_for('resources') }}">&larr; Back to Spiritual Resources Hub</a>
+        </div>
+
+        <!-- Hero -->
+        <header class="prayer-hero">
+            <span class="prayer-hero-tag">Spiritual Resources</span>
+            <h1>Prayer & Pastoral Care</h1>
+            <p>“Let us then with confidence draw near to the throne of grace, that we may receive mercy and find grace to help in time of need.” — Hebrews 4:16</p>
+        </header>
+
+        <!-- Quick Jump Pills -->
+        <nav class="prayer-nav-pills" aria-label="Page navigation">
+            <a href="#request" class="prayer-nav-pill">Submit Prayer Request</a>
+            <a href="#meeting" class="prayer-nav-pill">Sunday Morning Prayer Meeting</a>
+            <a href="#framework" class="prayer-nav-pill">A.C.T.S. Framework</a>
+            <a href="#liturgical" class="prayer-nav-pill">Daily & Liturgical Prayers</a>
+            <a href="#pastoral" class="prayer-nav-pill">Pastoral Counseling</a>
+        </nav>
+
+        <!-- Section 1: Submit Prayer Request -->
+        <section class="prayer-section-card" id="request">
+            <h2>Submit a Prayer Request</h2>
+            <p class="prayer-section-subtitle">Whether walking through a season of sorrow, celebrating a joyous answer to prayer, or facing medical or spiritual burdens, our pastors, elders, and prayer team are here to pray with you.</p>
+
+            <form id="prayerRequestForm" onsubmit="handlePrayerSubmit(event)">
+                <div class="prayer-form-grid">
+                    <div class="prayer-form-group">
+                        <label for="pName">Your Name</label>
+                        <input type="text" id="pName" name="name" placeholder="Name (optional if confidential)">
+                    </div>
+                    <div class="prayer-form-group">
+                        <label for="pEmail">Email Address</label>
+                        <input type="email" id="pEmail" name="email" placeholder="you@example.com (for pastor follow-up)">
+                    </div>
+                    <div class="prayer-form-group prayer-form-full">
+                        <label for="pPrivacy">Confidentiality Preference *</label>
+                        <select id="pPrivacy" name="privacy" required>
+                            <option value="pastors_only">Confidential — Pastoral Team & Elders Only</option>
+                            <option value="prayer_chain">Share with Church-Wide Prayer Chain</option>
+                            <option value="sunday_worship">Include in Sunday Prayers of the People (First Name Only)</option>
+                        </select>
+                    </div>
+                    <div class="prayer-form-group prayer-form-full">
+                        <label for="pRequest">Your Prayer Request or Praise *</label>
+                        <textarea id="pRequest" name="request" rows="5" placeholder="Share how we can pray for you, your loved ones, or your community..." required></textarea>
+                    </div>
+                    <div class="prayer-form-full">
+                        <button type="submit" class="prayer-submit-btn">Send Prayer Request</button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="prayerSuccess" class="prayer-success-msg">
+                Thank you. Your prayer request has been received. Our pastors and prayer team will lift this before the Lord.
+            </div>
+        </section>
+
+        <!-- Section 2: Sunday Morning Prayer Meeting -->
+        <section class="prayer-section-card" id="meeting">
+            <h2>Sunday Morning Prayer Meeting</h2>
+            <p class="prayer-section-subtitle">Every Lord's Day morning before corporate worship, members and visitors gather in the church Parlor to seek the Lord's presence and power for our church and our city.</p>
+
+            <div class="meeting-banner">
+                <div class="meeting-time">Every Sunday • 8:30 AM – 9:15 AM</div>
+                <div class="meeting-title">Lord's Day Pre-Service Prayer Gathering</div>
+                <p style="margin: 0; color: var(--p-muted); line-height: 1.6;">
+                    Held in the <strong>Parlor</strong> on the main floor (135 Whitney Ave). We read Scripture together, pray for our pastors and leaders, pray for those preaching the Word, intercede for New Haven neighborhoods, and pray for global mission partners. All are warmly welcome to join in or silently participate.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 3: The A.C.T.S. Prayer Framework -->
+        <section class="prayer-section-card" id="framework">
+            <h2>A Guide to Personal Prayer: The A.C.T.S. Method</h2>
+            <p class="prayer-section-subtitle">When entering into daily prayer, this historic biblical framework helps shape our conversation with God so that adoration precedes supplication.</p>
+
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <div class="framework-letter">A</div>
+                    <div class="framework-title">Adoration</div>
+                    <p class="framework-desc">Praising God for who He is — His holiness, majesty, mercy, grace, wisdom, and steadfast love, independent of our circumstances.</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-letter">C</div>
+                    <div class="framework-title">Confession</div>
+                    <p class="framework-desc">Acknowledging our sins, idols, and failures before a forgiving Father, claiming the righteousness of Christ and the cleansing of the cross.</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-letter">T</div>
+                    <div class="framework-title">Thanksgiving</div>
+                    <p class="framework-desc">Giving thanks for specific blessings: daily bread, salvation, family, answered prayers, and trials through which God produces endurance.</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-letter">S</div>
+                    <div class="framework-title">Supplication</div>
+                    <p class="framework-desc">Bringing our requests, intercessions for the sick, burdens for the city, and petitions for spiritual growth boldly before the throne of grace.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Daily & Liturgical Prayers -->
+        <section class="prayer-section-card" id="liturgical">
+            <h2>Historic & Liturgical Prayers</h2>
+            <p class="prayer-section-subtitle">Treasures of the Christian tradition to anchor your morning and evening devotions.</p>
+
+            <div class="scripture-box">
+                <strong>The Lord's Prayer (Matthew 6:9-13):</strong><br>
+                “Our Father in heaven, hallowed be your name. Your kingdom come, your will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we also have forgiven our debtors. And lead us not into temptation, but deliver us from evil. For yours is the kingdom and the power and the glory, forever. Amen.”
+            </div>
+
+            <div style="background:#f8fafc; border:1px solid var(--p-border); border-radius:12px; padding:1.25rem; margin-top:1rem;">
+                <h3 style="margin:0 0 0.5rem; color:var(--p-heading); font-size:1.1rem; font-weight:700;">A Morning Collect for Grace</h3>
+                <p style="margin:0; font-style:italic; color:var(--p-muted); line-height:1.6;">
+                    “O Lord, our heavenly Father, almighty and everlasting God, who has safely brought us to the beginning of this day: Defend us in the same with your mighty power; and grant that this day we fall into no sin, neither run into any kind of danger; but that all our doings, being ordered by your governance, may be righteous in your sight; through Jesus Christ our Lord. Amen.”
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 5: Pastoral Care & Counseling -->
+        <section class="prayer-section-card" id="pastoral">
+            <h2>Pastoral Care & Counseling</h2>
+            <p class="prayer-section-subtitle">Our pastoral team is available to walk with you through crisis, bereavement, relational reconciliation, pre-marital counseling, or theological discernment.</p>
+
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem;">
+                <a href="{{ url_for('contact') }}" style="display:inline-flex; align-items:center; gap:0.4rem; padding:0.75rem 1.4rem; background:#0052a3; color:#fff; border-radius:10px; font-weight:700; text-decoration:none;">
+                    Schedule Pastoral Appointment &rarr;
+                </a>
+                <a href="mailto:pastor@cpcnewhaven.org" style="display:inline-flex; align-items:center; gap:0.4rem; padding:0.75rem 1.4rem; background:var(--p-card-bg); border:1px solid var(--p-border); color:var(--p-text); border-radius:10px; font-weight:600; text-decoration:none;">
+                    Email Pastors Directly
+                </a>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+function handlePrayerSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('pName').value || 'Anonymous';
+    const email = document.getElementById('pEmail').value || 'Not provided';
+    const privacy = document.getElementById('pPrivacy').value;
+    const req = document.getElementById('pRequest').value;
+
+    const subject = encodeURIComponent(`Prayer Request (${privacy}): ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nConfidentiality: ${privacy}\n\nRequest:\n${req}`);
+    
+    // Fallback mailto trigger
+    window.location.href = `mailto:prayer@cpcnewhaven.org?subject=${subject}&body=${body}`;
+
+    document.getElementById('prayerRequestForm').reset();
+    document.getElementById('prayerSuccess').style.display = 'block';
+}
+</script>
+{% endblock %}

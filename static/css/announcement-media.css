@@ -96,20 +96,20 @@
 }
 
 .cpc-poster__date-month {
-    font: 800 0.62rem/1 'Manrope', sans-serif;
+    font: 800 0.62rem/1 'Poppins', sans-serif;
     letter-spacing: 0.14em;
     color: #ffd166;
     text-transform: uppercase;
 }
 
 .cpc-poster__date-day {
-    font: 800 1.22rem/1.05 'Manrope', sans-serif;
+    font: 800 1.22rem/1.05 'Poppins', sans-serif;
     color: #ffffff;
     margin-top: 2px;
 }
 
 .cpc-poster__date-dow {
-    font: 700 0.54rem/1 'Manrope', sans-serif;
+    font: 700 0.54rem/1 'Poppins', sans-serif;
     letter-spacing: 0.12em;
     color: #9ec5f2;
     text-transform: uppercase;
@@ -122,13 +122,13 @@
 }
 
 .cpc-poster__date-badge--ongoing .cpc-poster__date-month {
-    font: 800 0.64rem/1 'Manrope', sans-serif;
+    font: 800 0.64rem/1 'Poppins', sans-serif;
     letter-spacing: 0.14em;
     color: #ffd166;
 }
 
 .cpc-poster__date-badge--ongoing .cpc-poster__date-dow {
-    font: 700 0.54rem/1 'Manrope', sans-serif;
+    font: 700 0.54rem/1 'Poppins', sans-serif;
     letter-spacing: 0.12em;
     color: #9ec5f2;
     margin-top: 3px;
@@ -139,7 +139,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font: 750 0.66rem/1 'Manrope', sans-serif;
+    font: 750 0.66rem/1 'Poppins', sans-serif;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.88);

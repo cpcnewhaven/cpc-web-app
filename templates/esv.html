@@ -14,134 +14,150 @@
         margin: 0;
     }
 
-    /* Hero Banner with guaranteed high-contrast text */
-    .esv-hero {
-        padding: 1.6rem 1.25rem 1.35rem;
-        text-align: center;
-        background: linear-gradient(135deg, rgba(0, 25, 65, 0.92), rgba(0, 15, 45, 0.96)),
-                    url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        margin-bottom: 1rem;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .esv-hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        background: rgba(201, 154, 58, 0.25);
-        color: #f6d289 !important;
-        border: 1px solid rgba(201, 154, 58, 0.5);
-        padding: 0.2rem 0.7rem;
-        border-radius: 9999px;
-        font-size: 0.72rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.09em;
-        margin-bottom: 0.45rem;
-    }
-
-    .esv-hero h1 {
-        font-size: 1.75rem !important;
-        font-weight: 800 !important;
-        color: #ffffff !important;
-        margin: 0 0 0.35rem 0 !important;
-        letter-spacing: -0.01em;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
-    }
-
-    body.theme-white .esv-hero h1 {
-        color: #ffffff !important;
-    }
-
-    .esv-hero p {
-        color: rgba(255, 255, 255, 0.9) !important;
-        font-size: 0.92rem !important;
-        max-width: 620px;
-        margin: 0 auto !important;
-        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
-    }
-
-    body.theme-white .esv-hero p {
-        color: rgba(255, 255, 255, 0.9) !important;
-    }
-
-    /* Popular Quick Jump Pills */
-    .esv-quick-pills {
+    /* Refined, Minimalist Header Bar (Replaces bulky splash hero) */
+    .esv-header-bar {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
         align-items: center;
-        gap: 0.35rem;
-        margin-top: 0.75rem;
-    }
-
-    .esv-pill {
-        background: rgba(255, 255, 255, 0.14);
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 9999px;
-        padding: 0.2rem 0.65rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        text-decoration: none;
-    }
-
-    .esv-pill:hover {
-        background: rgba(255, 255, 255, 0.28);
-        color: #ffffff !important;
-        transform: translateY(-1px);
-        border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    /* Top Navigation & Controls Card */
-    .esv-controls-card {
-        background: var(--glass-bg, rgba(0, 60, 130, 0.22));
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        padding: 0.85rem 1.25rem;
+        background: var(--glass-bg, rgba(0, 50, 120, 0.25));
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid var(--glass-border, rgba(0, 60, 130, 0.35));
         border-radius: 12px;
-        padding: 0.85rem 1rem 1rem;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        position: relative;
+        margin-bottom: 0.75rem;
     }
 
-    body.theme-white .esv-controls-card {
+    body.theme-white .esv-header-bar {
         background: #ffffff;
-        border-color: rgba(0, 50, 120, 0.14);
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        border-color: rgba(0, 50, 120, 0.12);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     }
 
-    /* Controls Top Row */
-    .esv-controls-row {
+    .esv-header-title-group {
+        display: flex;
+        align-items: baseline;
+        gap: 0.65rem;
+    }
+
+    .esv-header-title {
+        font-family: var(--font-serif, 'Source Serif 4', 'Source Serif Pro', Georgia, serif);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--heading-color, #ffffff);
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+
+    body.theme-white .esv-header-title {
+        color: #003d7a;
+    }
+
+    .esv-header-sub {
+        font-size: 0.82rem;
+        opacity: 0.72;
+        font-weight: 500;
+        color: inherit;
+    }
+
+    body.theme-white .esv-header-sub {
+        color: #64748b;
+    }
+
+    /* Popular Quick Jump Shortcuts */
+    .esv-header-shortcuts {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    .esv-shortcut-label {
+        font-size: 0.75rem;
+        opacity: 0.65;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 0.2rem;
+    }
+
+    .esv-shortcut-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: inherit;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 6px;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.12s ease;
+    }
+
+    body.theme-white .esv-shortcut-btn {
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #334155;
+    }
+
+    .esv-shortcut-btn:hover {
+        background: #0066cc;
+        color: #ffffff !important;
+        border-color: #0066cc;
+    }
+
+    /* ============================================================
+       UNIFIED READER CONTAINER
+       ============================================================ */
+    .esv-reader-container {
+        background: var(--glass-bg, rgba(0, 60, 130, 0.18));
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border, rgba(0, 60, 130, 0.35));
+        border-radius: 14px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    body.theme-white .esv-reader-container {
+        background: #ffffff;
+        border-color: rgba(0, 50, 120, 0.12);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Top Controls Bar (Integrated into reader container) */
+    .esv-controls-bar {
+        padding: 0.85rem 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
         gap: 0.65rem;
-        margin-bottom: 0.85rem;
+        background: rgba(0, 0, 0, 0.12);
     }
 
-    .esv-selector-bar {
+    body.theme-white .esv-controls-bar {
+        background: #f8fafc;
+        border-bottom-color: #e2e8f0;
+    }
+
+    .esv-nav-cluster {
         display: flex;
         align-items: center;
         gap: 0.4rem;
         flex-wrap: wrap;
     }
 
-    /* Interactive Dropdown Triggers */
+    /* Clean, Professional Trigger Buttons (No cheesy icons) */
     .esv-trigger-btn {
-        background: rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.12);
         color: inherit;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 8px;
-        padding: 0.48rem 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 7px;
+        padding: 0.42rem 0.8rem;
         font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
@@ -154,25 +170,20 @@
     }
 
     body.theme-white .esv-trigger-btn {
-        background: #f1f5f9;
+        background: #ffffff;
         border-color: #cbd5e1;
         color: #0f172a;
     }
 
     .esv-trigger-btn:hover, .esv-trigger-btn.active {
-        background: rgba(0, 102, 204, 0.25);
+        background: #0066cc;
+        color: #ffffff !important;
         border-color: #0066cc;
-    }
-
-    body.theme-white .esv-trigger-btn:hover, body.theme-white .esv-trigger-btn.active {
-        background: #e2e8f0;
-        border-color: #0066cc;
-        color: #0052a3;
     }
 
     .esv-trigger-btn i.fa-chevron-down {
-        font-size: 0.72rem;
-        opacity: 0.7;
+        font-size: 0.7rem;
+        opacity: 0.65;
         transition: transform 0.2s ease;
     }
 
@@ -180,35 +191,36 @@
         transform: rotate(180deg);
     }
 
-    /* Stepper Chevrons */
+    /* Minimal Step Chevrons */
     .esv-step-btn {
-        background: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.1);
         color: inherit;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        width: 36px;
-        height: 36px;
+        border-radius: 7px;
+        width: 34px;
+        height: 34px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: all 0.15s ease;
+        font-size: 0.78rem;
     }
 
     body.theme-white .esv-step-btn {
-        background: #f1f5f9;
+        background: #ffffff;
         border-color: #cbd5e1;
         color: #334155;
     }
 
     .esv-step-btn:hover:not(:disabled) {
         background: #0066cc;
-        color: #ffffff;
+        color: #ffffff !important;
         border-color: #0066cc;
     }
 
     .esv-step-btn:disabled {
-        opacity: 0.35;
+        opacity: 0.3;
         cursor: not-allowed;
     }
 
@@ -216,104 +228,118 @@
     .esv-search-form {
         display: flex;
         align-items: center;
-        gap: 0.35rem;
+        position: relative;
         flex-grow: 1;
-        max-width: 310px;
+        max-width: 320px;
     }
 
-    .esv-input {
+    .esv-search-input {
         width: 100%;
-        background: rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.12);
         color: inherit;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 8px;
-        padding: 0.45rem 0.75rem;
-        font-size: 0.88rem;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 7px;
+        padding: 0.42rem 2.2rem 0.42rem 0.75rem;
+        font-size: 0.86rem;
         outline: none;
         transition: border-color 0.15s;
     }
 
-    body.theme-white .esv-input {
-        background: #f8fafc;
+    body.theme-white .esv-search-input {
+        background: #ffffff;
         border-color: #cbd5e1;
         color: #1e293b;
     }
 
-    .esv-input::placeholder {
-        color: rgba(255, 255, 255, 0.55);
+    .esv-search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
     }
 
-    body.theme-white .esv-input::placeholder {
+    body.theme-white .esv-search-input::placeholder {
         color: #94a3b8;
     }
 
-    .esv-btn {
-        background: #0066cc;
-        color: #ffffff !important;
+    .esv-search-input:focus {
+        border-color: #0066cc;
+    }
+
+    .esv-search-btn {
+        position: absolute;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
         border: none;
-        border-radius: 8px;
-        padding: 0.48rem 0.85rem;
-        font-size: 0.88rem;
+        color: inherit;
+        opacity: 0.65;
+        padding: 0.35rem 0.55rem;
+        cursor: pointer;
+        font-size: 0.82rem;
+        border-radius: 4px;
+        transition: opacity 0.15s, color 0.15s;
+    }
+
+    .esv-search-btn:hover {
+        opacity: 1;
+        color: #0066cc;
+    }
+
+    /* Actions / Tool Buttons */
+    .esv-tool-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: inherit !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 7px;
+        padding: 0.42rem 0.75rem;
+        font-size: 0.82rem;
         font-weight: 600;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
-        transition: background-color 0.15s, transform 0.1s;
-        text-decoration: none;
-        white-space: nowrap;
+        gap: 0.35rem;
+        transition: all 0.15s ease;
     }
 
-    .esv-btn:hover {
-        background: #0052a3;
-    }
-
-    .esv-btn-secondary {
-        background: rgba(255, 255, 255, 0.12);
-        color: inherit !important;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-    }
-
-    body.theme-white .esv-btn-secondary {
-        background: #f1f5f9;
-        color: #334155 !important;
+    body.theme-white .esv-tool-btn {
+        background: #ffffff;
         border-color: #cbd5e1;
+        color: #475569 !important;
     }
 
-    .esv-btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.22);
+    .esv-tool-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: inherit;
     }
 
-    body.theme-white .esv-btn-secondary:hover {
+    body.theme-white .esv-tool-btn:hover {
         background: #e2e8f0;
         color: #0f172a !important;
     }
 
     /* ============================================================
-       TOP NAV CHAPTER ORGANIZER (The Chapter Strip & Full Grid)
+       CHAPTER STRIP (Subtle, sleek, uncluttered)
        ============================================================ */
-    .esv-chapter-strip-container {
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
-        padding-top: 0.75rem;
+    .esv-chapter-strip-bar {
+        padding: 0.65rem 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        background: rgba(0, 0, 0, 0.05);
     }
 
-    body.theme-white .esv-chapter-strip-container {
-        border-top-color: #e2e8f0;
+    body.theme-white .esv-chapter-strip-bar {
+        background: #fdfdfd;
+        border-bottom-color: #f1f5f9;
     }
 
-    .esv-strip-label {
-        font-size: 0.78rem;
+    .esv-strip-caption {
+        font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        opacity: 0.75;
+        letter-spacing: 0.06em;
+        opacity: 0.65;
         white-space: nowrap;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
     }
 
     .esv-strip-scroll-wrap {
@@ -326,21 +352,21 @@
 
     .esv-chapter-strip {
         display: flex;
-        gap: 0.35rem;
+        gap: 0.3rem;
         overflow-x: auto;
         scroll-behavior: smooth;
-        padding: 0.2rem 0;
+        padding: 0.15rem 0;
         scrollbar-width: thin;
         -webkit-overflow-scrolling: touch;
     }
 
     .esv-chapter-strip::-webkit-scrollbar {
-        height: 4px;
+        height: 3px;
     }
 
     .esv-chapter-strip::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
+        border-radius: 3px;
     }
 
     body.theme-white .esv-chapter-strip::-webkit-scrollbar-thumb {
@@ -348,17 +374,17 @@
     }
 
     .esv-chap-pill {
-        min-width: 34px;
-        height: 32px;
-        padding: 0 0.45rem;
+        min-width: 32px;
+        height: 29px;
+        padding: 0 0.4rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: 6px;
-        background: rgba(255, 255, 255, 0.1);
+        background: transparent;
         color: inherit;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        font-size: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 0.82rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.12s ease;
@@ -367,55 +393,52 @@
     }
 
     body.theme-white .esv-chap-pill {
-        background: #f8fafc;
         border-color: #e2e8f0;
-        color: #334155;
+        color: #475569;
     }
 
     .esv-chap-pill:hover {
-        background: rgba(0, 102, 204, 0.2);
+        background: rgba(0, 102, 204, 0.18);
         border-color: #0066cc;
-        transform: translateY(-1px);
+        color: inherit;
     }
 
     body.theme-white .esv-chap-pill:hover {
-        background: #e2e8f0;
-        color: #0052a3;
+        background: #e0f2fe;
+        color: #0066cc;
+        border-color: #93c5fd;
     }
 
     .esv-chap-pill.active {
         background: #0066cc !important;
         color: #ffffff !important;
         border-color: #0066cc !important;
-        box-shadow: 0 2px 8px rgba(0, 102, 204, 0.4);
-        font-weight: 800;
-        transform: scale(1.05);
+        font-weight: 700;
     }
 
     .esv-strip-arrow {
-        width: 28px;
-        height: 28px;
-        background: rgba(255, 255, 255, 0.1);
+        width: 26px;
+        height: 26px;
+        background: none;
         border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 6px;
+        border-radius: 5px;
         color: inherit;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         cursor: pointer;
         flex-shrink: 0;
-        transition: background-color 0.15s;
+        transition: all 0.12s;
     }
 
     body.theme-white .esv-strip-arrow {
-        background: #f1f5f9;
         border-color: #cbd5e1;
         color: #475569;
     }
 
     .esv-strip-arrow:hover {
-        background: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.2);
     }
 
     body.theme-white .esv-strip-arrow:hover {
@@ -423,77 +446,71 @@
     }
 
     .esv-grid-toggle-btn {
-        background: rgba(255, 255, 255, 0.12);
+        background: transparent;
         color: inherit;
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 6px;
-        padding: 0.35rem 0.65rem;
-        font-size: 0.78rem;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.76rem;
         font-weight: 600;
         cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
         white-space: nowrap;
         flex-shrink: 0;
         transition: all 0.15s ease;
     }
 
     body.theme-white .esv-grid-toggle-btn {
-        background: #f1f5f9;
         border-color: #cbd5e1;
-        color: #334155;
+        color: #475569;
     }
 
     .esv-grid-toggle-btn:hover, .esv-grid-toggle-btn.active {
         background: #0066cc;
-        color: #ffffff;
+        color: #ffffff !important;
         border-color: #0066cc;
     }
 
-    /* Full Chapter Grid Drawer (Expands below chapter strip) */
+    /* Expandable Full Chapter Grid */
     .esv-full-chapter-grid {
         display: none;
-        margin-top: 0.85rem;
-        padding: 1rem;
-        background: rgba(0, 20, 50, 0.45);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        background: rgba(0, 15, 40, 0.35);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     body.theme-white .esv-full-chapter-grid {
         background: #f8fafc;
-        border-color: #e2e8f0;
+        border-bottom-color: #e2e8f0;
     }
 
     .esv-full-grid-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.75rem;
-        font-size: 0.85rem;
+        margin-bottom: 0.65rem;
+        font-size: 0.82rem;
         font-weight: 700;
     }
 
     .esv-grid-cells {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-        gap: 0.4rem;
-        max-height: 240px;
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 0.35rem;
+        max-height: 220px;
         overflow-y: auto;
-        padding-right: 0.3rem;
+        padding-right: 0.25rem;
     }
 
     .esv-grid-cell {
-        height: 38px;
+        height: 35px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: 6px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.14);
         color: inherit;
-        font-size: 0.88rem;
+        font-size: 0.84rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.12s ease;
@@ -501,19 +518,14 @@
 
     body.theme-white .esv-grid-cell {
         background: #ffffff;
-        border-color: #cbd5e1;
+        border-color: #e2e8f0;
         color: #1e293b;
     }
 
     .esv-grid-cell:hover {
-        background: rgba(0, 102, 204, 0.25);
+        background: #0066cc;
+        color: #ffffff !important;
         border-color: #0066cc;
-        transform: scale(1.05);
-    }
-
-    body.theme-white .esv-grid-cell:hover {
-        background: #e0f2fe;
-        color: #0066cc;
     }
 
     .esv-grid-cell.active {
@@ -521,11 +533,199 @@
         color: #ffffff !important;
         border-color: #0066cc !important;
         font-weight: 800;
-        box-shadow: 0 2px 8px rgba(0, 102, 204, 0.4);
     }
 
     /* ============================================================
-       BOOK PICKER MODAL / POPOVER
+       SCRIPTURE READING DESK (Editorial Typography)
+       ============================================================ */
+    .esv-reading-desk {
+        padding: 2.25rem 2rem 2.5rem;
+        max-width: 860px;
+        margin: 0 auto;
+    }
+
+    .esv-chapter-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        padding-bottom: 1.15rem;
+        margin-bottom: 1.75rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    body.theme-white .esv-chapter-header {
+        border-bottom-color: #e2e8f0;
+    }
+
+    .esv-chapter-title {
+        font-family: var(--font-serif, 'Source Serif 4', 'Source Serif Pro', Georgia, serif);
+        font-size: 2.35rem !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        color: #ffffff !important;
+        letter-spacing: -0.015em;
+    }
+
+    body.theme-white .esv-chapter-title {
+        color: #003d7a !important;
+    }
+
+    .esv-chapter-subtitle {
+        font-size: 0.84rem;
+        font-weight: 500;
+        opacity: 0.7;
+        margin-top: 0.35rem;
+    }
+
+    body.theme-white .esv-chapter-subtitle {
+        color: #64748b;
+    }
+
+    .esv-chapter-header-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .esv-nav-pill-btn {
+        background: transparent;
+        color: inherit;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        transition: all 0.15s ease;
+    }
+
+    body.theme-white .esv-nav-pill-btn {
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+
+    .esv-nav-pill-btn:hover:not(:disabled) {
+        background: #0066cc;
+        color: #ffffff !important;
+        border-color: #0066cc;
+    }
+
+    .esv-nav-pill-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    /* Passage Text & Verses */
+    .esv-passage-body {
+        font-family: var(--font-serif, 'Source Serif 4', 'Source Serif Pro', Georgia, serif);
+        font-size: 1.18rem;
+        line-height: 1.95;
+        color: var(--text-white, rgba(255, 255, 255, 0.95));
+        transition: font-size 0.2s ease;
+    }
+
+    body.theme-white .esv-passage-body {
+        color: #27272a !important;
+    }
+
+    .esv-passage-body.font-sans {
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.8;
+    }
+
+    .esv-passage-body.text-size-sm {
+        font-size: 1.04rem;
+        line-height: 1.8;
+    }
+
+    .esv-passage-body.text-size-lg {
+        font-size: 1.36rem;
+        line-height: 2.05;
+    }
+
+    .esv-verse {
+        display: inline;
+        position: relative;
+        padding: 0.12rem 0.18rem;
+        border-radius: 4px;
+        transition: background-color 0.15s ease;
+        cursor: pointer;
+    }
+
+    .esv-verse:hover {
+        background: rgba(201, 154, 58, 0.16);
+    }
+
+    body.theme-white .esv-verse:hover {
+        background: #fef3c7;
+    }
+
+    .esv-verse.highlighted {
+        background: rgba(201, 154, 58, 0.35);
+        box-shadow: 0 0 0 2px rgba(201, 154, 58, 0.65);
+    }
+
+    body.theme-white .esv-verse.highlighted {
+        background: #fde68a;
+        box-shadow: 0 0 0 2px #d97706;
+    }
+
+    .esv-verse-num {
+        font-family: 'Poppins', -apple-system, sans-serif;
+        font-size: 0.65em;
+        font-weight: 700;
+        vertical-align: super;
+        color: #b48328;
+        margin-right: 0.25rem;
+        margin-left: 0.2rem;
+        user-select: none;
+    }
+
+    body.theme-white .esv-verse-num {
+        color: #b45309;
+    }
+
+    /* Bottom Passage Nav */
+    .esv-bottom-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+        padding-top: 1.5rem;
+        margin-top: 2.5rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    body.theme-white .esv-bottom-nav {
+        border-top-color: #e2e8f0;
+    }
+
+    /* Attribution & Disclaimer */
+    .esv-attribution-box {
+        margin-top: 2rem;
+        padding: 0.85rem 1.15rem;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.68);
+        line-height: 1.5;
+    }
+
+    body.theme-white .esv-attribution-box {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        color: #64748b;
+    }
+
+    /* ============================================================
+       BOOK PICKER MODAL (Clean, modern, no cheesy icons)
        ============================================================ */
     .esv-book-modal {
         display: none;
@@ -547,13 +747,13 @@
         background: #0f2744;
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 14px;
+        border-radius: 12px;
         width: 100%;
-        max-width: 780px;
-        max-height: 85vh;
+        max-width: 760px;
+        max-height: 84vh;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
         overflow: hidden;
     }
 
@@ -561,16 +761,15 @@
         background: #ffffff;
         color: #1e293b;
         border-color: #cbd5e1;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16);
     }
 
     .esv-book-modal-header {
-        padding: 1rem 1.25rem 0.75rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        padding: 0.85rem 1.15rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.75rem;
     }
 
     body.theme-white .esv-book-modal-header {
@@ -578,11 +777,12 @@
     }
 
     .esv-book-modal-search {
-        padding: 0.5rem 1.25rem;
+        padding: 0.5rem 1.15rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         gap: 0.5rem;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     body.theme-white .esv-book-modal-search {
@@ -591,19 +791,19 @@
     }
 
     .esv-tab-pill {
-        padding: 0.35rem 0.75rem;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 700;
+        padding: 0.32rem 0.65rem;
+        border-radius: 5px;
+        font-size: 0.78rem;
+        font-weight: 600;
         background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.16);
         color: inherit;
         cursor: pointer;
-        transition: all 0.15s ease;
+        transition: all 0.12s ease;
     }
 
     body.theme-white .esv-tab-pill {
-        background: #f1f5f9;
+        background: #ffffff;
         border-color: #cbd5e1;
         color: #475569;
     }
@@ -615,18 +815,18 @@
     }
 
     .esv-book-modal-body {
-        padding: 1rem 1.25rem;
+        padding: 0.85rem 1.15rem;
         overflow-y: auto;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 0.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+        gap: 0.45rem;
     }
 
     .esv-book-item {
-        padding: 0.6rem 0.75rem;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 0.55rem 0.7rem;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         cursor: pointer;
         transition: all 0.12s ease;
         display: flex;
@@ -640,14 +840,10 @@
     }
 
     .esv-book-item:hover {
-        background: rgba(0, 102, 204, 0.25);
+        background: #0066cc;
+        color: #ffffff !important;
         border-color: #0066cc;
         transform: translateY(-1px);
-    }
-
-    body.theme-white .esv-book-item:hover {
-        background: #e0f2fe;
-        border-color: #0066cc;
     }
 
     .esv-book-item.active {
@@ -658,193 +854,24 @@
 
     .esv-book-item-name {
         font-weight: 700;
-        font-size: 0.88rem;
+        font-size: 0.86rem;
     }
 
     .esv-book-item-meta {
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         opacity: 0.75;
-        margin-top: 0.15rem;
-    }
-
-    /* ============================================================
-       READER VIEW CARD
-       ============================================================ */
-    .esv-reader-card {
-        background: var(--glass-bg, rgba(0, 60, 130, 0.18));
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--glass-border, rgba(0, 60, 130, 0.35));
-        border-radius: 14px;
-        padding: 1.85rem 2.25rem 2.25rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-
-    body.theme-white .esv-reader-card {
-        background: #ffffff;
-        border-color: rgba(0, 50, 120, 0.12);
-        box-shadow: 0 8px 26px rgba(0, 0, 0, 0.05);
-    }
-
-    .esv-chapter-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.16);
-        padding-bottom: 1.1rem;
-        margin-bottom: 1.6rem;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-    }
-
-    body.theme-white .esv-chapter-header {
-        border-bottom: 2px solid #e2e8f0;
-    }
-
-    /* Chapter Title — GUARANTEED HIGH CONTRAST IN BOTH THEMES */
-    .esv-chapter-title {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        font-size: 2.1rem !important;
-        font-weight: 700 !important;
-        margin: 0 !important;
-        color: #ffffff !important;
-        letter-spacing: -0.01em;
-    }
-
-    body.theme-white .esv-chapter-title {
-        color: #003d7a !important;
-    }
-
-    .esv-chapter-subtitle {
-        font-size: 0.85rem;
-        font-weight: 600;
-        opacity: 0.75;
-        margin-top: 0.25rem;
-        color: inherit;
-    }
-
-    body.theme-white .esv-chapter-subtitle {
-        color: #64748b;
-    }
-
-    .esv-chapter-nav {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    /* Text display styles */
-    .esv-passage-body {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        font-size: 1.16rem;
-        line-height: 1.9;
-        color: var(--text-white, rgba(255, 255, 255, 0.95));
-        transition: font-size 0.2s ease;
-    }
-
-    body.theme-white .esv-passage-body {
-        color: #1e293b !important;
-    }
-
-    .esv-passage-body.font-sans {
-        font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        line-height: 1.8;
-    }
-
-    .esv-passage-body.text-size-sm {
-        font-size: 1.02rem;
-        line-height: 1.75;
-    }
-
-    .esv-passage-body.text-size-lg {
-        font-size: 1.34rem;
-        line-height: 2.05;
-    }
-
-    .esv-verse {
-        display: inline;
-        position: relative;
-        padding: 0.12rem 0.18rem;
-        border-radius: 4px;
-        transition: background-color 0.18s ease;
-        cursor: pointer;
-    }
-
-    .esv-verse:hover {
-        background: rgba(201, 154, 58, 0.18);
-    }
-
-    body.theme-white .esv-verse:hover {
-        background: #fef3c7;
-    }
-
-    .esv-verse.highlighted {
-        background: rgba(201, 154, 58, 0.38);
-        box-shadow: 0 0 0 2px rgba(201, 154, 58, 0.7);
-        border-radius: 4px;
-    }
-
-    body.theme-white .esv-verse.highlighted {
-        background: #fde68a;
-        box-shadow: 0 0 0 2px #d97706;
-    }
-
-    .esv-verse-num {
-        font-family: 'Manrope', sans-serif;
-        font-size: 0.68em;
-        font-weight: 800;
-        vertical-align: super;
-        color: #c99a3a;
-        margin-right: 0.25rem;
-        margin-left: 0.2rem;
-        user-select: none;
-    }
-
-    /* Bottom Passage Nav */
-    .esv-bottom-nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-top: 1px solid rgba(255, 255, 255, 0.16);
-        padding-top: 1.25rem;
-        margin-top: 2.25rem;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-    }
-
-    body.theme-white .esv-bottom-nav {
-        border-top-color: #e2e8f0;
-    }
-
-    /* Attribution & Disclaimer */
-    .esv-attribution-box {
-        margin-top: 2rem;
-        padding: 1rem 1.25rem;
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.22);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.75);
-        line-height: 1.55;
-    }
-
-    body.theme-white .esv-attribution-box {
-        background: #f8fafc;
-        border-color: #e2e8f0;
-        color: #64748b;
+        margin-top: 0.12rem;
     }
 
     /* Search Results View */
     .esv-search-card {
         display: none;
+        padding: 1.5rem 1.75rem;
         background: var(--glass-bg, rgba(0, 60, 130, 0.18));
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid var(--glass-border, rgba(0, 60, 130, 0.35));
         border-radius: 14px;
-        padding: 1.75rem 2rem;
         margin-bottom: 2rem;
     }
 
@@ -854,11 +881,11 @@
     }
 
     .esv-search-item {
-        padding: 0.85rem 1rem;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 0.65rem;
+        padding: 0.75rem 0.9rem;
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 0.55rem;
         cursor: pointer;
         transition: all 0.15s ease;
     }
@@ -869,19 +896,16 @@
     }
 
     .esv-search-item:hover {
-        background: rgba(255, 255, 255, 0.14);
+        background: rgba(0, 102, 204, 0.15);
+        border-color: #0066cc;
         transform: translateX(3px);
-    }
-
-    body.theme-white .esv-search-item:hover {
-        background: #f1f5f9;
     }
 
     .esv-search-ref {
         font-weight: 700;
         color: #f1cf88;
-        font-size: 0.95rem;
-        margin-bottom: 0.25rem;
+        font-size: 0.92rem;
+        margin-bottom: 0.2rem;
     }
 
     body.theme-white .esv-search-ref {
@@ -889,18 +913,14 @@
     }
 
     .esv-search-text {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        font-size: 0.95rem;
+        font-family: var(--font-serif, 'Source Serif 4', 'Source Serif Pro', Georgia, serif);
+        font-size: 0.93rem;
         line-height: 1.6;
-        color: rgba(255, 255, 255, 0.88);
-    }
-
-    body.theme-white .esv-search-text {
-        color: #334155;
+        color: inherit;
     }
 
     .esv-search-text mark {
-        background: #c99a3a;
+        background: #fde68a;
         color: #000000;
         padding: 0.1em 0.25em;
         border-radius: 3px;
@@ -915,8 +935,8 @@
     }
 
     .esv-spinner i {
-        font-size: 2.2rem;
-        color: #c99a3a;
+        font-size: 2rem;
+        color: #0066cc;
     }
 
     /* Toast Notification */
@@ -924,17 +944,17 @@
         position: fixed;
         bottom: 24px;
         right: 24px;
-        background: rgba(16, 42, 69, 0.96);
+        background: rgba(15, 23, 42, 0.96);
         color: #ffffff;
-        border: 1px solid #c99a3a;
+        border: 1px solid #38bdf8;
         border-radius: 8px;
-        padding: 0.75rem 1.25rem;
-        font-size: 0.88rem;
+        padding: 0.65rem 1.15rem;
+        font-size: 0.86rem;
         font-weight: 600;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.45rem;
         z-index: 10005;
         opacity: 0;
         transform: translateY(16px);
@@ -948,19 +968,14 @@
     }
 
     @media (max-width: 768px) {
-        .esv-reader-card {
-            padding: 1.25rem 1rem;
+        .esv-reading-desk {
+            padding: 1.25rem 1rem 1.75rem;
         }
         .esv-chapter-title {
-            font-size: 1.65rem !important;
+            font-size: 1.8rem !important;
         }
-        .esv-passage-body {
-            font-size: 1.05rem;
-            line-height: 1.75;
-        }
-        .esv-controls-row {
-            flex-direction: column;
-            align-items: stretch;
+        .esv-controls-bar {
+            padding: 0.75rem 1rem;
         }
         .esv-search-form {
             max-width: 100%;
@@ -971,42 +986,39 @@
 
 {% block content %}
 <div class="esv-page">
-    <!-- Hero Banner -->
-    <div class="esv-hero">
-        <div class="esv-hero-badge">
-            <i class="fas fa-book-bible"></i> Open Source Scripture Edition
+    <!-- Slim Header Bar (Clean, uncluttered, no cheesy splash hero) -->
+    <div class="esv-header-bar">
+        <div class="esv-header-title-group">
+            <h1 class="esv-header-title">The Holy Bible</h1>
+            <span class="esv-header-sub">English Standard Version (ESV)</span>
         </div>
-        <h1>English Standard Version</h1>
-        <p>The Holy Bible — Read, study, and search Scripture for personal devotion and worship.</p>
-        
-        <!-- Popular Passages Quick Jump -->
-        <div class="esv-quick-pills">
-            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.78); align-self: center; margin-right: 0.25rem; font-weight: 600;">Popular:</span>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('Genesis', 1)">Genesis 1</button>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('Psalms', 23)">Psalm 23</button>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('Isaiah', 53)">Isaiah 53</button>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('Matthew', 5)">Matthew 5</button>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('John', 3)">John 3</button>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('Romans', 8)">Romans 8</button>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('1 Corinthians', 13)">1 Cor 13</button>
-            <button type="button" class="esv-pill" onclick="loadPassageByName('Ephesians', 2)">Ephesians 2</button>
+        <!-- Quick Jump Shortcuts -->
+        <div class="esv-header-shortcuts">
+            <span class="esv-shortcut-label">Jump:</span>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('Genesis', 1)">Gen 1</button>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('Psalms', 23)">Ps 23</button>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('Isaiah', 53)">Isa 53</button>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('Matthew', 5)">Matt 5</button>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('John', 3)">John 3</button>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('Romans', 8)">Rom 8</button>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('1 Corinthians', 13)">1 Cor 13</button>
+            <button type="button" class="esv-shortcut-btn" onclick="loadPassageByName('Ephesians', 2)">Eph 2</button>
         </div>
     </div>
 
-    <!-- Top Navigation & Controls Card -->
-    <div class="esv-controls-card">
-        <!-- Top Row: Book Selector, Chapter Trigger, Steppers, Search, Appearance -->
-        <div class="esv-controls-row">
-            <!-- Book & Chapter Buttons -->
-            <div class="esv-selector-bar">
-                <!-- Book Picker Button -->
-                <button type="button" id="esvBookTriggerBtn" class="esv-trigger-btn" onclick="openBookModal()" title="Choose Bible Book">
-                    <i class="fas fa-book-bible" style="color: #c99a3a;"></i>
+    <!-- Main Unified Reader Desk Container -->
+    <div class="esv-reader-container" id="esvReaderContainer">
+        <!-- Top Controls Bar -->
+        <div class="esv-controls-bar">
+            <!-- Left: Book & Chapter Triggers + Stepper Chevrons -->
+            <div class="esv-nav-cluster">
+                <!-- Book Picker Trigger -->
+                <button type="button" id="esvBookTriggerBtn" class="esv-trigger-btn" onclick="openBookModal()" title="Choose Book">
                     <span id="esvBookTriggerLabel">{{ current_book.name }}</span>
                     <i class="fas fa-chevron-down"></i>
                 </button>
 
-                <!-- Chapter Grid Trigger Button -->
+                <!-- Chapter Trigger -->
                 <button type="button" id="esvChapTriggerBtn" class="esv-trigger-btn" onclick="toggleChapterGrid()" title="Choose Chapter">
                     <span id="esvChapTriggerLabel">Chapter {{ current_chapter }}</span>
                     <i class="fas fa-chevron-down"></i>
@@ -1021,188 +1033,179 @@
                 </button>
             </div>
 
-            <!-- Quick Passage Search & Jump Form -->
+            <!-- Center: Search & Verse Jump -->
             <form class="esv-search-form" onsubmit="handlePassageSubmit(event)">
-                <input type="text" id="esvPassageInput" class="esv-input" placeholder="Jump to verse or search (e.g. John 3:16, grace)..." autocomplete="off" />
-                <button type="submit" class="esv-btn" title="Look up passage or search">
-                    <i class="fas fa-arrow-right"></i>
+                <input type="text" id="esvPassageInput" class="esv-search-input" placeholder="Jump to verse or search..." autocomplete="off" />
+                <button type="submit" class="esv-search-btn" title="Go">
+                    <i class="fas fa-magnifying-glass"></i>
                 </button>
             </form>
 
-            <!-- Text Appearance Controls -->
-            <div class="esv-selector-bar">
-                <button type="button" class="esv-btn esv-btn-secondary" onclick="toggleFontSize()" title="Toggle text size" id="textSizeBtn">
-                    <i class="fas fa-text-height"></i> Size
+            <!-- Right: Text Appearance Tools -->
+            <div class="esv-nav-cluster">
+                <button type="button" class="esv-tool-btn" onclick="toggleFontSize()" title="Text Size">
+                    Size
                 </button>
-                <button type="button" class="esv-btn esv-btn-secondary" onclick="toggleFontFamily()" title="Toggle serif/sans-serif" id="fontFamilyBtn">
-                    <i class="fas fa-font"></i> Font
+                <button type="button" class="esv-tool-btn" onclick="toggleFontFamily()" title="Serif / Sans Font">
+                    Font
                 </button>
-                <button type="button" class="esv-btn esv-btn-secondary" onclick="copyFullChapter()" title="Copy entire chapter">
+                <button type="button" class="esv-tool-btn" onclick="copyFullChapter()" title="Copy Chapter">
                     <i class="fas fa-copy"></i> Copy
                 </button>
             </div>
         </div>
 
-        <!-- Chapter Strip: All chapters organized horizontally on the top nav -->
-        <div class="esv-chapter-strip-container">
-            <span class="esv-strip-label">
-                <i class="fas fa-list-ol"></i> Chapters (<span id="esvTotalChaptersCount">{{ current_book.chapters }}</span>):
-            </span>
-            <button type="button" class="esv-strip-arrow" onclick="scrollChapterStrip(-160)" title="Scroll chapters left">
+        <!-- Integrated Chapter Strip -->
+        <div class="esv-chapter-strip-bar">
+            <span class="esv-strip-caption">Chapters (<span id="esvTotalChaptersCount">{{ current_book.chapters }}</span>):</span>
+            <button type="button" class="esv-strip-arrow" onclick="scrollChapterStrip(-180)" title="Scroll left">
                 <i class="fas fa-chevron-left"></i>
             </button>
             <div class="esv-strip-scroll-wrap">
                 <div class="esv-chapter-strip" id="esvChapterStrip">
-                    <!-- Populated dynamically by JS for all chapters of the current book -->
                     {% for c in range(1, current_book.chapters + 1) %}
                     <button type="button" class="esv-chap-pill {% if c == current_chapter %}active{% endif %}" data-chap="{{ c }}" onclick="loadChapter(currentBookId, {{ c }})">{{ c }}</button>
                     {% endfor %}
                 </div>
             </div>
-            <button type="button" class="esv-strip-arrow" onclick="scrollChapterStrip(160)" title="Scroll chapters right">
+            <button type="button" class="esv-strip-arrow" onclick="scrollChapterStrip(180)" title="Scroll right">
                 <i class="fas fa-chevron-right"></i>
             </button>
-            <button type="button" id="esvGridToggleBtn" class="esv-grid-toggle-btn" onclick="toggleChapterGrid()" title="Show all chapters in grid">
-                <i class="fas fa-th"></i> All Chapters
+            <button type="button" id="esvGridToggleBtn" class="esv-grid-toggle-btn" onclick="toggleChapterGrid()" title="All chapters grid">
+                All ({{ current_book.chapters }})
             </button>
         </div>
 
-        <!-- Full Chapter Grid Drawer (Expands below chapter strip) -->
+        <!-- Full Chapter Grid (Expands inline below strip) -->
         <div class="esv-full-chapter-grid" id="esvFullChapterGrid">
             <div class="esv-full-grid-header">
                 <div>
-                    <span id="esvGridBookTitle">{{ current_book.name }}</span> — Select a Chapter (1 to <span id="esvGridMaxChap">{{ current_book.chapters }}</span>)
+                    <span id="esvGridBookTitle">{{ current_book.name }}</span> — All Chapters (1 to <span id="esvGridMaxChap">{{ current_book.chapters }}</span>)
                 </div>
-                <button type="button" class="esv-btn esv-btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.78rem;" onclick="toggleChapterGrid()">
-                    <i class="fas fa-times"></i> Close Grid
+                <button type="button" class="esv-tool-btn" style="padding: 0.2rem 0.5rem; font-size: 0.74rem;" onclick="toggleChapterGrid(false)">
+                    Close
                 </button>
             </div>
             <div class="esv-grid-cells" id="esvGridCells">
-                <!-- Populated dynamically by JS -->
                 {% for c in range(1, current_book.chapters + 1) %}
                 <button type="button" class="esv-grid-cell {% if c == current_chapter %}active{% endif %}" data-chap="{{ c }}" onclick="loadChapter(currentBookId, {{ c }}); toggleChapterGrid(false);">{{ c }}</button>
                 {% endfor %}
             </div>
         </div>
-    </div>
 
-    <!-- Loading Spinner -->
-    <div id="esvSpinner" class="esv-spinner">
-        <i class="fas fa-circle-notch fa-spin"></i>
-        <div style="margin-top: 0.75rem; font-weight: 600; font-size: 1.05rem;">Loading Scripture...</div>
+        <!-- Reading Desk Body -->
+        <div class="esv-reading-desk" id="esvReadingDesk">
+            <!-- Chapter Title & Nav Row -->
+            <div class="esv-chapter-header">
+                <div>
+                    <h2 id="esvDisplayTitle" class="esv-chapter-title">{{ current_book.name }} {{ current_chapter }}</h2>
+                    <div id="esvDisplaySubtitle" class="esv-chapter-subtitle">
+                        {{ 'Old Testament' if current_book.testament == 'OT' else 'New Testament' }} · English Standard Version (ESV) · {{ initial_data.verses|length if initial_data.get('verses') else '' }} Verses
+                    </div>
+                </div>
+                <div class="esv-chapter-header-nav">
+                    <button type="button" id="prevChapterBtnTop" class="esv-nav-pill-btn" onclick="navigateChapter('prev')">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <button type="button" id="nextChapterBtnTop" class="esv-nav-pill-btn" onclick="navigateChapter('next')">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scripture Text Body -->
+            <div id="esvPassageBody" class="esv-passage-body">
+                {% if initial_data.get('verses') %}
+                    {% for v in initial_data.verses %}
+                    <span class="esv-verse {% if highlight_verse and v.verse == highlight_verse %}highlighted{% endif %}" id="v-{{ v.verse }}" data-verse="{{ v.verse }}" onclick="copyVerse({{ v.verse }})" title="Click to copy verse {{ v.verse }}"><sup class="esv-verse-num">{{ v.verse }}</sup>{{ v.text }} </span>
+                    {% endfor %}
+                {% else %}
+                    <div style="padding: 2.5rem 0; text-align: center;">
+                        <p style="color: #ef4444; font-weight: 700;">{{ initial_data.get('error', 'Scripture text is temporarily loading...') }}</p>
+                        <button class="esv-tool-btn" style="margin-top: 1rem;" onclick="loadChapter(currentBookId, currentChapter)">
+                            Retry
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Bottom Chapter Navigation -->
+            <div class="esv-bottom-nav">
+                <button type="button" id="prevChapterBtnBottom" class="esv-nav-pill-btn" onclick="navigateChapter('prev')">
+                    <i class="fas fa-chevron-left"></i> Previous Chapter
+                </button>
+                <button type="button" class="esv-nav-pill-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <i class="fas fa-arrow-up"></i> Top
+                </button>
+                <button type="button" id="nextChapterBtnBottom" class="esv-nav-pill-btn" onclick="navigateChapter('next')">
+                    Next Chapter <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Attribution -->
+            <div class="esv-attribution-box">
+                Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.
+            </div>
+        </div>
     </div>
 
     <!-- Search Results View -->
     <div id="esvSearchCard" class="esv-search-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
             <div>
-                <h2 id="esvSearchHeading" style="font-size: 1.35rem; font-weight: 700; margin: 0;">Search Results</h2>
-                <div id="esvSearchMeta" style="font-size: 0.85rem; opacity: 0.75; margin-top: 0.25rem;"></div>
+                <h2 id="esvSearchHeading" style="font-size: 1.25rem; font-weight: 700; margin: 0;">Search Results</h2>
+                <div id="esvSearchMeta" style="font-size: 0.82rem; opacity: 0.7; margin-top: 0.2rem;"></div>
             </div>
-            <button type="button" class="esv-btn esv-btn-secondary" onclick="closeSearch()">
-                <i class="fas fa-times"></i> Back to Chapter
+            <button type="button" class="esv-tool-btn" onclick="closeSearch()">
+                Back to Chapter
             </button>
         </div>
         <div id="esvSearchResultsList"></div>
     </div>
 
-    <!-- Main Reader Card -->
-    <div id="esvReaderCard" class="esv-reader-card">
-        <!-- Chapter Header -->
-        <div class="esv-chapter-header">
-            <div>
-                <h2 id="esvDisplayTitle" class="esv-chapter-title">{{ current_book.name }} {{ current_chapter }}</h2>
-                <div id="esvDisplaySubtitle" class="esv-chapter-subtitle">
-                    {{ 'Old Testament' if current_book.testament == 'OT' else 'New Testament' }} · English Standard Version (ESV) · {{ initial_data.verses|length if initial_data.get('verses') else '' }} Verses
-                </div>
-            </div>
-            <div class="esv-chapter-nav">
-                <button type="button" id="prevChapterBtnTop" class="esv-btn esv-btn-secondary" onclick="navigateChapter('prev')">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <button type="button" id="nextChapterBtnTop" class="esv-btn esv-btn-secondary" onclick="navigateChapter('next')">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Passage Text Body -->
-        <div id="esvPassageBody" class="esv-passage-body">
-            {% if initial_data.get('verses') %}
-                {% for v in initial_data.verses %}
-                <span class="esv-verse {% if highlight_verse and v.verse == highlight_verse %}highlighted{% endif %}" id="v-{{ v.verse }}" data-verse="{{ v.verse }}" onclick="copyVerse({{ v.verse }})" title="Click to copy verse {{ v.verse }}"><sup class="esv-verse-num">{{ v.verse }}</sup>{{ v.text }} </span>
-                {% endfor %}
-            {% else %}
-                <div style="padding: 2.5rem 0; text-align: center;">
-                    <p style="color: #ef4444; font-weight: 700; font-size: 1.1rem;">{{ initial_data.get('error', 'Scripture text is temporarily loading...') }}</p>
-                    <button class="esv-btn" style="margin-top: 1rem;" onclick="loadChapter(currentBookId, currentChapter)">
-                        <i class="fas fa-redo"></i> Retry
-                    </button>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- Bottom Chapter Navigation -->
-        <div class="esv-bottom-nav">
-            <button type="button" id="prevChapterBtnBottom" class="esv-btn esv-btn-secondary" onclick="navigateChapter('prev')">
-                <i class="fas fa-arrow-left"></i> Previous Chapter
-            </button>
-            <button type="button" class="esv-btn esv-btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <i class="fas fa-arrow-up"></i> Top of Chapter
-            </button>
-            <button type="button" id="nextChapterBtnBottom" class="esv-btn esv-btn-secondary" onclick="navigateChapter('next')">
-                Next Chapter <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Attribution & Copyright Notice -->
-    <div class="esv-attribution-box">
-        <strong>About the English Standard Version (ESV):</strong>
-        <p style="margin: 0.35rem 0 0 0;">
-            Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. Text delivered via open-source community Bible API.
-        </p>
+    <!-- Loading Spinner -->
+    <div id="esvSpinner" class="esv-spinner">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <div style="margin-top: 0.65rem; font-weight: 600; font-size: 0.95rem;">Loading Scripture...</div>
     </div>
 </div>
 
 <!-- ============================================================
-     BOOK PICKER MODAL (Organized by Testament and Section)
+     BOOK PICKER MODAL (Clean, no cheesy icons)
      ============================================================ -->
 <div id="esvBookModal" class="esv-book-modal" onclick="onBookModalBackdropClick(event)">
     <div class="esv-book-modal-card" id="esvBookModalCard">
         <div class="esv-book-modal-header">
-            <div style="font-weight: 800; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fas fa-book-bible" style="color: #c99a3a;"></i> Choose a Book of the Bible
-            </div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Select Book of the Bible</div>
             <button type="button" class="esv-step-btn" onclick="closeBookModal()" title="Close">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <!-- Modal Tabs & Search -->
+        <!-- Modal Tabs & Filter -->
         <div class="esv-book-modal-search">
-            <div style="display: flex; gap: 0.35rem;">
+            <div style="display: flex; gap: 0.3rem;">
                 <button type="button" class="esv-tab-pill active" id="tabAllBooks" onclick="filterBookTab('all')">All (66)</button>
                 <button type="button" class="esv-tab-pill" id="tabOTBooks" onclick="filterBookTab('OT')">Old Testament (39)</button>
                 <button type="button" class="esv-tab-pill" id="tabNTBooks" onclick="filterBookTab('NT')">New Testament (27)</button>
             </div>
-            <input type="text" id="esvBookFilterInput" class="esv-input" placeholder="Filter book name..." oninput="onBookFilterInput(this.value)" style="flex-grow: 1; max-width: 240px; margin-left: auto;" />
+            <input type="text" id="esvBookFilterInput" class="esv-search-input" placeholder="Filter book..." oninput="onBookFilterInput(this.value)" style="flex-grow: 1; max-width: 200px; margin-left: auto;" />
         </div>
         <!-- Books Grid -->
         <div class="esv-book-modal-body" id="esvBookModalBody">
             {% for b in books %}
             <div class="esv-book-item {% if b.id == current_book.id %}active{% endif %}" data-id="{{ b.id }}" data-testament="{{ b.testament }}" data-name="{{ b.name }}" onclick="onBookSelected({{ b.id }})">
                 <div class="esv-book-item-name">{{ b.name }}</div>
-                <div class="esv-book-item-meta">{{ b.chapters }} Ch. · {{ b.section or ('Old Testament' if b.testament == 'OT' else 'New Testament') }}</div>
+                <div class="esv-book-item-meta">{{ b.chapters }} Chapters · {{ b.section or ('OT' if b.testament == 'OT' else 'NT') }}</div>
             </div>
             {% endfor %}
         </div>
     </div>
 </div>
 
-<!-- Toast element -->
+<!-- Toast Element -->
 <div id="esvToast" class="esv-toast">
-    <i class="fas fa-check-circle" style="color: #4ade80;"></i>
-    <span id="esvToastMsg">Copied to clipboard</span>
+    <i class="fas fa-check" style="color: #38bdf8;"></i>
+    <span id="esvToastMsg">Copied</span>
 </div>
 
 <script>
@@ -1220,21 +1223,19 @@
         {% endfor %}
     };
 
-    // Text appearance state
+    // Appearance State
     const fontSizes = ['sm', 'md', 'lg'];
-    let currentSizeIndex = 1; // default md
+    let currentSizeIndex = 1;
     let isSans = false;
 
-    // Toast helper
     function showToast(msg) {
         const toast = document.getElementById('esvToast');
         const text = document.getElementById('esvToastMsg');
         text.innerText = msg;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2500);
+        setTimeout(() => toast.classList.remove('show'), 2200);
     }
 
-    // Toggle Font Size
     function toggleFontSize() {
         const body = document.getElementById('esvPassageBody');
         body.classList.remove('text-size-sm', 'text-size-lg');
@@ -1244,21 +1245,20 @@
         showToast('Text size: ' + fontSizes[currentSizeIndex].toUpperCase());
     }
 
-    // Toggle Font Family (Serif vs Sans)
     function toggleFontFamily() {
         const body = document.getElementById('esvPassageBody');
         isSans = !isSans;
         if (isSans) {
             body.classList.add('font-sans');
-            showToast('Font: Modern Sans');
+            showToast('Font: Sans-Serif');
         } else {
             body.classList.remove('font-sans');
-            showToast('Font: Classic Serif');
+            showToast('Font: Serif');
         }
     }
 
     // ============================================================
-    // BOOK PICKER MODAL
+    // BOOK MODAL
     // ============================================================
     function openBookModal() {
         document.getElementById('esvBookModal').classList.add('show');
@@ -1319,20 +1319,20 @@
     }
 
     // ============================================================
-    // CHAPTER STRIP & GRID LOGIC
+    // CHAPTER STRIP & GRID
     // ============================================================
     function renderChapterOrganizers(bookId, activeChap) {
         const book = booksData[bookId];
         if (!book) return;
 
-        // Update trigger labels
         document.getElementById('esvBookTriggerLabel').textContent = book.name;
         document.getElementById('esvChapTriggerLabel').textContent = `Chapter ${activeChap}`;
         document.getElementById('esvTotalChaptersCount').textContent = book.chapters;
         document.getElementById('esvGridBookTitle').textContent = book.name;
         document.getElementById('esvGridMaxChap').textContent = book.chapters;
+        document.getElementById('esvGridToggleBtn').textContent = `All (${book.chapters})`;
 
-        // Render horizontal strip
+        // Strip
         const strip = document.getElementById('esvChapterStrip');
         strip.innerHTML = '';
         for (let c = 1; c <= book.chapters; c++) {
@@ -1345,7 +1345,7 @@
             strip.appendChild(btn);
         }
 
-        // Render full grid cells
+        // Full grid
         const gridCells = document.getElementById('esvGridCells');
         gridCells.innerHTML = '';
         for (let c = 1; c <= book.chapters; c++) {
@@ -1361,7 +1361,7 @@
             gridCells.appendChild(btn);
         }
 
-        // Center the active pill in the horizontal strip
+        // Auto-center active pill
         setTimeout(() => {
             const activePill = strip.querySelector('.esv-chap-pill.active');
             if (activePill) {
@@ -1369,7 +1369,7 @@
             }
         }, 100);
 
-        // Update active book item in modal
+        // Update modal active state
         document.querySelectorAll('.esv-book-item').forEach(el => {
             if (parseInt(el.dataset.id, 10) === bookId) {
                 el.classList.add('active');
@@ -1380,8 +1380,7 @@
     }
 
     function scrollChapterStrip(delta) {
-        const strip = document.getElementById('esvChapterStrip');
-        strip.scrollBy({ left: delta, behavior: 'smooth' });
+        document.getElementById('esvChapterStrip').scrollBy({ left: delta, behavior: 'smooth' });
     }
 
     let isGridOpen = false;
@@ -1396,7 +1395,6 @@
             grid.style.display = 'block';
             trigger.classList.add('active');
             toggleBtn.classList.add('active');
-            grid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         } else {
             grid.style.display = 'none';
             trigger.classList.remove('active');
@@ -1404,7 +1402,6 @@
         }
     }
 
-    // Quick jump pills
     function loadPassageByName(bookName, chapter) {
         for (const id in booksData) {
             if (booksData[id].name.toLowerCase() === bookName.toLowerCase()) {
@@ -1414,7 +1411,7 @@
         }
     }
 
-    // Navigation buttons (prev/next)
+    // Previous / Next Chapter calculation
     let currentPrev = {% if initial_data.get('prev') %}{{ initial_data.prev | tojson }}{% else %}null{% endif %};
     let currentNext = {% if initial_data.get('next') %}{{ initial_data.next | tojson }}{% else %}null{% endif %};
 
@@ -1434,7 +1431,7 @@
             pBot.disabled = false;
             pStep.disabled = false;
             pTop.innerHTML = `<i class="fas fa-chevron-left"></i> ${prev.book_name} ${prev.chapter}`;
-            pBot.innerHTML = `<i class="fas fa-arrow-left"></i> ${prev.book_name} ${prev.chapter}`;
+            pBot.innerHTML = `<i class="fas fa-chevron-left"></i> ${prev.book_name} ${prev.chapter}`;
             pTop.style.opacity = '1';
             pBot.style.opacity = '1';
         } else {
@@ -1442,9 +1439,9 @@
             pBot.disabled = true;
             pStep.disabled = true;
             pTop.innerHTML = `<i class="fas fa-chevron-left"></i> Previous`;
-            pBot.innerHTML = `<i class="fas fa-arrow-left"></i> Previous`;
-            pTop.style.opacity = '0.4';
-            pBot.style.opacity = '0.4';
+            pBot.innerHTML = `<i class="fas fa-chevron-left"></i> Previous`;
+            pTop.style.opacity = '0.35';
+            pBot.style.opacity = '0.35';
         }
 
         if (next) {
@@ -1452,7 +1449,7 @@
             nBot.disabled = false;
             nStep.disabled = false;
             nTop.innerHTML = `${next.book_name} ${next.chapter} <i class="fas fa-chevron-right"></i>`;
-            nBot.innerHTML = `${next.book_name} ${next.chapter} <i class="fas fa-arrow-right"></i>`;
+            nBot.innerHTML = `${next.book_name} ${next.chapter} <i class="fas fa-chevron-right"></i>`;
             nTop.style.opacity = '1';
             nBot.style.opacity = '1';
         } else {
@@ -1460,9 +1457,9 @@
             nBot.disabled = true;
             nStep.disabled = true;
             nTop.innerHTML = `Next <i class="fas fa-chevron-right"></i>`;
-            nBot.innerHTML = `Next <i class="fas fa-arrow-right"></i>`;
-            nTop.style.opacity = '0.4';
-            nBot.style.opacity = '0.4';
+            nBot.innerHTML = `Next <i class="fas fa-chevron-right"></i>`;
+            nTop.style.opacity = '0.35';
+            nBot.style.opacity = '0.35';
         }
     }
 
@@ -1477,11 +1474,11 @@
     // Load chapter via API
     async function loadChapter(bookId, chapter, targetVerse = null) {
         const spinner = document.getElementById('esvSpinner');
-        const readerCard = document.getElementById('esvReaderCard');
+        const desk = document.getElementById('esvReadingDesk');
         const searchCard = document.getElementById('esvSearchCard');
 
         searchCard.style.display = 'none';
-        readerCard.style.display = 'block';
+        desk.style.display = 'block';
         spinner.style.display = 'block';
 
         try {
@@ -1493,9 +1490,9 @@
             if (!data.success) {
                 document.getElementById('esvPassageBody').innerHTML = `
                     <div style="padding: 2.5rem 0; text-align: center; color: #ef4444;">
-                        <p style="font-weight: 700; font-size: 1.1rem;">${data.error || 'Failed to load chapter.'}</p>
-                        <button class="esv-btn" style="margin-top: 1rem;" onclick="loadChapter(${bookId}, ${chapter})">
-                            <i class="fas fa-redo"></i> Retry
+                        <p style="font-weight: 700;">${data.error || 'Failed to load chapter.'}</p>
+                        <button class="esv-tool-btn" style="margin-top: 1rem;" onclick="loadChapter(${bookId}, ${chapter})">
+                            Retry
                         </button>
                     </div>`;
                 return;
@@ -1507,7 +1504,7 @@
             currentChapter = data.chapter;
             currentTotalChapters = data.book.chapters;
 
-            // Update title & subtitle
+            // Update headers
             document.getElementById('esvDisplayTitle').textContent = `${data.book.name} ${data.chapter}`;
             const testamentText = data.book.testament === 'OT' ? 'Old Testament' : 'New Testament';
             document.getElementById('esvDisplaySubtitle').textContent = `${testamentText} · English Standard Version (ESV) · ${data.verses.length} Verses`;
@@ -1535,31 +1532,31 @@
                 bodyEl.appendChild(span);
             });
 
-            // Update navigation buttons
+            // Update nav buttons
             updateNavButtons(data.prev, data.next);
 
-            // Update browser URL without reload
+            // Update URL without full reload
             const newUrl = `/esv?b=${currentBookId}&c=${currentChapter}` + (targetVerse ? `&v=${targetVerse}` : '');
             window.history.pushState({ bookId: currentBookId, chapter: currentChapter, verse: targetVerse }, '', newUrl);
 
             // Update document title
             document.title = `${data.book.name} ${data.chapter} - ESV Bible - CPC New Haven`;
 
-            // Scroll to target verse or top
+            // Scroll to target verse or top of desk
             if (targetVerse) {
                 setTimeout(() => {
                     const el = document.getElementById(`v-${targetVerse}`);
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 150);
             } else {
-                window.scrollTo({ top: readerCard.offsetTop - 30, behavior: 'smooth' });
+                window.scrollTo({ top: desk.offsetTop - 40, behavior: 'smooth' });
             }
 
         } catch (err) {
             spinner.style.display = 'none';
             document.getElementById('esvPassageBody').innerHTML = `
                 <div style="padding: 2.5rem 0; text-align: center; color: #ef4444;">
-                    <p style="font-weight: 700; font-size: 1.1rem;">Network error connecting to Bible service. Please try again.</p>
+                    <p style="font-weight: 700;">Network error connecting to Bible service. Please try again.</p>
                 </div>`;
         }
     }
@@ -1576,7 +1573,7 @@
 
         const quote = `"${text}" — ${currentBookName} ${currentChapter}:${verseNum} (ESV)`;
         navigator.clipboard.writeText(quote).then(() => {
-            showToast(`Copied ${currentBookName} ${currentChapter}:${verseNum}!`);
+            showToast(`Copied ${currentBookName} ${currentChapter}:${verseNum}`);
         }).catch(() => {
             showToast(`Selected ${currentBookName} ${currentChapter}:${verseNum}`);
         });
@@ -1591,18 +1588,17 @@
         const passage = `${currentBookName} ${currentChapter} (ESV)\n\n${fullText}`;
 
         navigator.clipboard.writeText(passage).then(() => {
-            showToast(`Copied full text of ${currentBookName} ${currentChapter}!`);
+            showToast(`Copied full chapter of ${currentBookName} ${currentChapter}!`);
         });
     }
 
-    // Handle Quick Passage & Keyword Search form submit
+    // Quick Passage & Keyword Search form submit
     async function handlePassageSubmit(e) {
         e.preventDefault();
         const input = document.getElementById('esvPassageInput');
         const query = input.value.trim();
         if (!query) return;
 
-        // Test if query looks like a passage reference (e.g. "John 3", "1 Cor 13", "Rom 8:28")
         const passageRegex = /^((?:[1-3]\s+)?[A-Za-z\s]+?)\s*(\d+)(?:\s*[:.]\s*(\d+))?$/;
         const match = query.match(passageRegex);
 
@@ -1626,20 +1622,19 @@
             }
         }
 
-        // If not a passage format, perform a keyword search
         performTextSearch(query);
     }
 
     // Search verses across ESV
     async function performTextSearch(query) {
         const spinner = document.getElementById('esvSpinner');
-        const readerCard = document.getElementById('esvReaderCard');
+        const container = document.getElementById('esvReaderContainer');
         const searchCard = document.getElementById('esvSearchCard');
         const heading = document.getElementById('esvSearchHeading');
         const meta = document.getElementById('esvSearchMeta');
         const resultsList = document.getElementById('esvSearchResultsList');
 
-        readerCard.style.display = 'none';
+        container.style.display = 'none';
         searchCard.style.display = 'block';
         spinner.style.display = 'block';
         resultsList.innerHTML = '';
@@ -1656,7 +1651,7 @@
                 meta.textContent = `No verses found containing "${query}" in the ESV.`;
                 resultsList.innerHTML = `
                     <div style="padding: 2.5rem 0; text-align: center; opacity: 0.75;">
-                        <p>Try searching for another keyword, root word, or book name.</p>
+                        <p>Try searching for another keyword or passage reference.</p>
                     </div>`;
                 return;
             }
@@ -1672,6 +1667,7 @@
                     <div class="esv-search-text">${item.text}</div>
                 `;
                 div.onclick = () => {
+                    closeSearch();
                     loadChapter(item.book_id, item.chapter, item.verse);
                 };
                 resultsList.appendChild(div);
@@ -1688,10 +1684,10 @@
 
     function closeSearch() {
         document.getElementById('esvSearchCard').style.display = 'none';
-        document.getElementById('esvReaderCard').style.display = 'block';
+        document.getElementById('esvReaderContainer').style.display = 'block';
     }
 
-    // Keyboard navigation (Left/Right arrows for prev/next chapter)
+    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
             return;

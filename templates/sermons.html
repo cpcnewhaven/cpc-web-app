@@ -653,10 +653,152 @@
 }
 
 /* Loading and Empty States */
-.loading, .no-results {
+.no-results {
     text-align: center;
     padding: 3rem;
     color: rgba(255, 255, 255, 0.7);
+}
+
+/* Sermons Search Progress Bar & Skeletons */
+@keyframes sermonProgressGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+@keyframes sermonSkeletonSweep {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.sermon-progress-panel {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+}
+body.theme-blue .sermon-progress-panel {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+.sermon-progress-bar-track {
+    height: 7px;
+    background: rgba(100, 116, 139, 0.14);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 0.5rem;
+}
+body.theme-blue .sermon-progress-bar-track {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.sermon-progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #38bdf8 0%, #3b82f6 50%, #818cf8 100%);
+    background-size: 200% 100%;
+    animation: sermonProgressGlow 2.5s infinite ease-in-out;
+    border-radius: 999px;
+    transition: width 0.18s ease-out;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.sermon-skeletons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.sermon-skeleton-card {
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    border-radius: 14px;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+}
+body.theme-blue .sermon-skeleton-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.sermon-skeleton-shimmer {
+    background: linear-gradient(90deg, rgba(100, 116, 139, 0.08) 25%, rgba(100, 116, 139, 0.18) 50%, rgba(100, 116, 139, 0.08) 75%);
+    background-size: 200% 100%;
+    animation: sermonSkeletonSweep 1.5s infinite ease-in-out;
+    border-radius: 6px;
+}
+body.theme-blue .sermon-skeleton-shimmer {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 75%);
+    background-size: 200% 100%;
+}
+
+/* Scripture Book & Passage Link Pill */
+.sermon-passage-row {
+    margin: 0.35rem 0 0.65rem 0;
+}
+
+.sermon-book-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(2, 132, 199, 0.08);
+    color: #0369a1;
+    border: 1px solid rgba(2, 132, 199, 0.22);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.sermon-book-link:hover {
+    background: #0284c7;
+    color: #ffffff !important;
+    border-color: #0284c7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+.sermon-book-link i {
+    font-size: 0.82rem;
+    opacity: 0.85;
+}
+.sermon-esv-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    background: rgba(2, 132, 199, 0.15);
+    margin-left: 0.25rem;
+}
+.sermon-book-link:hover .sermon-esv-tag {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+body.theme-blue .sermon-book-link {
+    background: rgba(56, 189, 248, 0.12);
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.28);
+}
+body.theme-blue .sermon-book-link:hover {
+    background: #0284c7;
+    color: #ffffff !important;
+    border-color: #38bdf8;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+}
+body.theme-blue .sermon-esv-tag {
+    background: rgba(56, 189, 248, 0.2);
+    color: #e0f2fe;
 }
 
 .results-count {
@@ -1210,9 +1352,45 @@ body.theme-blue .series-group-btn:hover {
             </div>
         </div>
 
-        <!-- Loading State -->
-        <div id="loadingState" class="loading" style="display: none;">
-            <p>Loading sermons...</p>
+        <!-- Loading State with Progress Bar (0 - 100%) -->
+        <div id="loadingState" class="sermon-progress-panel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; font-size: 0.85rem;">
+                <span style="display: flex; align-items: center; gap: 0.55rem; font-weight: 500; color: var(--list-text, #0f172a);">
+                    <i id="sermonProgressIcon" class="fas fa-circle-notch fa-spin" style="color: #0284c7; font-size: 0.9rem;"></i>
+                    <span id="sermonProgressStatus">Connecting to sermon archives…</span>
+                </span>
+                <span id="sermonProgressPercent" style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; color: #0284c7; font-size: 0.9rem; letter-spacing: 0.02em;">0%</span>
+            </div>
+            <div class="sermon-progress-bar-track">
+                <div id="sermonProgressBar" class="sermon-progress-bar-fill"></div>
+            </div>
+            <!-- Skeleton Preview Cards -->
+            <div class="sermon-skeletons-grid">
+                <div class="sermon-skeleton-card">
+                    <div class="sermon-skeleton-shimmer" style="width: 76px; height: 76px; border-radius: 10px; flex-shrink: 0;"></div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
+                        <div class="sermon-skeleton-shimmer" style="width: 35%; height: 14px;"></div>
+                        <div class="sermon-skeleton-shimmer" style="width: 85%; height: 18px;"></div>
+                        <div class="sermon-skeleton-shimmer" style="width: 50%; height: 14px;"></div>
+                    </div>
+                </div>
+                <div class="sermon-skeleton-card">
+                    <div class="sermon-skeleton-shimmer" style="width: 76px; height: 76px; border-radius: 10px; flex-shrink: 0;"></div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
+                        <div class="sermon-skeleton-shimmer" style="width: 35%; height: 14px;"></div>
+                        <div class="sermon-skeleton-shimmer" style="width: 80%; height: 18px;"></div>
+                        <div class="sermon-skeleton-shimmer" style="width: 45%; height: 14px;"></div>
+                    </div>
+                </div>
+                <div class="sermon-skeleton-card">
+                    <div class="sermon-skeleton-shimmer" style="width: 76px; height: 76px; border-radius: 10px; flex-shrink: 0;"></div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
+                        <div class="sermon-skeleton-shimmer" style="width: 35%; height: 14px;"></div>
+                        <div class="sermon-skeleton-shimmer" style="width: 90%; height: 18px;"></div>
+                        <div class="sermon-skeleton-shimmer" style="width: 55%; height: 14px;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Card View -->
@@ -1227,8 +1405,7 @@ body.theme-blue .series-group-btn:hover {
                         <th>Date</th>
                         <th>Title</th>
                         <th>Series</th>
-                        <th>Speaker</th>
-                        <th>Scripture</th>
+                        <th>Scripture / Book</th>
                         <th>Links</th>
                     </tr>
                 </thead>
@@ -1268,6 +1445,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentView = 'card';
     let currentPage = 1;
     let sermonSearchTimer;
+    let sermonProgressTimer = null;
     let filteredSermons = [];
 
     // Initialize sermons
@@ -1539,9 +1717,78 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function updateSermonProgress(pct, statusText, isDone = false, isError = false) {
+        const bar = document.getElementById('sermonProgressBar');
+        const pctEl = document.getElementById('sermonProgressPercent');
+        const statusEl = document.getElementById('sermonProgressStatus');
+        const icon = document.getElementById('sermonProgressIcon');
+        if (!bar || !pctEl) return;
+
+        bar.style.width = pct + '%';
+        pctEl.textContent = pct + '%';
+        if (statusText && statusEl) statusEl.textContent = statusText;
+
+        if (isError) {
+            if (icon) {
+                icon.className = 'fas fa-triangle-exclamation';
+                icon.style.color = '#ef4444';
+            }
+            bar.style.background = '#ef4444';
+            pctEl.style.color = '#ef4444';
+        } else if (isDone) {
+            if (icon) {
+                icon.className = 'fas fa-circle-check';
+                icon.style.color = '#10b981';
+            }
+            bar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+            pctEl.style.color = '#10b981';
+        } else {
+            if (icon) {
+                icon.className = 'fas fa-circle-notch fa-spin';
+                icon.style.color = '#0284c7';
+            }
+            bar.style.background = 'linear-gradient(90deg, #38bdf8 0%, #3b82f6 50%, #818cf8 100%)';
+            pctEl.style.color = '#0284c7';
+        }
+    }
+
     async function searchSermons() {
+        if (sermonProgressTimer) clearInterval(sermonProgressTimer);
+
         const loadingState = document.getElementById('loadingState');
-        loadingState.style.display = 'block';
+        const resultsGrid = document.getElementById('sermonResults');
+        const tableContainer = document.getElementById('sermonTable');
+        const noResults = document.getElementById('noResults');
+
+        if (resultsGrid) resultsGrid.style.display = 'none';
+        if (tableContainer) tableContainer.style.display = 'none';
+        if (noResults) noResults.style.display = 'none';
+        if (loadingState) loadingState.style.display = 'block';
+
+        let targetDesc = 'Sunday sermons archive';
+        if (currentQuery) {
+            targetDesc = `"${currentQuery}"`;
+        } else if (currentSeries) {
+            targetDesc = `"${currentSeries}" series & Scripture`;
+        } else if (currentSpeaker) {
+            targetDesc = `sermons by ${currentSpeaker}`;
+        }
+
+        updateSermonProgress(12, `Connecting to sermon archives…`);
+
+        let progressVal = 12;
+        sermonProgressTimer = setInterval(() => {
+            if (progressVal < 45) {
+                progressVal += 7;
+                updateSermonProgress(progressVal, `Querying 25 years of sermons for ${targetDesc}…`);
+            } else if (progressVal < 75) {
+                progressVal += 5;
+                updateSermonProgress(progressVal, `Filtering Scripture passages & Bible series…`);
+            } else if (progressVal < 90) {
+                progressVal += 3;
+                updateSermonProgress(progressVal, `Formatting media & audio links…`);
+            }
+        }, 75);
 
         try {
             let url = `/api/search?type=sermons&page=${currentPage}&per_page=20`;
@@ -1552,6 +1799,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const response = await fetch(url);
             const data = await response.json();
+
+            clearInterval(sermonProgressTimer);
+            sermonProgressTimer = null;
+
+            const totalCount = data.total || (data.results ? data.results.length : 0);
+            updateSermonProgress(100, `Loaded ${totalCount} sermons for ${targetDesc}`, true);
+            await new Promise(r => setTimeout(r, 180));
 
             if (data.results && data.results.length > 0) {
                 // Client-side guard: at most 1 upcoming badge, only within 14 days
@@ -1591,11 +1845,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (paginationContainer) paginationContainer.style.display = 'none';
             }
         } catch (error) {
+            if (sermonProgressTimer) clearInterval(sermonProgressTimer);
+            sermonProgressTimer = null;
+            updateSermonProgress(100, `Search error. Please try again.`, false, true);
             console.error('Sermon search error:', error);
             document.getElementById('noResults').style.display = 'block';
             document.getElementById('noResults').innerHTML = '<p>Search error. Please try again.</p>';
         } finally {
-            loadingState.style.display = 'none';
+            if (loadingState) loadingState.style.display = 'none';
         }
     }
 
@@ -1679,6 +1936,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const hasYoutube = !!(sermon.youtube_url && (sermon.youtube_url.includes('youtube') || sermon.youtube_url.includes('youtu.be')));
             const hasApple = !!(sermon.apple_podcasts_url && sermon.apple_podcasts_url.includes('apple'));
 
+            const scripturePassage = (sermon.scripture || '').trim();
+            const bookName = (sermon.book || (scripturePassage ? scripturePassage.split(/\s+\d/)[0] : '') || rawSeries || 'Scripture').trim();
+            const displayRef = scripturePassage || bookName;
+            const esvUrl = sermon.esv_url || `/esv?p=${encodeURIComponent(displayRef)}`;
+
             card.innerHTML = `
                 ${thumbnailSrc ? `
                     <div class="sermon-thumbnail">
@@ -1694,8 +1956,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="sermon-date-chip"><i class="far fa-calendar" aria-hidden="true"></i>${formatDate(sermon.date)}</span>
                     </div>
                     <h3 class="sermon-title">${sermon.title}</h3>
-                    <p class="sermon-meta"><span class="sermon-author">${sermon.speaker || 'CPC New Haven'}</span></p>
-                    ${sermon.scripture ? `<p class="sermon-scripture"><i class="fas fa-book-open" aria-hidden="true"></i>${sermon.scripture}</p>` : ''}
+                    <div class="sermon-passage-row">
+                        ${displayRef ? `
+                            <a href="${esc(esvUrl)}" class="sermon-book-link" title="Read ${esc(displayRef)} in ESV Bible" target="_blank">
+                                <i class="fas fa-book-bible" aria-hidden="true"></i>
+                                <span class="sermon-passage-text">${esc(displayRef)}</span>
+                                <span class="sermon-esv-tag">ESV &rarr;</span>
+                            </a>
+                        ` : ''}
+                    </div>
                     ${isUpcoming ? `
                         <span class="sermon-links">
                             <a href="/live" class="sermon-action sermon-action-primary">
@@ -1774,6 +2043,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const seriesLabel = rawSeries || '-';
             const isActs = /acts/i.test(seriesLabel);
             const isCurrent = sermon.is_current_series || isActs;
+            const scripturePassage = (sermon.scripture || '').trim();
+            const bookName = (sermon.book || (scripturePassage ? scripturePassage.split(/\s+\d/)[0] : '') || rawSeries || 'Scripture').trim();
+            const displayRef = scripturePassage || bookName;
+            const esvUrl = sermon.esv_url || `/esv?p=${encodeURIComponent(displayRef)}`;
 
             tr.innerHTML = `
                 <td>${formatDate(sermon.date)}</td>
@@ -1786,8 +2059,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         </button>
                     ` : '<span style="color:#8898aa;">-</span>'}
                 </td>
-                <td>${sermon.speaker || 'Unknown'}</td>
-                <td>${sermon.scripture || '-'}</td>
+                <td>
+                    ${displayRef ? `
+                        <a href="${esc(esvUrl)}" class="sermon-book-link" style="padding: 0.2rem 0.55rem; font-size: 0.78rem;" title="Read ${esc(displayRef)} in ESV Bible" target="_blank">
+                            <i class="fas fa-book-bible"></i> ${esc(displayRef)} <span class="sermon-esv-tag">ESV</span>
+                        </a>
+                    ` : '<span style="color:#8898aa;">-</span>'}
+                </td>
                 <td><div class="sermon-links">
                     ${isUpcoming ? `
                         <span style="color: rgba(255, 193, 7, 0.95); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">

@@ -825,6 +825,21 @@ SUBPAGE_CONFIGS = {
             ('previous_teaching_series_title', 'Previous Teaching Series Title', 'Luke', 'select_sermon_series'),
             ('current_teaching_series_subtitle', 'Current Teaching Series Subtitle', 'The Sunday Sermon Podcast', 'text'),
         ]
+    },
+    'give': {
+        'title': 'Give Page',
+        'url': '/give',
+        'icon': 'volunteer_activism',
+        'color': '#0052a3',
+        'keys': [
+            ('give_hero_title', 'Hero Title', 'Giving at CPC'),
+            ('give_hero_subtitle', 'Hero Subtitle', 'Supporting the ministry and mission of Christ Presbyterian Church in Greater New Haven and beyond.'),
+            ('give_scripture_quote', 'Scripture Verse', 'Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.'),
+            ('give_scripture_ref', 'Scripture Reference', '2 Corinthians 9:7'),
+            ('give_online_url', 'Online Giving URL', 'https://secure.acceptiva.com/?cst=3bc0a4'),
+            ('give_text_number', 'Text-to-Give Phone', '860-467-0010'),
+            ('give_text_keyword', 'Text-to-Give Keyword', 'GIVE'),
+        ]
     }
 }
 
@@ -1245,7 +1260,7 @@ def plan_a_visit():
 
 @app.route('/give')
 def give():
-    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    site_content = get_site_content()
     return render_template('give.html', site_content=site_content)
 
 # Liquid glass demo moved to possiblyDELETE folder
@@ -1262,6 +1277,36 @@ def live():
 def resources():
     site_content = {r.key: r.value for r in SiteContent.query.all()}
     return render_template('resources.html', site_content=site_content)
+
+@app.route('/resources/prayer')
+@app.route('/resources/prayer-guide')
+def resources_prayer():
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('resources/prayer.html', site_content=site_content)
+
+@app.route('/resources/study-guides')
+@app.route('/resources/bible-study')
+def resources_study_guides():
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('resources/study_guides.html', site_content=site_content)
+
+@app.route('/resources/volunteer')
+@app.route('/resources/ministry')
+def resources_volunteer():
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('resources/volunteer.html', site_content=site_content)
+
+@app.route('/resources/theology')
+@app.route('/resources/theological-resources')
+def resources_theology():
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('resources/theology.html', site_content=site_content)
+
+@app.route('/resources/sunday-school-curriculum')
+@app.route('/resources/children')
+def resources_sunday_school_curriculum():
+    site_content = {r.key: r.value for r in SiteContent.query.all()}
+    return render_template('resources/sunday_school_curriculum.html', site_content=site_content)
 
 @app.route('/pastors-book')
 def pastors_book():

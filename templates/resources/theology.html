@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block title %}Theological Resources & Reading — CPC New Haven{% endblock %}
+{% block meta_description %}Reformed confessions, Westminster Standards, ecumenical creeds, and curated theological reading lists from CPC New Haven.{% endblock %}
+{% block og_title %}Theological Resources & Reading — CPC New Haven{% endblock %}
+{% block og_description %}Explore Reformed doctrinal standards, the Westminster Confession, church history, and pastoral reading recommendations.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/resources/theology{% endblock %}
+
+{% block head %}
+<style>
+.theo-page {
+    --t-accent: #0052a3;
+    --t-heading: #0a2544;
+    --t-text: #1d2e42;
+    --t-muted: #52667d;
+    --t-border: #dce5ef;
+    --t-card-bg: #ffffff;
+    --t-hero-bg: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%);
+    padding: 0.5rem 0 3.5rem;
+}
+
+body.theme-blue .theo-page {
+    --t-accent: #60a5fa;
+    --t-heading: #ffffff;
+    --t-text: #f1f6ff;
+    --t-muted: #bad0e6;
+    --t-border: #34506c;
+    --t-card-bg: #102c48;
+    --t-hero-bg: linear-gradient(135deg, #07192d 0%, #0d3257 60%, #0a223c 100%);
+}
+
+.theo-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.theo-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.theo-breadcrumb a {
+    color: var(--t-accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.theo-hero {
+    background: var(--t-hero-bg);
+    border-radius: 18px;
+    padding: 3rem 1.75rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 16px 36px rgba(0, 35, 75, 0.22);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+.theo-hero-tag {
+    display: inline-block;
+    padding: 0.28rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+.theo-hero h1 {
+    font-size: clamp(2rem, 4.5vw, 2.9rem);
+    font-weight: 800;
+    color: #ffffff !important;
+    margin: 0 0 0.85rem 0;
+    line-height: 1.15;
+}
+.theo-hero p {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.theo-nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.25rem;
+}
+.theo-nav-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--t-card-bg);
+    border: 1px solid var(--t-border);
+    color: var(--t-text);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.theo-nav-pill:hover {
+    border-color: var(--t-accent);
+    color: var(--t-accent);
+    transform: translateY(-1px);
+}
+
+.theo-card {
+    background: var(--t-card-bg);
+    border: 1px solid var(--t-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+.theo-card h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--t-heading) !important;
+    margin: 0 0 0.6rem 0;
+}
+.theo-subtitle {
+    font-size: 0.95rem;
+    color: var(--t-muted);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
+}
+
+/* Standards Grid */
+.standards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+.standard-item {
+    background: #f8fafc;
+    border: 1px solid var(--t-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+body.theme-blue .standard-item { background: #173653; }
+.standard-year {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--t-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+}
+.standard-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--t-heading);
+    margin-bottom: 0.5rem;
+}
+.standard-desc {
+    font-size: 0.88rem;
+    color: var(--t-muted);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+/* Books Grid */
+.books-shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+.book-card {
+    background: #f8fafc;
+    border: 1px solid var(--t-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+body.theme-blue .book-card { background: #173653; }
+.book-category {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--t-accent);
+    margin-bottom: 0.25rem;
+}
+.book-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--t-heading);
+    margin-bottom: 0.2rem;
+}
+.book-author {
+    font-size: 0.85rem;
+    color: var(--t-text);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.book-note {
+    font-size: 0.82rem;
+    color: var(--t-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="theo-page">
+    <div class="theo-container">
+        <div class="theo-breadcrumb">
+            <a href="{{ url_for('resources') }}">&larr; Back to Spiritual Resources Hub</a>
+        </div>
+
+        <header class="theo-hero">
+            <span class="theo-hero-tag">Spiritual Resources</span>
+            <h1>Theological Resources & Reading</h1>
+            <p>“Holding fast the faithful word which is in accordance with the teaching, so that he will be able both to exhort in sound doctrine and to refute those who contradict.” — Titus 1:9</p>
+        </header>
+
+        <nav class="theo-nav-pills" aria-label="Page navigation">
+            <a href="#confessions" class="theo-nav-pill">Westminster Confession & Creeds</a>
+            <a href="#reading-library" class="theo-nav-pill">Recommended Reading Library</a>
+            <a href="#podcasts-audio" class="theo-nav-pill">Confessional Audio & Seminars</a>
+            <a href="#polity" class="theo-nav-pill">Presbyterian Polity & Leadership</a>
+        </nav>
+
+        <!-- Section 1: Historic Confessions & Creeds -->
+        <section class="theo-card" id="confessions">
+            <h2>The Westminster Standards & Ecumenical Creeds</h2>
+            <p class="theo-subtitle">As a congregation in the Presbyterian Church in America (PCA), our officers subscribe to the historic Westminster Standards as containing the system of doctrine taught in Holy Scripture.</p>
+
+            <div class="standards-grid">
+                <div class="standard-item">
+                    <div>
+                        <div class="standard-year">Historical Landmark • 1647</div>
+                        <h3 class="standard-title">The Westminster Confession of Faith</h3>
+                        <p class="standard-desc">Thirty-three robust chapters summarizing biblical doctrine on Holy Scripture, the Trinity, God's Eternal Decree, Creation, Providence, the Fall, the Covenant of Grace, Christ the Mediator, Justification, Sanctification, the Church, and the Sacraments.</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('what_we_believe') }}" style="display:inline-block; font-size:0.84rem; font-weight:700; color:var(--t-accent); text-decoration:none;">Read doctrinal summary &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="standard-item">
+                    <div>
+                        <div class="standard-year">Catechetical Instruction • 1647</div>
+                        <h3 class="standard-title">The Shorter Catechism</h3>
+                        <p class="standard-desc">107 concise questions and answers designed for educating families, youth, and new believers. Famous for Question 1: <em>“What is the chief end of man? Man's chief end is to glorify God, and to enjoy him forever.”</em></p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('resources') }}#education" style="display:inline-block; font-size:0.84rem; font-weight:700; color:var(--t-accent); text-decoration:none;">Explore catechism resources &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="standard-item">
+                    <div>
+                        <div class="standard-year">Historic Orthodoxy • 4th–5th Century</div>
+                        <h3 class="standard-title">Apostles' & Nicene Creeds</h3>
+                        <p class="standard-desc">Universal ecumenical summaries uniting orthodox Christians across centuries, confessing one God in three Persons, the true deity and humanity of Jesus Christ, and the one holy catholic and apostolic Church.</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('what_we_believe') }}" style="display:inline-block; font-size:0.84rem; font-weight:700; color:var(--t-accent); text-decoration:none;">View creedal texts &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Recommended Reading Library -->
+        <section class="theo-card" id="reading-library">
+            <h2>Recommended Theological Reading Library</h2>
+            <p class="theo-subtitle">Carefully curated books by our pastors to ground your mind in truth and ignite your heart with affection for Christ.</p>
+
+            <div class="books-shelf">
+                <div class="book-card">
+                    <div class="book-category">Christian Community & Life</div>
+                    <div class="book-title">Life Together</div>
+                    <div class="book-author">Dietrich Bonhoeffer</div>
+                    <p class="book-note">Bonhoeffer's classic portrait of Christian fellowship rooted in the Word, mutual ministry, and shared spiritual discipline.</p>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-category">Knowing God & Theology</div>
+                    <div class="book-title">Knowing God</div>
+                    <div class="book-author">J. I. Packer</div>
+                    <p class="book-note">A modern masterwork on the character of God, the majesty of grace, and how knowing about God differs from truly knowing Him.</p>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-category">The Gospel & Culture</div>
+                    <div class="book-title">The Reason for God</div>
+                    <div class="book-author">Timothy Keller</div>
+                    <p class="book-note">An eloquent intellectual and spiritual engagement addressing common doubts and objections to Christian faith with grace.</p>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-category">Systematic Doctrine</div>
+                    <div class="book-title">The Wonderful Works of God</div>
+                    <div class="book-author">Herman Bavinck</div>
+                    <p class="book-note">The single-volume summary of Reformed dogmatics — deeply biblical, trinitarian, and doxological.</p>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-category">Spiritual Growth</div>
+                    <div class="book-title">The Holiness of God</div>
+                    <div class="book-author">R. C. Sproul</div>
+                    <p class="book-note">An awe-inspiring meditation on Isaiah 6, the awe of the holy, and the transforming grace of the cross.</p>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-category">Classic Devotion</div>
+                    <div class="book-title">Mere Christianity</div>
+                    <div class="book-author">C. S. Lewis</div>
+                    <p class="book-note">Lewis's unforgettable radio broadcast defense of common Christian belief, morality, and hope.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Audio Seminars & Podcasts -->
+        <section class="theo-card" id="podcasts-audio">
+            <h2>Theological Seminars & Podcasts</h2>
+            <p class="theo-subtitle">Listen to CPC's podcast channels exploring confessional doctrine, biblical interpretation, and theological questions.</p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:1rem;">
+                <a href="{{ url_for('podcasts') }}" style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.75rem 1.4rem; background:#0052a3; color:#fff; border-radius:10px; font-weight:700; text-decoration:none;">
+                    Explore CPC Podcast Channels &rarr;
+                </a>
+                <a href="{{ url_for('teaching_series') }}" style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.75rem 1.4rem; background:var(--t-card-bg); border:1px solid var(--t-border); color:var(--t-text); border-radius:10px; font-weight:600; text-decoration:none;">
+                    Adult Sunday Studies Library
+                </a>
+            </div>
+        </section>
+
+        <!-- Section 4: Presbyterian Polity & Leadership -->
+        <section class="theo-card" id="polity">
+            <h2>Presbyterian Church Government & Leadership</h2>
+            <p class="theo-subtitle">We believe the biblical model of church leadership is connectional and collegial — governed by biblically qualified elders and served by deacons.</p>
+            <p style="color:var(--t-muted); font-size:0.92rem; line-height:1.7; margin:0;">
+                The CPC Session (ruling elders and teaching elders/pastors) oversees the spiritual health, doctrine, and worship of the flock, while the Diaconate leads our ministries of mercy, hospitality, and stewardship. Training and reading materials are provided for prospective officers and ministry leaders throughout the church year.
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}

@@ -82,7 +82,9 @@
     --transition-slow: 0.5s ease;
 
     /* Typography */
-    --font-primary: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --font-display: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --font-serif: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
 
     /* Left sidebar redesign tokens */
     --sidebar-panel-bg: rgba(255, 255, 255, 0.07);
@@ -1965,7 +1967,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Manrope", var(--font-primary);
+    font-family: var(--font-display);
     line-height: 95%;
     margin: 0;
     color: var(--heading-color);
@@ -3094,7 +3096,7 @@ body.theme-white .hero-actions .visit-button--secondary:hover {
 }
 
 .pull-quote .quote-text {
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-serif);
     font-size: 1.5rem;
     line-height: 1.6;
     color: #2b2a27;
@@ -3398,7 +3400,7 @@ tr:hover {
 
 .photo-info h3 {
     color: #fff;
-    font-family: 'Manrope', sans-serif;
+    font-family: var(--font-display);
     font-size: 0.82rem;
     font-weight: 700;
     margin: 0 0 0.2rem;
@@ -3540,7 +3542,7 @@ body.theme-white .yearbook-year {
 }
 
 .yearbook-year-title {
-    font-family: 'Libre Baskerville', serif;
+    font-family: var(--font-serif);
     font-size: 2.1rem;
     line-height: 1.1;
     margin: 0 0 1.1rem 0;
@@ -3559,7 +3561,7 @@ body.theme-white .yearbook-year-title {
 }
 
 .yearbook-month-title {
-    font-family: 'Manrope', sans-serif;
+    font-family: var(--font-display);
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -6008,7 +6010,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
     background: rgba(255, 255, 255, .08);
     border-radius: 9px;
     color: #fff;
-    font: 400 14px/1 'Barlow', sans-serif; outline: none;
+    font: 400 14px/1 'Poppins', sans-serif; outline: none;
     transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
     text-align: center;
 }
@@ -6044,7 +6046,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 }
 .dash-live__eyebrow {
     display: flex; align-items: center; gap: 7px;
-    font: 800 10px/1 'Barlow', sans-serif; letter-spacing: .18em;
+    font: 800 10px/1 'Poppins', sans-serif; letter-spacing: .18em;
     text-transform: uppercase; color: rgba(255, 255, 255, .9);
 }
 .dash-live__dot {
@@ -6055,15 +6057,15 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 .dash-live.is-sunday .dash-live__dot {
     background: rgba(90, 200, 250, 0.92);
 }
-.dash-live__title { display: block; margin-top: 14px; font: 800 22px/1 'Barlow', sans-serif; color: #fff; }
-.dash-live__sub   { display: block; margin-top: 6px; font: 500 12.5px/1 'Barlow', sans-serif; color: rgba(255, 255, 255, .85); }
+.dash-live__title { display: block; margin-top: 14px; font: 800 22px/1 'Poppins', sans-serif; color: #fff; }
+.dash-live__sub   { display: block; margin-top: 6px; font: 500 12.5px/1 'Poppins', sans-serif; color: rgba(255, 255, 255, .85); }
 .dash-live__play  { position: absolute; right: 16px; bottom: 16px; font-size: 16px; color: rgba(255, 255, 255, .9); }
 
 /* ---- shared: section heading (brighter for contrast) ---- */
 .dash-block { display: block; }
 .dash-block + .dash-block { margin-top: 18px; }
 .dash-heading {
-    margin: 0 0 4px; font: 800 11px/1 'Barlow', sans-serif;
+    margin: 0 0 4px; font: 800 11px/1 'Poppins', sans-serif;
     letter-spacing: .16em; text-transform: uppercase; color: #c3daf7;
 }
 
@@ -6076,7 +6078,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 }
 .dash-row--last { border-bottom: none; }
 .dash-row__icon  { width: 18px; text-align: center; font-size: 13px; color: var(--surface-accent, #0066cc); }
-.dash-row__label { color: #fff; font: 600 14px/1 'Barlow', sans-serif; }
+.dash-row__label { color: #fff; font: 600 14px/1 'Poppins', sans-serif; }
 .dash-row__chev  { margin-left: auto; font-size: 11px; color: rgba(255, 255, 255, .35); }
 .dash-row:hover  { padding-left: 6px; }
 .dash-row:hover .dash-row__chev { color: rgba(255, 255, 255, .7); }
@@ -6095,8 +6097,8 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 }
 .dash-item:hover .dash-item__chip { background: rgba(0, 102, 204, .28); }
 .dash-item__text  { display: flex; flex-direction: column; }
-.dash-item__title { color: #fff; font: 600 13.5px/1.1 'Barlow', sans-serif; }
-.dash-item__sub   { margin-top: 3px; color: rgba(255, 255, 255, .6); font: 400 11.5px/1 'Barlow', sans-serif; }
+.dash-item__title { color: #fff; font: 600 13.5px/1.1 'Poppins', sans-serif; }
+.dash-item__sub   { margin-top: 3px; color: rgba(255, 255, 255, .6); font: 400 11.5px/1 'Poppins', sans-serif; }
 
 /* ---- 5. Give CTA ---- */
 .dash-give {
@@ -6104,7 +6106,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
     padding: 14px 16px; border-radius: 11px; text-decoration: none;
     background: rgba(92, 172, 255, .18); color: #eaf5ff;
     border: 1px solid rgba(155, 208, 255, .42);
-    font: 700 14px/1 'Barlow', sans-serif;
+    font: 700 14px/1 'Poppins', sans-serif;
     transition: background .15s ease, border-color .15s ease, transform .15s ease;
     margin-top: 18px;
 }
@@ -6160,7 +6162,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 }
 
 .dash-theme-toggle__label {
-    font: 700 14px/1 'Barlow', sans-serif;
+    font: 700 14px/1 'Poppins', sans-serif;
 }
 
 .dash-theme-toggle--footer .dash-theme-toggle__copy {
@@ -6177,7 +6179,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
 
 .dash-theme-toggle__meta {
     color: rgba(255, 255, 255, .6);
-    font: 600 11px/1 'Barlow', sans-serif;
+    font: 600 11px/1 'Poppins', sans-serif;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
@@ -6245,7 +6247,7 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
     border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 14px;
     display: flex; align-items: center; justify-content: space-between;
 }
-.dash-follow__label { font: 600 12px/1 'Barlow', sans-serif; color: rgba(255, 255, 255, .6); letter-spacing: .02em; }
+.dash-follow__label { font: 600 12px/1 'Poppins', sans-serif; color: rgba(255, 255, 255, .6); letter-spacing: .02em; }
 .dash-follow__icons { display: flex; gap: 9px; }
 .dash-follow__btn {
     width: 32px; height: 32px; border-radius: 9px;
@@ -6329,7 +6331,7 @@ body.theme-white .dashboard-right .dash-block + .dash-block {
 
 .dashboard-right .dash-heading {
     margin: 0 0 6px 0;
-    font: 800 10.5px/1 'Barlow', sans-serif;
+    font: 800 10.5px/1 'Poppins', sans-serif;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #c3daf7;
@@ -6341,7 +6343,7 @@ body.theme-white .dashboard-right .dash-heading {
 
 /* Titles and subtitles */
 .dash-r-title {
-    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 1.05rem;
     font-weight: 700;
     line-height: 1.25;
@@ -6455,7 +6457,7 @@ body.theme-white .dash-r-pill {
 }
 
 .dash-r-glance__time {
-    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     line-height: 1.15;
@@ -6469,7 +6471,7 @@ body.theme-white .dash-r-glance__time {
 }
 
 .dash-r-glance__temp {
-    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 1.05rem;
     font-weight: 700;
     line-height: 1.15;
@@ -6537,7 +6539,7 @@ body.theme-white .dash-r-login {
 }
 
 .dash-r-service__time {
-    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 0.95rem;
     font-weight: 700;
     color: #ffffff;

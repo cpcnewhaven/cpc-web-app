@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}Sunday School Curriculum & Family Discipleship — CPC New Haven{% endblock %}
+{% block meta_description %}Children's Sunday school curriculum, First Catechism questions, nursery details, and family worship tools from CPC New Haven.{% endblock %}
+{% block og_title %}Sunday School Curriculum & Family Discipleship — CPC New Haven{% endblock %}
+{% block og_description %}Equipping parents and teachers to nurture covenant children in the Gospel from nursery through high school.{% endblock %}
+{% block canonical %}https://cpcnewhaven.org/resources/sunday-school-curriculum{% endblock %}
+
+{% block head %}
+<style>
+.kids-page {
+    --k-accent: #0052a3;
+    --k-heading: #0a2544;
+    --k-text: #1d2e42;
+    --k-muted: #52667d;
+    --k-border: #dce5ef;
+    --k-card-bg: #ffffff;
+    --k-hero-bg: linear-gradient(135deg, #003366 0%, #004d99 55%, #002244 100%);
+    padding: 0.5rem 0 3.5rem;
+}
+
+body.theme-blue .kids-page {
+    --k-accent: #60a5fa;
+    --k-heading: #ffffff;
+    --k-text: #f1f6ff;
+    --k-muted: #bad0e6;
+    --k-border: #34506c;
+    --k-card-bg: #102c48;
+    --k-hero-bg: linear-gradient(135deg, #07192d 0%, #0d3257 60%, #0a223c 100%);
+}
+
+.kids-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.kids-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.kids-breadcrumb a {
+    color: var(--k-accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.kids-hero {
+    background: var(--k-hero-bg);
+    border-radius: 18px;
+    padding: 3rem 1.75rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 16px 36px rgba(0, 35, 75, 0.22);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+.kids-hero-tag {
+    display: inline-block;
+    padding: 0.28rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+.kids-hero h1 {
+    font-size: clamp(2rem, 4.5vw, 2.9rem);
+    font-weight: 800;
+    color: #ffffff !important;
+    margin: 0 0 0.85rem 0;
+    line-height: 1.15;
+}
+.kids-hero p {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.kids-nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.25rem;
+}
+.kids-nav-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--k-card-bg);
+    border: 1px solid var(--k-border);
+    color: var(--k-text);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.kids-nav-pill:hover {
+    border-color: var(--k-accent);
+    color: var(--k-accent);
+    transform: translateY(-1px);
+}
+
+.kids-card {
+    background: var(--k-card-bg);
+    border: 1px solid var(--k-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+.kids-card h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--k-heading) !important;
+    margin: 0 0 0.6rem 0;
+}
+.kids-subtitle {
+    font-size: 0.95rem;
+    color: var(--k-muted);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
+}
+
+/* Classes Grid */
+.classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+.class-item {
+    background: #f8fafc;
+    border: 1px solid var(--k-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+}
+body.theme-blue .class-item { background: #173653; }
+.class-age {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--k-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+}
+.class-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--k-heading);
+    margin-bottom: 0.5rem;
+}
+.class-desc {
+    font-size: 0.88rem;
+    color: var(--k-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Catechism Accordion / Cards */
+.catechism-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+@media (max-width: 720px) { .catechism-grid { grid-template-columns: 1fr; } }
+.cat-item {
+    background: #f8fafc;
+    border: 1px solid var(--k-border);
+    border-radius: 12px;
+    padding: 1.15rem;
+}
+body.theme-blue .cat-item { background: #173653; }
+.cat-q {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--k-heading);
+    margin-bottom: 0.35rem;
+}
+.cat-a {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--k-accent);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Family Worship Box */
+.fw-box {
+    background: linear-gradient(135deg, #f4f8fc 0%, #eaf2fb 100%);
+    border-left: 5px solid #0052a3;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+body.theme-blue .fw-box {
+    background: #173653;
+    border-left-color: #60a5fa;
+}
+.fw-step {
+    margin-bottom: 1rem;
+}
+.fw-step:last-child { margin-bottom: 0; }
+.fw-step-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--k-heading);
+    margin-bottom: 0.2rem;
+}
+.fw-step-text {
+    font-size: 0.88rem;
+    color: var(--k-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="kids-page">
+    <div class="kids-container">
+        <div class="kids-breadcrumb">
+            <a href="{{ url_for('resources') }}">&larr; Back to Spiritual Resources Hub</a>
+        </div>
+
+        <header class="kids-hero">
+            <span class="kids-hero-tag">Spiritual Resources</span>
+            <h1>Sunday School & Family Discipleship</h1>
+            <p>“Hear, O Israel: The Lord our God, the Lord is one. You shall love the Lord your God with all your heart... And these words that I command you today shall be on your heart. You shall teach them diligently to your children.” — Deuteronomy 6:4-7</p>
+        </header>
+
+        <nav class="kids-nav-pills" aria-label="Page navigation">
+            <a href="#classes" class="kids-nav-pill">Sunday School Age Groups</a>
+            <a href="#curriculum" class="kids-nav-pill">Curriculum Scope</a>
+            <a href="#first-catechism" class="kids-nav-pill">First Catechism for Kids</a>
+            <a href="#family-worship" class="kids-nav-pill">15-Minute Family Worship</a>
+        </nav>
+
+        <!-- Classes -->
+        <section class="kids-card" id="classes">
+            <h2>Sunday School Classes & Age Groups</h2>
+            <p class="kids-subtitle">Sundays at 9:30 AM (during the academic year) prior to our 10:30 AM worship service. Clean, safe classrooms with vetted volunteer teachers.</p>
+
+            <div class="classes-grid">
+                <div class="class-item">
+                    <div class="class-age">Ages 0 – 2 Years</div>
+                    <h3 class="class-title">Nursery</h3>
+                    <p class="class-desc">Loving care in a clean nursery equipped with age-appropriate toys, gentle volunteers, and parent-pager support during both Sunday school and worship.</p>
+                </div>
+
+                <div class="class-item">
+                    <div class="class-age">Ages 3 – 5 Years</div>
+                    <h3 class="class-title">Preschool & Kindergarten</h3>
+                    <p class="class-desc">Introductory stories from the Old and New Testaments, singing Scripture songs, simple catechism memory, and creative crafts highlighting God's faithfulness.</p>
+                </div>
+
+                <div class="class-item">
+                    <div class="class-age">Grades 1 – 3</div>
+                    <h3 class="class-title">Early Elementary</h3>
+                    <p class="class-desc">Exploring the unfolding story of redemption in Jesus through <em>Show Me Jesus</em> materials, learning the books of the Bible, and memorizing Scripture verses.</p>
+                </div>
+
+                <div class="class-item">
+                    <div class="class-age">Grades 4 – 6</div>
+                    <h3 class="class-title">Upper Elementary</h3>
+                    <p class="class-desc">Deeper study of biblical narrative, understanding the covenants, reading the Psalms and Proverbs, and memorizing the Westminster Shorter Catechism.</p>
+                </div>
+
+                <div class="class-item">
+                    <div class="class-age">Grades 7 – 12</div>
+                    <h3 class="class-title">Youth Sunday School</h3>
+                    <p class="class-desc">Engaging apologetics, Christian worldview, theological foundations, and adolescent discipleship led by pastoral staff and youth leaders.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Curriculum -->
+        <section class="kids-card" id="curriculum">
+            <h2>Curriculum Scope: Gospel-Centered Redemptive Story</h2>
+            <p class="kids-subtitle">We partner with <strong>Great Commission Publications (GCP)</strong> to ensure that every lesson points children toward Jesus Christ as the Promised Savior, rather than merely moralistic stories.</p>
+            <p style="color:var(--k-muted); font-size:0.92rem; line-height:1.7; margin:0;">
+                The curriculum is designed on a multi-year cycle covering both Old and New Testaments, building biblical literacy, theological coherence, and gospel assurance in young hearts.
+            </p>
+        </section>
+
+        <!-- First Catechism -->
+        <section class="kids-card" id="first-catechism">
+            <h2>The First Catechism: Foundations for Young Hearts</h2>
+            <p class="kids-subtitle">A classic catechetical tool simplified for children to instill foundational Christian truth through questions and answers.</p>
+
+            <div class="catechism-grid">
+                <div class="cat-item">
+                    <div class="cat-q">Q1. Who made you?</div>
+                    <p class="cat-a">A: God.</p>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-q">Q2. What else did God make?</div>
+                    <p class="cat-a">A: God made all things.</p>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-q">Q3. Why did God make you and all things?</div>
+                    <p class="cat-a">A: For His own glory.</p>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-q">Q4. How can you glorify God?</div>
+                    <p class="cat-a">A: By loving Him and doing what He commands.</p>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-q">Q5. Why ought you to glorify God?</div>
+                    <p class="cat-a">A: Because He made me and takes care of me.</p>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-q">Q6. Are there more gods than one?</div>
+                    <p class="cat-a">A: There is only one God.</p>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-q">Q7. In how many persons does this one God exist?</div>
+                    <p class="cat-a">A: In three persons: the Father, the Son, and the Holy Spirit.</p>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-q">Q8. Who is the Redeemer of God's elect?</div>
+                    <p class="cat-a">A: The only Redeemer is the Lord Jesus Christ.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Family Worship -->
+        <section class="kids-card" id="family-worship">
+            <h2>A Simple 15-Minute Family Worship Rhythm</h2>
+            <p class="kids-subtitle">Family worship does not need to be intimidating or complicated. A simple three-part rhythm around the dinner table or before bed:</p>
+
+            <div class="fw-box">
+                <div class="fw-step">
+                    <div class="fw-step-title">1. Read (5 Minutes)</div>
+                    <p class="fw-step-text">Read a short chapter or passage from Scripture (or the Jesus Storybook Bible for younger kids). Ask one simple question about what was read.</p>
+                </div>
+                <div class="fw-step">
+                    <div class="fw-step-title">2. Pray (5 Minutes)</div>
+                    <p class="fw-step-text">Pray together as a family. Give thanks for the day, pray for your church, teachers, friends, and family needs. Let children pray brief sentences.</p>
+                </div>
+                <div class="fw-step">
+                    <div class="fw-step-title">3. Sing or Catechize (5 Minutes)</div>
+                    <p class="fw-step-text">Sing a verse of a hymn (like <em>Amazing Grace</em> or the Doxology) or practice 2–3 questions from the First Catechism together.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

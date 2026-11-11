@@ -11,7 +11,7 @@
     padding: 12px 17px;
     background: #0052a3;
     color: #ffffff;
-    font: 700 14px Manrope, system-ui, sans-serif;
+    font: 700 14px 'Poppins', system-ui, sans-serif;
     box-shadow: 0 8px 24px rgba(0, 31, 76, 0.34), 0 0 0 1px rgba(0, 82, 163, 0.22);
     cursor: pointer;
     opacity: 1;
@@ -57,7 +57,7 @@
     border: 1px solid #b8cce0;
     border-radius: 18px;
     box-shadow: 0 18px 55px rgba(23, 56, 94, 0.35);
-    font-family: Manrope, system-ui, sans-serif;
+    font-family: 'Poppins', system-ui, sans-serif;
     box-sizing: border-box;
     max-height: calc(100dvh - 132px);
     overflow-y: auto;
@@ -100,7 +100,7 @@
 .cpc-feedback-panel h2 {
     margin: 0;
     color: #17385e;
-    font: 700 25px 'Libre Baskerville', Georgia, serif;
+    font: 700 25px 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
 }
 
 .cpc-feedback-prompt {
@@ -124,7 +124,7 @@
     border-radius: 10px;
     background: #f7faff;
     color: #122b49;
-    font: 600 13px Manrope, system-ui, sans-serif;
+    font: 600 13px 'Poppins', system-ui, sans-serif;
 }
 
 .cpc-feedback-device {
@@ -216,7 +216,7 @@
     border-radius: 10px;
     background: #0052a3;
     color: #fff;
-    font: 800 14px Manrope, system-ui, sans-serif;
+    font: 800 14px 'Poppins', system-ui, sans-serif;
     cursor: pointer;
 }
 

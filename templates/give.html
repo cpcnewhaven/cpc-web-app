@@ -1,187 +1,984 @@
 {% extends "base.html" %}
 
 {% block title %}Give - CPC New Haven{% endblock %}
-{% block meta_description %}Support the ministry of Christ Presbyterian Church in New Haven, CT through your generous giving.{% endblock %}
+{% block meta_description %}Support the ministry of Christ Presbyterian Church in New Haven, CT through your generous giving. Safe, secure online giving, text-to-give, and more.{% endblock %}
 {% block og_title %}Give — CPC New Haven{% endblock %}
 {% block og_description %}Support the ministry of Christ Presbyterian Church in New Haven, CT through your generous giving.{% endblock %}
+{% block og_image %}https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg{% endblock %}
 {% block canonical %}https://cpcnewhaven.org/give{% endblock %}
 
 {% block head %}
 <style>
 .give-page {
-    min-height: calc(100vh - 200px);
-    padding: 0;
-    margin: 0;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 1rem 3.5rem;
+    --page-surface: var(--surface-bg);
+    --page-surface-hover: var(--surface-bg-hover);
+    --page-border: var(--surface-border);
+    --page-text: var(--surface-text);
+    --page-muted: var(--surface-muted);
+    --page-accent: var(--surface-accent);
+    --page-accent-soft: var(--surface-accent-soft);
 }
 
-.give-container {
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
+/* Hero Section */
 .give-hero {
-    padding: 2.5rem 1rem;
-    text-align: center;
-    margin-bottom: 0.75rem;
-    background: linear-gradient(135deg, rgba(0, 40, 100, 0.75), rgba(0, 30, 80, 0.82)),
+    min-height: 380px;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 24, 60, 0.92) 0%, rgba(0, 48, 108, 0.82) 55%, rgba(0, 20, 52, 0.88) 100%),
                 url('https://storage.googleapis.com/cpc-public-website/featuredIMGs/homepage/Homepage%20-%20FEATURED%20IMG-congregation.jpg') center/cover no-repeat;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 50px rgba(0, 20, 50, 0.18);
+}
+
+.give-hero__content {
+    max-width: 740px;
+    padding: clamp(2rem, 5vw, 3.75rem);
+    position: relative;
+    z-index: 2;
+}
+
+.give-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9bd0ff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
 }
 
 .give-hero h1 {
-    font-size: 1.75rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.25rem 0;
-    font-weight: 600;
+    color: #ffffff !important;
+    font: 750 clamp(2.2rem, 5.5vw, 3.8rem)/1.08 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.04em;
+    margin: 0 0 0.85rem 0;
 }
 
 .give-hero p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    margin: 0;
+    color: rgba(255, 255, 255, 0.88) !important;
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    line-height: 1.65;
+    margin: 0 0 1.6rem 0;
 }
 
-.give-section {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    padding: 1rem;
+.give-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: center;
 }
 
-.giving-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
+/* Primary and Secondary Buttons */
+.give-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 46px;
+    padding: 0.7rem 1.35rem;
+    border-radius: 10px;
+    text-decoration: none !important;
+    font-weight: 700;
+    font-size: 0.92rem;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: 1px solid transparent;
 }
 
-.giving-option {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.75rem;
-    transition: all 0.3s ease;
+.give-btn--primary {
+    background: #0066cc;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
 }
 
-.giving-option:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+.give-btn--primary:hover {
+    background: #0052a3;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 102, 204, 0.45);
+}
+
+.give-btn--hero-primary {
+    background: #ffffff;
+    color: #003d7a !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.give-btn--hero-primary:hover {
+    background: #f0f6ff;
+    color: #002b57 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+}
+
+.give-btn--hero-secondary {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+}
+
+.give-btn--hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff !important;
     transform: translateY(-2px);
 }
 
-.giving-option h3 {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
+.give-btn--secondary {
+    background: var(--page-surface-hover);
+    color: var(--page-text) !important;
+    border-color: var(--page-border);
 }
 
-.giving-option p {
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0 0 0.5rem 0;
+.give-btn--secondary:hover {
+    border-color: var(--page-accent);
+    color: var(--page-accent) !important;
+    transform: translateY(-2px);
 }
 
-.btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 82, 163, 0.4);
-    border: 1px solid rgba(0, 82, 163, 0.6);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
-
-.btn:hover {
-    background: rgba(0, 82, 163, 0.5);
-    color: white;
-}
-
-.giving-info {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.give-btn--copy {
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
+    color: var(--page-text);
+    font-size: 0.82rem;
+    padding: 0.45rem 0.85rem;
     border-radius: 8px;
-    padding: 0.75rem;
-    margin-top: 0.75rem;
-}
-
-.giving-info h3 {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 0.5rem 0;
     font-weight: 600;
+    transition: all 0.2s ease;
 }
 
-.giving-info ul {
-    list-style: none;
-    padding: 0;
+.give-btn--copy:hover {
+    border-color: var(--page-accent);
+    color: var(--page-accent);
+}
+
+/* Quick Trust Highlights */
+.give-trust-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+}
+
+.give-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1.15rem;
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
+    border-radius: 12px;
+    box-shadow: var(--surface-shadow);
+}
+
+.give-trust-item i {
+    font-size: 1.25rem;
+    color: var(--page-accent);
+    flex-shrink: 0;
+}
+
+.give-trust-item strong {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--page-text);
+    font-weight: 700;
+}
+
+.give-trust-item span {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--page-muted);
+}
+
+/* Scripture Callout */
+.give-scripture-card {
+    background: linear-gradient(135deg, rgba(0, 82, 163, 0.08) 0%, rgba(0, 102, 204, 0.04) 100%);
+    border: 1px solid var(--page-border);
+    border-left: 4px solid var(--page-accent);
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 2.25rem;
+    position: relative;
+    box-shadow: var(--surface-shadow);
+}
+
+.give-scripture-quote {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.08rem;
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--page-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.give-scripture-ref {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 750;
+    color: var(--page-accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.give-scripture-context {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--page-muted);
+    border-top: 1px dashed var(--page-border);
+    padding-top: 0.85rem;
+}
+
+/* Section Headings */
+.give-section-header {
+    margin-bottom: 1.5rem;
+}
+
+.give-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--page-accent);
+    font: 800 0.74rem/1 'Poppins', sans-serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.45rem;
+}
+
+.give-section-title {
+    color: var(--page-text);
+    font: 750 clamp(1.5rem, 3.2vw, 2.1rem)/1.15 'Poppins', sans-serif;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.4rem 0;
+}
+
+.give-section-subtitle {
+    color: var(--page-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
     margin: 0;
 }
 
-.giving-info li {
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 0.25rem 0;
-    padding-left: 1rem;
+/* Giving Options Grid */
+.giving-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+}
+
+.giving-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
+    border-radius: 16px;
+    padding: 1.6rem;
+    box-shadow: var(--surface-shadow);
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.giving-option:hover {
+    transform: translateY(-3px);
+    border-color: var(--page-accent);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Featured Online Card */
+.giving-option--featured {
+    border: 2px solid var(--page-accent);
+    background: linear-gradient(180deg, var(--page-surface) 0%, rgba(0, 102, 204, 0.03) 100%);
     position: relative;
 }
 
-.giving-info li::before {
-    content: "•";
+.giving-option__badge {
     position: absolute;
-    left: 0;
-    color: rgba(0, 82, 163, 0.6);
+    top: -11px;
+    right: 1.25rem;
+    background: var(--page-accent);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 82, 163, 0.4);
+}
+
+.giving-option__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.giving-option__icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    background: var(--page-accent-soft);
+    color: var(--page-accent);
+    border: 1px solid rgba(0, 102, 204, 0.15);
+}
+
+.giving-option h3 {
+    color: var(--page-text);
+    font: 700 1.2rem/1.25 'Poppins', sans-serif;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.25rem 0;
+}
+
+.giving-option__label {
+    font-size: 0.75rem;
+    color: var(--page-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.giving-option p {
+    color: var(--page-muted);
+    font-size: 0.92rem;
+    line-height: 1.65;
+    margin: 0 0 1.25rem 0;
+}
+
+.giving-option__meta {
+    background: var(--page-surface-hover);
+    border: 1px solid var(--page-border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--page-text);
+}
+
+.giving-option__meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+}
+
+.giving-option__meta strong {
+    color: var(--page-text);
+    font-weight: 700;
+}
+
+.giving-option__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.giving-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--page-accent);
+    background: var(--page-accent-soft);
+    padding: 0.22rem 0.55rem;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 102, 204, 0.12);
+}
+
+.giving-option__action {
+    margin-top: auto;
+}
+
+.giving-option__action .give-btn {
+    width: 100%;
+}
+
+/* Impact Breakdown (Where Your Giving Goes) */
+.giving-info {
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
+    border-radius: 18px;
+    padding: clamp(1.5rem, 3.5vw, 2.5rem);
+    margin-bottom: 2.5rem;
+    box-shadow: var(--surface-shadow);
+}
+
+.giving-info-header {
+    margin-bottom: 1.75rem;
+    text-align: left;
+}
+
+.giving-info-header h3 {
+    color: var(--page-text);
+    font: 750 clamp(1.35rem, 2.5vw, 1.75rem)/1.2 'Poppins', sans-serif;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.35rem 0;
+}
+
+.giving-info-header p {
+    color: var(--page-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.15rem;
+}
+
+.impact-card {
+    background: var(--page-surface-hover);
+    border: 1px solid var(--page-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.impact-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--page-accent);
+}
+
+.impact-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--page-accent-soft);
+    color: var(--page-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    margin-bottom: 0.85rem;
+}
+
+.impact-card h4 {
+    color: var(--page-text);
+    font: 700 1.05rem/1.3 'Poppins', sans-serif;
+    margin: 0 0 0.4rem 0;
+}
+
+.impact-card p {
+    color: var(--page-muted);
+    font-size: 0.86rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* FAQ & Tax Transparency */
+.give-faq-section {
+    background: var(--page-surface);
+    border: 1px solid var(--page-border);
+    border-radius: 18px;
+    padding: clamp(1.5rem, 3.5vw, 2.5rem);
+    box-shadow: var(--surface-shadow);
+    margin-bottom: 2.5rem;
+}
+
+.give-faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.give-faq-item {
+    background: var(--page-surface-hover);
+    border: 1px solid var(--page-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+}
+
+.give-faq-item h4 {
+    color: var(--page-text);
+    font: 700 1rem/1.35 'Poppins', sans-serif;
+    margin: 0 0 0.45rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.give-faq-item h4 i {
+    color: var(--page-accent);
+    font-size: 0.95rem;
+    padding-top: 0.15rem;
+}
+
+.give-faq-item p {
+    color: var(--page-muted);
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* Questions / Contact Strip */
+.give-contact-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    background: linear-gradient(135deg, rgba(0, 82, 163, 0.08) 0%, rgba(0, 102, 204, 0.03) 100%);
+    border: 1px solid var(--page-border);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+}
+
+.give-contact-copy h3 {
+    color: var(--page-text);
+    font: 700 1.2rem/1.3 'Poppins', sans-serif;
+    margin: 0 0 0.25rem 0;
+}
+
+.give-contact-copy p {
+    color: var(--page-muted);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.55;
+}
+
+.give-contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Toast message for copy */
+.copy-toast {
+    display: inline-block;
+    color: #10b981;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.copy-toast.show {
+    opacity: 1;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .give-hero {
+        min-height: 320px;
+    }
+    .give-hero__content {
+        padding: 1.75rem 1.25rem;
+    }
+    .giving-options {
+        grid-template-columns: 1fr;
+    }
+    .give-trust-strip {
+        grid-template-columns: 1fr;
+    }
+    .give-contact-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="give-page compact-page">
-    <div class="give-container compact-content">
-        <div class="give-hero compact-hero">
-            <h1>Give</h1>
-            <p>Support the ministry of Christ Presbyterian Church</p>
+<div class="give-page">
+    <!-- Hero Section -->
+    <section class="give-hero">
+        <div class="give-hero__content">
+            <span class="give-eyebrow"><i class="fa-solid fa-heart-pulse"></i> Generosity &amp; Stewardship</span>
+            <h1>{{ site_content.get('give_hero_title', 'Giving at CPC') }}</h1>
+            <p>{{ site_content.get('give_hero_subtitle', 'Supporting the ministry and mission of Christ Presbyterian Church in Greater New Haven and beyond.') }}</p>
+            <div class="give-hero__actions">
+                <a href="{{ site_content.get('give_online_url', 'https://secure.acceptiva.com/?cst=3bc0a4') }}" target="_blank" rel="noopener noreferrer" class="give-btn give-btn--hero-primary">
+                    <i class="fa-solid fa-shield-halved"></i> Give Online Now <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem; margin-left: 2px;"></i>
+                </a>
+                <a href="#ways-to-give" class="give-btn give-btn--hero-secondary">
+                    <i class="fa-solid fa-layer-group"></i> Explore Ways to Give
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust & Convenience Highlights -->
+    <div class="give-trust-strip">
+        <div class="give-trust-item">
+            <i class="fa-solid fa-certificate"></i>
+            <div>
+                <strong>100% Tax-Deductible</strong>
+                <span>CPC is a recognized 501(c)(3) non-profit</span>
+            </div>
+        </div>
+        <div class="give-trust-item">
+            <i class="fa-solid fa-lock"></i>
+            <div>
+                <strong>Safe &amp; Secure</strong>
+                <span>Bank-level 256-bit SSL encrypted giving</span>
+            </div>
+        </div>
+        <div class="give-trust-item">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <div>
+                <strong>Annual Statements</strong>
+                <span>Year-end tax statements sent every January</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripture & Theological Context -->
+    <div class="give-scripture-card">
+        <div class="give-scripture-quote">
+            "{{ site_content.get('give_scripture_quote', 'Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.') }}"
+        </div>
+        <span class="give-scripture-ref">&mdash; {{ site_content.get('give_scripture_ref', '2 Corinthians 9:7') }}</span>
+        <div class="give-scripture-context">
+            At Christ Presbyterian Church, giving is an act of joyful worship and gratitude for the gospel of Jesus Christ. Your faithful generosity fuels weekly worship, discipleship, pastoral care, mercy for vulnerable neighbors, and church planting in New Haven and the nations.
+        </div>
+    </div>
+
+    <!-- Giving Channels -->
+    <section id="ways-to-give" class="give-section">
+        <div class="give-section-header">
+            <span class="give-kicker"><i class="fa-solid fa-hand-holding-dollar"></i> Ways to Give</span>
+            <h2 class="give-section-title">Choose How You'd Like to Support CPC</h2>
+            <p class="give-section-subtitle">Whether giving online, by phone, in worship, or through investments, every gift directly advances gospel ministry.</p>
         </div>
 
-        <section class="give-section">
-            <div style="margin-bottom: 1.5rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                <img src="https://storage.googleapis.com/cpc-public-website/65.jpg" alt="CPC Offering" loading="lazy" style="width: 100%; height: 250px; object-fit: cover; display: block;">
-            </div>
-            <div class="giving-options">
-                <div class="giving-option">
-                    <h3>Online Giving</h3>
-                    <p>Make a secure online donation using our giving platform.</p>
-                    <a href="#" class="btn">Give Online</a>
+        <div class="giving-options">
+            <!-- Option 1: Online Giving (Featured) -->
+            <div class="giving-option giving-option--featured">
+                <span class="giving-option__badge"><i class="fa-solid fa-star"></i> Recommended</span>
+                <div>
+                    <div class="giving-option__header">
+                        <div class="giving-option__icon">
+                            <i class="fa-solid fa-credit-card"></i>
+                        </div>
+                        <div>
+                            <span class="giving-option__label">Fast &amp; Flexible</span>
+                            <h3>Online Giving</h3>
+                        </div>
+                    </div>
+                    <p>Make a one-time donation or set up scheduled recurring gifts. Securely give with your credit card, debit card, or checking account.</p>
+
+                    <div class="giving-option__pills">
+                        <span class="giving-pill"><i class="fa-solid fa-check"></i> One-time or Recurring</span>
+                        <span class="giving-pill"><i class="fa-solid fa-building-columns"></i> ACH Bank Transfer</span>
+                        <span class="giving-pill"><i class="fa-solid fa-lock"></i> SSL Secured</span>
+                    </div>
+
+                    <div class="giving-option__meta">
+                        <div class="giving-option__meta-row">
+                            <span><i class="fa-solid fa-lightbulb" style="color: var(--page-accent); margin-right: 4px;"></i> <strong>Stewardship Tip:</strong></span>
+                        </div>
+                        <span>Giving via ACH bank transfer has minimal processing fees, allowing more of your gift to directly support ministry.</span>
+                    </div>
                 </div>
 
-                <div class="giving-option">
-                    <h3>In Person</h3>
-                    <p>Bring your offering to worship service on Sunday mornings.</p>
-                </div>
-
-                <div class="giving-option">
-                    <h3>Mail</h3>
-                    <p>Send your donation to: {{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</p>
+                <div class="giving-option__action">
+                    <a href="{{ site_content.get('give_online_url', 'https://secure.acceptiva.com/?cst=3bc0a4') }}" target="_blank" rel="noopener noreferrer" class="give-btn give-btn--primary">
+                        <i class="fa-solid fa-shield-halved"></i> Give Online Securely <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem; margin-left: 2px;"></i>
+                    </a>
                 </div>
             </div>
 
-            <div class="giving-info">
-                <h3>Ways to Give</h3>
-                <ul>
-                    <li>General Fund - Supports our ongoing ministry and operations</li>
-                    <li>Missions - Supports our local and global mission work</li>
-                    <li>Building Fund - Supports facility maintenance and improvements</li>
-                    <li>Special Offerings - Supports specific ministry initiatives</li>
-                </ul>
+            <!-- Option 2: Text to Give -->
+            <div class="giving-option">
+                <div>
+                    <div class="giving-option__header">
+                        <div class="giving-option__icon">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <div>
+                            <span class="giving-option__label">Mobile Convenience</span>
+                            <h3>Text to Give</h3>
+                        </div>
+                    </div>
+                    <p>Give quickly from your phone in seconds. Send a simple text message with the word <strong>{{ site_content.get('give_text_keyword', 'GIVE') }}</strong> to get started.</p>
+
+                    <div class="giving-option__meta">
+                        <div class="giving-option__meta-row">
+                            <span><strong>Text:</strong> {{ site_content.get('give_text_keyword', 'GIVE') }}</span>
+                            <span><strong>To:</strong> {{ site_content.get('give_text_number', '860-467-0010') }}</span>
+                        </div>
+                        <div style="margin-top: 0.45rem; font-size: 0.8rem; color: var(--page-muted);">
+                            First-time givers will receive a quick, secure registration link. Future gifts can be sent instantly with just the dollar amount.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="giving-option__action">
+                    <a href="sms:{{ site_content.get('give_text_number', '860-467-0010') | replace('-', '') }}?body={{ site_content.get('give_text_keyword', 'GIVE') }}" class="give-btn give-btn--secondary">
+                        <i class="fa-solid fa-comment-sms"></i> Text {{ site_content.get('give_text_keyword', 'GIVE') }} to {{ site_content.get('give_text_number', '860-467-0010') }}
+                    </a>
+                </div>
             </div>
-        </section>
+
+            <!-- Option 3: In Person (Sunday Service) -->
+            <div class="giving-option">
+                <div>
+                    <div class="giving-option__header">
+                        <div class="giving-option__icon">
+                            <i class="fa-solid fa-church"></i>
+                        </div>
+                        <div>
+                            <span class="giving-option__label">Sunday Worship</span>
+                            <h3>In Person</h3>
+                        </div>
+                    </div>
+                    <p>Give as part of corporate worship. Place your check or cash offering in the offering plate or in the secure collection boxes located in the sanctuary.</p>
+
+                    <div class="giving-option__meta">
+                        <div class="giving-option__meta-row">
+                            <span><strong>Service Time:</strong></span>
+                            <span>Sundays at 10:00 AM</span>
+                        </div>
+                        <div class="giving-option__meta-row">
+                            <span><strong>Location:</strong></span>
+                            <span>135 Whitney Ave, New Haven</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="giving-option__action">
+                    <a href="{{ url_for('plan_a_visit') }}" class="give-btn give-btn--secondary">
+                        <i class="fa-solid fa-compass"></i> Plan a Sunday Visit
+                    </a>
+                </div>
+            </div>
+
+            <!-- Option 4: By Mail -->
+            <div class="giving-option">
+                <div>
+                    <div class="giving-option__header">
+                        <div class="giving-option__icon">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                        </div>
+                        <div>
+                            <span class="giving-option__label">Postal Mail</span>
+                            <h3>Mail a Check</h3>
+                        </div>
+                    </div>
+                    <p>Checks can be mailed directly to our church office. Please make checks payable to <strong>Christ Presbyterian Church</strong>.</p>
+
+                    <div class="giving-option__meta">
+                        <div style="font-weight: 700; color: var(--page-text); margin-bottom: 0.25rem;">Christ Presbyterian Church</div>
+                        <div id="mailingAddressText">{{ site_content.get('contact_address', '135 Whitney Ave, New Haven, CT 06510') }}</div>
+                        <div style="margin-top: 0.5rem; display: flex; align-items: center;">
+                            <button type="button" class="give-btn--copy" id="copyAddressBtn" onclick="copyMailingAddress()">
+                                <i class="fa-regular fa-copy"></i> Copy Address
+                            </button>
+                            <span class="copy-toast" id="copyToast"><i class="fa-solid fa-check"></i> Copied!</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.78rem; color: var(--page-muted);">
+                            If contributing to a specific fund (e.g. Mercy or Missions), please write it on the memo line.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="giving-option__action">
+                    <a href="mailto:{{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}?subject=Mailed%20Check%20Inquiry" class="give-btn give-btn--secondary">
+                        <i class="fa-solid fa-envelope"></i> Contact Office
+                    </a>
+                </div>
+            </div>
+
+            <!-- Option 5: Stocks & Non-Cash Assets -->
+            <div class="giving-option">
+                <div>
+                    <div class="giving-option__header">
+                        <div class="giving-option__icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <span class="giving-option__label">Tax-Advantaged</span>
+                            <h3>Stocks &amp; Appreciated Assets</h3>
+                        </div>
+                    </div>
+                    <p>Donating appreciated securities, mutual funds, donor-advised funds (DAF), or IRA qualified distributions allows you to avoid capital gains tax while maximizing your charitable impact.</p>
+
+                    <div class="giving-option__meta">
+                        <div><strong>Partnership:</strong> PCA Foundation</div>
+                        <div style="font-size: 0.8rem; color: var(--page-muted); margin-top: 0.25rem;">
+                            CPC works directly with the PCA Foundation to process gifts of stocks, securities, and complex assets smoothly and tax-efficiently.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="giving-option__action">
+                    <a href="mailto:{{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}?subject=Stock%20or%20Non-Cash%20Giving%20Inquiry" class="give-btn give-btn--secondary">
+                        <i class="fa-solid fa-file-invoice"></i> Inquire About Stock Gifts
+                    </a>
+                </div>
+            </div>
+
+            <!-- Option 6: Matching Gifts -->
+            <div class="giving-option">
+                <div>
+                    <div class="giving-option__header">
+                        <div class="giving-option__icon">
+                            <i class="fa-solid fa-handshake-angle"></i>
+                        </div>
+                        <div>
+                            <span class="giving-option__label">Multiply Your Impact</span>
+                            <h3>Employer Matching</h3>
+                        </div>
+                    </div>
+                    <p>Many corporate and university employers match charitable contributions dollar-for-dollar. Check with your company's benefits or HR portal to double your impact for CPC ministries.</p>
+
+                    <div class="giving-option__meta">
+                        <div><strong>Need verification or EIN?</strong></div>
+                        <div style="font-size: 0.8rem; color: var(--page-muted); margin-top: 0.25rem;">
+                            Our office can provide 501(c)(3) documentation, receipts, or complete required employer verification forms.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="giving-option__action">
+                    <a href="mailto:{{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}?subject=Employer%20Matching%20Gift%20Verification" class="give-btn give-btn--secondary">
+                        <i class="fa-solid fa-circle-question"></i> Request Employer Info
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section (Where Your Giving Goes) -->
+    <section class="giving-info">
+        <div class="giving-info-header">
+            <span class="give-kicker"><i class="fa-solid fa-seedling"></i> Kingdom Impact</span>
+            <h3>Where Your Giving Goes</h3>
+            <p>Every dollar contributed to Christ Presbyterian Church is faithfully stewarded to support worship, disciple believers, care for our neighbors, and reach the world.</p>
+        </div>
+
+        <div class="impact-grid">
+            <div class="impact-card">
+                <div class="impact-card__icon"><i class="fa-solid fa-book-bible"></i></div>
+                <h4>Worship &amp; Discipleship</h4>
+                <p>Supports Sunday preaching, liturgy, choral and contemporary music, children's Sunday School, youth ministry, and adult discipleship classes.</p>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card__icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                <h4>Mercy &amp; City Outreach</h4>
+                <p>Provides tangible financial and material benevolence for families in crisis, food support, holiday meal boxes, and local community partnerships in New Haven.</p>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card__icon"><i class="fa-solid fa-earth-americas"></i></div>
+                <h4>Missions &amp; Campus Ministry</h4>
+                <p>Partners with campus outreach at Yale and Southern Connecticut State, as well as missionary families and church plants across New England and globally.</p>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card__icon"><i class="fa-solid fa-monument"></i></div>
+                <h4>Historic Campus Care</h4>
+                <p>Maintains and preserves our sanctuary and fellowship halls at 135 Whitney Avenue as a safe, welcoming hub for worship, community groups, and events.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ & Stewardship Section -->
+    <section class="give-faq-section">
+        <div class="give-section-header">
+            <span class="give-kicker"><i class="fa-solid fa-circle-question"></i> Questions &amp; Transparency</span>
+            <h3 class="give-section-title">Frequently Asked Questions</h3>
+            <p class="give-section-subtitle">Common questions regarding online giving security, tax receipts, and payment options.</p>
+        </div>
+
+        <div class="give-faq-grid">
+            <div class="give-faq-item">
+                <h4><i class="fa-solid fa-circle-check"></i> Are my donations tax-deductible?</h4>
+                <p>Yes. Christ Presbyterian Church is a registered 501(c)(3) religious non-profit organization. All charitable gifts are tax-deductible to the fullest extent permitted by U.S. law.</p>
+            </div>
+
+            <div class="give-faq-item">
+                <h4><i class="fa-solid fa-calendar-check"></i> When do I receive my tax statement?</h4>
+                <p>Annual giving statements summarizing all gifts made during the previous calendar year are distributed every January via email and mail for tax filing purposes.</p>
+            </div>
+
+            <div class="give-faq-item">
+                <h4><i class="fa-solid fa-repeat"></i> Can I set up or modify recurring giving?</h4>
+                <p>Yes. When giving online, you can choose weekly, bi-weekly, or monthly automated giving. You can adjust the amount, pause, or update payment methods anytime through the donor portal.</p>
+            </div>
+
+            <div class="give-faq-item">
+                <h4><i class="fa-solid fa-percent"></i> What are the transaction fees?</h4>
+                <p>Credit and debit card gifts incur a typical processing fee (approx. 2-3%). If you wish to minimize fees so 100% of your gift reaches ministry, we recommend selecting <strong>ACH bank account transfer</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Assistance Panel -->
+    <div class="give-contact-panel">
+        <div class="give-contact-copy">
+            <h3>Have Questions About Giving?</h3>
+            <p>Our church office and financial secretary are happy to assist with receipts, designated gifts, or updating recurring pledges.</p>
+        </div>
+        <div class="give-contact-links">
+            <a href="mailto:{{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}" class="give-btn give-btn--secondary">
+                <i class="fa-solid fa-envelope"></i> {{ site_content.get('contact_email', 'admin@cpcnewhaven.org') }}
+            </a>
+            <a href="tel:{{ site_content.get('contact_phone', '203.777.6960') | replace('.', '') | replace('-', '') }}" class="give-btn give-btn--secondary">
+                <i class="fa-solid fa-phone"></i> {{ site_content.get('contact_phone', '203.777.6960') }}
+            </a>
+        </div>
     </div>
 </div>
+
+<script>
+function copyMailingAddress() {
+    const address = "Christ Presbyterian Church\n135 Whitney Ave\nNew Haven, CT 06510";
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(address).then(showToast);
+    } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = address;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast();
+        } catch (err) {
+            console.error('Unable to copy address', err);
+        }
+        document.body.removeChild(textArea);
+    }
+}
+
+function showToast() {
+    const toast = document.getElementById('copyToast');
+    const btn = document.getElementById('copyAddressBtn');
+    if (toast) {
+        toast.classList.add('show');
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(() => {
+            toast.classList.remove('show');
+            if (btn) btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Address';
+        }, 2200);
+    }
+}
+</script>
 {% endblock %}
