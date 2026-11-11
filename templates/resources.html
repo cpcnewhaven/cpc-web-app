@@ -876,13 +876,13 @@ body.theme-white .help-btn-outline:hover {
                         <span class="res-item-action">&rarr;</span>
                     </a>
 
-                    <a href="https://www.esv.org/resources/reading-plans/" target="_blank" rel="noopener noreferrer" class="res-item-link" data-search="daily bible reading plan devotion scripture through the bible track crossway">
+                    <a href="{{ url_for('resources_study_guides') }}" class="res-item-link" data-search="bible study materials study guides commentaries acts luke scripture passage outline">
                         <div class="res-item-content">
                             <div class="res-item-title-row">
-                                <span class="res-item-title">Daily Scripture Reading Plans</span>
-                                <span class="res-item-tag">ESV Plans</span>
+                                <span class="res-item-title">Bible Study Guides & Commentaries</span>
+                                <span class="res-item-tag">Study Tools</span>
                             </div>
-                            <p class="res-item-desc">Structured devotional reading schedules to anchor your daily time in the Word.</p>
+                            <p class="res-item-desc">Acts & Luke preaching guides, inductive study method, and recommended commentaries.</p>
                         </div>
                         <span class="res-item-action">&rarr;</span>
                     </a>
@@ -896,18 +896,18 @@ body.theme-white .help-btn-outline:hover {
                     <p>Intercession, pre-service prayer gatherings, and pastoral support for life's seasons.</p>
                 </div>
                 <div class="res-items-list">
-                    <a href="mailto:prayer@cpcnewhaven.org?subject=Prayer%20Request%20-%20CPC%20New%20Haven" class="res-item-link" data-search="submit prayer request intercession petition confidential elders pastoral team">
+                    <a href="{{ url_for('resources_prayer') }}#request" class="res-item-link" data-search="submit prayer request intercession petition confidential elders pastoral team">
                         <div class="res-item-content">
                             <div class="res-item-title-row">
                                 <span class="res-item-title">Submit a Prayer Request</span>
-                                <span class="res-item-tag">Confidential</span>
+                                <span class="res-item-tag">Online Form</span>
                             </div>
                             <p class="res-item-desc">Share personal burdens, petitions, and praises directly with our pastors & prayer chain.</p>
                         </div>
                         <span class="res-item-action">&rarr;</span>
                     </a>
 
-                    <a href="{{ url_for('events') }}" class="res-item-link" data-search="sunday morning prayer meeting pre-service 8:30am parlor gathering calendar events">
+                    <a href="{{ url_for('resources_prayer') }}#meeting" class="res-item-link" data-search="sunday morning prayer meeting pre-service 8:30am parlor gathering calendar events">
                         <div class="res-item-content">
                             <div class="res-item-title-row">
                                 <span class="res-item-title">Sunday Morning Prayer Meeting</span>
@@ -929,11 +929,11 @@ body.theme-white .help-btn-outline:hover {
                         <span class="res-item-action">&rarr;</span>
                     </a>
 
-                    <a href="{{ url_for('what_we_believe') }}" class="res-item-link" data-search="lord's prayer historic prayers reformed liturgy devotion prayer guides">
+                    <a href="{{ url_for('resources_prayer') }}#liturgical" class="res-item-link" data-search="lord's prayer historic prayers reformed liturgy devotion prayer guides">
                         <div class="res-item-content">
                             <div class="res-item-title-row">
                                 <span class="res-item-title">Guides & Liturgical Prayers</span>
-                                <span class="res-item-tag">Guides</span>
+                                <span class="res-item-tag">A.C.T.S. & Collects</span>
                             </div>
                             <p class="res-item-desc">Biblical frameworks, collect prayers, and the Lord's Prayer to enrich daily devotion.</p>
                         </div>
@@ -960,11 +960,11 @@ body.theme-white .help-btn-outline:hover {
                         <span class="res-item-action">&rarr;</span>
                     </a>
 
-                    <a href="{{ url_for('community') }}" class="res-item-link" data-search="ministry teams volunteering serve volunteer opportunities mercy hospitality children music tech">
+                    <a href="{{ url_for('resources_volunteer') }}" class="res-item-link" data-search="ministry teams volunteering serve volunteer opportunities mercy hospitality children music tech">
                         <div class="res-item-content">
                             <div class="res-item-title-row">
                                 <span class="res-item-title">Ministry Teams & Serving</span>
-                                <span class="res-item-tag">Get Involved</span>
+                                <span class="res-item-tag">Volunteer Guide</span>
                             </div>
                             <p class="res-item-desc">Opportunities to use your gifts in hospitality, mercy, youth, nursery, and worship.</p>
                         </div>
@@ -1013,13 +1013,13 @@ body.theme-white .help-btn-outline:hover {
                         <span class="res-item-action">&rarr;</span>
                     </a>
 
-                    <a href="{{ url_for('what_we_believe') }}" class="res-item-link" data-search="westminster confession of faith shorter catechism larger catechism reformed doctrine standards presbyterian">
+                    <a href="{{ url_for('resources_theology') }}" class="res-item-link" data-search="westminster confession of faith shorter catechism larger catechism reformed doctrine standards presbyterian library">
                         <div class="res-item-content">
                             <div class="res-item-title-row">
-                                <span class="res-item-title">Westminster Confession & Creeds</span>
-                                <span class="res-item-tag">Doctrinal Standards</span>
+                                <span class="res-item-title">Theological Resources & Standards</span>
+                                <span class="res-item-tag">Reformed Heritage</span>
                             </div>
-                            <p class="res-item-desc">Explore the historic Westminster Confession of Faith, Catechisms, and historic ecumenical creeds.</p>
+                            <p class="res-item-desc">Westminster Confession, Shorter & Larger Catechisms, Creeds, and reading library.</p>
                         </div>
                         <span class="res-item-action">&rarr;</span>
                     </a>
@@ -1035,11 +1035,11 @@ body.theme-white .help-btn-outline:hover {
                         <span class="res-item-action">&rarr;</span>
                     </a>
 
-                    <a href="{{ url_for('community') }}#children" class="res-item-link" data-search="children youth sunday school curriculum kids family discipleship nursery parents catechism">
+                    <a href="{{ url_for('resources_sunday_school_curriculum') }}" class="res-item-link" data-search="children youth sunday school curriculum kids family discipleship nursery parents catechism">
                         <div class="res-item-content">
                             <div class="res-item-title-row">
                                 <span class="res-item-title">Children & Family Discipleship</span>
-                                <span class="res-item-tag">Family Resources</span>
+                                <span class="res-item-tag">Curriculum & Guide</span>
                             </div>
                             <p class="res-item-desc">Sunday school curriculum, First Catechism questions, and family worship tools.</p>
                         </div>
