@@ -42,9 +42,8 @@
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
     <!-- Fonts & Icons (moved from CSS @import for parallel loading) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap">
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Libre+Baskerville:wght@400;700&display=swap">
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Tailwind CSS -->
@@ -379,6 +378,13 @@
                     <span class="dash-item__sub">Find community</span>
                 </span>
             </a>
+            <a href="{{ url_for('resources') }}" class="dash-item">
+                <span class="dash-item__chip"><i class="fas fa-book-bookmark" aria-hidden="true"></i></span>
+                <span class="dash-item__text">
+                    <span class="dash-item__title">Resources</span>
+                    <span class="dash-item__sub">Grow in faith</span>
+                </span>
+            </a>
             <a href="{{ url_for('plan_a_visit') }}" class="dash-item">
                 <span class="dash-item__chip"><i class="fas fa-map-location-dot" aria-hidden="true"></i></span>
                 <span class="dash-item__text">
@@ -520,6 +526,7 @@
                 <a href="{{ url_for('highlights') }}" class="mobile-more-link"><span>Announcements</span></a>
                 {# <a href="{{ url_for('suggest_event') }}" class="mobile-more-link"><span>Suggest an Event</span></a> #}
                 <a href="{{ url_for('contact') }}" class="mobile-more-link"><span>Contact</span></a>
+                <a href="{{ url_for('resources') }}" class="mobile-more-link"><span>Resources</span></a>
                 <a href="{{ url_for('plan_a_visit') }}" class="mobile-more-link"><span>Plan a Visit</span></a>
                 <a href="{{ url_for('highlights') }}" class="mobile-more-link"><span>New Content</span></a>
                 <a href="{{ url_for('community') }}" class="mobile-more-link"><span>Community</span></a>
@@ -647,8 +654,8 @@
 
             <!-- Contact -->
             <div>
-                <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Contact</p>
-                <p style="font-family:'Manrope',sans-serif; font-weight:700; font-size:1rem; color:var(--surface-text); margin:0 0 0.5rem;">Christ Presbyterian Church</p>
+                <p style="font-family:'Poppins',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Contact</p>
+                <p style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1rem; color:var(--surface-text); margin:0 0 0.5rem;">Christ Presbyterian Church</p>
                 <p style="margin:0 0 0.25rem;">135 Whitney Avenue</p>
                 <p style="margin:0 0 0.25rem;">New Haven, CT 06510</p>
                 <p style="margin:0 0 0.25rem;"><a href="tel:+12037776960" style="color:var(--surface-muted); text-decoration:none;" onmouseover="this.style.color='var(--surface-text)'" onmouseout="this.style.color='var(--surface-muted)'">(203) 777-6960</a></p>
@@ -667,7 +674,7 @@
                 <!-- Schedule -->
                 <div class="site-footer-right-columns">
                 <div>
-                    <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
+                    <p style="font-family:'Poppins',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Sunday Worship</p>
                     {% if active_schedule == 'summer' %}
                       {% set _p = site_content.get('service_summer_prayer_time','') %}
                       {% set _s = site_content.get('service_summer_school_time','') %}
@@ -697,7 +704,7 @@
 
                 <!-- Quick links -->
                 <div>
-                    <p style="font-family:'Manrope',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Links</p>
+                    <p style="font-family:'Poppins',sans-serif; font-weight:700; color:var(--surface-text); margin:0 0 0.75rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Links</p>
                     {% set footer_links = [
                         ('Sermons', 'sermons'), ('Podcasts', 'podcasts'), ('Events', 'events'),
                         ('Life Groups', 'lifegroups'), ('Media Gallery', 'media'), ('Give', 'give'),
