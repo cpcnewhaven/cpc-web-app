@@ -20,6 +20,7 @@ DEFAULT_SLIDES_TEMPLATE_ID = "15zT3vmtW0ZYXYgm57qIkOAaLcNODjuNYQeur48w_oNw"
 
 # Standard liturgical headers common in Presbyterian / Reformed worship
 KNOWN_SECTIONS = [
+    ("WELCOME | CALL TO WORSHIP", "liturgy"),
     ("CALL TO WORSHIP", "liturgy"),
     ("CALLS TO WORSHIP", "liturgy"),
     ("INVOCATION", "prayer"),
@@ -27,6 +28,11 @@ KNOWN_SECTIONS = [
     ("PRAYER OF ADORATION", "prayer"),
     ("ADORATION", "prayer"),
     ("HYMN OF PRAISE", "song"),
+    ("SONGS OF PRAISE & ADORATION", "song"),
+    ("SONGS OF PRAISE AND ADORATION", "song"),
+    ("SONG OF CONFESSION", "song"),
+    ("SONG OF CORONATION", "song"),
+    ("COMMUNION SONG", "song"),
     ("HYMNS OF PRAISE", "song"),
     ("SONG OF PRAISE", "song"),
     ("SONGS OF PRAISE", "song"),
@@ -36,6 +42,7 @@ KNOWN_SECTIONS = [
     ("PRAYER OF CONFESSION", "liturgy"),
     ("CORPORATE CONFESSION", "liturgy"),
     ("ASSURANCE OF PARDON", "scripture"),
+    ("ASSURANCE OF FORGIVENESS", "scripture"),
     ("ASSURANCE OF GRACE", "scripture"),
     ("ASSURANCE OF GOD'S PARDON", "scripture"),
     ("PASSING OF THE PEACE", "liturgy"),
@@ -54,6 +61,7 @@ KNOWN_SECTIONS = [
     ("PASTORAL PRAYER", "prayer"),
     ("THE LORD'S PRAYER", "prayer"),
     ("COLLECTION OF GIFTS", "liturgy"),
+    ("OFFERING AND PRAYERS", "prayer"),
     ("OFFERTORY", "liturgy"),
     ("OFFERING", "liturgy"),
     ("SERMON", "sermon"),
@@ -67,6 +75,10 @@ KNOWN_SECTIONS = [
     ("CLOSING SONG", "song"),
     ("DOXOLOGY", "song"),
     ("BENEDICTION", "liturgy"),
+    ("PROFESSION OF FAITH", "liturgy"),
+    ("PARTAKING OF THE ELEMENTS TOGETHER", "communion"),
+    ("CELEBRATING CHRIST OUR KING", "liturgy"),
+    ("QUIET MEDITATION AND CONFESSION", "liturgy"),
     ("WORDS OF DISMISSAL", "liturgy"),
     ("ANNOUNCEMENTS", "announcement"),
     ("THIS WEEK AT CPC", "announcement"),
@@ -228,9 +240,10 @@ def is_heading_line(line: str) -> Tuple[bool, Optional[str], Optional[str]]:
 
     # Patterns like "HYMN: ...", "SONG: ...", "SCRIPTURE: ...", "SERMON: ..."
     prefix_patterns = [
+        (r"^WELCOME\s*\|\s*CALL TO WORSHIP\b(.*)$", "liturgy"),
         (r"^(?:HYMN|SONG)\s*[:—–-]\s*(.*)$", "song"),
         (r"^(?:SCRIPTURE|READING)\s*[:—–-]\s*(.*)$", "scripture"),
-        (r"^(?:SERMON|MESSAGE)\s*[:—–-]\s*(.*)$", "sermon"),
+        (r"^(?:SERMON|MESSAGE)\s*[:|—–-]\s*(.*)$", "sermon"),
         (r"^(?:PRAYER|INVOCATION)\s*[:—–-]\s*(.*)$", "prayer"),
     ]
     for pattern, cat in prefix_patterns:
@@ -356,6 +369,7 @@ def parse_bulletin_text(raw_text: str) -> List[Dict[str, Any]]:
     current_title = "Welcome & Call to Worship"
     current_category = "liturgy"
     current_lines: List[str] = []
+    seen_service_divider = False
 
     def flush_section():
         nonlocal current_title, current_category, current_lines
@@ -382,6 +396,17 @@ def parse_bulletin_text(raw_text: str) -> List[Dict[str, Any]]:
         current_lines = []
 
     for line in lines:
+        # Roman numeral worship movements organize the bulletin but are not
+        # service content to project as slides.
+        if re.match(r"^\s*[IVXLCDM]+\.\s+", line, re.IGNORECASE):
+            if not seen_service_divider:
+                current_lines = []  # discard cover page/title material before the service
+                current_title = "Welcome & Call to Worship"
+                current_category = "liturgy"
+                seen_service_divider = True
+            elif "\n".join(current_lines).strip():
+                flush_section()
+            continue
         is_hd, hd_title, hd_cat = is_heading_line(line)
         if is_hd and hd_title:
             content_so_far = "\n".join(current_lines).strip()
