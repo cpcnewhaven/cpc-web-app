@@ -8,6 +8,9 @@ readable slide blocks suitable for congregation projection.
 
 import re
 import unicodedata
+import zipfile
+import xml.etree.ElementTree as ET
+from io import BytesIO
 from typing import Any, Dict, List, Optional, Tuple
 
 
@@ -82,6 +85,9 @@ def extract_google_id(url_or_id: str) -> str:
     url_match = re.search(r"/(?:document|presentation|file|spreadsheets)/d/([a-zA-Z0-9_-]{20,})", cleaned)
     if url_match:
         return url_match.group(1)
+    folder_match = re.search(r"/folders/([a-zA-Z0-9_-]{20,})", cleaned)
+    if folder_match:
+        return folder_match.group(1)
     # Match ?id=<id>
     id_param_match = re.search(r"[?&]id=([a-zA-Z0-9_-]{20,})", cleaned)
     if id_param_match:
@@ -169,6 +175,39 @@ def extract_text_from_google_doc(doc_json: Dict[str, Any]) -> str:
                     output_lines.append(" : ".join(row_cells))
 
     return normalize_text("\n".join(output_lines))
+
+
+def extract_text_from_docx(data: bytes) -> str:
+    """Extract readable paragraphs and tables from a Microsoft Word .docx file."""
+    try:
+        with zipfile.ZipFile(BytesIO(data)) as archive:
+            root = ET.fromstring(archive.read("word/document.xml"))
+    except (KeyError, zipfile.BadZipFile, ET.ParseError) as exc:
+        raise ValueError("This Word file could not be read. Upload a valid .docx bulletin.") from exc
+
+    ns = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+    paragraphs = []
+    body = root.find("w:body", ns)
+    if body is None:
+        return ""
+    for element in body:
+        if element.tag.endswith("}p"):
+            text = "".join(node.text or "" for node in element.findall(".//w:t", ns)).strip()
+            if text:
+                style = element.find("w:pPr/w:pStyle", ns)
+                if style is not None and (style.get("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val") or "").lower().startswith("heading"):
+                    text = "## " + text
+                paragraphs.append(text)
+        elif element.tag.endswith("}tbl"):
+            for row in element.findall("w:tr", ns):
+                cells = []
+                for cell in row.findall("w:tc", ns):
+                    value = " ".join("".join(node.text or "" for node in p.findall(".//w:t", ns)) for p in cell.findall("w:p", ns)).strip()
+                    if value:
+                        cells.append(value)
+                if cells:
+                    paragraphs.append(" : ".join(cells))
+    return normalize_text("\n".join(paragraphs))
 
 
 def is_heading_line(line: str) -> Tuple[bool, Optional[str], Optional[str]]:

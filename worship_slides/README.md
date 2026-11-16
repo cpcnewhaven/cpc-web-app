@@ -1,6 +1,6 @@
 # Worship slides workspace
 
-This feature is isolated under `worship_slides/` and mounted at `/slides`. It uses the app's existing staff login, while its OAuth flows and saved credentials are separate from the existing Planning Center calendar and gallery integrations.
+This feature is isolated under `worship_slides/` and mounted at `/slides`, with the staff-facing CPC Baton entry point at `/baton`. It uses the app's existing staff login, while its OAuth flows and saved credentials are separate from the existing Planning Center calendar and gallery integrations.
 
 ## Connections
 

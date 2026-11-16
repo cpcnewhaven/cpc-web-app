@@ -4,22 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1f35">
-  <title>Worship Slides Wizard · CPC New Haven</title>
+  <title>CPC Baton · CPC New Haven</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('worship_slides.static', filename='slides.css') }}">
 </head>
 <body data-csrf="{{ csrf_token }}" data-pco="{{ '1' if pco_connected else '0' }}" data-google="{{ '1' if google_connected else '0' }}" data-default-template="{{ default_template_url }}" data-default-bulletin="{{ default_bulletin_url }}">
   <header class="topbar">
-    <a class="brand" href="/slides"><span class="brand-mark">C</span><span>CPC <small>WORSHIP SLIDES WIZARD</small></span></a>
+    <a class="brand" href="/baton"><span class="brand-mark">C</span><span>CPC <small>BATON · SERVICE SLIDES</small></span></a>
     <nav><a href="/">Church site</a><a href="/admin/dashboard/">Admin</a><span class="staff-pill">STAFF WORKSPACE</span></nav>
   </header>
 
   <main class="shell">
     <section class="intro">
       <div class="eyebrow"><span></span> SUNDAY PREPARATION WIZARD</div>
-      <h1>Worship Slides Wizard</h1>
-      <p>Follow four simple steps to convert your Sunday bulletin into a standardized Google Slides presentation, with optional Planning Center song lyric piping.</p>
+      <h1>CPC Baton</h1>
+      <p>Carry the Sunday service from bulletin to a reviewable, template based Google Slides deck, with optional Planning Center song lyric piping.</p>
     </section>
 
     <!-- How It Works Explainer -->
@@ -171,7 +171,7 @@
         <div id="tab-bulletin" class="tab-panel active">
           <div class="doc-input-grid">
             <label class="field-label">
-              Bulletin Google Doc URL or ID
+              Google Docs bulletin URL or ID
               <input type="text" id="bulletin-url" class="text-input" value="{{ default_bulletin_url }}" placeholder="https://docs.google.com/document/d/..." />
             </label>
             <div class="action-btn-row">
@@ -184,6 +184,12 @@
               </button>
             </div>
           </div>
+
+          <label class="field-label" style="margin-top:14px;display:block">
+            Or upload a Microsoft Word bulletin (.docx)
+            <input type="file" id="bulletin-file" class="text-input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+          </label>
+          <button type="button" id="import-word-btn" class="action-button secondary-btn" style="margin-top:9px"><span>Import Word Bulletin →</span></button>
 
           <div id="paste-box" class="paste-box" hidden>
             <label class="field-label">
@@ -256,6 +262,11 @@
             </div>
           </label>
           <small class="template-hint">CPC standard branded master template (fonts, dark blue theme, and slide dimensions will be duplicated).</small>
+          <label class="field-label" style="display:block;margin-top:14px">
+            Google Drive destination folder (optional)
+            <input type="text" id="output-folder-url" class="text-input" value="{{ output_folder_id }}" placeholder="Paste a Drive folder URL or ID" />
+          </label>
+          <small class="template-hint">Generated slide decks will be moved into this folder and linked here for editing.</small>
         </div>
       </div>
 
@@ -392,7 +403,7 @@
       </div>
     </section>
 
-    <footer>Worship Slides Wizard · Christ Presbyterian Church in New Haven</footer>
+    <footer>CPC Baton · Christ Presbyterian Church in New Haven</footer>
   </main>
 
   <script src="{{ url_for('worship_slides.static', filename='slides.js') }}" defer></script>

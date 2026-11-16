@@ -15,6 +15,7 @@ from .bulletin_parser import (
     DEFAULT_BULLETIN_DOC_ID,
     DEFAULT_SLIDES_TEMPLATE_ID,
     extract_google_id,
+    extract_text_from_docx,
     merge_pco_with_bulletin,
     parse_bulletin_text,
 )
@@ -38,6 +39,7 @@ PCO_TOKEN_KEY = "worship_slides_pco_tokens"
 GOOGLE_TOKEN_KEY = "worship_slides_google_tokens"
 TEMPLATE_ID_KEY = "worship_slides_template_id"
 LAST_BULLETIN_KEY = "worship_slides_last_bulletin_id"
+OUTPUT_FOLDER_KEY = "worship_slides_output_folder_id"
 
 
 def staff_only(view):
@@ -140,6 +142,7 @@ def workspace():
         default_bulletin_url=default_bulletin_url,
         template_id=template_id,
         bulletin_id=bulletin_id,
+        output_folder_id=_get_setting(OUTPUT_FOLDER_KEY, ""),
     )
 
 
@@ -268,6 +271,25 @@ def api_plan(service_type_id, plan_id):
 def api_parse_bulletin():
     if not _csrf_ok():
         abort(400)
+    upload = request.files.get("bulletin_file")
+    if upload:
+        if not upload.filename.lower().endswith(".docx"):
+            return jsonify({"error": "Upload a Microsoft Word .docx bulletin. For older .doc files, save a copy as .docx first."}), 400
+        word_data = upload.stream.read(10 * 1024 * 1024 + 1)
+        if len(word_data) > 10 * 1024 * 1024:
+            return jsonify({"error": "Bulletin file is too large. Keep it under 10 MB."}), 413
+        try:
+            raw_text = extract_text_from_docx(word_data)
+        except ValueError as exc:
+            return jsonify({"error": str(exc)}), 400
+        items = parse_bulletin_text(raw_text)
+        return jsonify({
+            "title": upload.filename.rsplit(".", 1)[0] or "Worship Service",
+            "items": items,
+            "slide_count": sum(len(it.get("slides", [])) for it in items),
+            "source": "word_docx",
+        })
+
     payload = request.get_json(silent=True) or {}
     doc_id_or_url = (payload.get("doc_id_or_url") or "").strip()
     raw_text = (payload.get("text") or "").strip()
@@ -374,6 +396,7 @@ def api_create():
     items = payload.get("items")
     outputs = payload.get("outputs")
     template_id = (payload.get("template_id") or "").strip() or DEFAULT_SLIDES_TEMPLATE_ID
+    output_folder_id = extract_google_id((payload.get("output_folder_id") or "").strip())
 
     if not title or not isinstance(items, list) or not items or len(items) > 100:
         return jsonify({"error": "Add a title and at least one service item."}), 400
@@ -402,12 +425,13 @@ def api_create():
     clean_template_id = extract_google_id(template_id)
     if clean_template_id:
         _save_setting(TEMPLATE_ID_KEY, clean_template_id)
+    _save_setting(OUTPUT_FOLDER_KEY, output_folder_id)
 
     try:
         token = google_access_token(token)
         for output in outputs:
             created[output] = (
-                create_google_presentation(token, title, safe_items, template_id=clean_template_id)
+                create_google_presentation(token, title, safe_items, template_id=clean_template_id, folder_id=output_folder_id)
                 if output == "slides" else create_google_doc(token, title, safe_items)
             )
         _save_token(GOOGLE_TOKEN_KEY, token)

@@ -122,6 +122,13 @@ app.register_blueprint(json_api)
 app.register_blueprint(google_drive_bp)
 app.register_blueprint(worship_slides_bp)
 
+# Friendly entry point for the CPC Baton Sunday service workflow.
+@app.route('/baton')
+@app.route('/baton/')
+def cpc_baton():
+    from flask import redirect, url_for
+    return redirect(url_for('worship_slides.workspace'))
+
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
 # Baseline cookie and request limits

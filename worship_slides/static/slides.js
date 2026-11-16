@@ -29,6 +29,8 @@
   const pasteBox = document.querySelector('#paste-box');
   const pasteTextarea = document.querySelector('#bulletin-paste-text');
   const parsePastedBtn = document.querySelector('#parse-pasted-btn');
+  const wordFileInput = document.querySelector('#bulletin-file');
+  const importWordBtn = document.querySelector('#import-word-btn');
 
   // Planning Center inputs
   const types = document.querySelector('#service-type');
@@ -84,6 +86,16 @@
     if (!response.ok || data.error) {
       throw new Error(data.error || 'Server returned an error.');
     }
+    return data;
+  }
+
+  async function postForm(url, formData) {
+    const response = await fetch(url, {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'X-CSRF-Token': csrf }, body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) throw new Error(data.error || 'Server returned an error.');
     return data;
   }
 
@@ -407,6 +419,29 @@
     });
   }
 
+  if (importWordBtn) {
+    importWordBtn.addEventListener('click', async () => {
+      const file = wordFileInput.files[0];
+      if (!file) { showNotice('Choose a .docx bulletin first.'); return; }
+      const data = new FormData();
+      data.append('bulletin_file', file);
+      importWordBtn.disabled = true;
+      importWordBtn.querySelector('span').textContent = 'Reading Word bulletin…';
+      hideNotice();
+      try {
+        const result = await postForm('/slides/api/parse-bulletin', data);
+        pipeBanner.hidden = true;
+        renderItems(result.items, result.title || 'Sunday Worship Service');
+        goToStep(2);
+        showNotice(`Imported ${result.items.length} items (${result.slide_count} slides) from Word. Review below before creating slides.`, true);
+      } catch (err) { showNotice(err.message); }
+      finally {
+        importWordBtn.disabled = false;
+        importWordBtn.querySelector('span').textContent = 'Import Word Bulletin →';
+      }
+    });
+  }
+
   // Parse pasted bulletin text
   if (parsePastedBtn) {
     parsePastedBtn.addEventListener('click', async () => {
@@ -572,6 +607,7 @@
           items: currentItems,
           outputs,
           template_id: templateId,
+          output_folder_id: document.querySelector('#output-folder-url').value.trim(),
         });
 
         publishProgress.hidden = true;

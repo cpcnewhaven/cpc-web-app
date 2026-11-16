@@ -223,14 +223,15 @@ def _flatten_items_to_slides(items):
     return slides
 
 
-def create_google_presentation(token, title, items, template_id=None):
+def create_google_presentation(token, title, items, template_id=None, folder_id=None):
     """Create a Google Slides presentation from a standardized template or fresh branded deck."""
     clean_template_id = extract_google_id(template_id or DEFAULT_SLIDES_TEMPLATE_ID)
 
     # Attempt to duplicate the standardized template if available
+    result = None
     if clean_template_id:
         try:
-            return create_presentation_from_template(token, title, items, clean_template_id)
+            result = create_presentation_from_template(token, title, items, clean_template_id)
         except Exception as exc:
             logger.warning(
                 "Could not copy template %s (%s). Falling back to direct presentation generation.",
@@ -238,7 +239,22 @@ def create_google_presentation(token, title, items, template_id=None):
                 exc,
             )
 
-    return _create_fresh_branded_presentation(token, title, items)
+    if result is None:
+        result = _create_fresh_branded_presentation(token, title, items)
+    if folder_id:
+        _move_google_file_to_folder(token, result["id"], folder_id)
+    return result
+
+
+def _move_google_file_to_folder(token, file_id, folder_id):
+    """Move a generated Drive file into the selected destination folder."""
+    if not folder_id:
+        return
+    metadata = google_request(token, "GET", f"https://www.googleapis.com/drive/v3/files/{file_id}", params={"fields": "id,parents"})
+    params = {"addParents": folder_id, "fields": "id,parents"}
+    if metadata.get("parents"):
+        params["removeParents"] = ",".join(metadata["parents"])
+    google_request(token, "PATCH", f"https://www.googleapis.com/drive/v3/files/{file_id}", params=params, json={})
 
 
 def create_presentation_from_template(token, title, items, template_id):
