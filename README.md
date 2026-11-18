@@ -159,14 +159,14 @@ python sync_db.py
 
 ### Site feedback mode
 
-The site includes a lower-left floating feedback button available across the site for all visitors in every environment (including production on Render). Visitors can click the button to pop up the feedback form, select a reaction type, submit a note and contact info, and track their feedback status with a generated tracking code (e.g. `CPC-12`).
+The site includes a feedback button baked into the global bottom navigation status bar (next to the dark mode toggle), available across the site for all visitors in every environment (including production on Render). Visitors can click the button to pop up the feedback form, select a reaction type, submit a note and contact info, and track their feedback status with a generated tracking code (e.g. `CPC-12`).
 
 Authenticated admins can review submissions under **Admin → More → Feedback** or download `/admin/export/feedback` as CSV.
 
 - **Disable globally**: Set `FEEDBACK_ENABLED=0` in the environment to turn off the public feedback button.
 - **Invite-only preview mode**: If `FEEDBACK_ENABLED=0`, setting `FEEDBACK_INVITE_TOKEN` allows testers to activate feedback mode for their session by visiting `https://cpcnewhaven.org/preview/<that-token>`.
 
-The feedback button and panel are styled in `static/css/feedback.css`. The launcher is fixed to the lower left, above the mobile bottom nav and audio player. The idle state stays clean and visible; clicking it pops up the interactive feedback panel.
+The feedback button and panel are styled in `static/css/feedback.css`. The launcher is integrated directly into the global bottom status bar next to the dark mode toggle. The idle state stays clean and visible; clicking it pops up the interactive feedback panel above the bottom bar.
 
 **Other options:**
 

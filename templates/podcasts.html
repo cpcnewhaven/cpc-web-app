@@ -1806,6 +1806,12 @@ body.theme-blue .podcasts-page .episode-load-more {
                     <input type="text" id="episodeSearchInput" class="episode-search-input" placeholder="Search episodes, topics, guests, or scripture...">
                 </div>
 
+                <label class="episode-month-label" for="episodeMonthFilter">Browse by month
+                    <select id="episodeMonthFilter" class="episode-filter-select">
+                        <option value="">All dates</option>
+                    </select>
+                </label>
+
                 <button class="filter-toggle-mobile" id="episodeFilterToggle" style="display: none;">Filters ▼</button>
 
                 <div class="episode-filter-row mobile-collapsible">
@@ -2323,6 +2329,7 @@ function getEpisodeFilterElements() {
         searchInput: document.getElementById('episodeSearchInput'),
         seriesSelect: document.getElementById('episodeSeriesFilter'),
         guestInput: document.getElementById('episodeGuestFilter'),
+        monthSelect: document.getElementById('episodeMonthFilter'),
         seasonSelect: document.getElementById('episodeSeasonFilter'),
         sortSelect: document.getElementById('episodeSortFilter'),
         pagination: document.getElementById('episodePagination'),
@@ -2337,6 +2344,7 @@ function getEpisodeFiltersFromUI() {
         q: els.searchInput?.value.trim() || '',
         series_id: els.seriesSelect?.value || '',
         guest: els.guestInput?.value.trim() || '',
+        month: els.monthSelect?.value || '',
         season: els.seasonSelect?.value || '',
         sort: els.sortSelect?.value || 'newest'
     };
@@ -2347,6 +2355,7 @@ function applyEpisodeFiltersToUI(filters) {
     if (els.searchInput) els.searchInput.value = filters.q || '';
     if (els.seriesSelect) els.seriesSelect.value = filters.series_id || '';
     if (els.guestInput) els.guestInput.value = filters.guest || '';
+    if (els.monthSelect) els.monthSelect.value = filters.month || '';
     if (els.seasonSelect) els.seasonSelect.value = filters.season || '';
     if (els.sortSelect) els.sortSelect.value = filters.sort || 'newest';
 }
@@ -2357,6 +2366,7 @@ function getEpisodeFiltersFromUrl() {
         q: params.get('q') || '',
         series_id: params.get('series_id') || '',
         guest: params.get('guest') || '',
+        month: params.get('month') || '',
         season: params.get('season') || '',
         sort: params.get('sort') || 'newest',
         page: Number.parseInt(params.get('page') || '1', 10) || 1,
@@ -2372,6 +2382,7 @@ function syncEpisodeFiltersToUrl(page) {
     if (filters.q) params.set('q', filters.q); else params.delete('q');
     if (filters.series_id) params.set('series_id', filters.series_id); else params.delete('series_id');
     if (filters.guest) params.set('guest', filters.guest); else params.delete('guest');
+    if (filters.month) params.set('month', filters.month); else params.delete('month');
     if (filters.season) params.set('season', filters.season); else params.delete('season');
     if (filters.sort && filters.sort !== 'newest') params.set('sort', filters.sort); else params.delete('sort');
     if (page > 1) params.set('page', String(page)); else params.delete('page');
@@ -2387,6 +2398,7 @@ function getActiveEpisodeFilterChips(filters) {
         chips.push({ key: 'series_id', label: `Series: ${episodeSeriesOptions.get(filters.series_id) || 'Selected'}` });
     }
     if (filters.guest) chips.push({ key: 'guest', label: `Guest: ${filters.guest}` });
+    if (filters.month) chips.push({ key: 'month', label: `Month: ${filters.month}` });
     if (filters.season) chips.push({ key: 'season', label: `Season: ${filters.season}` });
     if (filters.sort && filters.sort !== 'newest') {
         const sortLabel = {
@@ -2497,6 +2509,14 @@ async function loadEpisodeMeta() {
                 seriesSelect.appendChild(option);
             });
 
+            const monthSelect = document.getElementById('episodeMonthFilter');
+            (data.meta.months || []).forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                const [year, number] = month.split('-').map(Number);
+                option.textContent = new Date(year, number - 1, 1).toLocaleDateString([], { month: 'long', year: 'numeric' });
+                monthSelect.appendChild(option);
+            });
             const seasonSelect = document.getElementById('episodeSeasonFilter');
             data.meta.seasons?.forEach(season => {
                 const option = document.createElement('option');
@@ -2524,6 +2544,7 @@ function setupEpisodeSearchListeners() {
     const filters = {
         series: document.getElementById('episodeSeriesFilter'),
         guest: document.getElementById('episodeGuestFilter'),
+        month: document.getElementById('episodeMonthFilter'),
         season: document.getElementById('episodeSeasonFilter'),
         sort: document.getElementById('episodeSortFilter')
     };
@@ -2549,7 +2570,7 @@ function setupEpisodeSearchListeners() {
     });
 
     clearBtn.addEventListener('click', () => {
-        applyEpisodeFiltersToUI({ q: '', series_id: '', guest: '', season: '', sort: 'newest' });
+        applyEpisodeFiltersToUI({ q: '', series_id: '', guest: '', month: '', season: '', sort: 'newest' });
         searchEpisodes(1);
     });
 
@@ -2576,6 +2597,7 @@ async function searchEpisodes(page = 1) {
         if (filters.q) url += `&q=${encodeURIComponent(filters.q)}`;
         if (filters.series_id) url += `&series_id=${encodeURIComponent(filters.series_id)}`;
         if (filters.guest) url += `&guest=${encodeURIComponent(filters.guest)}`;
+        if (filters.month) url += `&month=${encodeURIComponent(filters.month)}`;
         if (filters.season) url += `&season=${encodeURIComponent(filters.season)}`;
         if (filters.sort) url += `&sort=${encodeURIComponent(filters.sort)}`;
 

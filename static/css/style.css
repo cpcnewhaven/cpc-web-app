@@ -1410,9 +1410,11 @@ body.ticker-hidden .footer-ticker {
 /* The status bar remains visible when the announcements ticker is hidden.
    Keep its sidebar clearance; a unitless zero also invalidates calc() below. */
 
-/* Bottom status bar (date/time) */
+/* Keep this last in the flex page, including previews with cached templates. */
 .footer-status-bar {
-    position: fixed;
+    order: 10;
+    flex-shrink: 0;
+    position: relative;
     left: 0;
     right: 0;
     bottom: 0;
@@ -6247,6 +6249,12 @@ body.theme-white #cpc-player-close:hover { color: #1d1d1f; }
     border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 14px;
     display: flex; align-items: center; justify-content: space-between;
 }
+.dashboard-right .dash-follow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 16px;
+}
 .dash-follow__label { font: 600 12px/1 'Poppins', sans-serif; color: rgba(255, 255, 255, .6); letter-spacing: .02em; }
 .dash-follow__icons { display: flex; gap: 9px; }
 .dash-follow__btn {
@@ -7070,3 +7078,324 @@ body.theme-white .gallery-page #galleryPageInfo,
 body.theme-white .gallery-page .loading-indicator p { color: #52667d !important; }
 body.theme-white .gallery-page #gallery-pagination button { color: #fff !important; background: #0052a3 !important; }
 body.theme-white .gallery-page #gallery-pagination button:disabled { opacity: 0.45; }
+
+/* Keep mobile footer controls and local information on separate, stable rows. */
+@media (max-width: 767px) {
+    .footer-status-bar-inner {
+        flex-direction: column;
+        gap: 0;
+        padding: 4px 12px 6px;
+    }
+    .footer-status-bar-left {
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .footer-status-bar-left > button {
+        flex: 0 0 auto;
+        min-height: 44px;
+        white-space: nowrap;
+    }
+    .footer-status-bar .dash-theme-toggle__copy {
+        flex-shrink: 0;
+    }
+    .footer-status-bar .dash-theme-toggle__switch {
+        flex: 0 0 42px;
+    }
+    .footer-status-bar .dash-theme-toggle__meta {
+        display: none;
+    }
+    .footer-status-bar-right {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+        min-height: 24px;
+        font-size: 11px;
+        line-height: 1.4;
+        white-space: nowrap;
+    }
+}
+
+/* Mobile header: one compact edge-to-edge bar, with content below it. */
+@media (max-width: 1023px) {
+    body .top-nav.flex {
+        top: 0 !important;
+        position: fixed !important;
+        left: 0 !important;
+        right: 0;
+        margin: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: none;
+        min-height: calc(64px + env(safe-area-inset-top, 0px));
+        padding: calc(8px + env(safe-area-inset-top, 0px)) 16px 8px !important;
+        border-radius: 0;
+    }
+    .top-nav.flex .nav-logo img {
+        height: 40px;
+        width: auto;
+        max-width: 170px;
+        object-fit: contain;
+    }
+    .top-nav.flex > button {
+        flex: 0 0 44px;
+        width: 44px;
+        height: 44px;
+        margin-right: 0;
+    }
+    body.page-index .dashboard-main,
+    body.page-index main {
+        padding-top: calc(64px + env(safe-area-inset-top, 0px)) !important;
+    }
+    body:not(.page-index) .dashboard-main,
+    body:not(.page-index) main {
+        padding-top: calc(80px + env(safe-area-inset-top, 0px)) !important;
+    }
+    body.has-top-alert .top-nav.flex {
+        top: 2.5rem !important;
+    }
+    body.has-top-alert main.dashboard-main {
+        padding-top: calc(104px + env(safe-area-inset-top, 0px)) !important;
+    }
+    #mobilePrimaryMenu {
+        margin-top: 0;
+        border-radius: 0 0 16px 16px;
+        max-height: calc(100dvh - 80px - env(safe-area-inset-top, 0px));
+    }
+}
+
+/* Hide the removed developer link in cached preview templates as well. */
+.site-footer-bottom > span:has(a[href*="/cpc-web-app/commits/"]) {
+    display: none;
+}
+
+@media (max-width: 680px) {
+    body > footer {
+        padding: 2rem 1.25rem 1.25rem !important;
+    }
+    body footer .site-footer-bottom {
+        display: block;
+        margin-top: 1.5rem;
+        padding: 1rem 0 0;
+        font-size: 11px;
+        line-height: 1.7;
+        text-align: left;
+        text-wrap: balance;
+    }
+    /* Contact details are already listed in the Contact section above. */
+    .site-footer-bottom > .site-footer-contact-summary,
+    .site-footer-bottom > span:last-child:not(:first-child) {
+        display: none;
+    }
+}
+
+/* Live stream support: flat surfaces and contact links that fit on phones. */
+body.page-live.theme-white {
+    background: #f3f5f8;
+}
+body.page-live .live-page .support-panel {
+    background: #193b5d !important;
+    border-color: #365572 !important;
+    box-shadow: none !important;
+}
+body.page-live .live-page .support-panel::before {
+    display: none;
+}
+body.page-live .live-page .support-copy h2 {
+    text-shadow: none;
+}
+body.page-live .live-page .support-item {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+@media (max-width: 760px) {
+    body.page-live .support-section {
+        padding: 0;
+    }
+    body.page-live .support-panel {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.25rem;
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+    body.page-live .support-copy,
+    body.page-live .support-contact {
+        min-width: 0;
+    }
+    body.page-live .support-copy p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    body.page-live .support-item {
+        grid-template-columns: 24px minmax(0, 1fr);
+        gap: 10px;
+        padding: 12px;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+    body.page-live .support-item i {
+        width: 24px;
+        height: 28px;
+        background: transparent !important;
+    }
+}
+
+/* Course artwork includes titles: show the complete image on mobile. */
+@media (max-width: 650px) {
+    body.page-teaching_series .studies-page {
+        padding: 0 12px;
+        min-width: 0;
+    }
+    body.page-teaching_series .studies-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+    body.page-teaching_series .study-card {
+        min-width: 0;
+        min-height: 0;
+        padding: 0 0 16px;
+        overflow: hidden;
+        border-radius: 14px;
+        box-shadow: none;
+    }
+    body.page-teaching_series .study-card__image {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: auto;
+        margin: 0 0 16px;
+        border-radius: 0;
+        object-fit: contain;
+    }
+    body.page-teaching_series .study-card > :not(img) {
+        margin-left: 16px !important;
+        margin-right: 16px !important;
+    }
+    body.page-teaching_series .study-card h3 {
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+    body.page-teaching_series .study-card p:not(.study-card__eyebrow) {
+        font-size: 13px;
+        line-height: 1.6;
+        margin-top: 8px;
+    }
+    body.page-teaching_series .study-card .study-card__eyebrow {
+        font-size: 10px;
+        line-height: 1.5;
+        margin-bottom: 6px !important;
+    }
+    body.page-teaching_series .study-card .study-link {
+        min-height: 44px;
+        margin-top: 16px;
+        align-self: flex-start;
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+    body.page-teaching_series .study-feature {
+        background: var(--study-surface);
+        box-shadow: none;
+    }
+    body.page-teaching_series .study-feature__image {
+        height: auto;
+        max-height: none;
+        aspect-ratio: auto;
+        object-fit: contain;
+    }
+    body.page-teaching_series .studies-section-heading {
+        scroll-margin-top: 80px;
+    }
+}
+
+/* Mobile podcast browsing: compact intro, fitted tabs, separate art and copy. */
+@media (max-width: 768px) {
+    body.page-podcasts .podcasts-container { padding: 0 12px; }
+    body.page-podcasts .podcasts-hero {
+        padding: 24px 18px;
+        text-align: left;
+        border-radius: 14px;
+        background: #193b5d;
+    }
+    body.page-podcasts .podcasts-hero h1 { font-size: 26px; line-height: 1.15; text-shadow: none; }
+    body.page-podcasts .podcasts-hero p { font-size: 13px; line-height: 1.6; margin-top: 10px; text-shadow: none; }
+    body.page-podcasts .podcast-tabs {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 6px;
+        overflow: visible;
+        border: 0;
+        padding: 0;
+    }
+    body.page-podcasts .podcast-tab { min-width: 0; min-height: 44px; padding: 8px 4px; font-size: 12px; border-radius: 10px; }
+    body.page-podcasts .podcasts-page .podcast-series-grid.is-top-level { gap: 16px !important; padding: 0; }
+    body.page-podcasts .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card {
+        display: flex !important;
+        height: auto;
+        min-height: 0 !important;
+        border-radius: 14px !important;
+        box-shadow: none !important;
+        background: #193b5d !important;
+    }
+    body.page-podcasts .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-artwork {
+        position: relative;
+        inset: auto;
+        height: 150px !important;
+        aspect-ratio: auto;
+    }
+    body.page-podcasts .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-artwork::after { display: none; }
+    body.page-podcasts .podcasts-page .podcast-series-grid.is-top-level .podcast-top-level-card .podcast-card-content {
+        position: relative;
+        inset: auto;
+        padding: 16px !important;
+        background: #193b5d;
+    }
+    body.page-podcasts .podcast-top-level-card .podcast-card-title { font-size: 20px; line-height: 1.25; text-shadow: none !important; }
+    body.page-podcasts .podcast-top-level-card .podcast-card-kicker { font-size: 10px; text-shadow: none !important; }
+    body.page-podcasts .podcast-top-level-card .podcast-card-description { font-size: 13px; line-height: 1.6; text-shadow: none !important; }
+    body.page-podcasts .podcast-top-level-card .podcast-card-actions { gap: 8px; }
+    body.page-podcasts .podcast-top-level-card .podcast-btn { min-height: 44px; font-size: 13px; padding: 10px 14px; border-radius: 10px; backdrop-filter: none; }
+}
+
+.episode-month-label {
+    display: grid;
+    gap: 6px;
+    color: var(--surface-text);
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 0;
+}
+.episode-month-label select { width: 100%; min-height: 44px; }
+@media (max-width: 768px) {
+    body.page-podcasts .episode-search-panel { display: grid; gap: 12px; padding: 12px; }
+    body.page-podcasts .episode-search-panel .search-container { min-width: 0 !important; }
+    body.page-podcasts .episode-search-input { font-size: 16px; min-height: 44px; padding: 10px 12px; }
+    body.page-podcasts .episode-results-toolbar { flex-direction: row; align-items: center; gap: 10px; margin: 14px 0; }
+    body.page-podcasts .episode-results-summary { font-size: 12px; line-height: 1.5; }
+    body.page-podcasts .episode-clear-btn { font-size: 12px; padding: 8px 10px; min-height: 44px; flex-shrink: 0; }
+    body.page-podcasts #episodeResults > div { padding: 16px !important; box-shadow: none !important; }
+    body.page-podcasts #episodeResults > div > div {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px !important;
+        margin-bottom: 0 !important;
+    }
+    body.page-podcasts #episodeResults h3 { font-size: 16px !important; line-height: 1.4; }
+    body.page-podcasts #episodeResults h3 + div { font-size: 12px !important; gap: 6px !important; }
+    body.page-podcasts #episodeResults .podcast-card-actions {
+        width: 100%;
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+    body.page-podcasts #episodeResults .podcast-btn {
+        width: auto !important;
+        flex: 0 1 auto;
+        min-height: 44px;
+        font-size: 13px;
+        padding: 10px 18px;
+    }
+    body.page-podcasts #episodeResults > div > p { font-size: 13px !important; margin-top: 12px !important; }
+}

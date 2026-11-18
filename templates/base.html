@@ -53,6 +53,9 @@
     <!-- Unified Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=git_rev or app_version) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/announcement-media.css', v=git_rev or app_version) }}">
+    {% if feedback_mode %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css', v=git_rev or app_version) }}">
+    {% endif %}
     <script src="{{ url_for('static', filename='js/announcement-media.js', v=git_rev or app_version) }}"></script>
     <style>
         :root {
@@ -259,7 +262,7 @@
              aria-hidden="true"
              style="display: none;"></div>
 
-        <nav class="top-nav flex lg:hidden w-full max-w-6xl mx-auto rounded-lg py-2.5 px-4 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
+        <nav class="top-nav mobile-top-nav flex lg:hidden w-full max-w-6xl mx-auto rounded-lg py-2.5 px-4 items-center justify-between fixed top-5 left-1/2 transform -translate-x-1/2 z-50 backdrop-blur-lg"
             style="background: rgba(0, 50, 120, 0.25); border: 1px solid rgba(0, 50, 120, 0.4); border-bottom: 1px solid rgba(255,255,255,0.35); box-shadow: 0 8px 32px rgba(0, 50, 120, 0.3);">
             <div class="nav-logo">
                 <a href="{{ url_for('index') }}" aria-label="CPC New Haven Home">
@@ -337,7 +340,12 @@
         </a>
 
         <div class="dash-block">
-            <h3 class="dash-heading">Watch &amp; Listen</h3>
+            <h3 class="dash-heading">Bible &amp; Teaching</h3>
+            <a href="{{ url_for('esv') }}" class="dash-row">
+                <i class="fas fa-book-bible dash-row__icon" aria-hidden="true"></i>
+                <span class="dash-row__label">ESV Bible</span>
+                <i class="fas fa-chevron-right dash-row__chev" aria-hidden="true"></i>
+            </a>
             <a href="{{ url_for('sermons') }}" class="dash-row">
                 <i class="fas fa-play dash-row__icon" aria-hidden="true"></i>
                 <span class="dash-row__label">Sermons</span>
@@ -398,17 +406,6 @@
             <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Give
         </a>
 
-        <div class="dash-spacer"></div>
-
-        <div class="dash-follow">
-            <span class="dash-follow__label">Follow along</span>
-            <div class="dash-follow__icons">
-                <a href="https://www.facebook.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.youtube.com/@cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://creators.spotify.com/pod/profile/cpcnewhaven/" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Spotify"><i class="fa-brands fa-spotify"></i></a>
-            </div>
-        </div>
     </aside>
 
     <!-- Fixed Right Dashboard (Desktop) -->
@@ -489,6 +486,17 @@
                 <i class="fas fa-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
+        <div class="dash-spacer"></div>
+
+        <div class="dash-follow">
+            <span class="dash-follow__label">Follow along</span>
+            <div class="dash-follow__icons">
+                <a href="https://www.facebook.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@cpcnewhaven" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://creators.spotify.com/pod/profile/cpcnewhaven/" target="_blank" rel="noopener" class="dash-follow__btn" aria-label="Spotify"><i class="fa-brands fa-spotify"></i></a>
+            </div>
+        </div>
     </aside>
 
     <!-- Main Content -->
@@ -546,33 +554,6 @@
                 <div class="ticker-content" id="footerTickerTrack">
                     <!-- Filled by JS -->
                 </div>
-            </div>
-        </div>
-    </div>
-    <!-- Bottom status bar (always visible) -->
-    <div class="footer-status-bar">
-        <div class="footer-status-bar-inner">
-            <div class="footer-status-bar-left">
-                <button type="button" class="dash-theme-toggle dash-theme-toggle--footer"
-                    onclick="window.__cpcToggleTheme && window.__cpcToggleTheme(event)"
-                    :aria-pressed="$store.dash.theme === 'blue' ? 'true' : 'false'">
-                    <span class="dash-theme-toggle__copy">
-                        <span class="dash-theme-toggle__label">Dark mode</span>
-                        <span class="dash-theme-toggle__meta" x-text="$store.dash.theme === 'blue' ? 'On' : 'Off'"></span>
-                    </span>
-                    <span class="dash-theme-toggle__switch" :class="$store.dash.theme === 'blue' ? 'is-on' : ''">
-                        <span class="dash-theme-toggle__thumb">
-                            <i class="fa-solid" :class="$store.dash.theme === 'blue' ? 'fa-moon' : 'fa-sun'"></i>
-                        </span>
-                    </span>
-                </button>
-            </div>
-            <div class="footer-status-bar-right">
-                <span id="footerClock"></span>
-                <span class="sep">•</span>
-                <span id="footerDate"></span>
-                <span class="sep">•</span>
-                <span id="footerTemp"></span>
             </div>
         </div>
     </div>
@@ -723,10 +704,44 @@
         <!-- Bottom bar -->
         <div class="site-footer-bottom">
             <span>&copy; {{ now.year if now else '2025' }} Christ Presbyterian Church, New Haven, CT</span>
-            <span><a href="https://github.com/cpcnewhaven/cpc-web-app/commits/main" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">See site commits on GitHub</a></span>
-            <span>135 Whitney Ave &bull; (203) 777-6960 &bull; cpcnewhaven.org</span>
+            <span class="site-footer-contact-summary">135 Whitney Ave &bull; (203) 777-6960 &bull; cpcnewhaven.org</span>
         </div>
     </footer>
+    <!-- Bottom status bar (in page flow) -->
+    <div class="footer-status-bar">
+        <div class="footer-status-bar-inner">
+            <div class="footer-status-bar-left">
+                <button type="button" class="dash-theme-toggle dash-theme-toggle--footer"
+                    onclick="window.__cpcToggleTheme && window.__cpcToggleTheme(event)"
+                    :aria-pressed="$store.dash.theme === 'blue' ? 'true' : 'false'">
+                    <span class="dash-theme-toggle__copy">
+                        <span class="dash-theme-toggle__label">Dark mode</span>
+                        <span class="dash-theme-toggle__meta" x-text="$store.dash.theme === 'blue' ? 'On' : 'Off'"></span>
+                    </span>
+                    <span class="dash-theme-toggle__switch" :class="$store.dash.theme === 'blue' ? 'is-on' : ''">
+                        <span class="dash-theme-toggle__thumb">
+                            <i class="fa-solid" :class="$store.dash.theme === 'blue' ? 'fa-moon' : 'fa-sun'"></i>
+                        </span>
+                    </span>
+                </button>
+                {% if feedback_mode %}
+                <button type="button" class="dash-feedback-btn dash-feedback-btn--footer cpc-feedback-tab" id="cpcFeedbackOpen"
+                    aria-controls="cpcFeedbackPanel" aria-expanded="false" title="Send feedback">
+                    <span class="feedback-btn-icon" aria-hidden="true">✦</span>
+                    <span class="feedback-btn-label">Feedback</span>
+                </button>
+                {% endif %}
+            </div>
+            <div class="footer-status-bar-right">
+                <span id="footerClock"></span>
+                <span class="sep">•</span>
+                <span id="footerDate"></span>
+                <span class="sep">•</span>
+                <span id="footerTemp"></span>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Keep all your existing JavaScript files -->
     <script src="{{ url_for('static', filename='js/dynamic-banner.js', v=git_rev or app_version) }}"></script>
@@ -964,13 +979,14 @@
                 if (t) t.textContent = time;
                 if (d) d.textContent = dateShort;
                 if (ft) ft.textContent = time;
-                if (fd) fd.textContent = dateFull;
+                if (fd) fd.textContent = window.matchMedia('(max-width: 767px)').matches ? dateShort : dateFull;
                 if (ftemp && window.__cpcWeather && typeof window.__cpcWeather.temp === 'number') {
                     ftemp.textContent = 'New Haven ' + window.__cpcWeather.temp + '°F';
                 }
             }
             updateClock();
             setInterval(updateClock, 1000 * 30);
+            window.matchMedia('(max-width: 767px)').addEventListener('change', updateClock);
         })();
     </script>
     <!-- Top Alert Bar (banner announcements) -->
@@ -1344,10 +1360,6 @@
     <script src="{{ url_for('static', filename='js/player.js', v=git_rev or app_version) }}"></script>
 
     {% if feedback_mode %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css', v=git_rev or app_version) }}">
-    <button class="cpc-feedback-tab" id="cpcFeedbackOpen" type="button" aria-controls="cpcFeedbackPanel" aria-expanded="false">
-        <span aria-hidden="true">✦</span> Feedback
-    </button>
     <section class="cpc-feedback-panel" id="cpcFeedbackPanel" aria-labelledby="cpcFeedbackTitle" tabindex="-1" hidden>
         <button class="cpc-feedback-close" id="cpcFeedbackClose" type="button" aria-label="Close feedback">×</button>
         <p class="cpc-feedback-kicker">You’re helping shape CPC’s site</p>

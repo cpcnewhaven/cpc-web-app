@@ -3444,6 +3444,7 @@ def api_search():
     podcast_filters = {
         'series_id': request.args.get('series_id', '').strip(),
         'guest': request.args.get('guest', '').strip(),
+        'month': request.args.get('month', '').strip(),
         'season': request.args.get('season', '').strip(),
         'sort': request.args.get('sort', 'newest').strip() or 'newest',
     }
@@ -3655,6 +3656,17 @@ def api_search():
                     q = q.filter(PodcastEpisode.season == season)
                 except (ValueError, AttributeError):
                     pass
+
+            # Filter before pagination so month counts and page links stay correct.
+            if podcast_filters['month']:
+                try:
+                    month_start = datetime.strptime(podcast_filters['month'], '%Y-%m')
+                    month_end = datetime(month_start.year + (month_start.month == 12),
+                                         month_start.month % 12 + 1, 1)
+                except ValueError:
+                    return jsonify({'error': 'Invalid month. Use YYYY-MM.'}), 400
+                q = q.filter(PodcastEpisode.date_added >= month_start,
+                             PodcastEpisode.date_added < month_end)
 
             podcast_sort = podcast_filters['sort']
             if podcast_sort == 'oldest':
@@ -3965,6 +3977,11 @@ def api_search_meta():
                 PodcastEpisode.season.isnot(None)
             ).filter(_not_expired(PodcastEpisode)).distinct().order_by(PodcastEpisode.season).all()
             meta['seasons'] = sorted([s[0] for s in seasons if s[0]])
+            episode_dates = db.session.query(PodcastEpisode.date_added).filter(
+                PodcastEpisode.date_added.isnot(None), _not_expired(PodcastEpisode)
+            ).distinct().all()
+            meta['months'] = sorted({d[0].strftime('%Y-%m') for d in episode_dates}, reverse=True)
+
 
         if content_type in ['all', 'events']:
             # Get available categories

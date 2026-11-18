@@ -192,3 +192,19 @@ class SundayAndBeyondSpotlightTestCase(unittest.TestCase):
         self.assertIn('beyond', data)
         self.assertEqual(data['sermon']['title'], "Jesus Sends the Spirit")
         self.assertEqual(data['beyond']['title'], "Acts 2 Discussion")
+
+    def test_podcast_search_month_filter(self):
+        """Verify searching podcasts by month and retrieving available months."""
+        meta = self.client.get('/api/search/meta?type=podcasts').get_json()
+        self.assertIn('months', meta.get('meta', {}))
+        self.assertIn('2026-09', meta['meta']['months'])
+
+        res_sep = self.client.get('/api/search?type=podcasts&month=2026-09').get_json()
+        self.assertEqual(res_sep['total'], 1)
+        self.assertEqual(res_sep['results'][0]['title'], 'Acts 2 Discussion')
+
+        res_none = self.client.get('/api/search?type=podcasts&month=2026-01').get_json()
+        self.assertEqual(res_none['total'], 0)
+
+        res_invalid = self.client.get('/api/search?type=podcasts&month=invalid')
+        self.assertEqual(res_invalid.status_code, 400)
